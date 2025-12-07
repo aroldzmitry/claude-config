@@ -35,13 +35,17 @@ Rollback [file_path] to previous version.
 
 ## Workflow
 
-1. Parse file path and change from prompt
-2. Read current file content
-3. Validate syntax of proposed changes
-4. Apply changes
-5. Log to history
-6. Git commit & push
-7. Return report
+1. **Create marker file** — `touch ~/.claude/.agent-update-active`
+2. Parse file path and change from prompt
+3. Read current file content
+4. Validate syntax of proposed changes
+5. Apply changes
+6. Log to history
+7. Git commit & push
+8. **Remove marker file** — `rm ~/.claude/.agent-update-active`
+9. Return report
+
+**CRITICAL:** Always remove marker file, even on errors. Use try/finally pattern.
 
 ## Step 1: Validate Syntax
 

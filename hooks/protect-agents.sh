@@ -3,6 +3,12 @@
 # Hook to protect agent/command files from direct editing
 # Forces use of /agent:update command instead
 
+# Allow agent-update executor to bypass protection via marker file
+MARKER_FILE="$HOME/.claude/.agent-update-active"
+if [[ -f "$MARKER_FILE" ]]; then
+    exit 0
+fi
+
 # Read tool input from stdin
 INPUT=$(cat)
 

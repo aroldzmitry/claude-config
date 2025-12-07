@@ -14,8 +14,9 @@ Create a new custom agent following Claude Code best practices.
 2. **Check existing agents** — avoid duplication
 3. **Research patterns** — /docs agents, then web if needed
 4. **Agent structure** — define with YAML frontmatter
-5. **Create file** — write to selected scope
-6. **Validate** — run agent-lint
+5. **Prepare content** — finalize agent content
+6. **Create via agent:update** — delegate file creation
+7. **Validate** — run agent-lint
 
 ## Step 0: Select Scope (MANDATORY)
 
@@ -140,9 +141,9 @@ For agents needing multi-step reasoning, include in prompts:
 
 Budget ~2-3x tokens for thinking overhead.
 
-## Step 5: Create File
+## Step 5: Prepare Content
 
-### Before Writing
+### Before Finalizing
 
 Ask yourself:
 1. Would Claude behave differently without this section? If no → remove
@@ -150,23 +151,37 @@ Ask yourself:
 3. Is this obvious to an LLM? (JSON syntax, markdown format) → skip
 4. Can this table be 3 rows instead of 10? → condense
 
-Location: `{scope}/agents/{agent-name}.md`
+Target path: `{scope}/agents/{agent-name}.md`
 
-Verify:
+Verify content has:
 
 1. Valid YAML frontmatter
 2. Clear description with trigger
 3. Output format documented
 4. Rules include DO and DON'T
 
-## Step 6: Git Commit & Push (global scope only)
+Do NOT write file directly — proceed to Step 6.
 
-If file created in `~/.claude/`:
-1. Run: `cd ~/.claude && git add -A && git commit -m "Create {type}: {name} - {short-description}" && git push`
-   - `{type}`: agent or command
-   - `{name}`: name from YAML frontmatter
-   - `{short-description}`: first 50 chars of description from frontmatter
-2. If commit/push fails → log warning, continue
+## Step 6: Create via agent:update
+
+Use Task tool to delegate file creation:
+
+```
+Task(subagent_type="agent-update", prompt="Create new agent file.
+
+Path: {full_path}
+
+Content:
+\`\`\`markdown
+{prepared_content}
+\`\`\`
+")
+```
+
+This ensures:
+- Backup created (if file exists)
+- Git commit & push (for global scope)
+- Consistent creation workflow
 
 ## Step 7: Validate with Agent Lint
 

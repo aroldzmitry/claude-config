@@ -12,11 +12,17 @@ FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 # Check if file is in protected directories
 # Matches both ~/.claude/ and project/.claude/ for agents|commands|skills
 if [[ "$FILE_PATH" =~ /\.claude/(agents|commands|skills)/ ]] || [[ "$FILE_PATH" =~ ^~?/?\.claude/(agents|commands|skills)/ ]]; then
-    echo "BLOCKED: Direct editing of agent/command/skill files is not allowed."
-    echo "Use '/agent:update' command instead."
-    echo ""
-    echo "File: $FILE_PATH"
-    exit 1
+    # Output JSON format required by Claude Code hooks
+    cat <<EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "Direct editing of agent/command/skill files is not allowed. Use '/agent:update' command instead. File: $FILE_PATH"
+  }
+}
+EOF
+    exit 0
 fi
 
 # Allow all other files

@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/Users/dmitry/WebstormProjects/**)",
+      "Write(/Users/dmitry/WebstormProjects/**)",
+      "Edit(/Users/dmitry/WebstormProjects/**)",
+      "Read(**/.claude/**)",
+      "Write(**/.claude/**)",
+      "Edit(**/.claude/**)",
+      "Read(/Users/dmitry/.claude/**)",
+      "Write(/Users/dmitry/.claude/**)",
+      "Edit(/Users/dmitry/.claude/**)",
+      "Bash(mkdir:*)",
+      "Bash(npx prettier:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(yarn:*)",
+      "Bash(npm:*)",
+      "Bash(git:*)",
+      "Bash(cat:*)",
+      "Read(/Users/dmitry/.claude-code-docs/docs/**)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(../.env)"
+    ],
+    "ask": [],
+    "defaultMode": "default"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
+          }
+        ]
+      }
+    ]
+  },
+  "alwaysThinkingEnabled": false
+}

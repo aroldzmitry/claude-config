@@ -1,0 +1,44 @@
+import React, { useCallback } from 'react';
+
+import './errorModal.css';
+
+import Modal from 'Components/modal/Modal';
+import { ModalNameE } from 'Components/modal/ModalNameE';
+import { ModalTypeE } from 'Components/modal/ModalTypeE';
+import { useModalData } from 'Components/modal/useModalData';
+import { modalService } from 'Services/modalService';
+
+const ErrorModal = () => {
+  const modalData = useModalData(ModalNameE.ERROR);
+
+  const handleClose = useCallback(() => {
+    modalService.close(ModalNameE.ERROR);
+  }, []);
+
+  return (
+    <Modal
+      name={ModalNameE.ERROR}
+      title="Error"
+      type={ModalTypeE.ERROR}
+    >
+      <p
+        className="error-modal__message"
+        role="alert"
+        aria-live="assertive"
+      >
+        {modalData.props?.message}
+      </p>
+
+      <button
+        className="error-modal__close-button"
+        onClick={handleClose}
+        type="button"
+        aria-label="Close error dialog"
+      >
+        Close
+      </button>
+    </Modal>
+  );
+};
+
+export default ErrorModal;

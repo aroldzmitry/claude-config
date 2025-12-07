@@ -1,0 +1,164 @@
+---
+description: Design technical architecture based on requirements
+allowed-tools: Task, AskUserQuestion, Read, Write, Glob, Grep, Bash
+argument-hint: <task-id>
+---
+
+# Architect Command
+
+Design technical architecture for task: $ARGUMENTS
+
+## Instructions
+
+You are orchestrating an architecture design workflow. Follow these steps exactly:
+
+### Step 1: Find Requirements File
+
+Look for requirements file in this order:
+
+1. `tasks/$ARGUMENTS/business-analyst-output.md`
+2. `tasks/$ARGUMENTS/requirements.md`
+
+If neither found, report error and stop.
+
+Store the found path as `REQUIREMENTS_FILE`.
+
+### Step 2: Phase 1 - Research & Analysis
+
+Call the `architect` agent with the following prompt:
+
+```
+Task ID: $ARGUMENTS
+
+Execute Phase 1: Research & Analysis
+
+1. Read requirements file: {REQUIREMENTS_FILE} - read COMPLETELY including Edge Cases section
+2. Read documentation in `.claude/docs/` (PATTERNS.md, COMPONENTS.md, SERVICES.md, ARCHITECTURE.md)
+3. Search codebase for similar implementations and existing patterns
+4. Extract implementation decisions from requirements - most answers are already there
+5. Only identify questions if genuine technical ambiguity exists that cannot be resolved from requirements + docs
+
+Return in this format:
+
+ANALYSIS:
+[2-3 sentences about existing patterns and how they map to requirements]
+
+IMPLEMENTATION DECISIONS (from requirements):
+- [Decision 1 derived from requirement X]
+- [Decision 2 derived from requirement Y]
+
+QUESTIONS (only if genuine ambiguity - NOT answerable from requirements):
+1. [question]
+   - Option A: [description]
+   - Option B: [description]
+
+OR if no questions needed:
+
+NO QUESTIONS NEEDED - requirements and documentation provide sufficient guidance.
+
+Do NOT write any files yet.
+```
+
+### Step 3: Check if Questions Are Needed
+
+Check the architect's Phase 1 output:
+
+1. **If output contains "NO QUESTIONS NEEDED"** → Skip directly to Step 6 (Phase 2)
+2. **If output contains questions** → Continue to Step 4
+
+### Step 4: Ask User Questions (only if questions exist)
+
+Use the `AskUserQuestion` tool to present questions to the user.
+
+Convert each question from the agent into a proper AskUserQuestion format:
+
+- Use the question text as the `question` field
+- Extract a short header (max 12 chars) from the question topic
+- Use the Options A, B, etc. as the `options` array
+- Set `multiSelect: false` for single-choice questions
+
+### Step 5: Validate User Answers Against Requirements
+
+Before passing user answers to Phase 2, **validate each answer**:
+
+1. Compare answer against requirements
+2. If answer contradicts requirements (e.g., user wants "contextual messages" but requirements say "simple message"):
+   - Inform user: "This contradicts requirement: [quote]. Should we update requirements first?"
+   - Do NOT proceed with contradicting answer
+
+### Step 6: Phase 2 - Write Architecture
+
+Call the `architect` agent. Use the appropriate prompt based on whether questions were asked:
+
+**If NO questions were asked (skipped from Step 3):**
+
+```
+Task ID: $ARGUMENTS
+
+Execute Phase 2: Write Architecture
+
+Requirements file: {REQUIREMENTS_FILE}
+
+Implementation decisions from Phase 1:
+{copy the IMPLEMENTATION DECISIONS section from Phase 1 output}
+
+Write the technical architecture document to: tasks/$ARGUMENTS/architect-output.md
+
+CRITICAL CHECKS before writing:
+- Solution must cover FULL scope from requirements (if requirements say "all X", solution is global)
+- ALL acceptance criteria must be addressed
+- ALL edge cases from requirements must be handled
+- Fallback values must be included where requirements say "must always have X"
+- Search codebase for ALL locations that need modification (complete list)
+
+Follow the output format from your instructions.
+```
+
+**If questions WERE asked (coming from Step 5):**
+
+```
+Task ID: $ARGUMENTS
+
+Execute Phase 2: Write Architecture
+
+Requirements file: {REQUIREMENTS_FILE}
+
+User answers:
+{formatted user answers from Step 5}
+
+IMPORTANT: Validate all answers against requirements. If any answer contradicts requirements, output "Status: Needs Review" with explanation.
+
+Write the technical architecture document to: tasks/$ARGUMENTS/architect-output.md
+
+CRITICAL CHECKS before writing:
+- Solution must cover FULL scope from requirements (if requirements say "all X", solution is global)
+- ALL acceptance criteria must be addressed
+- ALL edge cases from requirements must be handled
+- Fallback values must be included where requirements say "must always have X"
+- Search codebase for ALL locations that need modification (complete list)
+
+Follow the output format from your instructions.
+```
+
+### Step 7: Format Output Files
+
+After the agent completes Phase 2, run prettier on all generated files:
+
+```bash
+npx prettier --write tasks/$ARGUMENTS/**/*.md
+```
+
+### Step 8: Report Result
+
+After formatting:
+
+1. Read the generated file to verify it was created
+2. Report the status and file location to the user
+3. If status is "Needs Review" or "Failed", explain what needs attention
+
+## Important Rules
+
+- Always verify requirements file exists before starting
+- If Phase 1 returns no questions (or all questions are invalid), proceed directly to Phase 2
+- If the agent returns "Status: Failed", stop and report the error
+- Do not modify the agent's output files

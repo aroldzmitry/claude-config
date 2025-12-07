@@ -1,0 +1,110 @@
+# Architect Output Example
+
+## Standard Output Format
+
+````markdown
+Status: Done
+
+# Technical Solution for Error Modal
+
+## Overview
+
+Implement a reusable error modal component integrated with the existing modal system. Uses global error handling via axios interceptors.
+
+## Files to Create
+
+- `src/components/modal/ErrorModal/ErrorModal.tsx` – Error modal component
+- `src/components/modal/ErrorModal/ErrorModal.module.scss` – Styles
+- `src/components/modal/ErrorModal/index.ts` – Barrel export
+- `src/services/errorModalService.ts` – Service to trigger error modal
+
+## Files to Modify
+
+- `src/services/api/axiosInstance.ts` – Add error interceptor
+- `src/components/modal/index.ts` – Export ErrorModal
+
+## Files to Delete
+
+None
+
+## Implementation Order
+
+1. Create ErrorModal component with props for title, message, onClose
+2. Create errorModalService with show(error) method
+3. Add axios interceptor to catch API errors
+4. Wire interceptor to errorModalService
+5. Export from modal barrel
+
+## Technical Details
+
+### State Management
+
+- Modal visibility controlled by errorModalService (singleton pattern)
+- No global store needed – service manages its own state
+- Uses React portal for rendering
+
+### API Integration
+
+- Axios response interceptor catches 4xx/5xx errors
+- Interceptor calls errorModalService.show(error)
+- Error object contains: status, message, details
+
+### Type Definitions
+
+```typescript
+type ErrorModalPropsT = {
+  title: string;
+  message: string;
+  onClose: () => void;
+};
+
+type ApiErrorT = {
+  status: number;
+  message: string;
+  details?: string;
+};
+```
+````
+
+### Patterns Applied
+
+- Modal pattern from COMPONENTS.md
+- Service singleton pattern from SERVICES.md
+- Error handling pattern from PATTERNS.md
+
+## Dependencies and Integration Points
+
+- ErrorModal uses base Modal component
+- errorModalService uses React context for portal
+- Axios interceptor added to shared instance
+
+## Risks and Considerations
+
+- Risk: Multiple errors triggering simultaneously
+- Mitigation: Queue errors, show one at a time
+- Risk: Modal not closing on navigation
+- Mitigation: Listen to route changes, auto-close
+
+## Testing Recommendations
+
+- Unit: errorModalService.show() triggers modal
+- Unit: ErrorModal renders title and message
+- E2E: API error shows modal, close button works
+- Edge: Multiple rapid errors handled correctly
+
+```
+
+## Level of Detail Guidelines
+
+### Too Vague
+
+"Add error modal and connect to API errors."
+
+### Correct Level
+
+"Create `src/components/modal/ErrorModal/ErrorModal.tsx` with PropsT for title, message, onClose. Component renders inside Modal base component. Create `errorModalService.ts` with show(error: ApiErrorT) method. Modify axios interceptor in `axiosInstance.ts` to call errorModalService.show on 4xx/5xx responses."
+
+### Too Detailed
+
+"On line 23 of ErrorModal.tsx add `const [visible, setVisible] = useState(false)`"
+```

@@ -1,0 +1,149 @@
+# Agent Improver
+
+Analyze the current conversation to identify which agent needs improvement based on user feedback and corrections made during the session.
+
+## Your Task
+
+1. **Review conversation history** — find where user requested fixes or pointed out issues
+2. **Identify the pattern** — what type of issue was it (UI, logic, validation, tests, etc.)
+3. **Determine responsible agent** — which agent should have caught or prevented this
+4. **Propose improvement** — specific change to agent instructions
+
+## Analysis Steps
+
+### Step 1: Find User Corrections
+
+Look for patterns in conversation:
+
+- "This should be X, not Y"
+- "Missing X"
+- "Wrong X"
+- "Forgot to X"
+- "X doesn't work"
+- Direct edits user requested after agent output
+
+### Step 2: Map Issue to Agent
+
+| Issue Type            | Primary Agent   | File                                 |
+| --------------------- | --------------- | ------------------------------------ |
+| UI/styling            | Developer       | `.claude/agents/developer.md`        |
+| Missing functionality | Developer       | `.claude/agents/developer.md`        |
+| Wrong business logic  | BA or Developer | `.claude/agents/business-analyst.md` |
+| Missing tests         | Tester          | `.claude/agents/tester.md`           |
+| Missed edge cases     | Tester          | `.claude/agents/tester.md`           |
+| Accessibility         | Developer       | `.claude/agents/developer.md`        |
+| Responsive/mobile     | Developer       | `.claude/agents/developer.md`        |
+| Documentation         | Documenter      | `.claude/agents/documenter.md`       |
+| Unclear requirements  | BA              | `.claude/agents/business-analyst.md` |
+
+Also check:
+
+- `.claude/commands/*.md` — Slash commands
+- `.claude/skills/*/SKILL.md` — Skills
+- `~/.claude/agents/*.md` — Global agents
+- `~/.claude/commands/*.md` — Global commands
+
+### Step 3: Read Agent File
+
+Read the identified agent file completely. Find:
+
+- Missing rules
+- Incomplete checklists
+- Missing examples
+- Vague instructions
+
+### Step 4: Propose Change
+
+Show analysis and proposed improvement:
+
+```
+## Analysis
+
+**Issue found:** [what user had to correct]
+**Root cause:** [why agent missed this]
+**Agent to improve:** [agent name]
+**File:** [path]
+
+## Proposed Change
+
+**Section:** [section name in agent file]
+
+**Add/Modify:**
+```
+
+[exact text to add or change]
+
+```
+
+**Rationale:** [why this prevents the issue]
+```
+
+### Step 5: Ask Confirmation
+
+Ask: "Apply this improvement?"
+
+### Step 6: Create Backup & Apply
+
+If user confirms:
+
+1. Create backup directory if needed:
+
+   ```
+   .claude/agents/.backups/
+   ```
+
+2. Rotate backups:
+
+   - Move `.bak1` → `.bak2` (if exists)
+   - Copy current → `.bak1`
+
+3. Apply the change using Edit tool
+
+4. Report:
+   ```
+   ✅ Updated: [file path]
+   📁 Backup: [backup path]
+   ```
+
+## Rules
+
+- Read full agent file before proposing changes
+- Make minimal, focused changes
+- Never remove existing rules
+- Always create backup before editing
+- If unclear which agent, ask user
+- If no issues found in conversation, report "No improvements identified"
+
+## Example Output
+
+````
+## Analysis
+
+**Issue found:** User had to manually add mobile styles after Developer finished
+
+**Root cause:** Developer instructions have "mobile-first" but no verification step
+
+**Agent to improve:** Developer
+**File:** `.claude/agents/developer.md`
+
+## Proposed Change
+
+**Section:** QUALITY CHECKS
+
+**Add after lint check:**
+```markdown
+4. **Responsive verification:**
+   - Check component at mobile viewport (<960px)
+   - Check component at desktop viewport (>=960px)
+   - Verify all interactive elements are accessible on touch
+````
+
+**Rationale:** Forces Developer to verify responsive behavior before marking task as Done
+
+---
+
+Apply this improvement? [Yes/No]
+
+```
+
+```

@@ -1,0 +1,186 @@
+2025-12-04T22:23:08.875Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:23:08.875Z [DEBUG] Getting matching hook commands for SessionEnd with query: clear
+2025-12-04T22:23:08.875Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:23:08.875Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T22:23:08.875Z [DEBUG] Cleared all session hooks for session 027924aa-8beb-45d0-a49b-5f912ac2aae8
+2025-12-04T22:23:08.882Z [DEBUG] Getting matching hook commands for SessionStart with query: clear
+2025-12-04T22:23:08.882Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:23:08.882Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T22:23:08.883Z [DEBUG] FileHistory: Added snapshot for 7722548c-62e6-45c5-955f-a4da77b4c3e7, tracking 0 files
+2025-12-04T22:23:08.884Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-04T22:23:08.884Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-04T22:23:08.984Z [DEBUG] Checking for native installer update to version 2.0.58
+2025-12-04T22:23:15.988Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.58 (expected in multi-process scenarios)
+    at Mw0 (/$bunfs/root/claude:2684:1622)
+    at OCA (/$bunfs/root/claude:2682:35354)
+    at async DH7 (/$bunfs/root/claude:2682:37462)
+    at async ix (/$bunfs/root/claude:2684:236)
+    at async <anonymous> (/$bunfs/root/claude:2684:13002)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T22:24:08.894Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-04T22:24:08.894Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:08.894Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-04T22:24:12.527Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:24:12.528Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T22:24:12.528Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T22:24:12.533Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T22:24:12.533Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T22:24:12.846Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-04T22:24:12.855Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-04T22:24:12.855Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:12.855Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:24:12.855Z [DEBUG] FileHistory: Making snapshot for message dc8f8080-d533-4b94-88d4-0fdb28e03c4b
+2025-12-04T22:24:12.855Z [DEBUG] FileHistory: Added snapshot for dc8f8080-d533-4b94-88d4-0fdb28e03c4b, tracking 0 files
+2025-12-04T22:24:12.862Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-04T22:24:12.875Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-04T22:24:14.390Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:15.270Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:20.685Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-04T22:24:20.689Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-04T22:24:20.689Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:20.689Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-04T22:24:20.702Z [DEBUG] Getting matching hook commands for SubagentStart with query: business-analyst
+2025-12-04T22:24:20.702Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:20.702Z [DEBUG] Matched 0 unique hooks for query "business-analyst" (0 before deduplication)
+2025-12-04T22:24:22.028Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:25.129Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:25.132Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:25.134Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:25.137Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:25.139Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:25.139Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.139Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:25.139Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:25.139Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.139Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:25.139Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:25.139Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.139Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:25.139Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:25.139Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.139Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:25.192Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:25.192Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.192Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:25.193Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:25.193Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.193Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:25.193Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:25.193Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.193Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:25.193Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:25.193Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:25.193Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:27.942Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:30.655Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:24:30.658Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:30.660Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:24:30.660Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:30.660Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:30.660Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:30.660Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:30.660Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:30.684Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:30.684Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:30.684Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:31.202Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:24:31.202Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:31.202Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:33.028Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:36.228Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:24:36.234Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:24:36.234Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:36.234Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:36.234Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:36.236Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:36.236Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:36.236Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:36.262Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:36.262Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:36.262Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:36.673Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:24:36.673Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:36.673Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:38.862Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:42.634Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:24:42.637Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:42.639Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:24:42.639Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:42.639Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:42.639Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:42.639Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:42.639Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:42.663Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:42.663Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:42.663Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:43.065Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:24:43.065Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:43.065Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:44.798Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:46.208Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:24:46.211Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:24:46.211Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:46.211Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:46.225Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:24:46.225Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:46.225Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:24:47.829Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:24:53.032Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:24:53.035Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:24:53.035Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:53.035Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:53.446Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:24:53.446Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:24:53.446Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:24:55.548Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:25:43.021Z [DEBUG] executePreToolHooks called for tool: Write
+2025-12-04T22:25:43.024Z [DEBUG] Getting matching hook commands for PreToolUse with query: Write
+2025-12-04T22:25:43.024Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:25:43.024Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T22:25:43.032Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:25:43.040Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 8ms
+2025-12-04T22:25:43.041Z [DEBUG] Writing to temp file: /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.34322.1764887143041
+2025-12-04T22:25:43.041Z [DEBUG] Temp file written successfully, size: 7940 bytes
+2025-12-04T22:25:43.041Z [DEBUG] Renaming /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.34322.1764887143041 to /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md
+2025-12-04T22:25:43.041Z [DEBUG] File /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md written atomically
+2025-12-04T22:25:43.049Z [DEBUG] Getting matching hook commands for PostToolUse with query: Write
+2025-12-04T22:25:43.049Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:25:43.049Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T22:25:45.173Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:25:47.339Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:25:47.342Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:25:47.342Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:25:47.342Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:25:47.842Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:25:47.842Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:25:47.842Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:25:49.680Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:26:00.489Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-04T22:26:00.489Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:26:00.489Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:26:00.497Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-04T22:26:00.497Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:26:00.497Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-04T22:26:00.513Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:26:00.514Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T22:26:00.514Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T22:26:00.518Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T22:26:00.518Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T22:26:00.827Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 314ms
+2025-12-04T22:26:03.163Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:26:07.993Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-04T22:26:07.993Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:26:07.993Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:26:52.043Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:26:52.310Z [DEBUG] Checking for native installer update to version 2.0.58
+2025-12-04T22:26:58.524Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:26:58.527Z [DEBUG] UserCommandMessage rendering: "usage" (args: "none")
+2025-12-04T22:26:58.527Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-04T22:26:58.648Z [DEBUG] Checking for native installer update to version 2.0.58
+2025-12-04T22:26:59.321Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.58 (expected in multi-process scenarios)
+    at Mw0 (/$bunfs/root/claude:2684:1622)
+    at OCA (/$bunfs/root/claude:2682:35354)
+    at async DH7 (/$bunfs/root/claude:2682:37462)
+    at async ix (/$bunfs/root/claude:2684:236)
+    at async <anonymous> (/$bunfs/root/claude:2684:13002)
+    at processTicksAndRejections (native:7:39)

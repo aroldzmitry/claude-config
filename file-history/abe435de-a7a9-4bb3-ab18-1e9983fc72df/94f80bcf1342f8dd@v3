@@ -1,0 +1,95 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+
+import { modalService } from 'Services/modalService';
+import { ModalNameE } from 'Components/modal/ModalNameE';
+
+import ErrorModal from './ErrorModal';
+
+vi.mock('Services/modalService', () => ({
+  modalService: {
+    close: vi.fn(),
+  },
+}));
+
+vi.mock('Components/modal/useModalData', () => ({
+  useModalData: vi.fn(() => ({
+    props: { message: 'Test error message' },
+  })),
+}));
+
+vi.mock('Components/modal/Modal', () => ({
+  default: ({
+    children,
+    name,
+    title,
+    type,
+  }: {
+    children: React.ReactNode;
+    name: string;
+    title: string;
+    type: string;
+  }) => (
+    <div
+      data-testid="modal"
+      data-name={name}
+      data-title={title}
+      className={`modal--${type}`}
+    >
+      {children}
+    </div>
+  ),
+}));
+
+describe('ErrorModal', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should render error message from modal data', () => {
+    render(<ErrorModal />);
+
+    expect(screen.getByText('Test error message')).toBeInTheDocument();
+  });
+
+  it('should have proper ARIA attributes for accessibility', () => {
+    render(<ErrorModal />);
+
+    const message = screen.getByRole('alert');
+
+    expect(message).toHaveAttribute('aria-live', 'assertive');
+    expect(message).toHaveTextContent('Test error message');
+  });
+
+  it('should render close button with proper label', () => {
+    render(<ErrorModal />);
+
+    const closeButton = screen.getByRole('button', {
+      name: /close error dialog/i,
+    });
+
+    expect(closeButton).toBeInTheDocument();
+    expect(closeButton).toHaveTextContent('Close');
+  });
+
+  it('should call modalService.close when close button is clicked', () => {
+    render(<ErrorModal />);
+
+    const closeButton = screen.getByRole('button', {
+      name: /close error dialog/i,
+    });
+
+    fireEvent.click(closeButton);
+
+    expect(modalService.close).toHaveBeenCalledWith(ModalNameE.ERROR);
+    expect(modalService.close).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render Modal with correct type', () => {
+    render(<ErrorModal />);
+
+    const modal = screen.getByTestId('modal');
+
+    expect(modal).toHaveClass('modal--error');
+  });
+});

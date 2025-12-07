@@ -1,7 +1,7 @@
 ---
 name: agent-update
 description: Executor for agent/command updates. Validates, backs up, applies changes, and logs. Called by /agent:update command with ready payload.
-tools: Read, Write, Edit, Glob, Grep
+tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
 color: cyan
 ---
@@ -77,11 +77,18 @@ Append to `{scope}/agents/.improvements/history.md`:
 **Status:** Applied
 ```
 
-## Step 5: Return Report
+## Step 5: Git Commit (global scope only)
+
+If file is in `~/.claude/`:
+1. Run: `cd ~/.claude && git add -A && git commit -m "Update: {filename}"`
+2. If commit fails (nothing to commit) → skip silently
+
+## Step 6: Return Report
 
 ```
 Done: {file path}
 Backup: {backup path}
+Git: committed (or "skipped" if project scope)
 ```
 
 ## Rollback

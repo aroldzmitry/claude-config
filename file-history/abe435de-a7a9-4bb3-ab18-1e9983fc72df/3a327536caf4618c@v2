@@ -1,0 +1,842 @@
+# Component Documentation
+
+Comprehensive guide to all React components in the application.
+
+## Form Components (`src/components/form/`)
+
+### AuButton
+
+**Location:** `src/components/form/button/AuButton.tsx`
+
+**Purpose:** Flexible button component with multiple variants and sizes.
+
+**Props:**
+
+```typescript
+type PropsT = {
+  areaPressed?: boolean;
+  className?: string;
+  children: React.ReactNode;
+  form?: string; // Form ID for submit buttons
+  kind?: AuButtonKindE; // Button variant
+  onClick?: () => void;
+  size?: AuButtonSizeE; // Button size
+  testId?: string;
+  type?: 'submit' | 'reset' | 'button';
+  disabled?: boolean;
+};
+```
+
+**Key Features:**
+
+- Six button variants via `AuButtonKindE`: PRIMARY, SECONDARY, LINK, ICON, CHIPS, TRANSPARENT
+- Three sizes via `AuButtonSizeE`: SMALL, MEDIUM, LARGE
+- Prevents default on click (calls `e.preventDefault()`)
+- Accessible with aria-pressed support
+- Default type is 'button' (prevents accidental form submission)
+
+**Usage Example:**
+
+```typescript
+import AuButton from 'Components/form/button/AuButton';
+import { AuButtonKindE } from 'Components/form/button/AuButtonKindE';
+import { AuButtonSizeE } from 'Components/form/button/AuButtonSizeE';
+
+<AuButton
+  kind={AuButtonKindE.PRIMARY}
+  size={AuButtonSizeE.MEDIUM}
+  onClick={() => handleSubmit()}
+>
+  Save Changes
+</AuButton>
+```
+
+**Dependencies:** `classnames`
+
+---
+
+### AuField
+
+**Location:** `src/components/form/field/AuField.tsx`
+
+**Purpose:** Form field wrapper that integrates with react-hook-form, providing label, input, validation, and error display.
+
+**Props:**
+
+```typescript
+type MyFieldProps = {
+  children: React.ReactElement; // Input element to wrap
+  className?: string;
+  clearValue?: AuFieldClearValueT; // Value for clear button
+  defaultFocus?: boolean; // Auto-focus on mount
+  htmlFor?: string;
+  maxLength?: number;
+  minLength?: number;
+  name: string; // Required - field name
+  label?: string;
+  type?: string;
+  placeholder?: string;
+  pattern?: ValidationPatternT; // Regex validation
+  replace?: ReplacePatternT; // Replace pattern on input
+  required?: boolean;
+  withoutValidation?: boolean; // Skip validation
+};
+```
+
+**Key Features:**
+
+- Integrates with react-hook-form via `useController`
+- Built-in validation: required, minLength, maxLength, pattern
+- Optional clear button when value differs from `clearValue`
+- Real-time pattern replacement on input
+- Blocks invalid input based on pattern
+- Auto-focus support
+- Error display below input
+- Warns in dev mode if child props are overridden
+
+**Usage Example:**
+
+```typescript
+import AuField from 'Components/form/field/AuField';
+import { useFormContext } from 'react-hook-form';
+
+// Inside a FormProvider
+<AuField
+  name="email"
+  label="Email Address"
+  required
+  pattern={{
+    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+    message: 'Invalid email format'
+  }}
+  clearValue=""
+>
+  <input type="email" />
+</AuField>
+```
+
+**Dependencies:** `react-hook-form`, `classnames`, `AuButton`, `ClearSvg`
+
+---
+
+### AuDropdown
+
+**Location:** `src/components/form/dropdown/AuDropdown.tsx`
+
+**Purpose:** Dropdown menu component for displaying action menus.
+
+**Usage:** Typically used for action menus in table rows or cards.
+
+**Dependencies:** Position-based dropdown with click-outside detection
+
+---
+
+### AuSelect
+
+**Location:** `src/components/form/select/AuSelect.tsx`
+
+**Purpose:** Select dropdown for choosing from options.
+
+**Props:** Accepts options as `SelectOptionT[]` type.
+
+**Usage:** Form select with react-hook-form integration.
+
+---
+
+### AuCheckbox
+
+**Location:** `src/components/form/checkbox/AuCheckbox.tsx`
+
+**Purpose:** Checkbox input component.
+
+**Usage:** Integrated with react-hook-form for boolean values.
+
+---
+
+### AuRadioGroup
+
+**Location:** `src/components/form/radioGroup/AuRadioGroup.tsx`
+
+**Purpose:** Radio button group component.
+
+**Usage:** Multiple choice selection with react-hook-form.
+
+---
+
+### AuDatePicker
+
+**Location:** `src/components/form/datePicker/AuDatePicker.tsx`
+
+**Purpose:** Date picker component.
+
+**Usage:** Date input with calendar UI.
+
+---
+
+### AuForm
+
+**Location:** `src/components/form/AuForm.tsx`
+
+**Purpose:** Form container that provides react-hook-form context.
+
+**Usage:** Wraps form fields with FormProvider.
+
+---
+
+### AuFormBlock
+
+**Location:** `src/components/form/formBlock/AuFormBlock.tsx`
+
+**Purpose:** Form section wrapper for grouping related fields.
+
+**Usage:** Visual grouping of form fields.
+
+---
+
+## Layout Components (`src/components/layouts/`)
+
+### MainLayout
+
+**Location:** `src/components/layouts/main/MainLayout.tsx`
+
+**Purpose:** Main application layout with navigation menu, content area, footer, and AI assistant.
+
+**Props:**
+
+```typescript
+type PropsT = {
+  className?: string;
+  children?: ReactNode; // Page content
+};
+```
+
+**Key Features:**
+
+- Wraps content in `BaseLayout`
+- Includes `Menu` component in nav
+- Includes footer with logo
+- Includes `AIAssistant` component
+- Applies custom className to main content area
+
+**Structure:**
+
+```
+BaseLayout
+  ├── <nav> Menu
+  ├── <main> {children}
+  ├── <footer> Logo
+  └── AIAssistant
+```
+
+**Usage Example:**
+
+```typescript
+import MainLayout from 'Components/layouts/main/MainLayout';
+
+const MyPage = () => (
+  <MainLayout>
+    <h1>Page Content</h1>
+  </MainLayout>
+);
+```
+
+**Dependencies:** `BaseLayout`, `Menu`, `AIAssistant`
+
+---
+
+### BaseLayout
+
+**Location:** `src/components/layouts/base/BaseLayout.tsx`
+
+**Purpose:** Base layout wrapper that provides fundamental structure.
+
+**Usage:** Usually not used directly - consumed by `MainLayout`.
+
+---
+
+### Menu
+
+**Location:** `src/components/layouts/main/menu/Menu.tsx`
+
+**Purpose:** Navigation menu component.
+
+**Key Features:**
+
+- Contains `Navigation` links
+- Includes `LogoutButton`
+
+---
+
+### Navigation
+
+**Location:** `src/components/layouts/main/menu/navigation/Navigation.tsx`
+
+**Purpose:** Navigation links for main pages.
+
+**Features:** Links to Transactions, Budgets, Bank Accounts, Categories, Profile
+
+---
+
+### LogoutButton
+
+**Location:** `src/components/layouts/main/menu/logoutButton/LogoutButton.tsx`
+
+**Purpose:** Logout button in menu.
+
+**Features:** Calls auth service to log out user
+
+---
+
+## Modal System (`src/components/modal/`)
+
+### Modal
+
+**Location:** `src/components/modal/Modal.tsx`
+
+**Purpose:** Modal dialog component that uses HTML `<dialog>` element and global state management.
+
+**Props:**
+
+```typescript
+type PropsT = {
+  children: ReactNode; // Modal content
+  name: ModalNameE; // Modal identifier
+  title: string; // Modal title
+  type?: ModalTypeE; // Modal variant (REGULAR)
+};
+```
+
+**Key Features:**
+
+- Uses native `<dialog>` element with `showModal()`
+- Subscribes to global modals state via `useGlobalValue`
+- Automatically closes on unmount
+- Closes on outside click (via `useOutsideClickListener`)
+- Manages open/close based on presence in global state
+- Uses `modalService` for state management
+
+**Usage Example:**
+
+```typescript
+import Modal from 'Components/modal/Modal';
+import { ModalNameE } from 'Components/modal/ModalNameE';
+
+// Modal component (rendered in app root)
+<Modal name={ModalNameE.TRANSACTION} title="Transaction Details">
+  <TransactionDetails />
+</Modal>
+
+// Open modal from anywhere
+import { modalService } from 'Services/modalService';
+modalService.open(ModalNameE.TRANSACTION);
+```
+
+**Dependencies:** `modalService`, `useGlobalValue`, `useOutsideClickListener`
+
+**Related Files:**
+
+- `ModalNameE.ts` - Enum of modal names
+- `ModalPropsT.ts` - Type-safe props for each modal
+- `ModalTypeE.ts` - Modal variants
+
+---
+
+### ErrorModal
+
+**Location:** `src/components/modal/errorModal/ErrorModal.tsx`
+
+**Purpose:** Displays API error messages in a modal dialog with user-friendly messaging.
+
+**Props:** None (uses `useModalData` hook to get message from modal state)
+
+**Key Features:**
+
+- Uses `useModalData(ModalNameE.ERROR)` to get error message
+- Displays message in a paragraph with `role="alert"` and `aria-live="assertive"`
+- Close button dismisses modal via `modalService.close(ModalNameE.ERROR)`
+- Uses `ModalTypeE.ERROR` for error-specific styling
+
+**Usage Example:**
+
+```typescript
+// ErrorModal is rendered globally in App.tsx
+// To display an error modal, use modalService:
+import { modalService } from 'Services/modalService';
+import { ModalNameE } from 'Components/modal/ModalNameE';
+
+modalService.open(ModalNameE.ERROR, { message: 'Something went wrong.' });
+
+// To close:
+modalService.close(ModalNameE.ERROR);
+```
+
+**Related Files:**
+
+- `errorModal.css` - Error modal styles
+- `src/shared/requestClient/errorInterceptor.ts` - Triggers modal on API errors
+
+**Tests:**
+
+- Unit: `ErrorModal.test.tsx`
+
+---
+
+## Sidebar System (`src/components/sidebar/`)
+
+### Sidebar
+
+**Location:** `src/components/sidebar/Sidebar.tsx`
+
+**Purpose:** Sliding sidebar panel with animations, stacking support, and scroll lock management.
+
+**Props:**
+
+```typescript
+type PropsT = {
+  children: ReactNode; // Sidebar content
+  className?: string;
+  headerActions?: ReactNode; // Additional header buttons
+  name: SidebarNameE; // Sidebar identifier
+  onBack?: () => void; // Back button handler
+  onClose?: () => void; // Close callback
+  title?: string; // Sidebar title
+  size?: SidebarSizeE; // REGULAR or other sizes
+};
+```
+
+**Key Features:**
+
+- Renders via React Portal to `#sidebar_portal`
+- Subscribes to global sidebar state
+- Supports stacking (multiple sidebars open)
+- Graceful closing animations via `deleted` flag
+- Automatically closes on unmount
+- Closes on backdrop click
+- Scroll lock for REGULAR size (prevents body scroll)
+- Back button support
+- Header actions area
+- Calls `sidebarService.finalizeClose()` after animation ends
+
+**Usage Example:**
+
+```typescript
+import Sidebar from 'Components/sidebar/Sidebar';
+import { SidebarNameE } from 'Components/sidebar/types/SidebarNameE';
+import { SidebarSizeE } from 'Components/sidebar/types/SidebarSizeE';
+
+// Sidebar component
+const EditBudgetSidebar = () => {
+  const sidebars = useGlobalValue(GlobalStoreFieldE.SIDEBAR);
+  const props = sidebars.find(s => s.name === SidebarNameE.EDIT_BUDGET)?.props;
+
+  if (!props) return null;
+
+  return (
+    <Sidebar
+      name={SidebarNameE.EDIT_BUDGET}
+      title="Edit Budget"
+      size={SidebarSizeE.REGULAR}
+      onClose={() => console.log('Closed')}
+    >
+      <BudgetForm budgetId={props.budgetId} />
+    </Sidebar>
+  );
+};
+
+// Open from anywhere
+import { sidebarService } from 'Services/sidebarService';
+sidebarService.openFirst(SidebarNameE.EDIT_BUDGET, { budgetId: 'uuid' });
+```
+
+**Dependencies:** `sidebarService`, `scrollLockService`, `useGlobalValue`, `createPortal`
+
+**Related Files:**
+
+- `SidebarNameE.ts` - Enum of sidebar names
+- `SidebarPropsT.ts` - Type-safe props for each sidebar
+- `SidebarSizeE.ts` - Sidebar size variants
+- `SidebarLayout.tsx` - Layout wrapper for sidebar content
+
+---
+
+### SidebarLayout
+
+**Location:** `src/components/sidebar/SidebarLayout.tsx`
+
+**Purpose:** Layout wrapper for sidebar content with consistent structure.
+
+**Usage:** Wraps sidebar forms and content for consistent padding and structure.
+
+---
+
+## UI Components
+
+### PageHeader
+
+**Location:** `src/components/pageHeader/PageHeader.tsx`
+
+**Purpose:** Page header component with title and optional actions.
+
+**Props:**
+
+```typescript
+type PropsT = {
+  children?: React.ReactNode; // Action buttons
+  title: string; // Page title
+};
+```
+
+**Key Features:**
+
+- Displays page title as `<h1>`
+- Optional actions area on the right
+- Consistent styling across pages
+
+**Usage Example:**
+
+```typescript
+import PageHeader from 'Components/pageHeader/PageHeader';
+import AuButton from 'Components/form/button/AuButton';
+
+<PageHeader title="Transactions">
+  <AuButton onClick={handleCreate}>New Transaction</AuButton>
+</PageHeader>
+```
+
+**Dependencies:** None (pure presentation component)
+
+---
+
+### Spinner
+
+**Location:** `src/components/spinner/Spinner.tsx`
+
+**Purpose:** Loading spinner component.
+
+**Usage:** Display loading state during async operations.
+
+---
+
+### EmptyState
+
+**Location:** `src/components/emptyState/EmptyState.tsx`
+
+**Purpose:** Empty state placeholder component.
+
+**Usage:** Display when lists or data are empty.
+
+---
+
+### CategoryBadge
+
+**Location:** `src/components/categoryBage/CategoryBadge.tsx`
+
+**Purpose:** Badge component for displaying category with color.
+
+**Usage:** Show category in transaction lists and details.
+
+---
+
+### EditableLabel
+
+**Location:** `src/components/editableLabel/EditableLabel.tsx`
+
+**Purpose:** Inline editable label component.
+
+**Usage:** Edit text in place (e.g., budget group names).
+
+---
+
+### ActionDropdown
+
+**Location:** `src/components/actionDropdown/ActionDropdown.tsx`
+
+**Purpose:** Dropdown menu for row actions.
+
+**Usage:** Edit/Delete actions in table rows.
+
+---
+
+## AI Assistant Components (`src/components/aiAssistant/`)
+
+### AIAssistant
+
+**Location:** `src/components/aiAssistant/AIAssistant.tsx`
+
+**Purpose:** Main AI assistant container with chat bubble and window.
+
+**Key Features:**
+
+- Toggles between bubble and chat window
+- Uses `useToggle` hook for state
+- Positioned fixed on page (via CSS)
+
+**Structure:**
+
+```typescript
+<div className="ai-assistant">
+  {isOpen && <ChatWindow onClose={onToggle} />}
+  <ChatBubble onClick={onToggle} isOpen={isOpen} />
+</div>
+```
+
+**Usage:** Automatically included in `MainLayout`.
+
+**Dependencies:** `ChatBubble`, `ChatWindow`, `useToggle`
+
+---
+
+### ChatBubble
+
+**Location:** `src/components/aiAssistant/chatBubble/ChatBubble.tsx`
+
+**Purpose:** Floating chat bubble button to open AI assistant.
+
+**Props:**
+
+- `onClick`: Opens chat window
+- `isOpen`: Current state
+
+**Usage:** Rendered in `AIAssistant` component.
+
+---
+
+### ChatWindow
+
+**Location:** `src/components/aiAssistant/chatWindow/ChatWindow.tsx`
+
+**Purpose:** Chat window for AI assistant conversations.
+
+**Props:**
+
+- `onClose`: Closes chat window
+
+**Key Features:**
+
+- Displays conversation history
+- Input for new messages
+- Integrates with `aiAssistantService`
+
+---
+
+### MessageContent
+
+**Location:** `src/components/aiAssistant/chatWindow/MessageContent.tsx`
+
+**Purpose:** Renders individual chat messages.
+
+**Usage:** Renders user and assistant messages with formatting.
+
+---
+
+## SVG Icon Components (`src/components/svg/`)
+
+**Location:** `src/components/svg/`
+
+**Purpose:** SVG icon components for consistent iconography.
+
+**Icons:**
+
+- `BackSvg` - Back arrow
+- `CalendarSvg` - Calendar icon
+- `ClearSvg` - Clear/X icon
+- `CloseSvg` - Close icon
+- `CopySvg` - Copy icon
+- `EditSvg` - Edit/Pen icon
+- `FileImportSvg` - File import icon
+- `FilterSvg` - Filter icon
+- `GrabjectSvg` - Grab handle for drag-and-drop
+- `HamburgerSvg` - Hamburger menu icon
+- `LogoutSvg` - Logout icon
+- `PencilSvg` - Pencil edit icon
+- `PlusSvg` - Plus icon
+- `ReloadSVG` - Reload icon
+- `TrashSvg` - Delete/Trash icon
+- `TriangleSVG` - Triangle icon
+- `Svg` - Base SVG wrapper component
+
+**Usage Example:**
+
+```typescript
+import PencilSvg from 'Components/svg/PencilSvg';
+import AuButton from 'Components/form/button/AuButton';
+import { AuButtonKindE } from 'Components/form/button/AuButtonKindE';
+
+<AuButton kind={AuButtonKindE.ICON}>
+  <PencilSvg />
+</AuButton>
+```
+
+**Key Features:**
+
+- Consistent sizing
+- Themeable via CSS
+- Accessible with proper aria labels
+- Can be used in buttons and inline
+
+---
+
+## Component Naming Conventions
+
+### Form Components
+
+- **Always** prefix with `Au`
+- PascalCase: `AuButton`, `AuField`, `AuSelect`
+- Located in `src/components/form/`
+
+### Page Components
+
+- Suffix with `Page`
+- Example: `TransactionsPage`, `BudgetPage`
+- Located in `src/pages/`
+
+### Sidebar Components
+
+- Suffix with `Sidebar`
+- Example: `EditBudgetSidebar`, `TransactionFormSidebar`
+- Located in page directories: `src/pages/budget/sidebars/`
+
+### Layout Components
+
+- Suffix with `Layout`
+- Example: `MainLayout`, `BaseLayout`
+- Located in `src/components/layouts/`
+
+### SVG Components
+
+- Suffix with `Svg` or `SVG`
+- Example: `PencilSvg`, `CloseSvg`
+- Located in `src/components/svg/`
+
+---
+
+## Component Patterns
+
+### 1. Form Integration Pattern
+
+Components that integrate with react-hook-form:
+
+```typescript
+import { useFormContext, useController } from 'react-hook-form';
+
+const MyFormComponent = ({ name }: { name: string }) => {
+  const { control } = useFormContext();
+  const { field, fieldState: { error } } = useController({
+    name,
+    control,
+    rules: { required: 'Required' }
+  });
+
+  return (
+    <div>
+      <input {...field} />
+      {error && <span>{error.message}</span>}
+    </div>
+  );
+};
+```
+
+### 2. Global State Subscription Pattern
+
+Components that read from global state:
+
+```typescript
+import { useGlobalValue } from 'Shared/store/useGlobalValue';
+import { GlobalStoreFieldE } from 'Shared/types/GlobalStoreFieldE';
+
+const MyComponent = () => {
+  const sidebars = useGlobalValue(GlobalStoreFieldE.SIDEBAR);
+
+  return <div>{sidebars.length} open</div>;
+};
+```
+
+### 3. Service-Managed UI Pattern
+
+Components managed by services (modals, sidebars):
+
+```typescript
+// Component definition
+const MySidebar = () => {
+  const sidebars = useGlobalValue(GlobalStoreFieldE.SIDEBAR);
+  const props = sidebars.find(s => s.name === SidebarNameE.MY_SIDEBAR)?.props;
+
+  if (!props) return null;
+
+  return (
+    <Sidebar name={SidebarNameE.MY_SIDEBAR} title="Title">
+      Content
+    </Sidebar>
+  );
+};
+
+// Usage - open from anywhere
+sidebarService.openFirst(SidebarNameE.MY_SIDEBAR, { id: 'uuid' });
+```
+
+### 4. Portal Pattern
+
+Components that render outside their parent DOM hierarchy:
+
+```typescript
+import { createPortal } from 'react-dom';
+
+const container = document.getElementById('portal_root');
+
+const MyPortalComponent = () => {
+  return createPortal(
+    <div>Portal Content</div>,
+    container!,
+    'unique-key'
+  );
+};
+```
+
+---
+
+## Testing Components
+
+Components should have tests in `__tests__` directories adjacent to the component:
+
+```
+src/components/form/button/
+  ├── AuButton.tsx
+  ├── AuButtonKindE.ts
+  ├── AuButtonSizeE.ts
+  ├── auButton.scss
+  └── __tests__/
+      └── AuButton.test.tsx
+```
+
+**Test Guidelines:**
+
+- Test user interactions
+- Test conditional rendering
+- Test accessibility
+- Don't test simple prop passing
+- Use `@testing-library/react` for component tests
+
+---
+
+## Accessibility Guidelines
+
+All components should follow these accessibility practices:
+
+1. **Semantic HTML**: Use appropriate HTML elements (`<button>`, `<nav>`, `<main>`)
+2. **Keyboard Navigation**: All interactive elements accessible via keyboard
+3. **ARIA Attributes**: Use `aria-pressed`, `aria-label`, `aria-describedby` when needed
+4. **Focus Management**: Proper focus handling in modals and sidebars
+5. **Form Labels**: All inputs have associated labels
+6. **Error Messages**: Errors properly associated with form fields
+
+**Example:**
+
+```typescript
+<button
+  aria-pressed={isActive}
+  aria-label="Close sidebar"
+  onClick={handleClose}
+>
+  <CloseSvg />
+</button>
+```

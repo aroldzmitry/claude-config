@@ -1,0 +1,878 @@
+2025-12-06T05:48:22.460Z [DEBUG] Watching for changes in setting files /Users/dmitry/.claude/settings.json, /Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/settings.local.json...
+2025-12-06T05:48:22.509Z [DEBUG] [LSP MANAGER] initializeLspServerManager() called
+2025-12-06T05:48:22.509Z [DEBUG] [LSP MANAGER] Created manager instance, state=pending
+2025-12-06T05:48:22.509Z [DEBUG] [LSP MANAGER] Starting async initialization (generation 1)
+2025-12-06T05:48:22.509Z [DEBUG] [LSP SERVER MANAGER] initialize() called
+2025-12-06T05:48:22.509Z [DEBUG] [LSP SERVER MANAGER] Calling getAllLspServers()
+2025-12-06T05:48:22.511Z [DEBUG] Applying permission update: Adding 16 allow rule(s) to destination 'userSettings': ["Bash(mkdir:*)","Bash(npx prettier --write:*)","Read(.claude/**)","Write(.claude/**)","Edit(.claude/**)","Read(tasks/**)","Write(tasks/**)","Edit(tasks/**)","Bash(git add:*)","SlashCommand(/task:architect task-1764889273)","Bash(yarn type-check:*)","Bash(cat:*)","Bash(npx tsc --noEmit)","Bash(yarn lint:*)","Bash(yarn test:*)","Read(//Users/dmitry/.claude-code-docs/docs/**)"]
+2025-12-06T05:48:22.511Z [DEBUG] Applying permission update: Adding 2 deny rule(s) to destination 'userSettings': ["Read(.env)","Read(../.env)"]
+2025-12-06T05:48:22.511Z [DEBUG] Applying permission update: Adding 8 allow rule(s) to destination 'localSettings': ["Bash(mkdir:*)","Bash(npx prettier:*)","Bash(npx eslint:*)","Bash(npx tsc:*)","Read(**)","Write(**)","Edit(**)","Bash(git add:*)"]
+2025-12-06T05:48:22.511Z [DEBUG] Applying permission update: Adding 2 deny rule(s) to destination 'localSettings': ["Read(.env)","Read(../.env)"]
+2025-12-06T05:48:22.512Z [DEBUG] Found 0 plugins (0 enabled, 0 disabled)
+2025-12-06T05:48:22.512Z [DEBUG] Total LSP servers loaded: 0
+2025-12-06T05:48:22.512Z [DEBUG] [LSP SERVER MANAGER] getAllLspServers returned 0 server(s)
+2025-12-06T05:48:22.512Z [DEBUG] LSP manager initialized with 0 servers
+2025-12-06T05:48:22.512Z [DEBUG] LSP server manager initialized successfully
+2025-12-06T05:48:22.512Z [DEBUG] LSP notification handlers registered successfully for all 0 server(s)
+2025-12-06T05:48:22.515Z [DEBUG] Loading skills from directories: managed=/Library/Application Support/ClaudeCode/.claude/skills, user=/Users/dmitry/.claude/skills, project=/Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/skills
+2025-12-06T05:48:22.515Z [DEBUG] >>>>> getPluginSkills CALLED <<<<<
+2025-12-06T05:48:22.515Z [DEBUG] Passes: Cache stale, returning cached data and refreshing in background
+2025-12-06T05:48:22.517Z [DEBUG] installed_plugins.json doesn't exist yet at /Users/dmitry/.claude/plugins/installed_plugins.json, returning empty object
+2025-12-06T05:48:22.538Z [DEBUG] Creating shell snapshot for zsh (/bin/zsh)
+2025-12-06T05:48:22.538Z [DEBUG] Looking for shell config file: /Users/dmitry/.zshrc
+2025-12-06T05:48:22.538Z [DEBUG] Snapshots directory: /Users/dmitry/.claude/shell-snapshots
+2025-12-06T05:48:22.538Z [DEBUG] Creating snapshot at: /Users/dmitry/.claude/shell-snapshots/snapshot-zsh-1765000102538-uv193u.sh
+2025-12-06T05:48:22.538Z [DEBUG] Shell binary exists: true
+2025-12-06T05:48:22.538Z [DEBUG] Execution timeout: 10000ms
+2025-12-06T05:48:22.539Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5fc332e9-7049-4c95-a3ae-b7d27958f920-agent-5fc332e9-7049-4c95-a3ae-b7d27958f920.json.tmp.22568.1765000102539
+2025-12-06T05:48:22.539Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-06T05:48:22.539Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5fc332e9-7049-4c95-a3ae-b7d27958f920-agent-5fc332e9-7049-4c95-a3ae-b7d27958f920.json.tmp.22568.1765000102539 to /Users/dmitry/.claude/todos/5fc332e9-7049-4c95-a3ae-b7d27958f920-agent-5fc332e9-7049-4c95-a3ae-b7d27958f920.json
+2025-12-06T05:48:22.539Z [DEBUG] File /Users/dmitry/.claude/todos/5fc332e9-7049-4c95-a3ae-b7d27958f920-agent-5fc332e9-7049-4c95-a3ae-b7d27958f920.json written atomically
+2025-12-06T05:48:22.542Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000102542
+2025-12-06T05:48:22.542Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:22.543Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:22.543Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:22.543Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000102542 to /Users/dmitry/.claude.json
+2025-12-06T05:48:22.543Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:22.543Z [DEBUG] getPluginSkills: Processing 0 enabled plugins
+2025-12-06T05:48:22.543Z [DEBUG] Total plugin skills loaded: 0
+2025-12-06T05:48:22.543Z [DEBUG] Total plugin commands loaded: 0
+2025-12-06T05:48:22.543Z [DEBUG] Registered 0 hooks from 0 plugins
+2025-12-06T05:48:22.544Z [DEBUG] Loaded 0 unique skills (managed: 0, user: 0, project: 0, duplicates removed: 0)
+2025-12-06T05:48:22.545Z [DEBUG] getSkills returning: 0 skill dir commands, 0 plugin skills
+2025-12-06T05:48:22.561Z [DEBUG] Acquired lock on running version: /Users/dmitry/.local/share/claude/versions/2.0.60
+2025-12-06T05:48:22.565Z [DEBUG] Git remote URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-06T05:48:22.565Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-06T05:48:22.565Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-06T05:48:22.565Z [DEBUG] Path /Users/dmitry/WebstormProjects/zephyr-budget-app/client already tracked for repo zuratech-inc/zephyr-budget-app
+2025-12-06T05:48:22.571Z [DEBUG] Agent file /Users/dmitry/.claude/agents/.improvements/history.md is missing required 'name' in frontmatter
+2025-12-06T05:48:22.571Z [DEBUG] Failed to parse agent from /Users/dmitry/.claude/agents/.improvements/history.md: Missing required "name" field in frontmatter
+2025-12-06T05:48:22.571Z [DEBUG] Agent file /Users/dmitry/.claude/agents/.improvements/suggestions.md is missing required 'name' in frontmatter
+2025-12-06T05:48:22.571Z [DEBUG] Failed to parse agent from /Users/dmitry/.claude/agents/.improvements/suggestions.md: Missing required "name" field in frontmatter
+2025-12-06T05:48:22.571Z [DEBUG] Agent file /Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/agents/.improvements/history.md is missing required 'name' in frontmatter
+2025-12-06T05:48:22.571Z [DEBUG] Failed to parse agent from /Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/agents/.improvements/history.md: Missing required "name" field in frontmatter
+2025-12-06T05:48:22.571Z [DEBUG] Total plugin agents loaded: 0
+2025-12-06T05:48:22.646Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000102646
+2025-12-06T05:48:22.646Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:22.646Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:22.646Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:22.646Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000102646 to /Users/dmitry/.claude.json
+2025-12-06T05:48:22.646Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:22.647Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000102647
+2025-12-06T05:48:22.647Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:22.647Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:22.648Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:22.648Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000102647 to /Users/dmitry/.claude.json
+2025-12-06T05:48:22.648Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:22.648Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000102648
+2025-12-06T05:48:22.648Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:22.649Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:22.649Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:22.649Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000102648 to /Users/dmitry/.claude.json
+2025-12-06T05:48:22.649Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:22.779Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000102779
+2025-12-06T05:48:22.779Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:22.779Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:22.779Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:22.779Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000102779 to /Users/dmitry/.claude.json
+2025-12-06T05:48:22.779Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:22.779Z [DEBUG] Passes eligibility cached for org 34b6b739-4f1a-43a0-8f87-11145d8729d6: false
+2025-12-06T05:48:23.025Z [DEBUG] Passes: Using fresh cached eligibility data
+2025-12-06T05:48:23.036Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000103036
+2025-12-06T05:48:23.036Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:23.036Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:23.036Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:23.036Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000103036 to /Users/dmitry/.claude.json
+2025-12-06T05:48:23.037Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:23.038Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000103038
+2025-12-06T05:48:23.038Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:23.039Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:23.039Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:23.039Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000103038 to /Users/dmitry/.claude.json
+2025-12-06T05:48:23.039Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:23.039Z [DEBUG] Getting matching hook commands for SessionStart with query: startup
+2025-12-06T05:48:23.039Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:48:23.039Z [DEBUG] Matched 0 unique hooks for query "startup" (0 before deduplication)
+2025-12-06T05:48:23.042Z [DEBUG] Summarizing all 103 messages (~34640 tokens)
+2025-12-06T05:48:23.073Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000103073
+2025-12-06T05:48:23.073Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:23.073Z [DEBUG] Temp file written successfully, size: 48028 bytes
+2025-12-06T05:48:23.073Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:23.073Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000103073 to /Users/dmitry/.claude.json
+2025-12-06T05:48:23.073Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:23.075Z [DEBUG] performStartupChecks called
+2025-12-06T05:48:23.075Z [DEBUG] Starting background plugin installations
+2025-12-06T05:48:23.075Z [DEBUG] performBackgroundPluginInstallations called
+2025-12-06T05:48:23.080Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T05:48:23.081Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000103081
+2025-12-06T05:48:23.081Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:23.082Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:23.082Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:23.082Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000103081 to /Users/dmitry/.claude.json
+2025-12-06T05:48:23.082Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:23.088Z [DEBUG] Setting installation status: 0 marketplaces, 0 installable plugins, 0 uninstallable plugins
+2025-12-06T05:48:23.088Z [DEBUG] Loaded plugins - Enabled: 0, Disabled: 0, Commands: 0, Agents: 0, Errors: 0
+2025-12-06T05:48:23.091Z [DEBUG] Getting matching hook commands for SubagentStart with query: Explore
+2025-12-06T05:48:23.091Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:48:23.091Z [DEBUG] Matched 0 unique hooks for query "Explore" (0 before deduplication)
+2025-12-06T05:48:23.093Z [DEBUG] Getting matching hook commands for SubagentStart with query: Plan
+2025-12-06T05:48:23.093Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:48:23.093Z [DEBUG] Matched 0 unique hooks for query "Plan" (0 before deduplication)
+2025-12-06T05:48:23.097Z [DEBUG] Skills and commands included in Skill tool:
+2025-12-06T05:48:23.097Z [DEBUG] Slash commands included in SlashCommand tool: /agent:lint, /task:create, /task:quickfix, /pr:create, /pr:review
+2025-12-06T05:48:23.105Z [DEBUG] MCP server "ide": Starting connection with timeout of 30000ms
+2025-12-06T05:48:23.114Z [DEBUG] MCP server "ide": Successfully connected to ws-ide server in 11ms
+2025-12-06T05:48:23.114Z [DEBUG] MCP server "ide": Connection established with capabilities: {"hasTools":true,"hasPrompts":false,"hasResources":false,"serverVersion":{"name":"Claude Code JetBrains Plugin","version":"0.1.13-beta"}}
+2025-12-06T05:48:23.178Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000103178
+2025-12-06T05:48:23.178Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:23.178Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:23.178Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:23.178Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000103178 to /Users/dmitry/.claude.json
+2025-12-06T05:48:23.179Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:23.269Z [DEBUG] Ripgrep first use test: PASSED (mode=builtin, path=/Users/dmitry/.local/share/claude/versions/2.0.60)
+2025-12-06T05:48:23.329Z [DEBUG] Checking for native installer update to version 2.0.60
+2025-12-06T05:48:23.367Z [DEBUG] Shell snapshot created successfully (109728 bytes)
+2025-12-06T05:48:23.726Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:48:23.805Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:48:24.229Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:48:26.008Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-06T05:48:26.008Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:48:26.008Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T05:48:30.335Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.60 (expected in multi-process scenarios)
+    at Eh0 (/$bunfs/root/claude:2714:1622)
+    at jCA (/$bunfs/root/claude:2712:35598)
+    at async w$7 (/$bunfs/root/claude:2712:37706)
+    at async iv (/$bunfs/root/claude:2714:236)
+    at async <anonymous> (/$bunfs/root/claude:2714:13006)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T05:48:41.430Z [DEBUG] Metadata string for agent:lint:
+2025-12-06T05:48:41.430Z [DEBUG] <command-message>agent:lint is running…</command-message>
+<command-name>/agent:lint</command-name>
+<command-args>agent-lint --r ultrathink</command-args>
+2025-12-06T05:48:41.430Z [DEBUG] command-message tags in metadata: 1
+2025-12-06T05:48:41.442Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:48:41.442Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:48:41.442Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:48:41.442Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:48:41.442Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:48:41.442Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:48:41.444Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000121444
+2025-12-06T05:48:41.444Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:48:41.444Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:48:41.444Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:48:41.444Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000121444 to /Users/dmitry/.claude.json
+2025-12-06T05:48:41.445Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:48:41.453Z [DEBUG] processPromptSlashCommand creating 3 messages for agent:lint
+2025-12-06T05:48:41.453Z [DEBUG] Message 1: <command-message>agent:lint is running…</command-message>
+<command-name>/agent:lint</command-name>
+<command-args>agent-lint --r ultrathink</command-args>
+2025-12-06T05:48:41.453Z [DEBUG] Message 2 [META]: [{"type":"text","text":"# Agent Lint\n\nValidate the following item: agent-lint --r ultrathink\n\n## Argument Parsing\n\nParse `agent-lint --r ultrathink` to extract:\n1. **Target:** The file path or
+2025-12-06T05:48:41.453Z [DEBUG] Message 3: [ATTACHMENT]
+2025-12-06T05:48:41.461Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T05:48:41.461Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:48:41.461Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T05:48:41.462Z [DEBUG] FileHistory: Added snapshot for ba41ccbd-99e7-43f3-94fa-4e415b238a11, tracking 0 files
+2025-12-06T05:48:41.463Z [DEBUG] UserCommandMessage rendering: "agent:lint is running…" (args: "agent-lint --r ultrathink")
+2025-12-06T05:48:41.463Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-06T05:48:41.470Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T05:48:41.473Z [DEBUG] Total plugin output styles loaded: 0
+2025-12-06T05:48:41.473Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T05:48:44.227Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:48:51.181Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:48:51.181Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:48:51.184Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:48:51.184Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:51.184Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:51.184Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:48:51.184Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:51.184Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:51.993Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:48:51.993Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:51.993Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:51.998Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:48:51.998Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:51.998Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:52.004Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:48:52.004Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:48:52.004Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T05:48:52.005Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:48:52.005Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:48:52.005Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:48:52.005Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:48:52.322Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 318ms
+2025-12-06T05:48:54.024Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:48:55.869Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:48:55.869Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:48:55.873Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:48:55.873Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:55.873Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:55.873Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:48:55.873Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:55.873Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:56.443Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-06T05:48:56.443Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:48:56.443Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T05:48:56.462Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:48:56.462Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:56.462Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:56.638Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:48:56.638Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:48:56.638Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:48:56.644Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:48:56.644Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:48:56.644Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T05:48:56.644Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:48:56.644Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:48:56.644Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:48:56.644Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:48:56.963Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-06T05:48:59.024Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:01.791Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:49:01.792Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:49:01.792Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:49:01.796Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:49:01.796Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:01.796Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:01.796Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:49:01.796Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:01.796Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:01.796Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:49:01.796Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:01.796Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:02.384Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:49:02.384Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:02.384Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:02.558Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:49:02.558Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:02.558Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:02.747Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:49:02.747Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:02.747Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:02.753Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:49:02.753Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:49:02.754Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T05:49:02.754Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:49:02.754Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:49:02.754Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:49:02.754Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:49:03.065Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 311ms
+2025-12-06T05:49:05.263Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:08.160Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-06T05:49:08.161Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-06T05:49:08.170Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-06T05:49:08.170Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:08.170Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T05:49:08.170Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-06T05:49:08.170Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:08.170Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-06T05:49:08.181Z [DEBUG] tree-sitter: WASM files not found
+2025-12-06T05:49:08.201Z [DEBUG] No session environment scripts found
+2025-12-06T05:49:08.236Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-06T05:49:08.236Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:08.236Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T05:49:08.829Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:17.890Z [DEBUG] rg error (signal=null, code=2, stderr: rg: /Users/dmitry/.Trash: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.ap.adprivacyd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.TV: Operation not permitted (os error 1)
+rg: /Users/dmitry/Movies/TV: Operation not permitted (os error 1)
+rg: /Users/dmitry/Downloads: Operation not permitted (os error 1)
+rg: /Users/dmitry/Documents: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Mail: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/com.apple.aiml.instrumentation: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Daemon Containers: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Assistant/SiriVocabulary: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.findmy.fmipcore: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Saved Application State/com.installbuilder.appinstaller.savedState: Permission denied (os error 13)
+rg: /Users/dmitry/Library/Caches/com.apple.homed: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Autosave Information: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/CallHistoryDB: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/com.apple.avfoundation/Frecents: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/DifferentialPrivacy: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/FaceTime: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/FileProvider: Operation not permitted (os error 1)
+rg: /Users/dmitry/Music/Music: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/com.apple.TCC: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/Knowledge: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/MobileSync: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Sharing: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/HomeKit: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Messages: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/com.apple.sharedfilelist: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/CloudDocs: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Calendars: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/DuetExpertCenter: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/AppleMediaServices: Operation not permitted (os error 1)
+rg: /Users/dmitry/Pictures/Photos Library.photoslibrary: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/FamilyCircle: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.containermanagerd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Application Support/CallHistoryTransactions: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Trial: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Metadata/com.apple.IntelligentSuggestions: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Metadata/CoreSpotlight: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Photos: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/PersonalizationPortrait: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/ContainerManager: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.dt.ExternalViewService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CalendarFileHandler/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Family/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.MobileSMS.MessagesActionExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CalendarWidget.IntentsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ScreenContinuity/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.OSDUIHelper/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mediaanalysisd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.legacy/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.contacts.ContactsCoreSpotlightExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.podcasts.widget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.parsec.SafariAssistantWorker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.VoiceMemos.RecordWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CloudDocs.iCloudDriveFileProvider/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.systempreferences/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.ODDIExperimentationExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.voicebankingd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.lighthouse.BiomeLibraryEventUploader/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.fskit.ModuleEnablement/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AddressBook/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AquaAppearanceHelper/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AirPlayUIAgent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.weather.WeatherIntents/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ax.MauiTTSSupport.MauiAUSP/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Notes.IntentsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AuthKitUI.AKFollowUpServerUIExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.ODDIMetricsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.quicklook.ui.helper/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Safari.SafariLinkExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.lighthouse.PnROnDeviceWorker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.dock.controls/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.lighthouse.IFTelemetrySELFIngestor/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/net.whatsapp.WhatsApp/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.stocks: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.journal.widgets.secure/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CryptoTokenKit.ctkcard.ctkcardtoken/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.metrics.MetricsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/net.whatsapp.WhatsApp.ServiceExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CoreRoutine.helperservice/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Home.HomeWidget.Interactive/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.UsageTrackingAgent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Preview/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.LinkedNotesUIService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.tinyspeck.slackmacgap/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Safari.SafariWidgetExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.systempreferences.GeneralSettings/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Notes.WidgetExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ScreenTimeWidgetApplication.ScreenTimeWidgetIntentsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.stocks.widget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.corerecents.recentsd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.SiriUI.SiriUISetupXPC/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.findmy.FindMyWidgetItems/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.routined/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.texttospeech.SiriAUSP/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.WindowManager.controls/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.calculator.CalculatorWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.findmy.fmfcore: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.DifferentialPrivacy.TelemetryAggregator/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.speech.SpeechSynthesisServerXPC/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.TV.TVCacheExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.news: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.geod/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.SiriSuggestionsLightHousePlugin/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.fskit.msdos/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.windowmanager.ShowDesktopEducation/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CryptoTokenKit.pivtoken/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.adobe.Acrobat.Pro/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.TextEdit/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.journal.widgets/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.GMSSELFIngestor/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ManagedSettings.ManagedSettingsMacOSExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.metrics.DevicePropertiesExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mlhost.CloudWorker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.NeptuneOneExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.MailCacheDelete/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Batteries.BatteriesAvocadoWidgetExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.MediaMLPluginApp.MediaMLExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mail.SpotlightIndexExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.metrics.AssetMetricsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.printcenter.PrintCenterWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.shortcuts.ShortcutsWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Notes: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.VoiceMemos.VoiceMemosSettingsWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.agent.controls/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.QuickLookUIFramework.QLPreviewGenerationExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.news.widgetintents/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AppStore/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/IdentityServices: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Music.MusicCacheExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.SafariFoundation.CredentialProviderExtensionHelper/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.PlatformSSOToken/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.MobileSMS: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.metrics.ExperimentationExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Photos/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.DataDetectorsLocalSources/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AMSUIPaymentViewService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.iBooks.iBooksSpotlightExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mail: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.SystemExtensions-Settings.extension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.aiml.mlpt.FedStats.MLHostPlugin/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.dynamic/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Sound-Settings.SoundIntents/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.lighthouse.IFTranscriptSELFIngestor/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CloudDocs.MobileDocumentsFileProvider: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.MediaExtensions-Settings/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.aerials/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.notificationcenterui/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.controls.display/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.iWork.Pages/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Photos.PhotosReliveWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.sequoia/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.photoanalysisd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.speech.MacinTalkFramework.MacinTalkAUSP/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.SiriMetrics.SiriTurnRestatementExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AutoFillPanelService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.iWork.Keynote/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.PeopleViewService.SelectPerson-iOS/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CoreDevice.CoreDeviceService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mobileslideshow.photospicker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ExtensionsSettings.DefaultExtensionEnablement/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.shortcuts.ShortcutLiveActivityWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.accessibility.axassetsd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ScreenTimeWidgetApplication.ScreenTimeWidgetExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.news.widget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.reminders.spotlightindexextension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.PeopleViewService.PeopleWidget-macOS/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.findmy.FindMyWidgetPeople/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.reminders.macOSIntentsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.clock.WorldClockWidget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/net.whatsapp.WhatsApp.WAAppKitBridgeService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.FollowUpSettings.FollowUpSettingsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AMPArtworkAgent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.aiml.RepackagingWorker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.video/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.lighthouse.BiomeSELFIngestor/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.iBooksX.BooksThumbnail/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.reminders.WidgetExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Safari.CacheDeleteExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.lighthouse.SAExtensionOrchestrator/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.podcasts.SpotlightIndexExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.IOUIAgent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.agent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Safari: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Home: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Safari.BrowserDataImportingService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.aiml.mlpt.FedStats.MLHostPluginClassB/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.SafariPlatformSupport.Helper/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.systempreferences.AppleIDSettings/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.macintosh/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.photos.VideoConversionService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.AMPDeviceDiscoveryAgent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Notes.SpotlightIndexExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.LighthouseBitacoraFramework.BitacoraWorker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.languageassetd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ScreenTimeAgent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.gradient/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.archiveutility: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.PressAndHold/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Maps/Data/Maps: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CloudPhotosConfiguration/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.tonelibraryd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.linguee.DeepL: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.shortcuts: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.is.workflow.shortcuts: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/BQR82RBBHL.slack: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.CoreDevice.remotepairingd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.PegasusConfiguration: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ax.KonaTTSSupport.KonaSynthesizer/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.LookupViewService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.Maps: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.mlhost: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.AppleSpell: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/JQ525L2MZD.com.adobe.GrowthSDK: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.Photos.PhotosFileProvider: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.replicatord: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/com.apple.PreviewLegacySignaturesConversion: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/BQR82RBBHL.com.tinyspeck.slackmacgap: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.energykit: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.is.workflow.my.app: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.iCloudDrive: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/com.apple.Home.group: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.Journal: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.news.tag/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.replayd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mediastream.mstreamd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.net.whatsapp.WhatsApp.private: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.DeviceActivity: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/com.apple.bird: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.mail: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.findmy.findmylocateagent: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.VoiceOver: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.reminders: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.facebook.family: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.transparency: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.stocks: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.Safari.SandboxBroker: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.moments: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.siri.referenceResolution: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.icloud.searchpartyuseragent: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.accessibility.voicebanking: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.ArchiveUtility.PKSignedContainer: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.coreservices.useractivityd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.swtransparency: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.telephonyutilities.callservicesd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.tipsnext: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.UserNotifications: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mlhost.TelemetryWorker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.net.whatsapp.WhatsAppSMB.shared: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.feedback: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.photolibraryd.private: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/243LU875E5.groups.com.apple.podcasts: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.screencapture: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/com.apple.stickersd.group: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/JQ525L2MZD.com.adobe.NGL: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.notes: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.siri.remembers: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.controlcenter: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.VoiceMemos: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.stocks-news: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.feedbacklogger: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/com.apple.systempreferences.cache: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.weather: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/vgroup.com.viber.osx: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.dt.Xcode.SecureSettingsContainer: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.tips.Widget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.BKAgentService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Weather: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Suggestions: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.mobileslideshow.PhotosFileProvider: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.net.whatsapp.WhatsApp.shared: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.news: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.corerepair: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.printtool: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/74J34U3R6X.com.apple.iWork: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.sharingd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.QuickTimePlayerX/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.ManagedSettings: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.studentd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.spotlight: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.loginwindow.persistent-apps: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.tv.sharedcontainer: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Mobile Documents: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.tips: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.gamecenter: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.siri.userfeedbacklearning: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/S6UPZG7ZR3.chat.rocket: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Shortcuts: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.docker: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.calendar: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.notes.import: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.iBooks: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.SiriTTS: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.amsondevicestoraged: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.liveactivitiesd: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.SiriPrivateLearningAnalytics.SiriUserSegmentation/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/vgroup.com.viber.osx.macvibershare: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.portrait.BackgroundReplacement: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.appstoreagent: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.private.translation: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/2BUA8C4S2C.com.1password: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/2BUA8C4S2C.com.agilebits: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/com.apple.MailPersonaStorage: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.net.whatsapp.family: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.chronod: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.secure-control-center-preferences: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.ExtensionsSettings.LegacyPluginEnablementExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/.SiriTodayViewExtension: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.contacts: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.WorkflowKit.ShortcutsViewService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.VoiceMemos.shared: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Group Containers/group.com.apple.usernoted: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.iCal/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.photos.ImageConversionService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.weather.widget/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.speech.MacinTalkFramework.WardaSynthesizer.x86-64/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.sharing.ShareSheetUI/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.systempreferences.SpotlightIndexExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.mobiletimer-framework.MobileTimerIntents/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.speech.MacinTalkFramework.WardaSynthesizer.arm64/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Home.HomeEnergyWidgets/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.lighthouse.InferenceExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.media-indexer/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.image/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.controls.screenshot/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.speech.MacinTalkFramework.WardaSynthesizer/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.PlatformSSO.AccessKey/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.photolibraryd/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.siri.ODDIPoirotMetricsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.calendar.CalendarIntentsExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/chat.rocket/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.Photos.PhotosFileProvider/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.contacts.donation-agent/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.quicklook.QuickLookUIService/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.iWork.Numbers/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.iCal.CalendarWidgetExtension/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.poirot.MessagesAnalyticsWorker/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Containers/com.apple.wallpaper.extension.sonoma/Data: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/DoNotDisturb: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/StatusKit: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/CoreFollowUp: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Cookies: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.Music: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/CloudKit: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.HomeKit: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Caches/com.apple.Safari: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/IntelligencePlatform: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Biome: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Safari: Operation not permitted (os error 1)
+rg: /Users/dmitry/Library/Accounts: Operation not permitted (os error 1)
+), 5 results
+2025-12-06T05:49:17.897Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-06T05:49:17.897Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:17.897Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-06T05:49:17.907Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:49:17.907Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:49:17.907Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T05:49:17.908Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:49:17.908Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:49:17.908Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:49:17.908Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:49:18.227Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 320ms
+2025-12-06T05:49:19.703Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:22.957Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:49:22.961Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:49:22.961Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:22.961Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:49:22.975Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:49:22.994Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:49:22.994Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:22.994Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:49:23.000Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:49:23.000Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:49:23.000Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T05:49:23.000Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:49:23.000Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:49:23.000Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:49:23.000Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:49:23.314Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 314ms
+2025-12-06T05:49:25.152Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:35.077Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-06T05:49:35.080Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-06T05:49:35.080Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:35.080Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-06T05:49:35.104Z [DEBUG] Getting matching hook commands for SubagentStart with query: agent-lint
+2025-12-06T05:49:35.104Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:49:35.105Z [DEBUG] Matched 0 unique hooks for query "agent-lint" (0 before deduplication)
+2025-12-06T05:49:36.392Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:39.891Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:49:39.892Z [DEBUG] executePreToolHooks called for tool: WebSearch
+2025-12-06T05:49:39.892Z [DEBUG] executePreToolHooks called for tool: WebSearch
+2025-12-06T05:49:39.892Z [DEBUG] executePreToolHooks called for tool: WebSearch
+2025-12-06T05:49:39.902Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:49:39.902Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:39.902Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:39.902Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebSearch
+2025-12-06T05:49:39.902Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:39.902Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T05:49:39.902Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebSearch
+2025-12-06T05:49:39.902Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:39.902Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T05:49:39.902Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebSearch
+2025-12-06T05:49:39.902Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:39.902Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T05:49:39.902Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:49:39.907Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:49:39.907Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:39.907Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:49:39.919Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:49:39.947Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:49:39.947Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:39.947Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:49:40.449Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:49:40.449Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:49:40.449Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:49:41.147Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:41.338Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:49:41.808Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:50:04.885Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebSearch
+2025-12-06T05:50:04.885Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:04.885Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T05:50:13.726Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebSearch
+2025-12-06T05:50:13.726Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:13.726Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T05:50:25.674Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebSearch
+2025-12-06T05:50:25.674Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:25.674Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T05:50:25.684Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:50:25.684Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:50:27.304Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:50:29.722Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:50:29.723Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:50:29.731Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:50:29.731Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:29.731Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:50:29.731Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:50:29.731Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:29.731Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:50:29.740Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:50:29.745Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:50:29.762Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:50:29.762Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:29.762Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:50:29.778Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:50:29.778Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:29.778Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:50:29.784Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:50:29.784Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:50:32.641Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:50:35.443Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:50:35.443Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:50:35.446Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:50:35.446Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:35.446Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:50:35.446Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:50:35.446Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:35.446Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:50:35.900Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:50:35.900Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:35.900Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:50:36.083Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:50:36.083Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:36.083Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:50:36.090Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:50:36.090Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:50:37.985Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:50:39.801Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T05:50:39.806Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T05:50:39.806Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:39.806Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:50:40.259Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T05:50:40.259Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:40.259Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T05:50:40.269Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:50:40.269Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:50:42.099Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:50:44.324Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:50:44.324Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:50:44.325Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:50:44.325Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T05:50:44.329Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:50:44.329Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.329Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:50:44.329Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:50:44.329Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.329Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:50:44.329Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:50:44.329Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.329Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:50:44.329Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T05:50:44.329Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.329Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T05:50:44.342Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:50:44.347Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:50:44.347Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:50:44.347Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T05:50:44.368Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:50:44.368Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.368Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:50:44.376Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:50:44.376Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.376Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:50:44.376Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:50:44.376Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.376Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:50:44.376Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T05:50:44.376Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:50:44.376Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T05:50:44.386Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:50:44.386Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:50:46.743Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:50:52.698Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000252698
+2025-12-06T05:50:52.698Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:50:52.699Z [DEBUG] Temp file written successfully, size: 48028 bytes
+2025-12-06T05:50:52.699Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:50:52.699Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000252698 to /Users/dmitry/.claude.json
+2025-12-06T05:50:52.699Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:50:52.702Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000252702
+2025-12-06T05:50:52.702Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:50:52.702Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:50:52.702Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:50:52.702Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000252702 to /Users/dmitry/.claude.json
+2025-12-06T05:50:52.702Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:51:24.758Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-06T05:51:24.758Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:51:24.758Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T05:51:24.779Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-06T05:51:24.779Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T05:51:24.779Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-06T05:51:24.782Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:51:24.782Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:51:24.782Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T05:51:24.782Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:51:24.782Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:51:24.782Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:51:24.782Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:51:25.099Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 317ms
+2025-12-06T05:51:27.276Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:51:33.279Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-06T05:51:33.279Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:51:33.279Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T05:51:33.323Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000293323
+2025-12-06T05:51:33.323Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:51:33.324Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:51:33.324Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:51:33.324Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000293323 to /Users/dmitry/.claude.json
+2025-12-06T05:51:33.324Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:51:39.218Z [DEBUG] UserCommandMessage rendering: "agent:lint is running…" (args: "agent-lint --r ultrathink")
+2025-12-06T05:51:39.218Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-06T05:51:39.250Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000299250
+2025-12-06T05:51:39.250Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:51:39.250Z [DEBUG] Temp file written successfully, size: 48028 bytes
+2025-12-06T05:51:39.250Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:51:39.250Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000299250 to /Users/dmitry/.claude.json
+2025-12-06T05:51:39.251Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:51:39.255Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.22568.1765000299255
+2025-12-06T05:51:39.255Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T05:51:39.255Z [DEBUG] Temp file written successfully, size: 48101 bytes
+2025-12-06T05:51:39.255Z [DEBUG] Applied original permissions to temp file
+2025-12-06T05:51:39.255Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.22568.1765000299255 to /Users/dmitry/.claude.json
+2025-12-06T05:51:39.255Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T05:51:39.255Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T05:51:39.497Z [DEBUG] Checking for native installer update to version 2.0.60
+2025-12-06T05:51:46.503Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.60 (expected in multi-process scenarios)
+    at Eh0 (/$bunfs/root/claude:2714:1622)
+    at jCA (/$bunfs/root/claude:2712:35598)
+    at async w$7 (/$bunfs/root/claude:2712:37706)
+    at async iv (/$bunfs/root/claude:2714:236)
+    at async <anonymous> (/$bunfs/root/claude:2714:13006)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T05:53:03.214Z [DEBUG] Metadata string for agent:improve:
+2025-12-06T05:53:03.214Z [DEBUG] <command-message>agent:improve is running…</command-message>
+<command-name>/agent:improve</command-name>
+<command-args>был ли передан аргумент ультрасинк agent-lint?</command-args>
+2025-12-06T05:53:03.214Z [DEBUG] command-message tags in metadata: 1
+2025-12-06T05:53:03.220Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T05:53:03.220Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T05:53:03.220Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T05:53:03.220Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T05:53:03.220Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T05:53:03.220Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T05:53:03.220Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T05:53:03.531Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 311ms
+2025-12-06T05:53:03.532Z [DEBUG] processPromptSlashCommand creating 3 messages for agent:improve
+2025-12-06T05:53:03.532Z [DEBUG] Message 1: <command-message>agent:improve is running…</command-message>
+<command-name>/agent:improve</command-name>
+<command-args>был ли передан аргумент ультрасинк agent-lint?</command-args>
+2025-12-06T05:53:03.532Z [DEBUG] Message 2 [META]: [{"type":"text","text":"# Agent Analyzer\n\nAnalyze what went wrong and generate improvement recommendations. **Does not apply changes** — use `/agent:update` to apply.\n\n**Use case:** Something fail
+2025-12-06T05:53:03.532Z [DEBUG] Message 3: [ATTACHMENT]
+2025-12-06T05:53:03.532Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T05:53:03.532Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:53:03.532Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T05:53:03.533Z [DEBUG] FileHistory: Making snapshot for message 1539f022-255d-422a-b9fc-56f6b827aa22
+2025-12-06T05:53:03.533Z [DEBUG] FileHistory: Added snapshot for 1539f022-255d-422a-b9fc-56f6b827aa22, tracking 0 files
+2025-12-06T05:53:03.535Z [DEBUG] UserCommandMessage rendering: "agent:improve is running…" (args: "был ли передан аргумент ультрасинк agent-lint?")
+2025-12-06T05:53:03.535Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-06T05:53:03.541Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T05:53:03.543Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T05:53:05.776Z [DEBUG] Stream started - received first chunk
+2025-12-06T05:53:09.569Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-06T05:53:09.608Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-06T05:53:09.608Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T05:53:09.608Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)

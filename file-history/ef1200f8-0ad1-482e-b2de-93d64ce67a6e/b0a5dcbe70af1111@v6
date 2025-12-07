@@ -1,0 +1,166 @@
+import React, { ReactNode, useEffect, useRef } from 'react';
+import classNames from 'classnames';
+import { createPortal } from 'react-dom';
+
+import './sidebar.scss';
+
+import { useGlobalValue } from 'Shared/store/useGlobalValue';
+import { GlobalStoreFieldE } from 'Shared/types/GlobalStoreFieldE';
+import { SidebarNameE } from 'Components/sidebar/types/SidebarNameE';
+import { sidebarService } from 'Services/sidebarService';
+import { AuButtonKindE } from 'Components/form/button/AuButtonKindE';
+import { AuButtonSizeE } from 'Components/form/button/AuButtonSizeE';
+import BackSvg from 'Components/svg/BackSvg';
+import CloseSvg from 'Components/svg/CloseSvg';
+import { SidebarSizeE } from 'Components/sidebar/types/SidebarSizeE';
+import { useDidMount } from 'Shared/hooks/useDidMount';
+import { scrollLockManager } from 'Services/scrollLockService';
+import AuButton from 'Components/form/button/AuButton';
+import { useSwipeGesture } from 'Shared/hooks/useSwipeGesture';
+import { isMobile } from 'Shared/utils/isMobile';
+
+const sidebarContainer = document.getElementById('sidebar_portal');
+
+type PropsT = {
+  children: ReactNode;
+  className?: string;
+  headerActions?: ReactNode;
+  name: SidebarNameE;
+  onBack?: () => void;
+  onClose?: () => void;
+  title?: string;
+  size?: SidebarSizeE;
+};
+
+const Sidebar = ({
+  children,
+  className,
+  headerActions,
+  name,
+  onBack,
+  onClose,
+  title,
+  size = SidebarSizeE.REGULAR,
+}: PropsT) => {
+  const sidebars = useGlobalValue(GlobalStoreFieldE.SIDEBAR);
+
+  const currentSidebar = sidebars.find(sidebar => sidebar.name === name);
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+
+  const isClosing = Boolean(currentSidebar?.deleted);
+
+  const enableSwipe = isMobile();
+
+  const { ref: swipeRef } = useSwipeGesture({
+    onSwipeDown: () => {
+      sidebarService.close(name);
+    },
+    threshold: 100,
+    enabled: enableSwipe,
+  });
+
+  useDidMount(() => () => {
+    onClose?.();
+
+    sidebarService.close(name);
+  });
+
+  useEffect(() => {
+    if (!currentSidebar) return;
+
+    if (size === SidebarSizeE.REGULAR) {
+      scrollLockManager.add(name);
+
+      return () => {
+        scrollLockManager.remove(name);
+      };
+    }
+  }, [currentSidebar, name, size]);
+
+  if (!currentSidebar || !sidebarContainer) {
+    return null;
+  }
+
+  const sidebarKey = `${name}-${currentSidebar?.props ? JSON.stringify(currentSidebar.props) : 'props'}`;
+
+  const handleAnimationEnd = () => {
+    if (isClosing) {
+      sidebarService.finalizeClose(name);
+
+      onClose?.();
+    }
+  };
+
+  return createPortal(
+    <div
+      className={classNames(
+        'sidebar-container',
+        `sidebar-container--${size}`,
+        className,
+      )}
+      onClick={() => {
+        sidebarService.close(name);
+      }}
+    >
+      <div
+        className={classNames('sidebar', `sidebar--${size}`, {
+          'sidebar--closing': isClosing,
+        })}
+        ref={element => {
+          sidebarRef.current = element;
+          if (enableSwipe && swipeRef) {
+            (
+              swipeRef as React.MutableRefObject<HTMLDivElement | null>
+            ).current = element;
+          }
+        }}
+        onAnimationEnd={handleAnimationEnd}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="sidebar__header">
+          {title && (
+            <h3>
+              {onBack && (
+                <AuButton
+                  kind={AuButtonKindE.LINK}
+                  onClick={() => {
+                    sidebarService.close(name);
+
+                    onBack();
+                  }}
+                  size={AuButtonSizeE.SMALL}
+                >
+                  <BackSvg />
+                </AuButton>
+              )}
+
+              {title}
+            </h3>
+          )}
+
+          <div className="sidebar__header-actions">
+            {headerActions}
+
+            <AuButton
+              kind={AuButtonKindE.LINK}
+              onClick={() => {
+                onClose?.();
+
+                sidebarService.close(name);
+              }}
+              size={AuButtonSizeE.MEDIUM}
+            >
+              <CloseSvg />
+            </AuButton>
+          </div>
+        </div>
+
+        <div className="sidebar-content">{children}</div>
+      </div>
+    </div>,
+    sidebarContainer,
+    sidebarKey,
+  );
+};
+
+export default Sidebar;

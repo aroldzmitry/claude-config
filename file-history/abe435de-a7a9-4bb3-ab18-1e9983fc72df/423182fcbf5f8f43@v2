@@ -1,0 +1,26 @@
+import React from 'react';
+
+import './styles/app.scss';
+
+import { authService } from 'Services/authService';
+import ErrorModal from 'Components/modal/errorModal/ErrorModal';
+
+import AppRoutes from './routes/AppRoutes';
+import SentryErrorBoundary from './errorBoundery/SentryErrorBoundary';
+import ConfigProviders from './ConfigProviders';
+import NotificationFeature from './notification/NotificationFeature';
+
+authService.initialize();
+
+const App = () => (
+  <SentryErrorBoundary>
+    <ConfigProviders>
+      <NotificationFeature />
+      <ErrorModal />
+
+      <AppRoutes />
+    </ConfigProviders>
+  </SentryErrorBoundary>
+);
+
+export default App;

@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npx prettier --write:*)",
+      "Read(**)",
+      "Write(**)",
+      "Edit(**)",
+      "Bash(git add:*)",
+      "Bash(yarn type-check:*)",
+      "Bash(cat:*)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn test:*)"
+    ],
+    "deny": ["Read(.env)", "Read(../.env)"],
+    "ask": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git add --ignore-errors \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

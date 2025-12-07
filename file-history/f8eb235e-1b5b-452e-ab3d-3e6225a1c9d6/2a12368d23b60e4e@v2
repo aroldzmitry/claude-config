@@ -1,0 +1,151 @@
+# Business Analyst Output Example
+
+## Standard Output Format
+
+```markdown
+Status: Done
+
+## Task Summary
+
+Create an error modal for displaying API errors to users.
+
+## User Story
+
+As a user, I want to see clear error messages when something goes wrong, so that I understand what happened and what to do next.
+
+## Functional Requirements
+
+1. System displays a popup dialog when API request fails
+2. Dialog shows error title and description
+3. User can dismiss the dialog by clicking a button or pressing Escape
+4. Dialog blocks interaction with the page until dismissed
+
+## Existing Patterns (from documentation)
+
+- Modal dialogs follow the pattern in COMPONENTS.md
+- Error messages use the format defined in BUSINESS_RULES.md
+
+## Scope
+
+### In Scope
+
+- Display error messages from API failures
+- Dismiss functionality
+- Keyboard accessibility (Escape to close)
+
+### Out of Scope
+
+- Retry functionality
+- Error logging
+- Multiple simultaneous errors
+
+## Edge Cases
+
+- What if another dialog is already open? → Close existing, show error
+- What if error occurs during page load? → Show after page renders
+- What if user clicks outside dialog? → Dialog remains open
+
+## Acceptance Criteria
+
+- [ ] User sees popup when API call fails
+- [ ] Popup shows error title and message
+- [ ] User can close popup with button click
+- [ ] User can close popup with Escape key
+- [ ] Dialog is accessible via screen reader
+```
+
+## User Experience Section (for UI features)
+
+```markdown
+## User Experience
+
+### What User Sees
+
+- Centered popup dialog with semi-transparent backdrop
+- Error icon, title, message, and close button
+- Backdrop prevents clicking other elements
+
+### Copy Texts
+
+- Title: "Something went wrong"
+- Default message: "Please try again later"
+- Button: "Close"
+- Network error: "Unable to connect. Check your internet connection."
+- Server error: "Server is temporarily unavailable."
+
+### User Interactions
+
+- Click close button → dialog closes
+- Press Escape → dialog closes
+- Click backdrop → dialog stays open
+
+### Accessibility Needs
+
+- Focus trapped inside dialog
+- Close button focusable
+- Screen reader announces dialog content
+```
+
+## Failed Status Example
+
+```markdown
+Status: Failed – Missing business requirements
+
+## Task Summary
+
+Implement user notification preferences.
+
+## What Was Attempted
+
+- Reviewed existing notification patterns in documentation
+- Checked BUSINESS_RULES.md for notification rules
+
+## Why It Failed
+
+No documentation exists for notification types or delivery channels. Cannot determine:
+
+- What notifications exist in the system
+- How users should receive them (email, push, in-app)
+- Default notification settings
+
+## Missing Information
+
+- List of notification types
+- Delivery channel options
+- Default settings for new users
+- Frequency limits
+
+## Partial Requirements (if any)
+
+User should be able to enable/disable notifications (general requirement understood).
+```
+
+## AskUserQuestion Tool Usage
+
+When clarification needed, use this exact structure:
+
+```json
+{
+  "questions": [
+    {
+      "question": "Should the error modal show all API errors or only specific types?",
+      "header": "Error scope",
+      "options": [
+        {
+          "label": "All API errors",
+          "description": "Show modal for every failed API call"
+        },
+        {
+          "label": "Critical only",
+          "description": "Only 5xx errors and network failures"
+        },
+        {
+          "label": "User actions",
+          "description": "Only for user-initiated actions that fail"
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
+}
+```

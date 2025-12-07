@@ -1,0 +1,71 @@
+# Plan: Restore Lost Functionality in Agent Commands
+
+## Goal
+Restore removed functionality while keeping files compact (~50% of original backup size).
+
+## Files to Modify
+
+### 1. `~/.claude/agents/agent-lint.md`
+**Current:** 153 lines → **Target:** ~185 lines
+
+**Restore:**
+- Suggestions Tracking section (~30 lines)
+  - Read existing suggestions log before generating new
+  - Skip duplicates
+  - Log new suggestions after report
+
+### 2. `~/.claude/commands/agent:create.md`
+**Current:** 140 lines → **Target:** ~205 lines
+
+**Restore:**
+- Prompting Best Practices checklist (~25 lines)
+  - Complete world picture
+  - Consistent across components
+  - No surprises
+  - User perspective aligned
+  - Varied examples
+  - Critical instructions prominent
+- Thinking Mode Integration (~15 lines)
+  - "think step by step", "think harder", "ultrathink"
+- Anti-Patterns table (~20 lines)
+  - Hardcoded step-by-step, No examples, Vague description, etc.
+
+### 3. `~/.claude/commands/agent:update.md`
+**Current:** 119 lines → **Target:** ~195 lines
+
+**Restore:**
+- Web Research for Complex Changes (~25 lines)
+  - When to research (architectural patterns, multi-file, etc.)
+  - Search query examples
+- Thinking Mode hints (~15 lines)
+- Migration Between Scopes (~20 lines)
+  - Create in target, verify, delete old, update backups
+- Anti-Patterns table (~15 lines)
+
+### 4. `~/.claude/commands/agent:improve.md`
+**Current:** 157 lines → **Target:** ~180 lines
+
+**Restore:**
+- Context Management section (~15 lines)
+  - For 100+ message histories
+  - Summarize older messages
+  - Retain recent 20-30 in full
+- FORBIDDEN tools explicit list (~8 lines)
+  - Edit, Write, NotebookEdit
+
+## Implementation Order
+Use `/agent:update` for each file sequentially:
+
+1. `agent-lint.md` — add Suggestions Tracking
+2. `agent:improve.md` — add Context Management + FORBIDDEN tools
+3. `agent:update.md` — add Web Research + Migration + Anti-Patterns
+4. `agent:create.md` — add Prompting Practices + Thinking Mode + Anti-Patterns
+
+## Approach
+For each file, run `/agent:update {filename}` with description of what to add.
+Content will be extracted from backup files in `.backups/` directories.
+
+## Notes
+- Keep compact table format from optimized versions
+- Don't restore verbose JSON examples (AskUserQuestion)
+- Don't restore full code examples (Code Reviewer Agent)

@@ -1,0 +1,18 @@
+# Global Instructions
+
+## Claude Code Documentation
+You have a local copy of Claude Code documentation at ~/.claude-code-docs/docs/
+
+When you need information about Claude Code features (hooks, MCP, memory, settings, commands, etc.):
+1. Use the /docs <topic> command to search the documentation
+2. Or read files directly from ~/.claude-code-docs/docs/
+
+Usage examples:
+- /docs hooks — hooks documentation
+- /docs mcp — MCP servers documentation
+- /docs memory — memory documentation
+- /docs settings — Claude Code settings
+- /docs changelog — changelog and release notes
+
+Always check the documentation before answering questions about Claude Code features.
+- все инструкции для клода храни на английском языке

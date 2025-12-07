@@ -1,0 +1,1065 @@
+# Service Documentation
+
+Comprehensive guide to all services in the application. Services manage business logic, state, and side effects.
+
+## Core Services
+
+### authService
+
+**Location:** `src/services/authService.ts`
+
+**Purpose:** Manages user authentication state, token storage, and Sentry user tracking.
+
+**Methods:**
+
+#### `initialize()`
+
+Initializes auth state on app startup by loading token from localStorage.
+
+```typescript
+authService.initialize();
+```
+
+**Behavior:**
+
+- Reads `ACCESS_TOKEN` from localStorage
+- If token exists, updates global auth state
+- Sets Sentry user from token for error tracking
+
+**When to call:** App initialization (in root component or App.tsx)
+
+---
+
+#### `login(token: string)`
+
+Stores auth token and updates global state after successful login.
+
+```typescript
+authService.login('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...');
+```
+
+**Behavior:**
+
+- Stores token in localStorage
+- Updates global `AUTH_TOKEN` state
+- Sets Sentry user from token
+
+**When to call:** After successful login API response
+
+---
+
+#### `logout()`
+
+Clears auth state and cached data on logout.
+
+```typescript
+authService.logout();
+```
+
+**Behavior:**
+
+- Removes token from localStorage
+- Clears global `AUTH_TOKEN` state
+- Clears all React Query cache
+- Clears Sentry user data
+
+**When to call:** User logout, session expiry, or unauthorized errors
+
+---
+
+**Dependencies:**
+
+- `localStorageService` - Token persistence
+- `globalStore` - Auth state management
+- `queryClient` - Cache clearing
+- `sentryHelpers` - Error tracking
+
+**Usage Example:**
+
+```typescript
+// On app start
+useEffect(() => {
+  authService.initialize();
+}, []);
+
+// After login
+const handleLogin = async (email: string, password: string) => {
+  const { token } = await loginApi(email, password);
+  authService.login(token);
+  navigate('/dashboard');
+};
+
+// On logout
+const handleLogout = () => {
+  authService.logout();
+  navigate('/login');
+};
+```
+
+---
+
+### modalService
+
+**Location:** `src/services/modalService.ts`
+
+**Purpose:** Manages modal state globally using signals. See [PATTERNS.md](./PATTERNS.md#1-modal-pattern) for detailed pattern documentation.
+
+**Methods:**
+
+#### `open<N extends ModalNameE>(modalName, props?)`
+
+Opens a modal with optional typed props.
+
+```typescript
+modalService.open(ModalNameE.TRANSACTION, { transactionId: 'uuid' });
+```
+
+**Parameters:**
+
+- `modalName` - Modal identifier from `ModalNameE`
+- `props` - Optional props (type-safe based on modal name)
+
+**Returns:** `modalName`
+
+**Behavior:**
+
+- Adds modal to top of stack
+- Props are type-checked against `ModalPropsT`
+
+---
+
+#### `close(modalName: ModalNameE)`
+
+Closes a specific modal.
+
+```typescript
+modalService.close(ModalNameE.TRANSACTION);
+```
+
+**Behavior:**
+
+- Removes modal from global state
+- Modal component detects removal and closes
+
+---
+
+**Type Safety:**
+
+```typescript
+// ModalNameE defines available modals
+export enum ModalNameE {
+  TRANSACTION = 'transaction',
+}
+
+// ModalPropsT defines props for each modal
+export type ModalPropsT = {
+  [ModalNameE.TRANSACTION]: { transactionId: UuidT };
+};
+
+// TypeScript enforces correct props
+modalService.open(ModalNameE.TRANSACTION, { transactionId: 'uuid' }); // ✅
+modalService.open(ModalNameE.TRANSACTION, { id: 'uuid' }); // ❌ Type error
+```
+
+**Dependencies:** `globalStore`, `createGlobalValueSetter`
+
+---
+
+### sidebarService
+
+**Location:** `src/services/sidebarService.ts`
+
+**Purpose:** Manages sidebar state with stacking and graceful animations. See [PATTERNS.md](./PATTERNS.md#2-sidebar-pattern) for detailed pattern documentation.
+
+**Methods:**
+
+#### `open<N extends SidebarNameE>(sidebarName, props?)`
+
+Opens sidebar and adds to stack. Removes duplicate if already open.
+
+```typescript
+sidebarService.open(SidebarNameE.EDIT_BUDGET, { budgetId: 'uuid' });
+```
+
+**Behavior:**
+
+- If sidebar already in stack, removes old instance
+- Adds new instance to top of stack
+- Multiple different sidebars can be open simultaneously
+
+---
+
+#### `openFirst<N extends SidebarNameE>(sidebarName, props?)`
+
+Opens sidebar and clears entire stack first.
+
+```typescript
+sidebarService.openFirst(SidebarNameE.CREATE_TRANSACTION);
+```
+
+**Behavior:**
+
+- Clears all open sidebars
+- Opens only the specified sidebar
+- Use when you want a clean state
+
+---
+
+#### `close(sidebarName: SidebarNameE)`
+
+Marks sidebar as deleted (triggers close animation).
+
+```typescript
+sidebarService.close(SidebarNameE.EDIT_BUDGET);
+```
+
+**Behavior:**
+
+- Sets `deleted: true` on sidebar
+- Sidebar component detects change and plays close animation
+- After animation, `finalizeClose()` removes from state
+
+---
+
+#### `closeAll()`
+
+Marks all open sidebars as deleted.
+
+```typescript
+sidebarService.closeAll();
+```
+
+**Behavior:**
+
+- Sets `deleted: true` on all sidebars
+- All sidebars animate closed simultaneously
+
+---
+
+#### `finalizeClose(sidebarName: SidebarNameE)`
+
+Removes sidebar from state after animation completes.
+
+```typescript
+sidebarService.finalizeClose(SidebarNameE.EDIT_BUDGET);
+```
+
+**Behavior:**
+
+- Removes sidebar from global state
+- **Called automatically by Sidebar component** after animation ends
+- **Do not call manually** unless you have a specific reason
+
+---
+
+**Type Safety:**
+
+```typescript
+// SidebarNameE defines available sidebars
+export enum SidebarNameE {
+  EDIT_BUDGET = 'editBudget',
+  CREATE_TRANSACTION = 'createTransaction',
+}
+
+// SidebarPropsT defines props for each sidebar
+export type SidebarPropsT = {
+  [SidebarNameE.EDIT_BUDGET]: { budgetId: UuidT };
+  [SidebarNameE.CREATE_TRANSACTION]: void;
+};
+
+// TypeScript enforces correct props
+sidebarService.open(SidebarNameE.EDIT_BUDGET, { budgetId: 'uuid' }); // ✅
+sidebarService.open(SidebarNameE.CREATE_TRANSACTION); // ✅
+sidebarService.open(SidebarNameE.EDIT_BUDGET); // ❌ Missing required props
+```
+
+**Dependencies:** `globalStore`, `createGlobalValueSetter`
+
+---
+
+### notificationService
+
+**Location:** `src/services/notificationService.ts`
+
+**Purpose:** Manages toast notifications with auto-dismiss timers.
+
+**Methods:**
+
+#### `addAlert(content: ReactNode, showTime?: number)`
+
+Adds an info notification.
+
+```typescript
+notificationService.addAlert('Budget saved successfully!');
+notificationService.addAlert(<div>Custom content</div>, 3000);
+```
+
+**Parameters:**
+
+- `content` - Notification message (string or React element)
+- `showTime` - Duration in milliseconds (default: 5000ms)
+
+**Returns:** `notificationId` (number)
+
+**Behavior:**
+
+- Adds notification to global state
+- Auto-increments ID
+- Sets type to `NotificationTypeE.INFO`
+
+---
+
+#### `removeAlert(id: number)`
+
+Marks notification for removal (starts hide animation).
+
+```typescript
+notificationService.removeAlert(notificationId);
+```
+
+**Behavior:**
+
+- Sets `hideAt` timestamp
+- Notification component detects and animates out
+
+---
+
+#### `clearAlert(id: number)`
+
+Marks notification as deleted and cleans up store.
+
+```typescript
+notificationService.clearAlert(notificationId);
+```
+
+**Behavior:**
+
+- Sets `deleted: true`
+- Calls `clearStore()` to remove all deleted notifications
+
+---
+
+#### `clearStore()`
+
+Removes all deleted notifications from state.
+
+```typescript
+notificationService.clearStore();
+```
+
+**Behavior:**
+
+- If no non-deleted notifications remain, clears entire array
+- Prevents memory leaks from accumulating notifications
+
+---
+
+#### `addErrorAlert(message: string)`
+
+Logs error to console.
+
+```typescript
+notificationService.addErrorAlert('Failed to save budget');
+```
+
+**Note:** Currently only logs to console. Future implementation may show error toast.
+
+---
+
+**Usage Example:**
+
+```typescript
+// Success notification
+const handleSave = async () => {
+  await saveBudget();
+  notificationService.addAlert('Budget saved!');
+};
+
+// Custom duration
+const handleDelete = async () => {
+  await deleteBudget();
+  notificationService.addAlert('Budget deleted', 3000);
+};
+
+// Manual control
+const notificationId = notificationService.addAlert('Processing...');
+// ... later
+notificationService.removeAlert(notificationId);
+```
+
+**Dependencies:** `globalStore`, `createGlobalValueSetter`
+
+---
+
+### scrollLockService
+
+**Location:** `src/services/scrollLockService.ts`
+
+**Purpose:** Prevents body scroll when modals or sidebars are open. Uses reference counting to support multiple locks.
+
+**Methods:**
+
+#### `scrollLockManager.add(source: string)`
+
+Adds a scroll lock from a specific source.
+
+```typescript
+scrollLockManager.add('my-sidebar');
+```
+
+**Behavior:**
+
+- Adds source to internal Set
+- If first lock, adds `modal-open` class to `<body>`
+- `modal-open` class applies `overflow: hidden` via CSS
+
+---
+
+#### `scrollLockManager.remove(source: string)`
+
+Removes a scroll lock from a specific source.
+
+```typescript
+scrollLockManager.remove('my-sidebar');
+```
+
+**Behavior:**
+
+- Removes source from internal Set
+- If last lock removed, removes `modal-open` class from `<body>`
+- Body scroll is restored
+
+---
+
+**How It Works:**
+
+```typescript
+// Multiple sources can lock scroll
+scrollLockManager.add('modal-1'); // Body locked
+scrollLockManager.add('modal-2'); // Still locked
+scrollLockManager.remove('modal-1'); // Still locked (modal-2 active)
+scrollLockManager.remove('modal-2'); // Body unlocked
+```
+
+**Usage Example:**
+
+```typescript
+// In Sidebar component
+useEffect(() => {
+  if (isOpen) {
+    scrollLockManager.add('my-sidebar');
+
+    return () => {
+      scrollLockManager.remove('my-sidebar');
+    };
+  }
+}, [isOpen]);
+```
+
+**Note:** Sidebar component automatically manages scroll lock. You rarely need to call this directly.
+
+**Dependencies:** None (pure DOM manipulation)
+
+---
+
+## AI Assistant Services
+
+### aiAssistantService
+
+**Location:** `src/services/aiAssistant/aiAssistantService.ts`
+
+**Purpose:** Communicates with AI chat backend API.
+
+**Methods:**
+
+#### `sendMessage(message: string, conversationHistory?: AIMessageDTO[])`
+
+Sends a message to AI and returns response.
+
+```typescript
+const response = await aiAssistantService.sendMessage(
+  'How much did I spend on groceries?',
+  conversationHistory,
+);
+```
+
+**Parameters:**
+
+- `message` - User's message
+- `conversationHistory` - Previous messages (optional, default: `[]`)
+
+**Returns:** `Promise<AIResponseT>`
+
+```typescript
+type AIResponseT = {
+  message: string; // AI response
+  conversationId?: string;
+};
+```
+
+**Error Handling:**
+
+- Timeout (120s): Throws `'AI request timed out. Please try again.'`
+- Server error (500): Throws `'AI service error. Please try again later.'`
+- Other errors: Re-throws original error
+
+**Usage Example:**
+
+```typescript
+try {
+  const response = await aiAssistantService.sendMessage(
+    userInput,
+    previousMessages,
+  );
+
+  addMessageToChat(response.message);
+} catch (error) {
+  console.error('AI error:', error);
+  notificationService.addErrorAlert(error.message);
+}
+```
+
+---
+
+#### `healthCheck()`
+
+Checks AI service health and configuration.
+
+```typescript
+const health = await aiAssistantService.healthCheck();
+```
+
+**Returns:**
+
+```typescript
+type HealthResponse = {
+  status: 'ok' | 'error';
+  ollamaConnected: boolean;
+  model: string;
+  availableModels?: string[];
+  error?: string;
+};
+```
+
+**Usage Example:**
+
+```typescript
+const checkAI = async () => {
+  const health = await aiAssistantService.healthCheck();
+
+  if (health.status === 'error') {
+    console.warn('AI unavailable:', health.error);
+  } else {
+    console.log('AI model:', health.model);
+  }
+};
+```
+
+**Dependencies:** `axiosClient`, `ApiGatewayE`
+
+---
+
+### aiConversationStorageService
+
+**Location:** `src/services/aiAssistant/aiConversationStorageService.ts`
+
+**Purpose:** Persists AI conversation history to localStorage.
+
+**Methods:**
+
+#### `save(messages: AIMessageT[])`
+
+Saves conversation to localStorage.
+
+```typescript
+aiConversationStorageService.save(conversationMessages);
+```
+
+**Behavior:**
+
+- Serializes messages (converts Date to ISO string)
+- Stores in localStorage under `AI_CONVERSATION_STORAGE`
+- Catches and logs errors silently
+
+---
+
+#### `load()`
+
+Loads conversation from localStorage.
+
+```typescript
+const messages = aiConversationStorageService.load();
+```
+
+**Returns:** `AIMessageT[]` (empty array if none found)
+
+**Behavior:**
+
+- Deserializes messages (converts ISO string to Date)
+- Returns empty array on error or missing data
+
+---
+
+#### `clear()`
+
+Clears conversation from localStorage.
+
+```typescript
+aiConversationStorageService.clear();
+```
+
+**Behavior:**
+
+- Removes conversation from localStorage
+- Catches and logs errors silently
+
+---
+
+**Message Format:**
+
+```typescript
+type AIMessageT = {
+  id: string;
+  role: AIRoleE; // 'user' | 'assistant'
+  content: string;
+  timestamp: Date;
+};
+```
+
+**Usage Example:**
+
+```typescript
+// Save after each message
+const handleSendMessage = async (text: string) => {
+  const newMessage: AIMessageT = {
+    id: generateId(),
+    role: AIRoleE.USER,
+    content: text,
+    timestamp: new Date(),
+  };
+
+  const updatedMessages = [...messages, newMessage];
+  aiConversationStorageService.save(updatedMessages);
+};
+
+// Load on mount
+useEffect(() => {
+  const history = aiConversationStorageService.load();
+  setMessages(history);
+}, []);
+
+// Clear on logout or reset
+const handleClearChat = () => {
+  aiConversationStorageService.clear();
+  setMessages([]);
+};
+```
+
+**Dependencies:** `localStorageService`
+
+---
+
+## Storage Services
+
+### localStorageService
+
+**Location:** `src/services/localStorage/localStorageService.ts`
+
+**Purpose:** Type-safe wrapper for browser localStorage with JSON serialization.
+
+**Methods:**
+
+#### `set<T extends LocalStorageNameE>(name: T, value: LocalStorageT[T])`
+
+Stores value in localStorage.
+
+```typescript
+localStorageService.set(LocalStorageNameE.ACCESS_TOKEN, 'token-value');
+```
+
+**Behavior:**
+
+- Serializes value to JSON
+- Stores in localStorage
+- Ignores `undefined` and `null` values
+
+---
+
+#### `get<T extends LocalStorageNameE>(name: T)`
+
+Retrieves value from localStorage.
+
+```typescript
+const token = localStorageService.get(LocalStorageNameE.ACCESS_TOKEN);
+```
+
+**Returns:** `LocalStorageT[T] | null`
+
+**Behavior:**
+
+- Parses JSON from localStorage
+- Returns `null` if not found
+- On parse error, removes corrupted item and returns `null`
+
+---
+
+#### `remove<T extends LocalStorageNameE>(name: T)`
+
+Removes value from localStorage.
+
+```typescript
+localStorageService.remove(LocalStorageNameE.ACCESS_TOKEN);
+```
+
+---
+
+**Type Safety:**
+
+```typescript
+// LocalStorageNameE defines keys
+export enum LocalStorageNameE {
+  ACCESS_TOKEN = 'accessToken',
+  AI_CONVERSATION_STORAGE = 'aiConversationStorage',
+}
+
+// LocalStorageT maps keys to value types
+export type LocalStorageT = {
+  [LocalStorageNameE.ACCESS_TOKEN]: string;
+  [LocalStorageNameE.AI_CONVERSATION_STORAGE]: AIMessageStorageT[];
+};
+
+// TypeScript ensures correct types
+const token: string | null = localStorageService.get(
+  LocalStorageNameE.ACCESS_TOKEN,
+);
+```
+
+**Usage Example:**
+
+```typescript
+// Store user preference
+localStorageService.set(LocalStorageNameE.THEME, 'dark');
+
+// Retrieve on app start
+const theme = localStorageService.get(LocalStorageNameE.THEME) || 'light';
+
+// Clear on logout
+localStorageService.remove(LocalStorageNameE.USER_PREFERENCES);
+```
+
+**Dependencies:** `jsonHelpers` (custom JSON parse/stringify with error handling)
+
+---
+
+### cookieService
+
+**Location:** `src/services/cookieService.ts`
+
+**Purpose:** Type-safe wrapper for browser cookies using `universal-cookie` library.
+
+**Methods:**
+
+#### `set<T extends CookieNameE>(name: T, value: CookieT[T], days?: number)`
+
+Stores value in cookie with expiration.
+
+```typescript
+cookieService.set(CookieNameE.USER_ID, 'user-123', 30);
+```
+
+**Parameters:**
+
+- `name` - Cookie name from `CookieNameE`
+- `value` - Cookie value (type-safe)
+- `days` - Expiration in days (default: 180)
+
+**Behavior:**
+
+- Sets cookie with expiration date
+- Path is always `/` (available site-wide)
+
+---
+
+#### `get<T extends CookieNameE>(name: T)`
+
+Retrieves cookie value.
+
+```typescript
+const userId = cookieService.get(CookieNameE.USER_ID);
+```
+
+**Returns:** `CookieT[T] | undefined`
+
+---
+
+#### `remove<T extends CookieNameE>(name: T)`
+
+Removes cookie.
+
+```typescript
+cookieService.remove(CookieNameE.USER_ID);
+```
+
+---
+
+**Type Safety:**
+
+```typescript
+// CookieNameE defines cookie names
+export enum CookieNameE {
+  USER_ID = 'userId',
+  PREFERENCES = 'preferences',
+}
+
+// CookieT maps names to value types
+export type CookieT = {
+  [CookieNameE.USER_ID]: string;
+  [CookieNameE.PREFERENCES]: PreferencesT;
+};
+```
+
+**Usage Example:**
+
+```typescript
+// Remember user preference
+cookieService.set(CookieNameE.LANGUAGE, 'en', 365);
+
+// Read on page load
+const language = cookieService.get(CookieNameE.LANGUAGE) || 'en';
+
+// Clear on logout
+cookieService.remove(CookieNameE.SESSION_ID);
+```
+
+**Dependencies:** `universal-cookie`
+
+---
+
+## Service Patterns
+
+### Pattern 1: Global State Services
+
+Services that manage global state using signals.
+
+**Services:** `authService`, `modalService`, `sidebarService`, `notificationService`
+
+**Pattern:**
+
+```typescript
+import { createGlobalValueSetter } from 'Shared/store/createGlobalValueSetter';
+import { GlobalStoreFieldE } from 'Shared/types/GlobalStoreFieldE';
+
+const updateField = createGlobalValueSetter(GlobalStoreFieldE.MY_FIELD);
+
+export const myService = {
+  add: item => {
+    updateField(current => [...current, item]);
+  },
+  remove: id => {
+    updateField(current => current.filter(i => i.id !== id));
+  },
+};
+```
+
+**Why:**
+
+- Centralized state management
+- Type-safe updates
+- Reactive - components re-render automatically
+- Service logic separated from UI
+
+---
+
+### Pattern 2: Storage Services
+
+Services that wrap browser storage APIs with type safety.
+
+**Services:** `localStorageService`, `cookieService`
+
+**Pattern:**
+
+```typescript
+export const storageService = {
+  set<T extends KeyEnum>(name: T, value: TypeMap[T]) {
+    // Type-safe set
+  },
+  get<T extends KeyEnum>(name: T): TypeMap[T] | null {
+    // Type-safe get with return type inference
+  },
+  remove<T extends KeyEnum>(name: T) {
+    // Type-safe remove
+  },
+};
+```
+
+**Benefits:**
+
+- TypeScript ensures correct types for each key
+- Centralized storage logic
+- Easy to add new storage keys
+- Consistent error handling
+
+---
+
+### Pattern 3: API Services
+
+Services that wrap API calls with error handling.
+
+**Services:** `aiAssistantService`
+
+**Pattern:**
+
+```typescript
+export const apiService = {
+  async operation(params): Promise<ResultT> {
+    try {
+      const response = await axiosClient.post(endpoint, params);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        // Handle specific errors
+        if (error.code === 'ECONNABORTED') {
+          throw new Error('User-friendly message');
+        }
+      }
+      throw error; // Re-throw unknown errors
+    }
+  },
+};
+```
+
+**Benefits:**
+
+- Consistent error handling
+- User-friendly error messages
+- Timeout handling
+- Type-safe responses
+
+---
+
+## Error Handling
+
+### General Principles
+
+1. **Catch at service level** - Services should catch and transform errors
+2. **User-friendly messages** - Convert technical errors to readable messages
+3. **Log for debugging** - Console errors in development
+4. **Graceful degradation** - Return sensible defaults when possible
+
+### Examples
+
+**Storage Services:**
+
+```typescript
+try {
+  return JSON.parse(data);
+} catch {
+  // Remove corrupted data and return null
+  localStorage.removeItem(key);
+  return null;
+}
+```
+
+**API Services:**
+
+```typescript
+catch (error: unknown) {
+  if (error instanceof AxiosError) {
+    if (error.code === 'ECONNABORTED') {
+      throw new Error('Request timed out');
+    }
+    if (error.response?.status === 500) {
+      throw new Error('Server error');
+    }
+  }
+  throw error; // Unknown errors re-thrown
+}
+```
+
+**Notification:**
+
+```typescript
+try {
+  await riskyOperation();
+  notificationService.addAlert('Success!');
+} catch (error) {
+  notificationService.addErrorAlert(error.message);
+}
+```
+
+---
+
+## Testing Services
+
+Services should have tests in `__tests__` directories:
+
+```
+src/services/
+  ├── authService.ts
+  ├── authService.test.ts
+  ├── modalService.ts
+  └── modalService.test.ts
+```
+
+**Test Guidelines:**
+
+- Test each public method
+- Test error cases
+- Mock dependencies (storage, API calls)
+- Test state changes for state-management services
+
+**Example:**
+
+```typescript
+describe('authService', () => {
+  it('should initialize with token from localStorage', () => {
+    localStorageService.set(LocalStorageNameE.ACCESS_TOKEN, 'token-123');
+
+    authService.initialize();
+
+    expect(globalStore[GlobalStoreFieldE.AUTH_TOKEN].value).toBe('token-123');
+  });
+
+  it('should clear cache on logout', () => {
+    authService.logout();
+
+    expect(queryClient.clear).toHaveBeenCalled();
+  });
+});
+```
+
+---
+
+## Service Dependencies
+
+```
+authService
+  ├── localStorageService
+  ├── globalStore
+  ├── queryClient
+  └── sentryHelpers
+
+modalService
+  └── globalStore
+
+sidebarService
+  └── globalStore
+
+notificationService
+  └── globalStore
+
+scrollLockService
+  └── (none - pure DOM)
+
+aiAssistantService
+  └── axiosClient
+
+aiConversationStorageService
+  └── localStorageService
+
+localStorageService
+  └── jsonHelpers
+
+cookieService
+  └── universal-cookie (external)
+```

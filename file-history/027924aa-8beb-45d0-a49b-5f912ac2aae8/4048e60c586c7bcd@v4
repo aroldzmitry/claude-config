@@ -1,0 +1,213 @@
+Status: Done
+
+## Task Summary
+
+Add an error notification system that displays server errors to users through a modal window, providing clear feedback when API operations fail.
+
+## User Story
+
+As a user of the Zephyr Budget App, I want to see a clear error message when something goes wrong with the server, so that I understand there was a problem and can take appropriate action (such as retrying or contacting support).
+
+## Business Context
+
+Currently, the application uses toast notifications via `notificationService` to display API errors. The existing pattern follows:
+
+```
+try {
+  await apiOperation();
+  notificationService.addAlert('Success!');
+} catch (error) {
+  notificationService.addErrorAlert(error.message);
+}
+```
+
+This new requirement introduces an additional error feedback mechanism using modals for server errors. The modal-based approach provides:
+
+- More prominent error visibility (center-screen, blocks interface)
+- Guaranteed user acknowledgment (must close to continue)
+- Simplified error messaging (avoids technical details)
+
+This pattern already exists in the application for confirmation dialogs and user acknowledgment scenarios (see PATTERNS.md Modal Pattern section).
+
+## Functional Requirements
+
+### Error Detection
+
+1. The system shall detect when server API calls fail
+2. The system shall identify all types of server errors (network failures, 4xx errors, 5xx errors)
+3. The system shall trigger error display regardless of which API endpoint fails
+
+### Error Display
+
+4. The system shall present errors in a modal window
+5. The modal shall appear centered on the screen
+6. The modal shall block interaction with the rest of the interface while open
+7. The modal shall display the message "Something went wrong"
+8. The modal shall not display technical error details, stack traces, or error codes
+9. The modal shall remain visible until the user explicitly closes it
+
+### User Actions
+
+10. The system shall provide a close button to dismiss the error modal
+11. The system shall not provide retry, cancel, or other action options
+12. The system shall return the user to their previous screen state after closing the modal
+
+### Error Handling Scope
+
+13. The system shall display errors for all server API failures
+14. The system shall not distinguish between different error types in the display
+15. The system shall not display errors for client-side validation failures (these continue using existing field-level validation)
+
+## Existing Patterns (from documentation)
+
+### Modal Pattern
+
+The application has an established modal management system:
+
+- Modal state managed through `modalService` global state
+- Modals identified by enum values in `ModalNameE`
+- Type-safe props system via `ModalPropsT`
+- Service methods: `open(modalName, props)` and `close(modalName)`
+- Modals support stacking
+- State stored in `GlobalStoreFieldE.MODALS`
+
+Reference: PATTERNS.md Section 1 - Modal Pattern
+
+### API Error Handling
+
+Current error handling pattern:
+
+- API calls wrapped in try/catch blocks
+- Errors displayed via `notificationService.addErrorAlert(error.message)`
+- Toast notifications for user feedback
+- Console logging for debugging
+
+Reference: BUSINESS_RULES.md Section "API Error Handling"
+
+### Request Client Architecture
+
+All API calls go through:
+
+- `requestClient` (Axios wrapper)
+- Repository hooks using `useQuery` or `useMutation`
+- Query keys based on `ApiGatewayE` enum
+- Automatic cache invalidation after mutations
+
+Reference: PATTERNS.md Section 4 - Data Fetching Pattern
+
+## Scope
+
+### In Scope
+
+- Creating error modal window component
+- Displaying "Something went wrong" message
+- Providing close button functionality
+- Triggering modal for all server API errors
+- Blocking interface interaction while modal is open
+- Centering modal on screen
+
+### Out of Scope
+
+- Retry functionality
+- Detailed error messages or technical information
+- Different error displays for different error types
+- Error logging or analytics (beyond existing console logging)
+- Client-side validation error display (handled by existing field validation)
+- Offline detection or network status indicators
+- Error recovery suggestions or help text
+- Multiple simultaneous error modals
+
+## User Scenarios
+
+### Scenario 1: Transaction Creation Fails
+
+**Given** a user is creating a new transaction
+**When** the server returns an error (500 Internal Server Error)
+**Then** a modal window appears centered on screen
+**And** the modal displays "Something went wrong"
+**And** the modal blocks interaction with the transaction form
+**And** the user can close the modal using the close button
+**And** after closing, the user returns to the transaction form
+
+### Scenario 2: Budget Loading Fails
+
+**Given** a user navigates to the budgets page
+**When** the API call to fetch budgets fails (network timeout)
+**Then** a modal window appears centered on screen
+**And** the modal displays "Something went wrong"
+**And** the modal blocks interaction with the page
+**And** the user can close the modal using the close button
+**And** after closing, the user sees an empty budgets page
+
+### Scenario 3: Category Update Fails
+
+**Given** a user is editing a category
+**When** the update API call fails (403 Forbidden)
+**Then** a modal window appears centered on screen
+**And** the modal displays "Something went wrong"
+**And** the modal blocks interaction with the sidebar
+**And** the user can close the modal using the close button
+**And** after closing, the user returns to the edit category sidebar
+
+### Scenario 4: Authentication Error
+
+**Given** a user's session has expired
+**When** any API call fails with 401 Unauthorized
+**Then** a modal window appears centered on screen
+**And** the modal displays "Something went wrong"
+**And** the modal blocks interaction with the interface
+**And** the user can close the modal using the close button
+
+## Edge Cases
+
+### Multiple Rapid Errors
+
+**Case:** User performs multiple actions that all fail (e.g., bulk delete with network failure)
+**Expected Behavior:** Display one error modal (first error triggers modal; subsequent errors are suppressed while modal is open)
+
+### Error During Modal Interaction
+
+**Case:** User has another modal open when error occurs
+**Expected Behavior:** Error modal appears on top of existing modal (follows stacking behavior)
+
+### Error While Sidebar Open
+
+**Case:** User is in a sidebar form when error occurs
+**Expected Behavior:** Error modal appears and blocks sidebar interaction; closing error modal returns focus to sidebar
+
+### Form Validation vs Server Error
+
+**Case:** User submits form with invalid data that passes client validation but fails server validation
+**Expected Behavior:** Server validation error displays in error modal (not as field-level validation)
+
+### Backdrop Click
+
+**Case:** User clicks outside the error modal
+**Expected Behavior:** Modal remains open (user must use close button)
+
+### Keyboard Navigation
+
+**Case:** User presses Escape key while error modal is open
+**Expected Behavior:** Behavior to be determined (may close modal or require explicit close button click)
+
+## Acceptance Criteria
+
+- [ ] Error modal appears centered on screen when any server API call fails
+- [ ] Modal displays exactly the text "Something went wrong"
+- [ ] Modal blocks all interaction with the interface behind it
+- [ ] Modal provides a close button that is clearly visible
+- [ ] Clicking close button dismisses the modal and returns user to previous state
+- [ ] Modal does not display technical error details, codes, or stack traces
+- [ ] Modal appearance is consistent with existing modal components in the application
+- [ ] Modal works correctly when other modals or sidebars are already open
+- [ ] Modal appears for all types of server errors (4xx, 5xx, network failures)
+- [ ] Only one error modal displays at a time, even if multiple errors occur
+
+## Questions Resolved
+
+The following questions were clarified with the user:
+
+1. **Display type:** Modal window (blocks interface, centered on screen)
+2. **Which errors to show:** All server errors (any API failure)
+3. **Error message content:** Simple message only ("Something went wrong")
+4. **User actions:** Close button only (no retry or other actions)

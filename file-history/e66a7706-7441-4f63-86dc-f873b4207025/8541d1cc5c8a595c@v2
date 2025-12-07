@@ -1,0 +1,105 @@
+# Frontend Development Tools for Claude Code
+
+## Overview
+
+Create 3 standalone slash commands to improve frontend development reliability and reduce review time.
+
+## Tools to Create
+
+### 1. `/component:create <name> [--type page|sidebar|form|svg]`
+
+**Purpose:** Scaffold components following project patterns
+
+**Location:** `client/.claude/commands/component:create.md`
+
+**Features:**
+- Type-aware scaffolding (page, sidebar, form, svg, generic)
+- Auto-applies naming conventions (Au*, *Page, *Sidebar, *Svg)
+- Generates: tsx, scss, types/, __tests__/ skeleton
+- Auto-registers sidebars in SidebarNameE + SidebarPropsT
+- Includes ARIA attributes by default
+
+**Output locations by type:**
+| Type | Path | Naming |
+|------|------|--------|
+| page | `src/pages/{name}/` | `{Name}Page.tsx` |
+| sidebar | `src/pages/{context}/sidebars/` | `{Name}Sidebar.tsx` |
+| form | `src/components/form/{name}/` | `Au{Name}.tsx` |
+| svg | `src/components/svg/` | `{Name}Svg.tsx` |
+| generic | `src/components/{name}/` | `{Name}.tsx` |
+
+---
+
+### 2. `/test:generate <component-path>`
+
+**Purpose:** Generate tests for existing components
+
+**Location:** `client/.claude/commands/test:generate.md`
+
+**Features:**
+- Analyzes component: PropsT, hooks, event handlers, conditionals
+- Generates Vitest + Testing Library tests
+- Follows existing test patterns in codebase
+- Auto-mocks common dependencies
+- Places in `__tests__/` next to component
+
+**Test categories generated:**
+- Rendering tests
+- Props tests
+- Interaction tests (onClick, onSubmit, etc.)
+- Conditional rendering tests
+- Hook behavior tests
+
+---
+
+### 3. `/visual:check [component-path] [--figma url] [--screenshot path]`
+
+**Purpose:** Visual review comparing implementation to Figma designs
+
+**Location:** `client/.claude/commands/visual:check.md`
+
+**Features:**
+- Captures screenshots via Playwright at mobile (375px) and desktop (1440px)
+- User provides Figma link or screenshot as reference
+- Claude compares images using vision capabilities
+- Reports: color mismatches, spacing issues, responsive problems
+- Validates CSS semantic variables usage
+
+**Output:** Structured report with Critical/Minor findings and CSS suggestions
+
+---
+
+## Implementation Order
+
+1. **`/component:create`** - Most straightforward, template-based
+2. **`/test:generate`** - Requires component analysis logic
+3. **`/visual:check`** - Most complex, needs Playwright + vision integration
+
+## Files to Modify
+
+**New files:**
+- `client/.claude/commands/component:create.md`
+- `client/.claude/commands/test:generate.md`
+- `client/.claude/commands/visual:check.md`
+
+**Reference files (read-only):**
+- `client/.claude/commands/task:create.md` - Command pattern
+- `client/.claude/docs/PATTERNS.md` - Component patterns
+- `client/.claude/docs/COMPONENTS.md` - Naming conventions
+- `client/src/components/sidebar/types/SidebarNameE.ts` - Sidebar enum
+- `client/src/components/sidebar/types/SidebarPropsT.ts` - Sidebar props
+- `client/playwright.config.ts` - Playwright setup
+
+## Dependencies
+
+- Playwright already installed (for visual:check)
+- Vitest + Testing Library already configured (for test:generate)
+- No new dependencies needed
+
+## Review Time Reduction
+
+| Tool | Reduces |
+|------|---------|
+| component:create | Boilerplate errors, naming mistakes, missing registrations |
+| test:generate | Missing tests, inconsistent test structure |
+| visual:check | UI discrepancies, hardcoded colors, responsive bugs |

@@ -1,0 +1,439 @@
+# Agent Creator
+
+Create a new custom agent with proper structure, following Claude Code best practices and prompt engineering principles.
+
+## Your Task
+
+0. **Select scope** — global or project
+1. **Gather requirements** — what should this agent do?
+2. **Check existing agents** — avoid duplication
+3. **Research patterns** — look for similar agents online
+4. **Design agent structure** — apply best practices
+5. **Create agent file** — with proper YAML frontmatter
+6. **Validate** — review before finalizing
+
+## Step 0: Select Scope (MANDATORY GATE)
+
+**STOP. Do not proceed to Step 1 until scope is selected.**
+
+Use `AskUserQuestion` to determine where to create the agent:
+
+```json
+{
+  "questions": [
+    {
+      "question": "Where should this agent be created?",
+      "header": "Scope",
+      "options": [
+        {"label": "Global", "description": "~/.claude/agents/ - Available in all projects"},
+        {"label": "Project", "description": ".claude/agents/ - Specific to this codebase"}
+      ],
+      "multiSelect": false
+    }
+  ]
+}
+```
+
+| Scope   | Path                 | Use Case                                    |
+| ------- | -------------------- | ------------------------------------------- |
+| Global  | `~/.claude/agents/`  | Personal agents, reusable across projects   |
+| Project | `.claude/agents/`    | Project-specific agents, shared with team   |
+
+**Remember selected scope** — use it in Step 2 (checking existing agents) and Step 6 (creating file).
+
+## Step 1: Gather Requirements (MANDATORY GATE)
+
+**STOP. Do not proceed to Step 2 until you have answers to ALL questions below.**
+
+If user provided details, confirm understanding. If not, use `AskUserQuestion` tool to gather requirements interactively.
+
+**Questions to ask (use AskUserQuestion with appropriate options):**
+
+1. **Purpose** — "What specific task should this agent perform?"
+2. **Trigger** — "When should this agent be invoked?"
+3. **Model** — Use options: haiku (fast), sonnet (balanced), opus (complex)
+
+**Example AskUserQuestion usage:**
+
+```json
+{
+  "questions": [
+    {
+      "question": "What model should this agent use?",
+      "header": "Model",
+      "options": [
+        {"label": "haiku", "description": "Fast, simple tasks"},
+        {"label": "sonnet", "description": "Balanced (default)"},
+        {"label": "opus", "description": "Complex reasoning"}
+      ],
+      "multiSelect": false
+    }
+  ]
+}
+```
+
+**IMPORTANT:** Always use `AskUserQuestion` instead of plain text questions — it provides interactive selection in terminal.
+
+Only proceed when user confirms requirements are correct.
+
+## Step 2: Check Existing Agents
+
+Before creating, check for overlap in the selected scope:
+
+```
+{selected_scope}/agents/*.md
+```
+
+Also check the other scope to avoid name conflicts:
+
+| Selected Scope | Also Check          |
+| -------------- | ------------------- |
+| Global         | `.claude/agents/`   |
+| Project        | `~/.claude/agents/` |
+
+If similar agent exists:
+
+- Propose extending existing agent instead
+- Or explain why new agent is needed
+
+## Step 3: Research Patterns (MANDATORY GATE)
+
+**STOP. Do not proceed to Step 4 until research is complete.**
+
+Use WebSearch to find:
+
+- Similar agents in `anthropics/skills` repository
+- Best practices for this type of agent
+- Common pitfalls to avoid
+
+**Required output before continuing:**
+
+```
+## Research Summary
+- Sources checked: [list URLs]
+- Key patterns found: [list]
+- Pitfalls to avoid: [list]
+```
+
+If no relevant patterns found, state explicitly and proceed.
+
+## Step 4: Design Agent Structure
+
+Apply these principles from [Anthropic's context engineering guide](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents):
+
+### Right Altitude
+
+Find the balance:
+
+| Too Rigid                                     | Optimal                          | Too Vague                  |
+| --------------------------------------------- | -------------------------------- | -------------------------- |
+| "Step 1: Open file X, Step 2: Find line Y..." | Clear goals + flexible execution | "Do the thing well"        |
+| Brittle, breaks on edge cases                 | Adapts to variations             | No guidance, unpredictable |
+
+### Minimal Information
+
+Include only what's necessary for correct behavior. This doesn't mean short — it means focused.
+
+### Structure Template
+
+```markdown
+---
+name: agent-name
+description: One-line summary for Claude to decide when to invoke
+tools: Read, Write, Edit, Glob, Grep, Bash
+model: sonnet
+color: blue
+---
+
+# Agent Title
+
+One-sentence role description.
+
+## Input Sources
+
+What this agent reads before starting:
+
+- `path/to/input.md` — description
+- Documentation files — which ones
+
+## Core Responsibilities
+
+### 1. First Responsibility
+
+Clear instructions with examples.
+
+### 2. Second Responsibility
+
+Clear instructions with examples.
+
+## Output Format
+
+Where to save output and exact format:
+```
+
+path/to/output.md
+
+```
+
+Template:
+```
+
+Status: Done | Failed - reason | Needs Review - explanation
+
+# [Title]
+
+## Section 1
+
+...
+
+```
+
+## Rules
+
+- DO: specific behaviors
+- DON'T: anti-patterns to avoid
+
+## Examples
+
+### Good Example
+```
+
+[Show correct behavior]
+
+```
+
+### Bad Example
+```
+
+[Show what NOT to do]
+
+```
+
+```
+
+## Step 5: Apply Prompting Best Practices
+
+Based on [Augment Code's 11 techniques](https://www.augmentcode.com/blog/how-to-build-your-agent-11-prompting-techniques-for-better-ai-agents):
+
+### Checklist Before Creating
+
+- [ ] **Complete world picture** — agent knows its environment and capabilities
+- [ ] **Consistent across components** — instructions don't contradict each other
+- [ ] **No surprises** — expected inputs/outputs are documented
+- [ ] **User perspective aligned** — focus on what user cares about
+- [ ] **Thorough without constraint** — don't sacrifice clarity for brevity
+- [ ] **Varied examples** — not just happy path
+- [ ] **Critical instructions prominent** — important rules at the beginning
+
+### YAML Frontmatter Fields
+
+| Field                      | Required | Description                               |
+| -------------------------- | -------- | ----------------------------------------- |
+| `name`                     | Yes      | lowercase, hyphens for spaces             |
+| `description`              | Yes      | Claude uses this to decide when to invoke |
+| `tools`                    | No       | Whitelist tools; omit to inherit all      |
+| `model`                    | No       | `opus`, `sonnet`, `haiku`, or `inherit`   |
+| `color`                    | No       | Terminal color for agent output           |
+| `permissionMode`           | No       | Override permission settings              |
+| `skills`                   | No       | Skills to auto-load                       |
+| `disable-model-invocation` | No       | Prevent auto-invocation                   |
+
+### Model Selection Guide
+
+| Model    | Use When                                                                   |
+| -------- | -------------------------------------------------------------------------- |
+| `haiku`  | Fast, frequent, simple tasks (90% of sonnet quality, 2x speed, 3x cheaper) |
+| `sonnet` | Default for most tasks                                                     |
+| `opus`   | Complex reasoning, architecture, critical decisions                        |
+
+## Step 6: Create Agent File
+
+Location based on selected scope:
+
+| Scope   | Path                                 |
+| ------- | ------------------------------------ |
+| Global  | `~/.claude/agents/{agent-name}.md`   |
+| Project | `.claude/agents/{agent-name}.md`     |
+
+After writing, verify:
+
+1. YAML frontmatter is valid
+2. Description clearly explains when to use
+3. Instructions are at "right altitude"
+4. Output format matches project conventions
+5. Rules section includes DO and DON'T
+
+## Step 7: Validate with Agent Lint
+
+After creating the agent file, invoke the `agent-lint` agent to validate:
+
+```
+Task tool with subagent_type='agent-lint'
+Prompt: "Validate the newly created agent at {path-to-agent-file}"
+```
+
+**Wait for validation report.** The report will contain:
+
+- Quality checks (description clarity, scope, conflicts)
+- Issues found with severity levels
+- Improvement suggestions
+
+### Applying Recommendations
+
+Based on the validation report:
+
+1. **Auto-apply** recommendations that align with user's original requirements
+2. **Ask user** about recommendations that go beyond original scope
+
+Use `AskUserQuestion` for recommendations outside original scope:
+
+```json
+{
+  "questions": [
+    {
+      "question": "agent-lint recommends: [recommendation]. Apply this improvement?",
+      "header": "Improve",
+      "options": [
+        {"label": "Yes", "description": "Apply this recommendation"},
+        {"label": "No", "description": "Skip this recommendation"}
+      ],
+      "multiSelect": false
+    }
+  ]
+}
+```
+
+**Decision criteria:**
+
+| Recommendation Type | Action |
+| --- | --- |
+| Fixes issue user mentioned | Auto-apply |
+| Aligns with user's intent | Auto-apply |
+| New feature/scope expansion | Ask user |
+| Conflicts with user request | Skip with explanation |
+
+After applying selected recommendations, proceed to Output.
+
+## Output
+
+Present the created agent for user review:
+
+```
+## Agent Created
+
+**File:** `{scope}/agents/{name}.md`
+**Purpose:** [brief description]
+**Trigger:** [when Claude will invoke it]
+**Model:** [selected model and why]
+
+### Preview
+
+[Show first 20 lines of agent file]
+
+---
+
+Test this agent by: [suggestion how to test]
+```
+
+## Rules
+
+- Always check for existing agents first
+- Use `sonnet` as default model unless specific reason for other
+- Keep descriptions concise but informative
+- Include both positive and negative examples
+- Document output format explicitly
+- Follow project conventions from existing agents
+
+## Anti-Patterns to Avoid
+
+| Anti-Pattern            | Why It's Bad                       | Better Approach                        |
+| ----------------------- | ---------------------------------- | -------------------------------------- |
+| Hardcoded step-by-step  | Brittle, breaks on variations      | Describe goals, let agent decide steps |
+| No examples             | Agent guesses behavior             | Include good/bad examples              |
+| Vague description       | Claude doesn't know when to invoke | Specific trigger conditions            |
+| Too many tools          | Security risk, confusion           | Whitelist only needed tools            |
+| No output format        | Inconsistent results               | Document exact format                  |
+| Duplicate functionality | Maintenance burden                 | Extend existing agent                  |
+
+## Example: Creating a Code Reviewer Agent
+
+User: "Create an agent that reviews PRs"
+
+```markdown
+---
+name: code-reviewer
+description: Reviews pull request changes for code quality, security, and best practices. Use after developer completes implementation.
+tools: Read, Glob, Grep, Bash
+model: sonnet
+color: cyan
+---
+
+# Code Reviewer Agent
+
+You review code changes for quality, security, and adherence to project standards.
+
+## Input Sources
+
+- Git diff of current branch vs main
+- `.claude/docs/PATTERNS.md` — project patterns to enforce
+- `.claude/docs/COMPONENTS.md` — component standards
+
+## Core Responsibilities
+
+### 1. Security Review
+
+Check for:
+
+- Hardcoded secrets
+- SQL injection vulnerabilities
+- XSS risks
+- Insecure dependencies
+
+### 2. Code Quality Review
+
+Verify:
+
+- Follows project patterns
+- No code duplication
+- Proper error handling
+- TypeScript types correct
+
+### 3. Best Practices
+
+Ensure:
+
+- Functions under 30 lines
+- Meaningful names
+- No magic numbers
+
+## Output Format
+```
+
+## Code Review Summary
+
+**Files reviewed:** X
+**Issues found:** X critical, Y warnings, Z suggestions
+
+### Critical Issues
+
+[Must fix before merge]
+
+### Warnings
+
+[Should fix]
+
+### Suggestions
+
+[Optional improvements]
+
+### Approved: Yes/No
+
+```
+
+## Rules
+
+- DO: Focus on changed lines only
+- DO: Provide specific file:line references
+- DON'T: Suggest style changes not in project standards
+- DON'T: Review unchanged code
+```

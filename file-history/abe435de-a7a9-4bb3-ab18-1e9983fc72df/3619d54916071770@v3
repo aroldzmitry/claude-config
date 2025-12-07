@@ -1,0 +1,154 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { AxiosError } from 'axios';
+
+import { modalService } from 'Services/modalService';
+import { ModalNameE } from 'Components/modal/ModalNameE';
+
+import { handleErrorModal } from './errorInterceptor';
+
+vi.mock('Services/modalService', () => ({
+  modalService: {
+    open: vi.fn(),
+  },
+}));
+
+describe('errorInterceptor', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('handleErrorModal', () => {
+    it('should extract and display message from response.data.message', () => {
+      const error = {
+        response: {
+          data: {
+            message: 'Server error occurred',
+          },
+        },
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Server error occurred',
+      });
+    });
+
+    it('should extract and display message from response.data.errors[0].msg', () => {
+      const error = {
+        response: {
+          data: {
+            errors: [{ msg: 'Validation failed' }],
+          },
+        },
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Validation failed',
+      });
+    });
+
+    it('should prioritize response.data.message over errors array', () => {
+      const error = {
+        response: {
+          data: {
+            message: 'Primary message',
+            errors: [{ msg: 'Secondary message' }],
+          },
+        },
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Primary message',
+      });
+    });
+
+    it('should use fallback message when response.data is undefined', () => {
+      const error = {
+        response: {
+          data: undefined,
+        },
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Something went wrong. Please try again.',
+      });
+    });
+
+    it('should use fallback message when response is undefined', () => {
+      const error = {
+        response: undefined,
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Something went wrong. Please try again.',
+      });
+    });
+
+    it('should use fallback message when message is not a string', () => {
+      const error = {
+        response: {
+          data: {
+            message: 123,
+          },
+        },
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Something went wrong. Please try again.',
+      });
+    });
+
+    it('should use fallback message when errors array is empty', () => {
+      const error = {
+        response: {
+          data: {
+            errors: [],
+          },
+        },
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Something went wrong. Please try again.',
+      });
+    });
+
+    it('should use fallback message when errors[0].msg is undefined', () => {
+      const error = {
+        response: {
+          data: {
+            errors: [{}],
+          },
+        },
+      } as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Something went wrong. Please try again.',
+      });
+    });
+
+    it('should handle network errors without response', () => {
+      const error = new Error('Network Error') as AxiosError;
+
+      handleErrorModal(error);
+
+      expect(modalService.open).toHaveBeenCalledWith(ModalNameE.ERROR, {
+        message: 'Something went wrong. Please try again.',
+      });
+    });
+  });
+});

@@ -1,0 +1,17 @@
+# Command Improvements History
+
+## 2025-12-05 - agent:create.md (update)
+
+**Idea:** Replace manual validation checklist with agent-check subagent call
+**Change:** Step 7 now invokes agent-check for automated validation, then applies recommendations based on whether they align with user's original request or need user confirmation
+**Status:** Applied
+
+## 2025-12-05 - agent:lint.md
+**Issue:** agent-lint system agent couldn't find global scope files (e.g., agent:improve in ~/.claude/)
+**Change:** Added Scope Hierarchy section with instructions to search both project (.claude/) and global (~/.claude/) scopes
+**Status:** Pending validation
+
+## 2025-12-05 - agent:lint.md (update)
+**Issue:** Claude executed validation inline instead of spawning subagent via Task tool
+**Change:** Added explicit Execution section requiring Task tool delegation with example syntax
+**Status:** Pending validation

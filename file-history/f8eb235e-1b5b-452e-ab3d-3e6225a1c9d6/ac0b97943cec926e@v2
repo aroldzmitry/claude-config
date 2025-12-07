@@ -1,0 +1,182 @@
+# Documenter Output Example
+
+## Standard Output Format
+
+```markdown
+Status: Done
+
+# Documentation Update for Error Modal
+
+## Files Updated
+
+### Updated: .claude/docs/COMPONENTS.md
+
+**Changes:**
+
+- Added ErrorModal component documentation
+- Added usage example with errorModalService
+
+**Sections modified:**
+
+- Modal Components → Added ErrorModal
+
+---
+
+### Updated: .claude/docs/SERVICES.md
+
+**Changes:**
+
+- Added errorModalService documentation
+- Added API error handling flow
+
+**Sections modified:**
+
+- Error Handling Services → Added errorModalService
+
+---
+
+### Updated: .claude/docs/PATTERNS.md
+
+**Changes:**
+
+- Added "Global Error Handling" pattern
+- Added axios interceptor example
+
+**Sections modified:**
+
+- Error Handling → Added global error pattern
+
+---
+
+## Summary
+
+**Total files updated:** 3
+**Total files created:** 0
+**Total sections added:** 3
+**Total sections modified:** 0
+
+**Key additions:**
+
+- ErrorModal component documentation
+- errorModalService API documentation
+- Global error handling pattern
+
+**For agents:**
+
+- BA: Can reference error handling in BUSINESS_RULES.md
+- Architect: Can follow error pattern from PATTERNS.md
+- Developer: Can see ErrorModal example in COMPONENTS.md
+- Tester: Can check error scenarios for test cases
+
+## Documentation Quality Check
+
+✅ All new components documented
+✅ All new services documented
+✅ New patterns captured
+✅ Examples included
+✅ Consistent formatting maintained
+```
+
+## Component Documentation Format
+
+````markdown
+## ErrorModal
+
+**Location:** `src/components/modal/ErrorModal/`
+
+**Purpose:** Displays API error messages to users with dismiss functionality.
+
+**Usage:**
+
+```tsx
+import { errorModalService } from 'Services/errorModalService';
+
+// Show error
+errorModalService.show({
+  title: 'Error',
+  message: 'Something went wrong',
+});
+
+// Or use component directly
+import { ErrorModal } from 'Components/modal/ErrorModal';
+
+<ErrorModal
+  title="Error"
+  message="Failed to load"
+  onClose={handleClose}
+/>;
+```
+
+**Props:** See `PropsT` in component file
+
+- title: string – Error title
+- message: string – Error description
+- onClose: () => void – Close handler
+
+**Features:**
+
+- Keyboard accessible (Escape to close)
+- Focus trap inside modal
+- Screen reader support
+
+**Dependencies:**
+
+- Uses: Components/modal/Modal (base)
+- Uses: Services/errorModalService
+
+**Tests:**
+
+- Unit: ErrorModal.test.tsx
+- E2E: tests/error-modal.spec.ts
+````
+
+## Service Documentation Format
+
+````markdown
+## errorModalService
+
+**Location:** `src/services/errorModalService.ts`
+
+**Purpose:** Manages error modal display globally.
+
+**Methods:**
+
+```typescript
+show(error: ApiErrorT): void    // Display error modal
+hide(): void                     // Close error modal
+```
+
+**Usage:**
+
+```typescript
+import { errorModalService } from 'Services/errorModalService';
+
+try {
+  await api.fetchData();
+} catch (error) {
+  errorModalService.show({
+    title: 'Error',
+    message: error.message,
+  });
+}
+```
+
+**Integration:**
+
+- Automatically triggered by axios interceptor on 4xx/5xx
+- Can be called manually for custom error handling
+
+**Dependencies:**
+
+- Uses: Components/modal/ErrorModal
+````
+
+## No Updates Needed Example
+
+```markdown
+Status: Done
+
+No documentation updates needed.
+
+Reason: Changes were internal refactoring with no API changes. ErrorModal logic was reorganized but the public interface remains the same.
+```

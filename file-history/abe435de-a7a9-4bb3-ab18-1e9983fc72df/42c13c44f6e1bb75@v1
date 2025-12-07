@@ -1,0 +1,78 @@
+import { ReactNode } from 'react';
+
+import { GlobalStoreFieldE } from 'Shared/types/GlobalStoreFieldE';
+import { createGlobalValueSetter } from 'Shared/store/createGlobalValueSetter';
+import { NotificationTypeE } from 'Shared/types/NotificationTypeE';
+import { MILLISECONDS_IN_SECOND } from 'Shared/constants/time';
+import { globalStore } from 'Shared/store/globalStore';
+
+const updateNotifications = createGlobalValueSetter(
+  GlobalStoreFieldE.NOTIFICATIONS,
+);
+
+const DEFAULT_SHOW_TIME = 5 * MILLISECONDS_IN_SECOND;
+
+let nextAlertId = 0;
+
+export const notificationService = {
+  getNextId: () => {
+    return nextAlertId++;
+  },
+  addAlert: (content: ReactNode, showTime = DEFAULT_SHOW_TIME) => {
+    const notificationId = notificationService.getNextId();
+
+    updateNotifications(currentNotifications => {
+      return [
+        ...currentNotifications,
+        {
+          content,
+          hideAt: 0,
+          deleted: false,
+          id: notificationId,
+          showTime: showTime,
+          type: NotificationTypeE.INFO,
+        },
+      ];
+    });
+
+    return notificationId;
+  },
+  removeAlert: (id: number) => {
+    updateNotifications(currentNotifications => {
+      return currentNotifications.map(notification =>
+        notification.id === id
+          ? {
+              ...notification,
+              hideAt: Date.now(),
+            }
+          : notification,
+      );
+    });
+  },
+  clearAlert: (id: number) => {
+    updateNotifications(currentNotifications => {
+      return currentNotifications.map(notification =>
+        notification.id === id
+          ? {
+              ...notification,
+              deleted: true,
+            }
+          : notification,
+      );
+    });
+
+    notificationService.clearStore();
+  },
+  clearStore: () => {
+    const countNotDeleted = globalStore[
+      GlobalStoreFieldE.NOTIFICATIONS
+    ].value.filter(notification => !notification.deleted).length;
+
+    if (countNotDeleted === 0) {
+      updateNotifications([]);
+    }
+  },
+  addErrorAlert: (message: string) => {
+    console.error(message);
+  },
+};

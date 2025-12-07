@@ -1,0 +1,279 @@
+2025-12-05T23:57:57.033Z [DEBUG] Watching for changes in setting files /Users/dmitry/.claude/settings.json, /Users/dmitry/WebstormProjects/zephyr-budget-app/.claude/settings.json...
+2025-12-05T23:57:57.079Z [DEBUG] [LSP MANAGER] initializeLspServerManager() called
+2025-12-05T23:57:57.079Z [DEBUG] [LSP MANAGER] Created manager instance, state=pending
+2025-12-05T23:57:57.079Z [DEBUG] [LSP MANAGER] Starting async initialization (generation 1)
+2025-12-05T23:57:57.079Z [DEBUG] [LSP SERVER MANAGER] initialize() called
+2025-12-05T23:57:57.079Z [DEBUG] [LSP SERVER MANAGER] Calling getAllLspServers()
+2025-12-05T23:57:57.081Z [DEBUG] Applying permission update: Adding 16 allow rule(s) to destination 'userSettings': ["Bash(mkdir:*)","Bash(npx prettier --write:*)","Read(.claude/**)","Write(.claude/**)","Edit(.claude/**)","Read(tasks/**)","Write(tasks/**)","Edit(tasks/**)","Bash(git add:*)","SlashCommand(/task:architect task-1764889273)","Bash(yarn type-check:*)","Bash(cat:*)","Bash(npx tsc --noEmit)","Bash(yarn lint:*)","Bash(yarn test:*)","Read(//Users/dmitry/.claude-code-docs/docs/**)"]
+2025-12-05T23:57:57.081Z [DEBUG] Applying permission update: Adding 2 deny rule(s) to destination 'userSettings': ["Read(.env)","Read(../.env)"]
+2025-12-05T23:57:57.081Z [DEBUG] Applying permission update: Adding 9 allow rule(s) to destination 'projectSettings': ["WebFetch","WebSearch","Bash(gh pr diff:*)","Bash(yarn test:*)","Bash(ls:*)","Bash(env)","Bash(gh pr checks:*)","Bash(cat:*)","Write(*.local.md)"]
+2025-12-05T23:57:57.081Z [DEBUG] Applying permission update: Adding 1 deny rule(s) to destination 'projectSettings': ["Read(./.env)"]
+2025-12-05T23:57:57.082Z [DEBUG] Found 0 plugins (0 enabled, 0 disabled)
+2025-12-05T23:57:57.082Z [DEBUG] Total LSP servers loaded: 0
+2025-12-05T23:57:57.082Z [DEBUG] [LSP SERVER MANAGER] getAllLspServers returned 0 server(s)
+2025-12-05T23:57:57.082Z [DEBUG] LSP manager initialized with 0 servers
+2025-12-05T23:57:57.082Z [DEBUG] LSP server manager initialized successfully
+2025-12-05T23:57:57.082Z [DEBUG] LSP notification handlers registered successfully for all 0 server(s)
+2025-12-05T23:57:57.085Z [DEBUG] Loading skills from directories: managed=/Library/Application Support/ClaudeCode/.claude/skills, user=/Users/dmitry/.claude/skills, project=/Users/dmitry/WebstormProjects/zephyr-budget-app/.claude/skills
+2025-12-05T23:57:57.085Z [DEBUG] >>>>> getPluginSkills CALLED <<<<<
+2025-12-05T23:57:57.085Z [DEBUG] Passes: Using fresh cached eligibility data
+2025-12-05T23:57:57.087Z [DEBUG] installed_plugins.json doesn't exist yet at /Users/dmitry/.claude/plugins/installed_plugins.json, returning empty object
+2025-12-05T23:57:57.103Z [DEBUG] Creating shell snapshot for zsh (/bin/zsh)
+2025-12-05T23:57:57.104Z [DEBUG] Looking for shell config file: /Users/dmitry/.zshrc
+2025-12-05T23:57:57.104Z [DEBUG] Snapshots directory: /Users/dmitry/.claude/shell-snapshots
+2025-12-05T23:57:57.104Z [DEBUG] Creating snapshot at: /Users/dmitry/.claude/shell-snapshots/snapshot-zsh-1764979077104-nw3dqt.sh
+2025-12-05T23:57:57.104Z [DEBUG] Shell binary exists: true
+2025-12-05T23:57:57.104Z [DEBUG] Execution timeout: 10000ms
+2025-12-05T23:57:57.104Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/87d93073-0633-473f-b19e-807150ea1214-agent-87d93073-0633-473f-b19e-807150ea1214.json.tmp.90218.1764979077104
+2025-12-05T23:57:57.104Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-05T23:57:57.104Z [DEBUG] Renaming /Users/dmitry/.claude/todos/87d93073-0633-473f-b19e-807150ea1214-agent-87d93073-0633-473f-b19e-807150ea1214.json.tmp.90218.1764979077104 to /Users/dmitry/.claude/todos/87d93073-0633-473f-b19e-807150ea1214-agent-87d93073-0633-473f-b19e-807150ea1214.json
+2025-12-05T23:57:57.105Z [DEBUG] File /Users/dmitry/.claude/todos/87d93073-0633-473f-b19e-807150ea1214-agent-87d93073-0633-473f-b19e-807150ea1214.json written atomically
+2025-12-05T23:57:57.108Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077108
+2025-12-05T23:57:57.108Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.109Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.109Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.109Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077108 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.109Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.109Z [DEBUG] getPluginSkills: Processing 0 enabled plugins
+2025-12-05T23:57:57.109Z [DEBUG] Total plugin skills loaded: 0
+2025-12-05T23:57:57.109Z [DEBUG] Total plugin commands loaded: 0
+2025-12-05T23:57:57.109Z [DEBUG] Registered 0 hooks from 0 plugins
+2025-12-05T23:57:57.110Z [DEBUG] Loaded 0 unique skills (managed: 0, user: 0, project: 0, duplicates removed: 0)
+2025-12-05T23:57:57.111Z [DEBUG] getSkills returning: 0 skill dir commands, 0 plugin skills
+2025-12-05T23:57:57.113Z [DEBUG] Total plugin agents loaded: 0
+2025-12-05T23:57:57.114Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at mCA (/$bunfs/root/claude:2637:1300)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T23:57:57.133Z [DEBUG] Git remote URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-05T23:57:57.133Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-05T23:57:57.133Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-05T23:57:57.133Z [DEBUG] Path /Users/dmitry/WebstormProjects/zephyr-budget-app already tracked for repo zuratech-inc/zephyr-budget-app
+2025-12-05T23:57:57.229Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077229
+2025-12-05T23:57:57.229Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.229Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.229Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.229Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077229 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.229Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.230Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077230
+2025-12-05T23:57:57.230Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.230Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.230Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.230Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077230 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.230Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.231Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077231
+2025-12-05T23:57:57.231Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.231Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.231Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.231Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077231 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.231Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.232Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077232
+2025-12-05T23:57:57.232Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.232Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.232Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.232Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077232 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.232Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.633Z [DEBUG] Passes: Using fresh cached eligibility data
+2025-12-05T23:57:57.640Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077640
+2025-12-05T23:57:57.640Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.640Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.640Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.640Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077640 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.640Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.642Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077642
+2025-12-05T23:57:57.642Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.642Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.642Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.642Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077642 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.642Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.643Z [DEBUG] Getting matching hook commands for SessionStart with query: startup
+2025-12-05T23:57:57.643Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:57:57.643Z [DEBUG] Matched 0 unique hooks for query "startup" (0 before deduplication)
+2025-12-05T23:57:57.672Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077672
+2025-12-05T23:57:57.672Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.672Z [DEBUG] Temp file written successfully, size: 48001 bytes
+2025-12-05T23:57:57.672Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.672Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077672 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.672Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.674Z [DEBUG] performStartupChecks called
+2025-12-05T23:57:57.674Z [DEBUG] Starting background plugin installations
+2025-12-05T23:57:57.674Z [DEBUG] performBackgroundPluginInstallations called
+2025-12-05T23:57:57.679Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T23:57:57.682Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979077682
+2025-12-05T23:57:57.682Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:57:57.683Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:57:57.683Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:57:57.683Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979077682 to /Users/dmitry/.claude.json
+2025-12-05T23:57:57.683Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:57:57.692Z [DEBUG] Setting installation status: 0 marketplaces, 0 installable plugins, 0 uninstallable plugins
+2025-12-05T23:57:57.694Z [DEBUG] Loaded plugins - Enabled: 0, Disabled: 0, Commands: 0, Agents: 0, Errors: 0
+2025-12-05T23:57:57.696Z [DEBUG] Summarizing all 6 messages (~446 tokens)
+2025-12-05T23:57:57.702Z [DEBUG] MCP server "ide": Starting connection with timeout of 30000ms
+2025-12-05T23:57:57.704Z [DEBUG] Getting matching hook commands for SubagentStart with query: Explore
+2025-12-05T23:57:57.704Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:57:57.704Z [DEBUG] Matched 0 unique hooks for query "Explore" (0 before deduplication)
+2025-12-05T23:57:57.707Z [DEBUG] Getting matching hook commands for SubagentStart with query: Plan
+2025-12-05T23:57:57.707Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:57:57.707Z [DEBUG] Matched 0 unique hooks for query "Plan" (0 before deduplication)
+2025-12-05T23:57:57.710Z [DEBUG] Skills and commands included in Skill tool:
+2025-12-05T23:57:57.710Z [DEBUG] Slash commands included in SlashCommand tool: /pr:create, /pr:review
+2025-12-05T23:57:57.719Z [DEBUG] MCP server "ide": Successfully connected to ws-ide server in 19ms
+2025-12-05T23:57:57.719Z [DEBUG] MCP server "ide": Connection established with capabilities: {"hasTools":true,"hasPrompts":false,"hasResources":false,"serverVersion":{"name":"Claude Code JetBrains Plugin","version":"0.1.13-beta"}}
+2025-12-05T23:57:57.814Z [DEBUG] Ripgrep first use test: PASSED (mode=builtin, path=/Users/dmitry/.local/share/claude/versions/2.0.59)
+2025-12-05T23:57:57.906Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T23:57:57.958Z [DEBUG] Shell snapshot created successfully (109728 bytes)
+2025-12-05T23:57:58.317Z [DEBUG] Stream started - received first chunk
+2025-12-05T23:57:58.350Z [DEBUG] Stream started - received first chunk
+2025-12-05T23:57:59.733Z [DEBUG] Stream started - received first chunk
+2025-12-05T23:58:00.135Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T23:58:00.135Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:58:00.135Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T23:58:00.413Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T23:58:00.413Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:58:00.413Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T23:58:04.291Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=87d93073-0633-473f-b19e-807150ea1214 session=87d93073-0633-473f-b19e-807150ea1214
+2025-12-05T23:58:04.291Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T23:58:04.291Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T23:58:04.291Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T23:58:04.296Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T23:58:04.296Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T23:58:04.307Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979084307
+2025-12-05T23:58:04.307Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:58:04.307Z [DEBUG] Temp file written successfully, size: 48074 bytes
+2025-12-05T23:58:04.307Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:58:04.307Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979084307 to /Users/dmitry/.claude.json
+2025-12-05T23:58:04.307Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:58:04.316Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T23:58:04.316Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:58:04.316Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T23:58:04.317Z [DEBUG] FileHistory: Added snapshot for d2dcffc6-fcee-456f-b81c-79894e4130a8, tracking 0 files
+2025-12-05T23:58:04.326Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T23:58:04.330Z [DEBUG] Total plugin output styles loaded: 0
+2025-12-05T23:58:04.332Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T23:58:04.911Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T23:58:05.423Z [DEBUG] Stream started - received first chunk
+2025-12-05T23:58:06.038Z [DEBUG] Stream started - received first chunk
+2025-12-05T23:58:18.004Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T23:58:18.004Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:58:18.004Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T23:58:18.050Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979098050
+2025-12-05T23:58:18.050Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:58:18.050Z [DEBUG] Temp file written successfully, size: 48075 bytes
+2025-12-05T23:58:18.051Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:58:18.051Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979098050 to /Users/dmitry/.claude.json
+2025-12-05T23:58:18.051Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:58:18.054Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979098054
+2025-12-05T23:58:18.054Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T23:58:18.054Z [DEBUG] Temp file written successfully, size: 48075 bytes
+2025-12-05T23:58:18.054Z [DEBUG] Applied original permissions to temp file
+2025-12-05T23:58:18.054Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979098054 to /Users/dmitry/.claude.json
+2025-12-05T23:58:18.055Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T23:59:18.014Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T23:59:18.014Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T23:59:18.014Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-06T00:02:38.713Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979358713
+2025-12-06T00:02:38.713Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T00:02:38.714Z [DEBUG] Temp file written successfully, size: 48002 bytes
+2025-12-06T00:02:38.714Z [DEBUG] Applied original permissions to temp file
+2025-12-06T00:02:38.714Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979358713 to /Users/dmitry/.claude.json
+2025-12-06T00:02:38.714Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T00:02:38.715Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979358715
+2025-12-06T00:02:38.715Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T00:02:38.715Z [DEBUG] Temp file written successfully, size: 48075 bytes
+2025-12-06T00:02:38.715Z [DEBUG] Applied original permissions to temp file
+2025-12-06T00:02:38.715Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979358715 to /Users/dmitry/.claude.json
+2025-12-06T00:02:38.716Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T00:02:55.597Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979375597
+2025-12-06T00:02:55.597Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T00:02:55.598Z [DEBUG] Temp file written successfully, size: 48002 bytes
+2025-12-06T00:02:55.598Z [DEBUG] Applied original permissions to temp file
+2025-12-06T00:02:55.598Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979375597 to /Users/dmitry/.claude.json
+2025-12-06T00:02:55.598Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T00:02:55.601Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.90218.1764979375601
+2025-12-06T00:02:55.601Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T00:02:55.601Z [DEBUG] Temp file written successfully, size: 48075 bytes
+2025-12-06T00:02:55.601Z [DEBUG] Applied original permissions to temp file
+2025-12-06T00:02:55.601Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.90218.1764979375601 to /Users/dmitry/.claude.json
+2025-12-06T00:02:55.601Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T00:02:55.601Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T00:02:55.824Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-06T00:03:02.827Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T00:03:30.156Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=87d93073-0633-473f-b19e-807150ea1214 session=87d93073-0633-473f-b19e-807150ea1214
+2025-12-06T00:03:30.156Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-06T00:03:30.156Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T00:03:30.156Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T00:03:30.157Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T00:03:30.160Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T00:03:30.160Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T00:03:30.467Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 311ms
+2025-12-06T00:03:30.476Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T00:03:30.476Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T00:03:30.476Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T00:03:30.477Z [DEBUG] FileHistory: Making snapshot for message 0b8ecdc4-fea4-470e-9701-7d12154305ee
+2025-12-06T00:03:30.477Z [DEBUG] FileHistory: Added snapshot for 0b8ecdc4-fea4-470e-9701-7d12154305ee, tracking 0 files
+2025-12-06T00:03:30.484Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T00:03:30.489Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T00:03:31.440Z [DEBUG] Stream started - received first chunk
+2025-12-06T00:03:31.814Z [DEBUG] Stream started - received first chunk
+2025-12-06T00:03:35.145Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T00:03:35.148Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T00:03:35.148Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T00:03:35.148Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T00:03:35.603Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T00:03:35.603Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T00:03:35.603Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T00:03:35.620Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=87d93073-0633-473f-b19e-807150ea1214 session=87d93073-0633-473f-b19e-807150ea1214
+2025-12-06T00:03:35.620Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-06T00:03:35.620Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T00:03:35.620Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T00:03:35.620Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T00:03:35.625Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T00:03:35.625Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T00:03:35.935Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-06T00:03:38.017Z [DEBUG] Stream started - received first chunk
+2025-12-06T00:03:40.207Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T00:03:40.210Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T00:03:40.212Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T00:03:40.212Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T00:03:40.212Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T00:03:40.212Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T00:03:40.212Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T00:03:40.212Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T00:03:40.226Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T00:03:40.245Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T00:03:40.245Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T00:03:40.245Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T00:03:40.256Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T00:03:40.274Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T00:03:40.274Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T00:03:40.274Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T00:03:40.296Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=87d93073-0633-473f-b19e-807150ea1214 session=87d93073-0633-473f-b19e-807150ea1214
+2025-12-06T00:03:40.296Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-06T00:03:40.296Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T00:03:40.296Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T00:03:40.296Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T00:03:40.300Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T00:03:40.300Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T00:03:40.607Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 311ms
+2025-12-06T00:03:46.535Z [DEBUG] Stream started - received first chunk
+2025-12-06T00:03:50.178Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-06T00:03:50.178Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T00:03:50.178Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T00:04:50.189Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-06T00:04:50.189Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T00:04:50.189Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-06T00:08:46.693Z [DEBUG] Getting matching hook commands for SessionEnd with query: prompt_input_exit
+2025-12-06T00:08:46.693Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T00:08:46.693Z [DEBUG] Matched 0 unique hooks for query "prompt_input_exit" (0 before deduplication)

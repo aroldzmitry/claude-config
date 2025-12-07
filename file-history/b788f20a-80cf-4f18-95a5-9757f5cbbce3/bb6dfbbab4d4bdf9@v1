@@ -1,0 +1,6 @@
+---
+description: "Validate an agent, command, or skill for quality and conflicts. Use --research flag for web research."
+argument-hint: <file-path> [--research]
+---
+
+Validate the following item using the `agent-lint` agent: $ARGUMENTS

@@ -1,0 +1,756 @@
+2025-12-06T03:07:22.245Z [DEBUG] Watching for changes in setting files /Users/dmitry/.claude/settings.json, /Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/settings.local.json...
+2025-12-06T03:07:22.288Z [DEBUG] [LSP MANAGER] initializeLspServerManager() called
+2025-12-06T03:07:22.288Z [DEBUG] [LSP MANAGER] Created manager instance, state=pending
+2025-12-06T03:07:22.288Z [DEBUG] [LSP MANAGER] Starting async initialization (generation 1)
+2025-12-06T03:07:22.288Z [DEBUG] [LSP SERVER MANAGER] initialize() called
+2025-12-06T03:07:22.288Z [DEBUG] [LSP SERVER MANAGER] Calling getAllLspServers()
+2025-12-06T03:07:22.290Z [DEBUG] Applying permission update: Adding 16 allow rule(s) to destination 'userSettings': ["Bash(mkdir:*)","Bash(npx prettier --write:*)","Read(.claude/**)","Write(.claude/**)","Edit(.claude/**)","Read(tasks/**)","Write(tasks/**)","Edit(tasks/**)","Bash(git add:*)","SlashCommand(/task:architect task-1764889273)","Bash(yarn type-check:*)","Bash(cat:*)","Bash(npx tsc --noEmit)","Bash(yarn lint:*)","Bash(yarn test:*)","Read(//Users/dmitry/.claude-code-docs/docs/**)"]
+2025-12-06T03:07:22.290Z [DEBUG] Applying permission update: Adding 2 deny rule(s) to destination 'userSettings': ["Read(.env)","Read(../.env)"]
+2025-12-06T03:07:22.290Z [DEBUG] Applying permission update: Adding 8 allow rule(s) to destination 'localSettings': ["Bash(mkdir:*)","Bash(npx prettier:*)","Bash(npx eslint:*)","Bash(npx tsc:*)","Read(**)","Write(**)","Edit(**)","Bash(git add:*)"]
+2025-12-06T03:07:22.290Z [DEBUG] Applying permission update: Adding 2 deny rule(s) to destination 'localSettings': ["Read(.env)","Read(../.env)"]
+2025-12-06T03:07:22.291Z [DEBUG] Found 0 plugins (0 enabled, 0 disabled)
+2025-12-06T03:07:22.291Z [DEBUG] Total LSP servers loaded: 0
+2025-12-06T03:07:22.291Z [DEBUG] [LSP SERVER MANAGER] getAllLspServers returned 0 server(s)
+2025-12-06T03:07:22.291Z [DEBUG] LSP manager initialized with 0 servers
+2025-12-06T03:07:22.291Z [DEBUG] LSP server manager initialized successfully
+2025-12-06T03:07:22.291Z [DEBUG] LSP notification handlers registered successfully for all 0 server(s)
+2025-12-06T03:07:22.294Z [DEBUG] Loading skills from directories: managed=/Library/Application Support/ClaudeCode/.claude/skills, user=/Users/dmitry/.claude/skills, project=/Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/skills
+2025-12-06T03:07:22.294Z [DEBUG] >>>>> getPluginSkills CALLED <<<<<
+2025-12-06T03:07:22.294Z [DEBUG] Passes: Cache stale, returning cached data and refreshing in background
+2025-12-06T03:07:22.295Z [DEBUG] installed_plugins.json doesn't exist yet at /Users/dmitry/.claude/plugins/installed_plugins.json, returning empty object
+2025-12-06T03:07:22.316Z [DEBUG] Creating shell snapshot for zsh (/bin/zsh)
+2025-12-06T03:07:22.316Z [DEBUG] Looking for shell config file: /Users/dmitry/.zshrc
+2025-12-06T03:07:22.316Z [DEBUG] Snapshots directory: /Users/dmitry/.claude/shell-snapshots
+2025-12-06T03:07:22.316Z [DEBUG] Creating snapshot at: /Users/dmitry/.claude/shell-snapshots/snapshot-zsh-1764990442316-22dkfj.sh
+2025-12-06T03:07:22.316Z [DEBUG] Shell binary exists: true
+2025-12-06T03:07:22.316Z [DEBUG] Execution timeout: 10000ms
+2025-12-06T03:07:22.317Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/088a3831-6ada-4b32-8610-67e5dd0e08f7-agent-088a3831-6ada-4b32-8610-67e5dd0e08f7.json.tmp.7585.1764990442317
+2025-12-06T03:07:22.317Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-06T03:07:22.317Z [DEBUG] Renaming /Users/dmitry/.claude/todos/088a3831-6ada-4b32-8610-67e5dd0e08f7-agent-088a3831-6ada-4b32-8610-67e5dd0e08f7.json.tmp.7585.1764990442317 to /Users/dmitry/.claude/todos/088a3831-6ada-4b32-8610-67e5dd0e08f7-agent-088a3831-6ada-4b32-8610-67e5dd0e08f7.json
+2025-12-06T03:07:22.317Z [DEBUG] File /Users/dmitry/.claude/todos/088a3831-6ada-4b32-8610-67e5dd0e08f7-agent-088a3831-6ada-4b32-8610-67e5dd0e08f7.json written atomically
+2025-12-06T03:07:22.322Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442322
+2025-12-06T03:07:22.322Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.322Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.322Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.322Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442322 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.322Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.322Z [DEBUG] getPluginSkills: Processing 0 enabled plugins
+2025-12-06T03:07:22.322Z [DEBUG] Total plugin skills loaded: 0
+2025-12-06T03:07:22.322Z [DEBUG] Total plugin commands loaded: 0
+2025-12-06T03:07:22.323Z [DEBUG] Registered 0 hooks from 0 plugins
+2025-12-06T03:07:22.324Z [DEBUG] Loaded 0 unique skills (managed: 0, user: 0, project: 0, duplicates removed: 0)
+2025-12-06T03:07:22.325Z [DEBUG] getSkills returning: 0 skill dir commands, 0 plugin skills
+2025-12-06T03:07:22.342Z [DEBUG] Acquired lock on running version: /Users/dmitry/.local/share/claude/versions/2.0.60
+2025-12-06T03:07:22.347Z [DEBUG] Git remote URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-06T03:07:22.347Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-06T03:07:22.347Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-06T03:07:22.347Z [DEBUG] Path /Users/dmitry/WebstormProjects/zephyr-budget-app/client already tracked for repo zuratech-inc/zephyr-budget-app
+2025-12-06T03:07:22.354Z [DEBUG] Agent file /Users/dmitry/.claude/agents/.improvements/history.md is missing required 'name' in frontmatter
+2025-12-06T03:07:22.354Z [DEBUG] Failed to parse agent from /Users/dmitry/.claude/agents/.improvements/history.md: Missing required "name" field in frontmatter
+2025-12-06T03:07:22.354Z [DEBUG] Agent file /Users/dmitry/.claude/agents/.improvements/suggestions.md is missing required 'name' in frontmatter
+2025-12-06T03:07:22.354Z [DEBUG] Failed to parse agent from /Users/dmitry/.claude/agents/.improvements/suggestions.md: Missing required "name" field in frontmatter
+2025-12-06T03:07:22.354Z [DEBUG] Total plugin agents loaded: 0
+2025-12-06T03:07:22.422Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442422
+2025-12-06T03:07:22.422Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.422Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.422Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.422Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442422 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.422Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.423Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442423
+2025-12-06T03:07:22.423Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.423Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.423Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.423Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442423 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.424Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.424Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442424
+2025-12-06T03:07:22.425Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.425Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.425Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.425Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442424 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.425Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.595Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442595
+2025-12-06T03:07:22.595Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.596Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.596Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.596Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442595 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.596Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.596Z [DEBUG] Passes eligibility cached for org 34b6b739-4f1a-43a0-8f87-11145d8729d6: false
+2025-12-06T03:07:22.810Z [DEBUG] Passes: Using fresh cached eligibility data
+2025-12-06T03:07:22.822Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442822
+2025-12-06T03:07:22.822Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.823Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.823Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.823Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442822 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.823Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.825Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442825
+2025-12-06T03:07:22.825Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.825Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.825Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.825Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442825 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.825Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.825Z [DEBUG] Getting matching hook commands for SessionStart with query: startup
+2025-12-06T03:07:22.825Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:07:22.825Z [DEBUG] Matched 0 unique hooks for query "startup" (0 before deduplication)
+2025-12-06T03:07:22.829Z [DEBUG] Summarizing all 155 messages (~50412 tokens)
+2025-12-06T03:07:22.858Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442858
+2025-12-06T03:07:22.859Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.859Z [DEBUG] Temp file written successfully, size: 48003 bytes
+2025-12-06T03:07:22.859Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.859Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442858 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.859Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.861Z [DEBUG] performStartupChecks called
+2025-12-06T03:07:22.861Z [DEBUG] Starting background plugin installations
+2025-12-06T03:07:22.861Z [DEBUG] performBackgroundPluginInstallations called
+2025-12-06T03:07:22.867Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:07:22.868Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442868
+2025-12-06T03:07:22.868Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.868Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.868Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.868Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442868 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.868Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:22.874Z [DEBUG] Setting installation status: 0 marketplaces, 0 installable plugins, 0 uninstallable plugins
+2025-12-06T03:07:22.874Z [DEBUG] Loaded plugins - Enabled: 0, Disabled: 0, Commands: 0, Agents: 0, Errors: 0
+2025-12-06T03:07:22.877Z [DEBUG] Getting matching hook commands for SubagentStart with query: Explore
+2025-12-06T03:07:22.877Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:07:22.877Z [DEBUG] Matched 0 unique hooks for query "Explore" (0 before deduplication)
+2025-12-06T03:07:22.880Z [DEBUG] Getting matching hook commands for SubagentStart with query: Plan
+2025-12-06T03:07:22.880Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:07:22.880Z [DEBUG] Matched 0 unique hooks for query "Plan" (0 before deduplication)
+2025-12-06T03:07:22.881Z [DEBUG] Ripgrep first use test: PASSED (mode=builtin, path=/Users/dmitry/.local/share/claude/versions/2.0.60)
+2025-12-06T03:07:22.889Z [DEBUG] MCP server "ide": Starting connection with timeout of 30000ms
+2025-12-06T03:07:22.894Z [DEBUG] MCP server "ide": Successfully connected to ws-ide server in 7ms
+2025-12-06T03:07:22.898Z [DEBUG] MCP server "ide": Connection established with capabilities: {"hasTools":true,"hasPrompts":false,"hasResources":false,"serverVersion":{"name":"Claude Code JetBrains Plugin","version":"0.1.13-beta"}}
+2025-12-06T03:07:22.944Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990442944
+2025-12-06T03:07:22.944Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:22.945Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:22.945Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:22.945Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990442944 to /Users/dmitry/.claude.json
+2025-12-06T03:07:22.945Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:23.052Z [DEBUG] Skills and commands included in Skill tool:
+2025-12-06T03:07:23.052Z [DEBUG] Slash commands included in SlashCommand tool: /agent:lint, /task:create, /pr:create, /pr:review
+2025-12-06T03:07:23.133Z [DEBUG] Checking for native installer update to version 2.0.60
+2025-12-06T03:07:23.177Z [DEBUG] Shell snapshot created successfully (109728 bytes)
+2025-12-06T03:07:23.646Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:07:23.929Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:07:25.237Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:07:25.329Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-06T03:07:25.329Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:07:25.329Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:07:27.683Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.7585.1764990447683
+2025-12-06T03:07:27.683Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:07:27.684Z [DEBUG] Temp file written successfully, size: 48076 bytes
+2025-12-06T03:07:27.684Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:07:27.684Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.7585.1764990447683 to /Users/dmitry/.claude.json
+2025-12-06T03:07:27.684Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-06T03:07:27.920Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:07:30.137Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.60 (expected in multi-process scenarios)
+    at Eh0 (/$bunfs/root/claude:2714:1622)
+    at jCA (/$bunfs/root/claude:2712:35598)
+    at async w$7 (/$bunfs/root/claude:2712:37706)
+    at async iv (/$bunfs/root/claude:2714:236)
+    at async <anonymous> (/$bunfs/root/claude:2714:13006)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T03:07:34.447Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:07:36.340Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:07:36.444Z [DEBUG] Checking for native installer update to version 2.0.60
+2025-12-06T03:07:41.054Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-06T03:07:41.054Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:07:41.054Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:07:41.737Z [DEBUG] Metadata string for agent:lint:
+2025-12-06T03:07:41.737Z [DEBUG] <command-message>agent:lint is running…</command-message>
+<command-name>/agent:lint</command-name>
+<command-args>agent:create --r</command-args>
+2025-12-06T03:07:41.737Z [DEBUG] command-message tags in metadata: 1
+2025-12-06T03:07:41.743Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:07:41.743Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:07:41.743Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:07:41.744Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:07:41.744Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:07:41.744Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:07:41.760Z [DEBUG] processPromptSlashCommand creating 3 messages for agent:lint
+2025-12-06T03:07:41.760Z [DEBUG] Message 1: <command-message>agent:lint is running…</command-message>
+<command-name>/agent:lint</command-name>
+<command-args>agent:create --r</command-args>
+2025-12-06T03:07:41.760Z [DEBUG] Message 2 [META]: [{"type":"text","text":"# Agent Lint\n\nValidate the following item: agent:create --r\n\n## Scope Hierarchy\n\nSearch for the target file in both scopes (order matters):\n\n1. **Project scope first:**
+2025-12-06T03:07:41.760Z [DEBUG] Message 3: [ATTACHMENT]
+2025-12-06T03:07:41.764Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T03:07:41.764Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:07:41.764Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:07:41.765Z [DEBUG] FileHistory: Added snapshot for 0890f12f-b134-449c-ac53-37df67492609, tracking 0 files
+2025-12-06T03:07:41.766Z [DEBUG] UserCommandMessage rendering: "agent:lint is running…" (args: "agent:create --r")
+2025-12-06T03:07:41.766Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-06T03:07:41.772Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T03:07:41.774Z [DEBUG] Total plugin output styles loaded: 0
+2025-12-06T03:07:41.775Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T03:07:43.452Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.60 (expected in multi-process scenarios)
+    at Eh0 (/$bunfs/root/claude:2714:1622)
+    at jCA (/$bunfs/root/claude:2712:35598)
+    at async w$7 (unknown)
+    at async iv (unknown)
+    at unknown
+    at processTicksAndRejections (native:7:39)
+2025-12-06T03:07:44.664Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:07:46.126Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T03:07:46.127Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T03:07:46.139Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T03:07:46.139Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:46.139Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:46.139Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T03:07:46.139Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:46.139Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:46.609Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T03:07:46.609Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:46.609Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:46.801Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T03:07:46.801Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:46.801Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:46.807Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:07:46.807Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:07:46.807Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:07:46.808Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:07:46.808Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:07:46.808Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:07:46.808Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:07:47.119Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 312ms
+2025-12-06T03:07:49.289Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:07:51.100Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-06T03:07:51.103Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-06T03:07:51.103Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:51.103Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-06T03:07:51.118Z [DEBUG] Getting matching hook commands for SubagentStart with query: agent-lint
+2025-12-06T03:07:51.118Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:07:51.118Z [DEBUG] Matched 0 unique hooks for query "agent-lint" (0 before deduplication)
+2025-12-06T03:07:53.182Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:07:56.016Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T03:07:56.016Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-06T03:07:56.022Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T03:07:56.022Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.022Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:56.022Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-06T03:07:56.022Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.022Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:56.022Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:07:56.023Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:07:56.026Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:07:56.026Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.026Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:07:56.026Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:07:56.026Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.026Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:07:56.043Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:07:56.043Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:07:56.066Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:07:56.066Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.066Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:07:56.066Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:07:56.066Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.066Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:07:56.516Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T03:07:56.516Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.516Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:56.709Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-06T03:07:56.709Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:07:56.709Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-06T03:07:56.715Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:07:56.715Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:07:58.383Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:08:00.968Z [DEBUG] executePreToolHooks called for tool: WebSearch
+2025-12-06T03:08:00.968Z [DEBUG] executePreToolHooks called for tool: WebSearch
+2025-12-06T03:08:00.972Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebSearch
+2025-12-06T03:08:00.972Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:00.972Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T03:08:00.972Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebSearch
+2025-12-06T03:08:00.972Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:00.972Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T03:08:00.972Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:08:00.972Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:08:00.972Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:08:00.980Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:08:00.980Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:00.980Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:08:00.980Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:08:00.980Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:00.980Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:08:00.980Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:08:00.980Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:00.980Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:08:00.995Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:08:00.995Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:08:00.995Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:08:01.016Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:08:01.016Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:01.016Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:08:01.016Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:08:01.016Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:01.016Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:08:01.016Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:08:01.016Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:01.016Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:08:02.193Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:08:03.379Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:08:30.863Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebSearch
+2025-12-06T03:08:30.863Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:30.863Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T03:08:37.900Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebSearch
+2025-12-06T03:08:37.900Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:37.900Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-06T03:08:37.917Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:08:37.917Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:08:39.593Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:08:41.936Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:08:41.936Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:08:41.940Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:08:41.940Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:41.940Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:08:41.940Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:08:41.940Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:41.940Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:08:41.950Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:08:41.951Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:08:41.970Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:08:41.970Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:41.970Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:08:41.975Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:08:41.975Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:08:41.976Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:08:41.981Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:08:41.981Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:08:44.103Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:09:46.438Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-06T03:09:46.438Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:09:46.438Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:09:46.449Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-06T03:09:46.449Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:09:46.449Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-06T03:09:46.466Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:09:46.466Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:09:46.466Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:09:46.467Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:09:46.467Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:09:46.467Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:09:46.467Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:09:46.778Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 312ms
+2025-12-06T03:09:48.573Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:09:54.372Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-06T03:09:54.372Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:09:54.372Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:10:54.387Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-06T03:10:54.387Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:10:54.388Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-06T03:11:53.773Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:11:53.773Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:11:53.773Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:11:53.774Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:11:53.774Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:11:53.774Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:11:53.774Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:11:54.085Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 312ms
+2025-12-06T03:11:54.093Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T03:11:54.093Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:11:54.093Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:11:54.095Z [DEBUG] FileHistory: Making snapshot for message 16ce8ecb-7bae-4096-8d78-1dc7a7d31c91
+2025-12-06T03:11:54.095Z [DEBUG] FileHistory: Added snapshot for 16ce8ecb-7bae-4096-8d78-1dc7a7d31c91, tracking 0 files
+2025-12-06T03:11:54.103Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T03:11:54.108Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T03:11:54.750Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:11:56.124Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:12:07.153Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-06T03:12:07.153Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:12:07.153Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:13:07.160Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-06T03:13:07.160Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:13:07.160Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-06T03:15:06.859Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:15:06.859Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:15:06.859Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:15:06.860Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:15:06.860Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:15:06.860Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:15:06.860Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:15:07.182Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 323ms
+2025-12-06T03:15:07.193Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T03:15:07.193Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:15:07.193Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:15:07.198Z [DEBUG] FileHistory: Making snapshot for message 7f30ad0d-a54f-4994-9a87-6be6c5b43816
+2025-12-06T03:15:07.198Z [DEBUG] FileHistory: Added snapshot for 7f30ad0d-a54f-4994-9a87-6be6c5b43816, tracking 0 files
+2025-12-06T03:15:07.207Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T03:15:07.211Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T03:15:08.252Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:15:10.079Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:15:13.835Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:15:13.842Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:15:13.842Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:15:13.842Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:15:13.851Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:15:13.869Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:15:13.869Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:15:13.869Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:15:13.876Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:15:13.876Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:15:13.876Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:15:13.876Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:15:13.876Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:15:13.876Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:15:13.876Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:15:14.185Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 309ms
+2025-12-06T03:15:16.061Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:15:16.525Z [DEBUG] Streaming aborted by user: Request was aborted.
+2025-12-06T03:15:16.525Z [ERROR] Error in non-streaming fallback: Request was aborted.
+2025-12-06T03:15:16.525Z [ERROR] Error: Error: Request was aborted.
+    at _createMessage (/$bunfs/root/claude:113:3151)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T03:15:26.798Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:15:26.798Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:15:26.798Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:15:26.799Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:15:26.799Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:15:26.799Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:15:26.799Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:15:27.116Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 318ms
+2025-12-06T03:15:27.124Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T03:15:27.124Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:15:27.124Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:15:27.124Z [DEBUG] FileHistory: Making snapshot for message bde7dbaa-ebcf-4faa-9db5-ad1deb16f158
+2025-12-06T03:15:27.125Z [DEBUG] FileHistory: Added snapshot for bde7dbaa-ebcf-4faa-9db5-ad1deb16f158, tracking 0 files
+2025-12-06T03:15:27.132Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T03:15:27.135Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T03:15:27.810Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:15:28.882Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:15:41.554Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-06T03:15:41.564Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-06T03:15:41.564Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:15:41.564Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-06T03:15:41.583Z [DEBUG] Getting matching hook commands for SubagentStart with query: developer
+2025-12-06T03:15:41.583Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:15:41.583Z [DEBUG] Matched 0 unique hooks for query "developer" (0 before deduplication)
+2025-12-06T03:15:43.206Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:15:45.372Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:15:45.379Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:15:45.379Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:15:45.379Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:15:45.387Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:15:45.406Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:15:45.406Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:15:45.406Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:15:45.413Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:15:45.413Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:15:47.172Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:15:49.104Z [DEBUG] Streaming aborted by user: Request was aborted.
+2025-12-06T03:15:49.104Z [ERROR] Error in non-streaming fallback: Request was aborted.
+2025-12-06T03:15:49.104Z [ERROR] Error: Error: Request was aborted.
+    at _createMessage (/$bunfs/root/claude:113:3151)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T03:15:49.149Z [DEBUG] Getting matching hook commands for PostToolUseFailure with query: Task
+2025-12-06T03:15:49.149Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:15:49.149Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-06T03:16:09.385Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:16:11.139Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:16:11.368Z [DEBUG] Checking for native installer update to version 2.0.60
+2025-12-06T03:16:12.393Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:16:12.942Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:16:18.378Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.60 (expected in multi-process scenarios)
+    at Eh0 (/$bunfs/root/claude:2714:1622)
+    at jCA (/$bunfs/root/claude:2712:35598)
+    at async w$7 (/$bunfs/root/claude:2712:37706)
+    at async iv (/$bunfs/root/claude:2714:236)
+    at async <anonymous> (/$bunfs/root/claude:2714:13006)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T03:16:30.561Z [DEBUG] Metadata string for agent:improve:
+2025-12-06T03:16:30.561Z [DEBUG] <command-message>agent:improve is running…</command-message>
+<command-name>/agent:improve</command-name>
+<command-args>что пошло не так, почему был вызван агент девелопер а не agent:update?</command-a
+2025-12-06T03:16:30.561Z [DEBUG] command-message tags in metadata: 1
+2025-12-06T03:16:30.567Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:16:30.567Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:16:30.567Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:16:30.568Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:16:30.568Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:16:30.568Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:16:30.568Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:16:30.881Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 314ms
+2025-12-06T03:16:30.881Z [DEBUG] processPromptSlashCommand creating 2 messages for agent:improve
+2025-12-06T03:16:30.881Z [DEBUG] Message 1: <command-message>agent:improve is running…</command-message>
+<command-name>/agent:improve</command-name>
+<command-args>что пошло не так, почему был вызван агент девелопер а не agent:update?</command-a
+2025-12-06T03:16:30.881Z [DEBUG] Message 2 [META]: [{"type":"text","text":"# Agent Improver\n\nAnalyze the current conversation to identify which agent needs improvement based on user feedback and corrections made during the session.\n\n## Dialog Styl
+2025-12-06T03:16:30.882Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T03:16:30.882Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:16:30.882Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:16:30.883Z [DEBUG] FileHistory: Making snapshot for message 6745eee0-9e49-4147-92e8-3fbd768c6152
+2025-12-06T03:16:30.883Z [DEBUG] FileHistory: Added snapshot for 6745eee0-9e49-4147-92e8-3fbd768c6152, tracking 0 files
+2025-12-06T03:16:30.884Z [DEBUG] UserCommandMessage rendering: "agent:improve is running…" (args: "что пошло не так, почему был вызван агент девелопер а не agent:update?")
+2025-12-06T03:16:30.884Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-06T03:16:30.891Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T03:16:30.893Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T03:16:32.639Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:16:38.751Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-06T03:16:38.751Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:16:38.751Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:17:06.357Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:17:06.357Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:17:06.357Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:17:06.358Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:17:06.358Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:17:06.358Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:17:06.358Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:17:06.676Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-06T03:17:06.683Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-06T03:17:06.683Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:17:06.683Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:17:06.683Z [DEBUG] FileHistory: Making snapshot for message 241f92c6-ebe2-40c3-a9bc-458e5a64005f
+2025-12-06T03:17:06.683Z [DEBUG] FileHistory: Added snapshot for 241f92c6-ebe2-40c3-a9bc-458e5a64005f, tracking 0 files
+2025-12-06T03:17:06.690Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-06T03:17:06.694Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-06T03:17:07.437Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:17:08.623Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:17:10.179Z [DEBUG] executePreToolHooks called for tool: SlashCommand
+2025-12-06T03:17:10.185Z [DEBUG] Getting matching hook commands for PreToolUse with query: SlashCommand
+2025-12-06T03:17:10.185Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:10.185Z [DEBUG] Matched 0 unique hooks for query "SlashCommand" (0 before deduplication)
+2025-12-06T03:17:10.195Z [DEBUG] Metadata string for agent:update:
+2025-12-06T03:17:10.195Z [DEBUG] <command-message>agent:update is running…</command-message>
+<command-name>/agent:update</command-name>
+<command-args>~/.claude/commands/agent:create.md</command-args>
+2025-12-06T03:17:10.195Z [DEBUG] command-message tags in metadata: 1
+2025-12-06T03:17:10.198Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:17:10.198Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:17:10.198Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:17:10.199Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:17:10.199Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:17:10.199Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:17:10.199Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:17:10.509Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 311ms
+2025-12-06T03:17:10.510Z [DEBUG] processPromptSlashCommand creating 2 messages for agent:update
+2025-12-06T03:17:10.510Z [DEBUG] Message 1: <command-message>agent:update is running…</command-message>
+<command-name>/agent:update</command-name>
+<command-args>~/.claude/commands/agent:create.md</command-args>
+2025-12-06T03:17:10.510Z [DEBUG] Message 2 [META]: [{"type":"text","text":"# Agent Updater\n\nApply user's improvement ideas to agents, commands, or skills. Make minimal, focused changes.\n\n**Use case:** You have an idea to improve agent behavior — a
+2025-12-06T03:17:10.516Z [DEBUG] Getting matching hook commands for PostToolUse with query: SlashCommand
+2025-12-06T03:17:10.516Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:10.516Z [DEBUG] Matched 0 unique hooks for query "SlashCommand" (0 before deduplication)
+2025-12-06T03:17:10.520Z [DEBUG] UserCommandMessage rendering: "agent:update is running…" (args: "~/.claude/commands/agent:create.md")
+2025-12-06T03:17:10.520Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-06T03:17:10.527Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:17:10.527Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:17:10.527Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:17:10.527Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:17:10.527Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:17:10.527Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:17:10.527Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:17:10.842Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-06T03:17:14.804Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:17:22.132Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:17:22.132Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:17:22.136Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:17:22.136Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:22.136Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:17:22.136Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:17:22.136Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:22.136Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:17:22.146Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:17:22.147Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:17:22.166Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:17:22.166Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:22.166Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:17:22.170Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:17:22.170Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:22.171Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:17:22.180Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:17:22.180Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:17:22.180Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:17:22.180Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:17:22.180Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:17:22.180Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:17:22.180Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:17:22.495Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-06T03:17:24.449Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:17:40.000Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-06T03:17:40.002Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-06T03:17:42.313Z [DEBUG] executePreToolHooks called for tool: AskUserQuestion
+2025-12-06T03:17:42.321Z [DEBUG] Getting matching hook commands for PreToolUse with query: AskUserQuestion
+2025-12-06T03:17:42.321Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:42.321Z [DEBUG] Matched 0 unique hooks for query "AskUserQuestion" (0 before deduplication)
+2025-12-06T03:17:42.335Z [DEBUG] executePermissionRequestHooks called for tool: AskUserQuestion
+2025-12-06T03:17:42.343Z [DEBUG] Getting matching hook commands for PermissionRequest with query: AskUserQuestion
+2025-12-06T03:17:42.343Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:17:42.343Z [DEBUG] Matched 0 unique hooks for query "AskUserQuestion" (0 before deduplication)
+2025-12-06T03:17:48.341Z [DEBUG] Getting matching hook commands for Notification with query: permission_prompt
+2025-12-06T03:17:48.341Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:17:48.341Z [DEBUG] Matched 0 unique hooks for query "permission_prompt" (0 before deduplication)
+2025-12-06T03:17:59.550Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:17:59.556Z [DEBUG] Getting matching hook commands for PostToolUse with query: AskUserQuestion
+2025-12-06T03:17:59.556Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:17:59.556Z [DEBUG] Matched 0 unique hooks for query "AskUserQuestion" (0 before deduplication)
+2025-12-06T03:17:59.557Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:17:59.557Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:17:59.558Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:17:59.558Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:17:59.558Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:17:59.558Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:17:59.558Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:17:59.664Z [DEBUG] Checking for native installer update to version 2.0.60
+2025-12-06T03:17:59.872Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 314ms
+2025-12-06T03:18:01.766Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:04.441Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-06T03:18:04.450Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-06T03:18:04.450Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:04.450Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T03:18:04.459Z [DEBUG] tree-sitter: WASM files not found
+2025-12-06T03:18:04.470Z [DEBUG] No session environment scripts found
+2025-12-06T03:18:04.497Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-06T03:18:04.497Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:04.497Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T03:18:04.505Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:18:04.505Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:18:04.505Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:04.506Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:18:04.506Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:18:04.506Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:18:04.506Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:18:04.819Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 314ms
+2025-12-06T03:18:05.237Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:06.649Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:06.677Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.60 (expected in multi-process scenarios)
+    at Eh0 (/$bunfs/root/claude:2714:1622)
+    at jCA (/$bunfs/root/claude:2712:35598)
+    at async w$7 (/$bunfs/root/claude:2712:37706)
+    at async iv (/$bunfs/root/claude:2714:236)
+    at async <anonymous> (/$bunfs/root/claude:2714:13006)
+    at processTicksAndRejections (native:7:39)
+2025-12-06T03:18:10.061Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-06T03:18:10.072Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-06T03:18:10.072Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:10.072Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T03:18:10.129Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-06T03:18:10.129Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:10.130Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T03:18:10.135Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:18:10.135Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:18:10.135Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:10.135Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:18:10.135Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:18:10.135Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:18:10.135Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:18:10.450Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-06T03:18:10.787Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:12.303Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:21.620Z [DEBUG] executePreToolHooks called for tool: Edit
+2025-12-06T03:18:21.624Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2025-12-06T03:18:21.624Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:21.624Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2025-12-06T03:18:21.635Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:26.644Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 5s
+2025-12-06T03:18:26.647Z [DEBUG] FileHistory: Tracked file modification for /Users/dmitry/.claude/commands/agent:create.md
+2025-12-06T03:18:26.651Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/commands/agent:create.md.tmp.7585.1764991106650
+2025-12-06T03:18:26.651Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:18:26.651Z [DEBUG] Temp file written successfully, size: 12471 bytes
+2025-12-06T03:18:26.651Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:18:26.651Z [DEBUG] Renaming /Users/dmitry/.claude/commands/agent:create.md.tmp.7585.1764991106650 to /Users/dmitry/.claude/commands/agent:create.md
+2025-12-06T03:18:26.651Z [DEBUG] File /Users/dmitry/.claude/commands/agent:create.md written atomically
+2025-12-06T03:18:26.667Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2025-12-06T03:18:26.667Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:26.667Z [DEBUG] Matched 2 unique hooks for query "Edit" (2 before deduplication)
+2025-12-06T03:18:26.692Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:18:29.796Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:18:29.797Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:18:29.797Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:18:29.797Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:29.797Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:18:29.797Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:18:29.797Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:18:29.797Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:18:30.112Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-06T03:18:32.851Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:41.162Z [DEBUG] executePreToolHooks called for tool: Edit
+2025-12-06T03:18:41.169Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2025-12-06T03:18:41.169Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:41.169Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2025-12-06T03:18:41.178Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:46.188Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 5s
+2025-12-06T03:18:46.191Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/commands/agent:create.md.tmp.7585.1764991126191
+2025-12-06T03:18:46.191Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:18:46.192Z [DEBUG] Temp file written successfully, size: 12841 bytes
+2025-12-06T03:18:46.192Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:18:46.192Z [DEBUG] Renaming /Users/dmitry/.claude/commands/agent:create.md.tmp.7585.1764991126191 to /Users/dmitry/.claude/commands/agent:create.md
+2025-12-06T03:18:46.193Z [DEBUG] File /Users/dmitry/.claude/commands/agent:create.md written atomically
+2025-12-06T03:18:46.212Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2025-12-06T03:18:46.212Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:46.212Z [DEBUG] Matched 2 unique hooks for query "Edit" (2 before deduplication)
+2025-12-06T03:18:46.237Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:18:49.228Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:18:49.230Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:18:49.230Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:18:49.230Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:49.230Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:18:49.230Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:18:49.230Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:18:49.230Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:18:49.546Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 316ms
+2025-12-06T03:18:52.304Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:54.594Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-06T03:18:54.601Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-06T03:18:54.601Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:54.601Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T03:18:54.657Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-06T03:18:54.657Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:54.657Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-06T03:18:54.665Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:18:54.665Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:18:54.665Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:54.665Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:18:54.665Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:18:54.665Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:18:54.665Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:18:54.981Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 316ms
+2025-12-06T03:18:55.560Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:57.358Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:18:58.610Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-06T03:18:58.613Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-06T03:18:58.613Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:58.613Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-06T03:18:58.623Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:18:58.643Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-06T03:18:58.643Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:18:58.643Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-06T03:18:58.649Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:18:58.649Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:18:58.649Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:18:58.649Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:18:58.649Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:18:58.649Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:18:58.649Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:18:58.960Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 311ms
+2025-12-06T03:19:01.674Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:19:06.943Z [DEBUG] executePreToolHooks called for tool: Edit
+2025-12-06T03:19:06.950Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2025-12-06T03:19:06.950Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:19:06.950Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2025-12-06T03:19:06.961Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:19:11.969Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 5s
+2025-12-06T03:19:11.972Z [DEBUG] FileHistory: Tracked file modification for /Users/dmitry/.claude/agents/.improvements/history.md
+2025-12-06T03:19:11.973Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/agents/.improvements/history.md.tmp.7585.1764991151973
+2025-12-06T03:19:11.973Z [DEBUG] Preserving file permissions: 100600
+2025-12-06T03:19:11.973Z [DEBUG] Temp file written successfully, size: 3426 bytes
+2025-12-06T03:19:11.973Z [DEBUG] Applied original permissions to temp file
+2025-12-06T03:19:11.973Z [DEBUG] Renaming /Users/dmitry/.claude/agents/.improvements/history.md.tmp.7585.1764991151973 to /Users/dmitry/.claude/agents/.improvements/history.md
+2025-12-06T03:19:11.973Z [DEBUG] File /Users/dmitry/.claude/agents/.improvements/history.md written atomically
+2025-12-06T03:19:11.991Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2025-12-06T03:19:11.991Z [DEBUG] Found 1 hook matchers in settings
+2025-12-06T03:19:11.991Z [DEBUG] Matched 2 unique hooks for query "Edit" (2 before deduplication)
+2025-12-06T03:19:12.021Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:19:15.105Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-06T03:19:15.106Z [DEBUG] [TeammateMailbox] getTeammateMailboxAttachments called: agentId=undefined, CLAUDE_CODE_AGENT_NAME=undefined, CLAUDE_CODE_AGENT_TYPE=undefined, resolved agentName=undefined, teamName=undefined
+2025-12-06T03:19:15.106Z [DEBUG] [TeammateMailbox] Not checking inbox - no agent name (neither CLAUDE_CODE_AGENT_NAME nor CLAUDE_CODE_AGENT_TYPE set)
+2025-12-06T03:19:15.106Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-06T03:19:15.107Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-06T03:19:15.107Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-06T03:19:15.107Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-06T03:19:15.107Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-06T03:19:15.418Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 312ms
+2025-12-06T03:19:18.151Z [DEBUG] Stream started - received first chunk
+2025-12-06T03:19:20.241Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-06T03:19:20.241Z [DEBUG] Found 0 hook matchers in settings
+2025-12-06T03:19:20.241Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-06T03:19:32.045Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-06T03:19:32.162Z [DEBUG] Checking for native installer update to version 2.0.60
+2025-12-06T03:19:33.429Z [DEBUG] AutoUpdaterWrapper: Installation type: native

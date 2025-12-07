@@ -1,0 +1,64 @@
+---
+description: "Validate an agent or command for quality and conflicts. Use --r flag for web research."
+argument-hint: <file-path> [--r]
+---
+
+# Agent Lint
+
+Validate the following item: $ARGUMENTS
+
+## Argument Parsing
+
+Parse `$ARGUMENTS` to extract:
+1. **Target:** The file path or agent name to validate (first non-flag token)
+2. **Flags:**
+   - `--r` — Enable web research
+   - `ultrathink` or `think` — Thinking mode (pass to agent-lint)
+
+**Parsing rules:**
+- Order of arguments doesn't matter
+- Flags can appear before or after target
+- Pass thinking mode to agent-lint via model parameter
+
+**Examples:**
+| Input | Target | Research | Think Mode |
+|-------|--------|----------|------------|
+| `developer` | developer | no | no |
+| `--r developer` | developer | yes | no |
+| `developer ultrathink` | developer | no | ultrathink |
+| `agent-lint --r ultrathink` | agent-lint | yes | ultrathink |
+| `think developer --r` | developer | yes | think |
+
+## Scope Hierarchy
+
+Search for the target file in both scopes (order matters):
+
+1. **Project scope first:** `.claude/agents/`, `.claude/commands/`
+2. **Global scope second:** `~/.claude/agents/`, `~/.claude/commands/`
+
+If argument is a name (e.g., `agent:improve`), search for:
+- `{name}.md` in commands directories
+- `{name}.md` in agents directories
+
+## Execution
+
+Once file is located, **you MUST use the Task tool** to delegate validation:
+
+**Base call (no flags):**
+```
+Task(subagent_type="agent-lint", prompt="Validate [file path]")
+```
+
+**With `--r` flag:**
+```
+Task(subagent_type="agent-lint", prompt="Validate [file path]. Use web research to find best practices for Claude Code commands and agent design patterns.")
+```
+
+**With thinking mode (`think` or `ultrathink`):**
+Pass the thinking mode to the model parameter:
+```
+Task(subagent_type="agent-lint", model="sonnet", prompt="...", thinking="[think|ultrathink]")
+```
+Note: Combine flags as needed (e.g., both `--r` and `ultrathink`).
+
+Do NOT perform validation inline — always delegate to the agent-lint subagent via Task tool.

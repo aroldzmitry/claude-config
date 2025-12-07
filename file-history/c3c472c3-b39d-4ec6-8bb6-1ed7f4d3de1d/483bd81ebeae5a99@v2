@@ -1,0 +1,204 @@
+# Task Workflow
+
+## Overview
+
+```
+/task:create <description>
+     │
+     ▼
+┌─────────────────────────────────────────┐
+│  Step 1: Requirements (main thread)     │
+│  - Read BUSINESS_RULES.md               │
+│  - Ask clarifying questions             │
+│  - Write business-analyst-output.md     │
+└─────────────────────────────────────────┘
+     │
+     ▼
+┌─────────────────────────────────────────┐
+│  Step 2: Development (developer agent)  │
+│  - Read requirements + docs             │
+│  - Implement code                       │
+│  - Call tester + code-reviewer (parallel)│
+│  - Fix feedback (max 2 iterations)      │
+│  - Write developer-output.md            │
+└─────────────────────────────────────────┘
+     │
+     ▼
+┌─────────────────────────────────────────┐
+│  Step 3: Documentation (documenter agent)│
+│  - Read all outputs                     │
+│  - Update .claude/docs/                 │
+│  - Write documenter-output.md           │
+└─────────────────────────────────────────┘
+     │
+     ▼
+┌─────────────────────────────────────────┐
+│  Step 4: Final Report (main thread)     │
+│  - Short summary                        │
+│  - TASK {id}: COMPLETED                 │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## Step 1: Requirements
+
+**Executor:** Main thread (task:create command)
+
+**Input:** User's task description
+
+**Process:**
+
+1. Create task folder: `.claude/tasks/{task-id}/`
+2. Create `context.json` with task metadata
+3. Read `.claude/docs/BUSINESS_RULES.md` for context
+4. Analyze task description
+5. Ask clarifying questions via `AskUserQuestion` (as many as needed)
+6. Write requirements to `business-analyst-output.md`
+
+**Output:** `business-analyst-output.md` containing:
+
+- Task Summary
+- User Story
+- Acceptance Criteria
+- Edge Cases
+- Scope (in/out)
+
+**Questions:** Unlimited rounds until requirements are clear.
+
+---
+
+## Step 2: Development
+
+**Executor:** Developer subagent
+
+**Input:** `business-analyst-output.md`
+
+**Process:**
+
+1. Read requirements from `business-analyst-output.md`
+2. Read documentation:
+   - `.claude/docs/PATTERNS.md`
+   - `.claude/docs/COMPONENTS.md`
+   - `.claude/docs/SERVICES.md`
+3. Search codebase for similar implementations
+4. Implement first version of code
+5. Call subagents in parallel:
+   - `tester` — writes tests, finds bugs
+   - `code-reviewer` — reviews code quality
+6. Receive feedback from both
+7. Fix issues
+8. If problems remain → iteration 2 (max 2 iterations)
+9. Write `developer-output.md`
+
+**Output:** `developer-output.md` containing:
+
+- Technical Approach
+- Files Created
+- Files Modified
+- Review & Test Results
+- Unresolved Issues (if any after 2 iterations)
+
+**Questions:** None. Developer works autonomously.
+
+---
+
+## Step 3: Documentation
+
+**Executor:** Documenter subagent
+
+**Input:** All outputs in `tasks/{task-id}/`
+
+**Process:**
+
+1. Read `business-analyst-output.md` — what was requested
+2. Read `developer-output.md` — what was implemented
+3. Determine which docs to update:
+
+| Change Type           | Documentation File     |
+| --------------------- | ---------------------- |
+| New component         | `COMPONENTS.md`        |
+| New service           | `SERVICES.md`          |
+| New pattern           | `PATTERNS.md`          |
+| Business logic        | `BUSINESS_RULES.md`    |
+| Project structure     | `PROJECT_STRUCTURE.md` |
+| Architecture decision | `ARCHITECTURE.md`      |
+
+4. Update relevant files in `.claude/docs/`
+5. Write `documenter-output.md`
+
+**Output:** `documenter-output.md` containing:
+
+- What was added
+- What was updated
+- Or "No updates needed"
+
+**Questions:** None. Documenter works autonomously.
+
+---
+
+## Step 4: Final Report
+
+**Executor:** Main thread (task:create command)
+
+**Input:** All completed outputs
+
+**Process:**
+
+1. Collect results from all steps
+2. Generate short summary
+
+**Output (success):**
+
+```
+TASK {task-id}: COMPLETED
+
+Files changed: X
+Tests: Y passed
+Docs updated: LIST
+```
+
+**Output (with warnings):**
+
+```
+TASK {task-id}: COMPLETED (with warnings)
+
+Files changed: X
+Tests: Y passed
+Unresolved: Z issues (see developer-output.md)
+```
+
+---
+
+## Agents
+
+| Agent         | Role                   | Can Ask Questions | Calls Other Agents    |
+| ------------- | ---------------------- | ----------------- | --------------------- |
+| Main thread   | Requirements (BA role) | Yes               | developer, documenter |
+| developer     | Implementation         | No                | tester, code-reviewer |
+| tester        | Tests + bug detection  | No                | None                  |
+| code-reviewer | Code review            | No                | None                  |
+| documenter    | Documentation sync     | No                | None                  |
+
+---
+
+## Task Files Structure
+
+```
+.claude/tasks/{task-id}/
+├── context.json                 # Task metadata
+├── business-analyst-output.md   # Requirements
+├── developer-output.md          # Implementation details
+└── documenter-output.md         # Documentation changes
+```
+
+---
+
+## Iteration Limits
+
+| Step                       | Max Iterations |
+| -------------------------- | -------------- |
+| Requirements (questions)   | Unlimited      |
+| Development (fix feedback) | 2              |
+
+If issues remain after 2 development iterations, task completes with warnings.

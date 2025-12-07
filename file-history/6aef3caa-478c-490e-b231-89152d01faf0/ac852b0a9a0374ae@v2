@@ -1,0 +1,100 @@
+# Claude Agents
+
+> **Before use:** All agents default to `model: opus` (most expensive). Change as needed in `.claude/agents/*.md`:
+>
+> - `opus` — highest quality, expensive
+> - `sonnet` — balanced price/quality
+> - `haiku` — fast and cheap
+
+---
+
+## Quick Start
+
+```bash
+/task:create <task-description>
+```
+
+Example:
+
+```bash
+/task:create Add "Export to PDF" button to the reports page
+```
+
+For simple bug fixes:
+
+```bash
+/task:quickfix <bug-description>
+```
+
+---
+
+## How It Works
+
+### Full Workflow (`/task:create`)
+
+```
+BA → Developer → Tester → Documenter
+```
+
+1. **BA** — clarifying questions, requirements
+2. **Developer** — implementation
+3. **Tester** — tests, code review, bug detection
+4. **Documenter** — updates documentation
+
+### Quick Fix (`/task:quickfix`)
+
+```
+Developer → Tester (tests only)
+```
+
+Skips BA and Documenter for simple fixes.
+
+---
+
+## Output Location
+
+All task files are saved to:
+
+```
+tasks/{task-id}/
+├── context.json                 # Shared context between agents
+├── business-analyst-output.md   # Requirements (full workflow only)
+├── developer-output.md          # Implementation details
+├── tester-output.md             # Tests, bugs found
+├── documenter-output.md         # Docs updated (full workflow only)
+└── command-output.md            # Final report
+```
+
+---
+
+## Project Documentation
+
+Agents read and update:
+
+```
+.claude/docs/
+├── ARCHITECTURE.md      # Architecture decisions
+├── BUSINESS_RULES.md    # Business logic
+├── COMPONENTS.md        # UI components
+├── PATTERNS.md          # Code patterns
+├── PROJECT_STRUCTURE.md # Project structure
+└── SERVICES.md          # Services
+```
+
+---
+
+## Status Codes
+
+Each output file starts with a status:
+
+- `Status: Done` — completed successfully
+- `Status: Failed - reason` — could not complete
+- `Status: Needs Review - reason` — needs human review
+
+---
+
+## Troubleshooting
+
+1. Check `tasks/{task-id}/command-output.md` for summary
+2. Read the output file of the failed agent
+3. Rerun with a clarified description if needed

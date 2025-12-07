@@ -1,0 +1,180 @@
+# Tester Output Example
+
+## Standard Output Format
+
+```markdown
+Status: Done
+
+# Testing Report for Error Modal
+
+## Code Review Results
+
+### Standards Compliance
+
+✅ No forbidden items (any, interface, function)
+✅ TypeScript naming correct (DTO/SDTO/T/E)
+✅ Props named PropsT
+✅ Using const everywhere
+✅ Path aliases used correctly
+✅ Memoization applied
+✅ SCSS mobile-first
+
+### Quality Checks
+
+✅ Matches Architect's plan
+✅ Acceptance criteria fulfilled
+✅ Error handling present
+✅ Accessibility implemented
+
+### Visual Checks
+
+✅ No overlapping elements
+✅ All elements visible
+✅ UI is functional
+
+## Test Coverage
+
+### Unit Tests Written
+
+- ✅ `src/services/errorModalService.test.ts` - 6 tests, all passing
+- ✅ `src/components/modal/ErrorModal/ErrorModal.test.tsx` - 8 tests, all passing
+
+**Coverage summary:**
+
+- Services: 100% ✅
+- Components: 100% ✅
+- Business logic: covered ✅
+
+### E2E Tests Written
+
+- ✅ `tests/error-modal.spec.ts` - 4 tests, all passing
+
+### Test Execution Results
+```
+
+yarn test
+✅ All unit tests passed (14/14)
+
+yarn test:e2e
+✅ All e2e tests passed (4/4)
+
+```
+
+## Bugs Found
+
+None
+
+## Acceptance Criteria Check
+
+From BA requirements:
+
+- ✅ User sees popup when API call fails
+- ✅ Popup shows error title and message
+- ✅ User can close popup with button click
+- ✅ User can close popup with Escape key
+- ✅ Dialog is accessible via screen reader
+
+## Summary
+
+**Status:** Done
+**Tests written:** 14 unit + 4 e2e
+**Tests passing:** All
+**Bugs found:** 0
+**Iteration:** 1/2
+```
+
+## Failed Status Example
+
+```markdown
+Status: Failed - Found bugs (iteration 1/2)
+
+# Testing Report for Error Modal
+
+## Bugs Found
+
+### Bug 1: Modal doesn't close on Escape
+
+**Severity:** High
+**File:** src/components/modal/ErrorModal/ErrorModal.tsx
+**Line:** 34
+**Description:** KeyDown event listener not attached to document
+**Expected:** Pressing Escape closes the modal
+**Actual:** Nothing happens when Escape is pressed
+**Steps to reproduce:**
+
+1. Trigger an API error
+2. Modal appears
+3. Press Escape key
+4. Modal stays open
+
+**Suggested fix:** Add useEffect with document.addEventListener('keydown', handler)
+
+### Bug 2: Missing aria-label on close button
+
+**Severity:** Medium
+**File:** src/components/modal/ErrorModal/ErrorModal.tsx
+**Line:** 45
+**Description:** Close button has no aria-label
+**Expected:** Screen reader announces "Close error dialog"
+**Actual:** Screen reader says nothing meaningful
+
+**Suggested fix:** Add `aria-label="Close error dialog"` to button
+
+## Summary
+
+**Status:** Failed - Found 2 bugs
+**Tests written:** 14 unit + 4 e2e
+**Tests passing:** 12/14 (2 failing due to bugs)
+**Bugs found:** 1 high, 1 medium
+**Iteration:** 1/2
+```
+
+## Test Writing Examples
+
+### Unit Test
+
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { ErrorModal } from './ErrorModal';
+
+describe('ErrorModal', () => {
+  it('should render title and message', () => {
+    render(
+      <ErrorModal title="Error" message="Something went wrong" onClose={vi.fn()} />
+    );
+
+    expect(screen.getByText('Error')).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+  });
+
+  it('should call onClose when close button clicked', () => {
+    const onClose = vi.fn();
+    render(<ErrorModal title="Error" message="Test" onClose={onClose} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /close/i }));
+
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+});
+```
+
+### E2E Test
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Error Modal', () => {
+  test('should show modal on API error', async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[data-testid="email"]', 'invalid@test.com');
+    await page.fill('[data-testid="password"]', 'wrong');
+    await page.click('[data-testid="submit"]');
+
+    await expect(page.locator('[data-testid="error-modal"]')).toBeVisible();
+    await expect(page.locator('[data-testid="error-title"]')).toContainText(
+      'Error',
+    );
+  });
+});
+```

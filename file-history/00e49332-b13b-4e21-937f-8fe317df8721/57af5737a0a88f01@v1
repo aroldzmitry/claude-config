@@ -1,0 +1,333 @@
+# Agent Analyzer
+
+Analyze what went wrong and generate improvement recommendations. **Does not apply changes** — use `/agent:update` to apply.
+
+**Use case:** Something failed or worked poorly — analyze why and get recommendations.
+**Output:** List of recommendations for user to choose from.
+
+## Dialog Style
+
+- Use `AskUserQuestion` for all user interactions
+- Auto-detect scope/file when mentioned in conversation
+- Keep responses short — show details only when asked
+
+## Your Task
+
+1. **Select scope** — auto-detect or ask
+2. **Check improvement history** — silently, mention only if relevant
+3. **Review conversation history** — find where user requested fixes or pointed out issues
+4. **If unclear — ask user** — what specifically didn't work
+5. **Identify the pattern** — what type of issue was it
+6. **Assess severity** — is this worth a rule change?
+7. **Determine responsible agent** — which agent should have caught this
+8. **Research best practices** — search web for proven solutions
+9. **Self-critique proposal** — validate before presenting
+10. **Output recommendations** — user chooses what to apply via `/agent:update`
+
+## Analysis Steps
+
+### Step 0: Select Scope
+
+**Auto-detect (by priority):**
+1. Explicit path (`~/.claude/` or `.claude/`) → use that scope
+2. Scope keyword ("global" or "project") → use that scope
+3. File/agent name → search project first, then global
+4. Ambiguous → ask user
+
+**Edge case:** If file exists in BOTH scopes, ask which one to analyze.
+
+**Only if unclear**, use `AskUserQuestion`:
+```json
+{"questions": [{"question": "Which scope?", "header": "Scope", "options": [
+  {"label": "Global", "description": "~/.claude/"},
+  {"label": "Project", "description": ".claude/"}
+], "multiSelect": false}]}
+```
+
+### Step 1: Check Improvement History
+
+Check if improvement history exists in selected scope:
+
+```
+{scope}/agents/.improvements/history.md
+```
+
+- Has similar issue been addressed before?
+- Did previous fix work or need revision?
+- Is this a recurring pattern?
+
+If recurring (3+ times), note this — may need systemic solution.
+
+### Step 1.5: Check for Duplicate Recommendations
+
+Before generating new recommendations:
+
+1. Read improvement history:
+   ```
+   {scope}/agents/.improvements/history.md
+   ```
+
+2. Filter out issues that:
+   - Match previously applied changes (Status: Applied)
+   - Are currently pending in suggestions.md
+   - Address same root cause as recent fixes
+
+3. If issue was already addressed:
+   - Show user: "This issue was addressed on [date] with [change]"
+   - Ask: "Re-analyze anyway? [Yes/No]"
+
+### Step 2: Find User Corrections
+
+Look for patterns in conversation:
+
+- "This should be X, not Y"
+- "Missing X"
+- "Wrong X"
+- "Forgot to X"
+- "X doesn't work"
+- Direct edits user requested after agent output
+- **User provided their own solution** — proposal was insufficient
+
+### Step 2.5: Context Management
+
+For long conversation histories (100+ messages):
+
+- Summarize older messages into key decisions
+- Retain only recent 20-30 messages in full detail
+- Focus on user corrections and explicit feedback
+
+### Step 3: If Unclear — Ask User
+
+If problem is not clear, use `AskUserQuestion`:
+```json
+{"questions": [{"question": "What went wrong?", "header": "Problem", "options": [
+  {"label": "Wrong output", "description": "Incorrect result"},
+  {"label": "Missing step", "description": "Forgot something"},
+  {"label": "Too verbose", "description": "Too much text"},
+  {"label": "Not interactive", "description": "Should ask questions"}
+], "multiSelect": true}]}
+```
+
+**Do not proceed until clear.**
+
+### Step 4: Map Issue to Agent
+
+| Issue Type            | Primary Agent   | File                        |
+| --------------------- | --------------- | --------------------------- |
+| UI/styling            | Developer       | `agents/developer.md`       |
+| Missing functionality | Developer       | `agents/developer.md`       |
+| Wrong business logic  | BA or Developer | `agents/business-analyst.md`|
+| Missing tests         | Tester          | `agents/tester.md`          |
+| Missed edge cases     | Tester          | `agents/tester.md`          |
+| Accessibility         | Developer       | `agents/developer.md`       |
+| Responsive/mobile     | Developer       | `agents/developer.md`       |
+| Documentation         | Documenter      | `agents/documenter.md`      |
+| Unclear requirements  | BA              | `agents/business-analyst.md`|
+
+### Step 4.5: Assess Severity
+
+| Severity | Description                          | Action                                   |
+| -------- | ------------------------------------ | ---------------------------------------- |
+| Critical | Broken functionality, security issue | Immediate fix + mandatory checklist item |
+| High     | Missing common pattern               | Add to checklist                         |
+| Medium   | Edge case missed                     | Add to examples section                  |
+| Low      | Style/preference                     | Document in notes, don't add rule        |
+
+Low severity issues may not warrant agent changes.
+
+### Step 5: Read Agent File
+
+Read the identified agent file completely. Find:
+
+- Missing rules
+- Incomplete checklists
+- Missing examples
+- Vague instructions
+
+### Step 6: Research Best Practices
+
+**When to research:**
+- First time seeing this issue type
+- Issue severity is High or Critical
+- User explicitly requested research
+- No clear pattern in conversation history
+
+**When to skip:**
+- Low severity issues
+- Well-known patterns (missing tests, typos)
+- Time-sensitive fixes
+- Issue already has clear solution in conversation
+
+**Search the web for:**
+
+- How other Claude Code agents handle this issue
+- Best practices for AI agent instructions
+- Community solutions in `awesome-claude-code` repositories
+
+Search queries:
+
+- `"Claude Code agent" [issue type] best practices`
+- `"AI coding agent" [issue type] instructions`
+- `claude agent prompt [issue type]`
+
+**Extract actionable patterns** from research.
+
+### Step 7: Self-Critique
+
+Before presenting, critique your own proposals:
+
+**Conceptual checks:**
+- Does this solve the root cause or just the symptom?
+- Could this rule cause false positives?
+- Is this the minimal change needed?
+- Will this conflict with existing rules?
+- Is this generalizable or too specific?
+
+**Empirical validation:**
+- Would this rule have prevented the original issue?
+- Test against 2-3 similar scenarios from conversation history
+
+If concerns found, refine before presenting.
+
+### Step 8: Output Recommendations
+
+**Format recommendations as a numbered list for user to choose from:**
+
+```
+## Analysis
+
+**Issue found:** [what user had to correct]
+**Severity:** [Critical/High/Medium/Low]
+**Root cause:** [why agent missed this]
+**Agent to improve:** [agent name]
+**File:** [path]
+
+## Research Findings
+
+**Sources checked:**
+- [source 1]: [key insight]
+- [source 2]: [key insight]
+
+**Best practice identified:** [what works well]
+
+---
+
+## Recommendations
+
+Select which recommendations to apply with `/agent:update`:
+
+### 1. [Short title]
+**Section:** [section name]
+**Type:** Add | Modify | Remove
+**Change:**
+```markdown
+[exact text to add/change]
+```
+**Rationale:** [why this prevents the issue]
+
+### 2. [Short title]
+**Section:** [section name]
+**Type:** Add | Modify | Remove
+**Change:**
+```markdown
+[exact text to add/change]
+```
+**Rationale:** [why this helps]
+
+### 3. [Short title]
+...
+```
+
+### Step 9: Ask User to Choose
+
+Use `AskUserQuestion`:
+```json
+{"questions": [{"question": "Which recommendations to apply?", "header": "Apply", "options": [
+  {"label": "All", "description": "Apply all recommendations"},
+  {"label": "1 only", "description": "[title of rec 1]"},
+  {"label": "1 and 2", "description": "First two recommendations"},
+  {"label": "None", "description": "Skip for now"}
+], "multiSelect": false}]}
+```
+
+### Step 10: Save Recommendations
+
+Save recommendations to file for `/agent:update` to consume:
+
+```
+{scope}/agents/.improvements/suggestions.md
+```
+
+Format:
+```markdown
+## [date] - Recommendations for [agent name]
+
+**Issue:** [brief description]
+**Generated by:** /agent:improve
+
+### Selected: [user's choice]
+
+[Copy selected recommendations here with full details]
+```
+
+Then inform user:
+```
+Recommendations saved to {scope}/agents/.improvements/suggestions.md
+
+To apply, run: /agent:update
+```
+
+## Guardrails
+
+- Maximum 5 recommendations per session
+- If same issue appears 3+ times after fixes, escalate to documentation review
+- Avoid "rule for every edge case" — look for generalizable patterns
+- Never add rules that duplicate existing functionality
+- **Prefer general mechanisms over specific fixes**
+
+## Rules
+
+- **Analysis only** — never apply changes directly
+- **Ask first if unclear** — don't guess what user wants
+- **Always research before proposing** — find proven solutions
+- Read full agent file before proposing changes
+- Make recommendations minimal and focused
+- Save recommendations for `/agent:update` to apply
+
+## Example Flow
+
+```
+User: /agent:improve
+
+Claude: [Uses AskUserQuestion: "What went wrong?"]
+
+User: [Selects "Missing step"]
+
+Claude: [Uses AskUserQuestion: "Which agent?"]
+
+User: [Selects "Developer"]
+
+Claude:
+## Analysis
+**Issue found:** Missing loading states
+**Severity:** High
+**Agent:** Developer
+
+## Recommendations
+
+### 1. Add Loading States Checklist
+**Section:** UI Standards
+**Change:** [shows exact text]
+
+### 2. Add Example
+**Section:** Examples
+**Change:** [shows example]
+
+Claude: [Uses AskUserQuestion: "Which to apply?"]
+
+User: [Selects "1 only"]
+
+Claude:
+Saved to ~/.claude/agents/.improvements/suggestions.md
+To apply, run: /agent:update
+```

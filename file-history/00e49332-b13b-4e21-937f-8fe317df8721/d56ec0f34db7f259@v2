@@ -1,0 +1,52 @@
+# Suggestions Log
+
+Track improvement suggestions per file to avoid repetition.
+
+Format:
+```
+## [date] - [file-name]
+
+### Suggestion: {title}
+**Severity:** Low | Medium | High
+**Description:** {what to improve}
+**Status:** Pending | Implemented | Rejected
+```
+
+---
+
+## 2025-12-05 - agent:improve.md
+
+### Suggestion: Add explicit forbidden tools list
+**Severity:** High
+**Description:** agent:improve applied changes directly instead of delegating to agent:update. Add explicit FORBIDDEN tools section to Rules.
+**Status:** Pending
+
+**File:** `/Users/dmitry/.claude/commands/agent:improve.md`
+**Section:** `## Rules`
+**Type:** Modify
+**Change:**
+
+Replace current Rules section with:
+
+```markdown
+## Rules
+
+- **Analysis only** — NEVER use Edit, Write, or any file-modification tools
+- **Delegate changes** — all modifications go through `/agent:update`
+- **Ask first if unclear** — don't guess what user wants
+- **Always research before proposing** — find proven solutions
+- Read full agent file before proposing changes
+- Make recommendations minimal and focused
+- Save recommendations for `/agent:update` to apply
+
+**FORBIDDEN tools in this command:**
+- Edit
+- Write
+- NotebookEdit
+- Any tool that modifies files
+
+If you catch yourself about to use Edit/Write — STOP and save to suggestions.md instead.
+```
+
+---
+

@@ -1,0 +1,7 @@
+# Command Improvements History
+
+## 2025-12-05 - agent:create.md (update)
+
+**Idea:** Replace manual validation checklist with agent-check subagent call
+**Change:** Step 7 now invokes agent-check for automated validation, then applies recommendations based on whether they align with user's original request or need user confirmation
+**Status:** Applied

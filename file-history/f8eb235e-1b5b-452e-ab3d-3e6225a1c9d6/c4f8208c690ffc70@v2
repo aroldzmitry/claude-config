@@ -1,0 +1,161 @@
+# Developer Output Example
+
+## Standard Output Format
+
+```markdown
+Status: Done
+
+# Implementation for Error Modal
+
+## Files Created
+
+- `src/components/modal/ErrorModal/ErrorModal.tsx` ✅
+- `src/components/modal/ErrorModal/ErrorModal.module.scss` ✅
+- `src/components/modal/ErrorModal/index.ts` ✅
+- `src/services/errorModalService.ts` ✅
+
+## Files Modified
+
+- `src/services/api/axiosInstance.ts` ✅
+- `src/components/modal/index.ts` ✅
+
+## Files Deleted
+
+None
+
+## Implementation Summary
+
+### What Was Done
+
+Created ErrorModal component following the modal pattern from COMPONENTS.md. Implemented errorModalService as singleton to manage modal state. Added axios interceptor to catch API errors and display them via the modal.
+
+### Key Components/Functions
+
+- **ErrorModal** – Displays error title and message with close button
+- **errorModalService** – Singleton service with show(error) and hide() methods
+- **axiosErrorInterceptor** – Catches 4xx/5xx and triggers errorModalService
+
+### Type Definitions Created
+
+- `ErrorModalPropsT` – Component props (title, message, onClose)
+- `ApiErrorT` – Error shape from API (status, message, details)
+
+### Integration Points
+
+- ErrorModal uses base Modal component from Components/modal
+- errorModalService uses React context for rendering
+- Interceptor added to shared axios instance
+
+## Checks Performed
+
+### Prettier Formatting
+
+✅ All modified files formatted with Prettier
+
+Files formatted:
+
+- src/components/modal/ErrorModal/ErrorModal.tsx
+- src/components/modal/ErrorModal/ErrorModal.module.scss
+- src/services/errorModalService.ts
+
+### TypeScript
+
+✅ tsc --noEmit - no errors
+
+### ESLint
+
+✅ yarn lint passed
+
+Warnings found:
+
+- src/services/errorModalService.ts:12 - prefer-const (minor)
+
+## Environment Variables Needed
+
+None
+
+## Notes for Tester
+
+### What to Test
+
+1. Trigger API error (e.g., invalid login) → modal appears
+2. Click close button → modal closes
+3. Press Escape → modal closes
+4. Multiple rapid errors → handled gracefully
+
+### Edge Cases to Verify
+
+- Error during page load
+- Error while modal already open
+- Network disconnect error
+
+### Known Limitations
+
+- Only one error shown at a time (by design)
+```
+
+## TypeScript Naming Conventions
+
+```typescript
+// API response data
+type UserDTO = { id: string; name: string };
+
+// API request data
+type CreateUserSDTO = { name: string; email: string };
+
+// General type
+type UserT = { id: string; name: string };
+
+// Enum
+enum UserRoleE {
+  Admin = 'admin',
+  User = 'user',
+}
+
+// Component props - ALWAYS named PropsT
+type PropsT = { onSubmit: (data: LoginDataT) => void };
+```
+
+## Code Style Rules
+
+```typescript
+// ✅ Correct - const + arrow function
+export const Component = (props: PropsT) => {
+  const handleClick = useCallback(() => {
+    props.onClick();
+  }, [props.onClick]);
+
+  return <div onClick={handleClick}>{props.title}</div>;
+};
+
+// ❌ Wrong - function keyword
+export function Component(props: PropsT) { }
+
+// ❌ Wrong - interface
+interface PropsT { }
+
+// ❌ Wrong - destructuring props
+export const Component = ({ title }: PropsT) => { };
+```
+
+## SCSS Mobile-First
+
+```scss
+// ✅ Correct - mobile first
+.component {
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: 50%;
+  }
+}
+
+// ❌ Wrong - desktop first
+.component {
+  width: 50%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+```

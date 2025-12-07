@@ -1,0 +1,159 @@
+Status: Done
+
+# Business Analyst Output
+
+## Task Summary
+
+**Task ID:** task-001-test
+**Task:** Add an error modal that shows API errors to the user.
+
+---
+
+## Problem Statement
+
+Currently, the application handles API errors in the axios interceptor (`src/shared/requestClient/axiosClient.ts`) but does not display these errors to the user visually. The `notificationService.addErrorAlert()` method only logs errors to the console (line 75-77 in `notificationService.ts`). Users have no way to see when API requests fail, leading to confusion and poor user experience.
+
+---
+
+## Functional Requirements
+
+### FR-1: Error Modal Component
+
+The system shall display a modal dialog when API errors occur that are not specifically handled (e.g., not 400 validation errors or 401 authorization errors).
+
+**Acceptance Criteria:**
+- AC-1.1: Modal shall display a user-friendly error title (e.g., "Something went wrong")
+- AC-1.2: Modal shall display the error message when available
+- AC-1.3: Modal shall have a dismiss/close button
+- AC-1.4: Modal shall close when clicking outside the modal content
+- AC-1.5: Modal shall use the existing `Modal` component pattern
+
+### FR-2: Error Service Integration
+
+The system shall provide a service method to trigger the error modal from anywhere in the application.
+
+**Acceptance Criteria:**
+- AC-2.1: A new method in a service (e.g., `modalService` or `errorModalService`) shall open the error modal
+- AC-2.2: The method shall accept an error message parameter
+- AC-2.3: The method shall be callable from axios interceptors, repository hooks, and components
+
+### FR-3: API Error Interception
+
+The system shall intercept unhandled API errors and display them via the error modal.
+
+**Acceptance Criteria:**
+- AC-3.1: Errors that are not ValidationError (400) or AuthorizationError (401) shall trigger the error modal
+- AC-3.2: Network errors (timeout, connection refused) shall display a user-friendly message
+- AC-3.3: Server errors (5xx) shall display a generic "Server error" message
+
+---
+
+## Non-Functional Requirements
+
+### NFR-1: Consistency
+- Error modal shall follow existing modal patterns documented in PATTERNS.md
+- Error modal shall use existing UI components (AuButton for close action)
+- Error modal shall follow the naming convention: `ERROR` in `ModalNameE`
+
+### NFR-2: Accessibility
+- Error modal shall be keyboard accessible (closable via Escape key - native dialog behavior)
+- Error modal shall trap focus while open (native dialog behavior)
+
+### NFR-3: Performance
+- Error modal shall not introduce additional re-renders to unrelated components
+- Error modal component shall be lightweight
+
+---
+
+## Scope
+
+### In Scope
+1. Create new modal type `ERROR` in `ModalNameE`
+2. Define props type for error modal in `ModalPropsT`
+3. Create `ErrorModal` component
+4. Extend error handling to display modal for unhandled API errors
+5. Update axios interceptor or add global error handler
+
+### Out of Scope
+1. Retry functionality for failed requests
+2. Error logging/tracking beyond Sentry (already configured)
+3. Custom error styling beyond standard modal styling
+4. Error modal for client-side JavaScript errors (Error Boundary already handles this)
+
+---
+
+## Existing Patterns to Follow
+
+### Modal Pattern (from PATTERNS.md)
+- Use `modalService.open(ModalNameE.ERROR, { message: string })` to trigger
+- Use `modalService.close(ModalNameE.ERROR)` to dismiss
+- Modal state managed in `GlobalStoreFieldE.MODALS`
+
+### Component Structure (from COMPONENTS.md)
+- Modal component uses HTML `<dialog>` element
+- Props include: `name: ModalNameE`, `title: string`, `children: ReactNode`
+- Uses `useGlobalValue(GlobalStoreFieldE.MODALS)` for state subscription
+
+### Error Handling (from ARCHITECTURE.md)
+- Axios interceptor is the appropriate place for global API error handling
+- Services should transform errors to user-friendly messages
+
+---
+
+## Technical Constraints
+
+1. Must use existing `Modal` component as base
+2. Must follow `ModalNameE` enum pattern for modal identification
+3. Must follow `ModalPropsT` type mapping for type-safe props
+4. Must integrate with existing axios interceptor in `axiosClient.ts`
+
+---
+
+## Dependencies
+
+### Existing Components/Services Required
+- `Modal` component (`src/components/modal/Modal.tsx`)
+- `modalService` (`src/services/modalService.ts`)
+- `ModalNameE` enum (`src/components/modal/ModalNameE.ts`)
+- `ModalPropsT` type (`src/components/modal/ModalPropsT.ts`)
+- `axiosClient` interceptor (`src/shared/requestClient/axiosClient.ts`)
+- `AuButton` component for close action
+
+---
+
+## User Stories
+
+### US-1: View API Errors
+**As a** user
+**I want to** see a clear message when an API request fails
+**So that** I understand something went wrong and can take appropriate action
+
+### US-2: Dismiss Error Modal
+**As a** user
+**I want to** close the error modal after reading the message
+**So that** I can continue using the application
+
+---
+
+## Open Questions
+
+None. The existing modal pattern and documentation provide clear implementation guidance.
+
+---
+
+## Risks
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Modal appears too frequently for transient errors | Low | Medium | Only show for unhandled errors, not retryable network blips |
+| Error messages expose sensitive information | Low | High | Use generic messages for server errors, only show safe error text |
+
+---
+
+## Deliverables
+
+1. Updated `ModalNameE.ts` with `ERROR` entry
+2. Updated `ModalPropsT.ts` with error modal props type
+3. New `ErrorModal` component
+4. Updated axios interceptor to trigger error modal
+5. Integration tests for error modal behavior

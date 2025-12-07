@@ -1,0 +1,343 @@
+# Agent Improver
+
+Analyze the current conversation to identify which agent needs improvement based on user feedback and corrections made during the session.
+
+## Dialog Style
+
+- Use `AskUserQuestion` for all user interactions (not plain text)
+- Auto-detect scope/file when mentioned in conversation
+- Keep responses short — show details only when asked
+
+## Your Task
+
+1. **Select scope** — auto-detect or ask
+2. **Check improvement history** — silently, mention only if relevant
+3. **Review conversation history** — find where user requested fixes or pointed out issues
+4. **If unclear — ask user** — what specifically didn't work or needs improvement
+5. **Identify the pattern** — what type of issue was it (UI, logic, validation, tests, etc.)
+6. **Assess severity** — is this worth a rule change or just documentation?
+7. **Determine responsible agent** — which agent should have caught or prevented this
+8. **Research best practices** — search web for how similar tools solve this
+9. **Self-critique proposal** — validate before presenting
+10. **Propose improvement** — specific change to agent instructions
+11. **Track and validate** — log change and verify it works
+
+## Analysis Steps
+
+### Step 0: Select Scope
+
+**Auto-detect (by priority):**
+1. Explicit path (`~/.claude/` or `.claude/`) → use that scope
+2. Scope keyword ("global" or "project") → use that scope
+3. File/agent name → search project first, then global
+4. Ambiguous → ask user
+
+**Edge case:** If file exists in BOTH scopes, ask which one to improve.
+
+**Only if unclear**, use `AskUserQuestion`:
+```json
+{"questions": [{"question": "Which scope?", "header": "Scope", "options": [
+  {"label": "Global", "description": "~/.claude/"},
+  {"label": "Project", "description": ".claude/"}
+], "multiSelect": false}]}
+```
+
+### Step 1: Check Improvement History
+
+Before analysis, check if improvement history exists in selected scope:
+
+```
+{scope}/agents/.improvements/history.md
+```
+
+- Has similar issue been addressed before?
+- Did previous fix work or need revision?
+- Is this a recurring pattern across agents?
+
+If recurring (3+ times), consider systemic solution instead of another patch.
+
+### Step 2: Find User Corrections
+
+Look for patterns in conversation:
+
+- "This should be X, not Y"
+- "Missing X"
+- "Wrong X"
+- "Forgot to X"
+- "X doesn't work"
+- Direct edits user requested after agent output
+- **User provided their own solution** — if user wrote the fix themselves, this means your proposal was insufficient or wrong
+
+### Step 2.5: Context Management
+
+For long conversation histories (100+ messages):
+
+- Summarize older messages into key decisions and changes
+- Retain only recent 20-30 messages in full detail
+- Focus on user corrections and explicit feedback
+- Skip redundant tool outputs from analysis
+
+This prevents context bloat and improves analysis accuracy.
+
+### Step 3: If Unclear — Ask User
+
+If problem is not clear from conversation, use `AskUserQuestion`:
+```json
+{"questions": [{"question": "What went wrong?", "header": "Problem", "options": [
+  {"label": "Wrong output", "description": "Incorrect result"},
+  {"label": "Missing step", "description": "Forgot something"},
+  {"label": "Too verbose", "description": "Too much text"},
+  {"label": "Not interactive", "description": "Should ask questions"}
+], "multiSelect": true}]}
+```
+
+**Do not proceed until clear.**
+
+### Step 4: Map Issue to Agent
+
+| Issue Type            | Primary Agent   | File                        |
+| --------------------- | --------------- | --------------------------- |
+| UI/styling            | Developer       | `agents/developer.md`       |
+| Missing functionality | Developer       | `agents/developer.md`       |
+| Wrong business logic  | BA or Developer | `agents/business-analyst.md`|
+| Missing tests         | Tester          | `agents/tester.md`          |
+| Missed edge cases     | Tester          | `agents/tester.md`          |
+| Accessibility         | Developer       | `agents/developer.md`       |
+| Responsive/mobile     | Developer       | `agents/developer.md`       |
+| Documentation         | Documenter      | `agents/documenter.md`      |
+| Unclear requirements  | BA              | `agents/business-analyst.md`|
+
+File paths depend on selected scope:
+
+| Scope   | Agents              | Commands              | Skills              |
+| ------- | ------------------- | --------------------- | ------------------- |
+| Global  | `~/.claude/agents/` | `~/.claude/commands/` | `~/.claude/skills/` |
+| Project | `.claude/agents/`   | `.claude/commands/`   | `.claude/skills/`   |
+
+### Step 4.5: Assess Severity
+
+| Severity | Description                          | Action                                   |
+| -------- | ------------------------------------ | ---------------------------------------- |
+| Critical | Broken functionality, security issue | Immediate fix + mandatory checklist item |
+| High     | Missing common pattern               | Add to checklist                         |
+| Medium   | Edge case missed                     | Add to examples section                  |
+| Low      | Style/preference                     | Document in notes, don't add rule        |
+
+Low severity issues may not warrant agent changes — document and move on.
+
+### Step 5: Read Agent File
+
+Read the identified agent file completely. Find:
+
+- Missing rules
+- Incomplete checklists
+- Missing examples
+- Vague instructions
+
+### Step 6: Research Best Practices
+
+**Before proposing changes, search the web for:**
+
+- How other Claude Code agents/skills handle this issue
+- Best practices for AI agent instructions
+- Examples from `anthropics/skills` repository
+- Community solutions in `awesome-claude-code` repositories
+
+Search queries to use:
+
+- `"Claude Code agent" [issue type] best practices`
+- `"AI coding agent" [issue type] instructions`
+- `anthropics/skills [relevant topic]`
+- `claude agent prompt [issue type]`
+
+**Extract actionable patterns** from research before proposing changes.
+
+### Step 7: Propose Change
+
+**IMPORTANT:** Show ALL changes in detail before asking for confirmation. User must see exactly what will change — current text and proposed text for each modification.
+
+Show analysis with research findings:
+
+```
+## Analysis
+
+**Issue found:** [what user had to correct]
+**Severity:** [Critical/High/Medium/Low]
+**Root cause:** [why agent missed this]
+**Agent to improve:** [agent name]
+**File:** [path]
+
+## Research Findings
+
+**Sources checked:**
+- [source 1]: [key insight]
+- [source 2]: [key insight]
+
+**Best practice identified:** [what works well in similar tools]
+
+## Proposed Change
+
+**Section:** [section name in agent file]
+
+**Add/Modify:**
+```
+
+[exact text to add or change, informed by research]
+
+```
+
+**Rationale:** [why this prevents the issue + how it aligns with best practices]
+```
+
+### Step 7.5: Self-Critique
+
+Before presenting to user, critique your own proposal:
+
+**Conceptual checks:**
+- Does this solve the root cause or just the symptom?
+- Could this rule cause false positives or over-engineering?
+- Is this the minimal change needed?
+- Will this conflict with existing rules?
+- Is this generalizable or too specific to one case?
+
+**Empirical validation:**
+- Would this rule have prevented the original issue?
+- Test against 2-3 similar scenarios from conversation history
+- Check if proposed rule contradicts any existing working patterns
+
+If concerns found, refine the proposal before presenting.
+
+### Step 7.75: Progressive Disclosure
+
+For complex improvements affecting multiple sections:
+
+1. **Start with summary** — what changes and why (1-2 sentences)
+2. **Show detailed diff** — section by section
+3. **Provide rationale** — link to research findings
+4. **Offer full context** — only if user asks for more detail
+
+Don't dump all details at once — let user drill down as needed.
+
+### Step 8: Ask Confirmation
+
+Use `AskUserQuestion`:
+```json
+{"questions": [{"question": "Apply this change?", "header": "Confirm", "options": [
+  {"label": "Yes", "description": "Apply and backup"},
+  {"label": "Edit first", "description": "Modify proposal"},
+  {"label": "No", "description": "Cancel"}
+], "multiSelect": false}]}
+```
+
+### Step 9: Create Backup & Apply
+
+If user confirms:
+
+1. Create backup directory in selected scope:
+
+   ```
+   {scope}/agents/.backups/    # for agents
+   {scope}/commands/.backups/  # for commands
+   {scope}/skills/.backups/    # for skills
+   ```
+
+   Where `{scope}` is `~/.claude` (global) or `.claude` (project).
+
+2. Save full file copy with rotation (keep last 2):
+
+   - Delete `{name}.bak2` if exists
+   - Move `{name}.bak1` → `{name}.bak2`
+   - Copy **entire current file** → `{name}.bak1`
+
+   Example: `.claude/agents/.backups/developer.md.bak1`
+
+3. Apply the change using Edit tool
+
+4. Report:
+
+   ```
+   Done: [file path]
+   Backup: [backup path]
+   ```
+
+5. Log to improvement history in selected scope:
+
+   ```
+   {scope}/agents/.improvements/history.md
+   ```
+
+   Format:
+
+   ```
+   ## [date] - [agent name]
+   **Issue:** [brief description]
+   **Change:** [what was added/modified]
+   **Status:** Pending validation
+   ```
+
+### Step 10: Post-Improvement Tracking
+
+After applying change, inform user:
+
+```
+To validate this improvement:
+1. Test the scenario that triggered this change
+2. If issue recurs, run /agent:improve again
+3. After 3 successful uses, update history status to "Validated"
+```
+
+Improvement is not verified until tested in practice.
+
+## Migration Between Scopes
+
+When moving files between global and project scope:
+
+1. **Create file in target scope** — write the updated content
+2. **Verify new file** — confirm it was created correctly
+3. **Delete old file** — remove from source scope
+4. **Update backups** — store backup in target scope
+
+**Never leave duplicate files** in both scopes after migration.
+
+## Guardrails
+
+- Maximum 3 improvement proposals per session
+- If same issue appears 3+ times after fixes, escalate to documentation review
+- Avoid "rule for every edge case" — look for generalizable patterns
+- Never add rules that duplicate existing functionality
+- **Prefer general mechanisms over specific fixes** — if a rule can be expressed as a general principle (e.g., "scope hierarchy"), don't add specific examples of that principle as separate rules
+
+## Rules
+
+- **Ask first if unclear** — don't guess what user wants to improve
+- **Show all changes** — display complete diff for every change before applying
+- **Always research before proposing** — find proven solutions
+- **Clean up after migration** — delete old files when moving between scopes
+- Read full agent file before proposing changes
+- Make minimal, focused changes
+- Never remove existing rules
+- Always create backup before editing
+
+## Example Flow
+
+**Scenario: User calls `/agent:improve` — problem unclear**
+
+```
+Claude: [Uses AskUserQuestion: "What went wrong?"]
+
+User: [Selects "Missing step"]
+
+Claude: [Uses AskUserQuestion: "Which agent?"]
+
+User: [Selects "Developer"]
+
+Claude: Found issue. Proposing to add loading states checklist.
+
+[Shows short diff]
+
+Claude: [Uses AskUserQuestion: "Apply this change?"]
+
+User: [Selects "Yes"]
+
+Claude: Done. Backup: ~/.claude/agents/.backups/developer.md.bak1
+```

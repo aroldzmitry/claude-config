@@ -1,0 +1,93 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+
+import { useModalData } from 'Components/modal/useModalData';
+import { modalService } from 'Services/modalService';
+import { ModalNameE } from 'Components/modal/ModalNameE';
+
+import ErrorModal from './ErrorModal';
+
+vi.mock('Components/modal/useModalData');
+vi.mock('Services/modalService');
+vi.mock('Components/modal/Modal', () => ({
+  default: ({
+    children,
+    name,
+    title,
+  }: {
+    children: React.ReactNode;
+    name: string;
+    title: string;
+  }) => (
+    <div
+      data-testid="modal"
+      data-name={name}
+      data-title={title}
+    >
+      {children}
+    </div>
+  ),
+}));
+
+describe('ErrorModal', () => {
+  const mockUseModalData = useModalData as ReturnType<typeof vi.fn>;
+  const mockModalService = modalService as {
+    close: ReturnType<typeof vi.fn>;
+  };
+
+  beforeEach(() => {
+    mockUseModalData.mockReturnValue({
+      props: { message: 'Test error message' },
+    });
+    mockModalService.close = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should render error message from modal data', () => {
+    render(<ErrorModal />);
+
+    expect(screen.getByText('Test error message')).toBeInTheDocument();
+  });
+
+  it('should render close button', () => {
+    render(<ErrorModal />);
+
+    const closeButton = screen.getByRole('button', {
+      name: /close error dialog/i,
+    });
+
+    expect(closeButton).toBeInTheDocument();
+    expect(closeButton).toHaveTextContent('Close');
+  });
+
+  it('should call modalService.close when close button is clicked', () => {
+    render(<ErrorModal />);
+
+    const closeButton = screen.getByRole('button', {
+      name: /close error dialog/i,
+    });
+    fireEvent.click(closeButton);
+
+    expect(mockModalService.close).toHaveBeenCalledWith(ModalNameE.ERROR);
+    expect(mockModalService.close).toHaveBeenCalledTimes(1);
+  });
+
+  it('should have proper accessibility attributes', () => {
+    render(<ErrorModal />);
+
+    const messageElement = screen.getByRole('alert');
+
+    expect(messageElement).toHaveAttribute('aria-live', 'assertive');
+  });
+
+  it('should render with correct modal name and type', () => {
+    render(<ErrorModal />);
+
+    const modal = screen.getByTestId('modal');
+
+    expect(modal).toHaveAttribute('data-name', ModalNameE.ERROR);
+    expect(modal).toHaveAttribute('data-title', 'Error');
+  });
+});

@@ -1,0 +1,11 @@
+2025-12-04T22:33:40.744Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:33:40.745Z [DEBUG] Getting matching hook commands for SessionEnd with query: clear
+2025-12-04T22:33:40.745Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:33:40.745Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T22:33:40.746Z [DEBUG] Cleared all session hooks for session 5503380d-f88e-486b-a2b1-5a37ca91e5d2
+2025-12-04T22:33:40.755Z [DEBUG] Getting matching hook commands for SessionStart with query: clear
+2025-12-04T22:33:40.755Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:33:40.755Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T22:33:40.760Z [DEBUG] FileHistory: Added snapshot for 3d3ab594-2367-4125-9adc-7c5ebc9f3a0b, tracking 0 files
+2025-12-04T22:33:40.762Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-04T22:33:40.762Z [DEBUG] isSkillFormat: false, prefix: "/"

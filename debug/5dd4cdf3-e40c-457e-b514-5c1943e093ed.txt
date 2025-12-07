@@ -1,0 +1,1453 @@
+2025-12-05T20:42:05.347Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T20:42:05.590Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T20:42:05.591Z [DEBUG] Getting matching hook commands for SessionEnd with query: clear
+2025-12-05T20:42:05.591Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:42:05.591Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-05T20:42:05.592Z [DEBUG] Cleared all session hooks for session 95d6a748-663c-42c2-bcab-12f44438560b
+2025-12-05T20:42:05.600Z [DEBUG] Getting matching hook commands for SessionStart with query: clear
+2025-12-05T20:42:05.600Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:42:05.600Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-05T20:42:05.602Z [DEBUG] FileHistory: Added snapshot for 39b40613-8d2b-49b2-a875-0b4840dc90b7, tracking 0 files
+2025-12-05T20:42:05.605Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-05T20:42:05.605Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-05T20:42:05.676Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T20:42:05.676Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:42:05.676Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:42:05.686Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:42:06.534Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T20:42:06.534Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:42:06.534Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:42:09.964Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T20:42:39.401Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:42:39.401Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:42:39.401Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T20:42:39.401Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T20:42:39.406Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T20:42:39.406Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T20:42:39.420Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T20:42:39.420Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:42:39.420Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:42:39.421Z [DEBUG] FileHistory: Making snapshot for message d43024aa-64d1-4ae6-b89d-2b2c558371d3
+2025-12-05T20:42:39.421Z [DEBUG] FileHistory: Added snapshot for d43024aa-64d1-4ae6-b89d-2b2c558371d3, tracking 0 files
+2025-12-05T20:42:39.431Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T20:42:39.444Z [DEBUG] Total plugin output styles loaded: 0
+2025-12-05T20:42:39.449Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T20:42:39.994Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:42:42.380Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:42:52.115Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T20:42:52.115Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:42:52.115Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:44:10.177Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:44:10.177Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:44:10.177Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T20:44:10.178Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T20:44:10.178Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T20:44:10.183Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T20:44:10.183Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T20:44:10.515Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 338ms
+2025-12-05T20:44:10.524Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T20:44:10.524Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:44:10.524Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:44:10.525Z [DEBUG] FileHistory: Making snapshot for message da015599-4cd4-4b7d-8fb5-5046c4d21003
+2025-12-05T20:44:10.525Z [DEBUG] FileHistory: Added snapshot for da015599-4cd4-4b7d-8fb5-5046c4d21003, tracking 0 files
+2025-12-05T20:44:10.532Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T20:44:10.536Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T20:44:11.175Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:13.095Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:18.121Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-05T20:44:18.123Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-05T20:44:18.123Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:18.123Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T20:44:18.139Z [DEBUG] Getting matching hook commands for SubagentStart with query: claude-code-guide
+2025-12-05T20:44:18.139Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:44:18.139Z [DEBUG] Matched 0 unique hooks for query "claude-code-guide" (0 before deduplication)
+2025-12-05T20:44:18.969Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:20.324Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:20.330Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:20.330Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:20.330Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:20.330Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T20:44:20.334Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T20:44:20.334Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:20.334Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T20:44:20.352Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T20:44:20.364Z [ERROR] Error: Error: EISDIR: illegal operation on a directory, read
+    at readFileSync (unknown)
+    at readFileSync (/$bunfs/root/claude:12:370)
+    at cpB (/$bunfs/root/claude:4303:17669)
+    at call (/$bunfs/root/claude:1386:912)
+    at call (/$bunfs/root/claude:1382:5711)
+    at TI7 (/$bunfs/root/claude:2958:17002)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T20:44:20.370Z [DEBUG] Getting matching hook commands for PostToolUseFailure with query: Read
+2025-12-05T20:44:20.370Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:44:20.370Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T20:44:21.729Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:29.243Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:29.243Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:29.243Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:29.259Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:44:29.259Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:44:30.913Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:32.759Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:32.762Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:32.765Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:32.768Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:32.771Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:32.771Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:32.771Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:32.771Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:32.771Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:32.771Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:32.771Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:32.771Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:32.771Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:32.771Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:32.771Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:32.771Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:33.669Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:34.126Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:34.474Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:36.314Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:37.550Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:37.550Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:37.550Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:39.935Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:39.935Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:39.935Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:40.223Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-05T20:44:40.223Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-05T20:44:40.264Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967480264
+2025-12-05T20:44:40.264Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:44:40.264Z [DEBUG] Temp file written successfully, size: 47527 bytes
+2025-12-05T20:44:40.264Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:44:40.264Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967480264 to /Users/dmitry/.claude.json
+2025-12-05T20:44:40.264Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:44:40.266Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967480266
+2025-12-05T20:44:40.266Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:44:40.266Z [DEBUG] Temp file written successfully, size: 47600 bytes
+2025-12-05T20:44:40.266Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:44:40.266Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967480266 to /Users/dmitry/.claude.json
+2025-12-05T20:44:40.266Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:44:42.801Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:42.801Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:42.801Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:44.124Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:44.124Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:44.124Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:44.133Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:44:44.133Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:44:44.984Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:46.552Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:46.553Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:46.554Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:46.556Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:46.557Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:46.557Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:46.557Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:46.557Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:46.557Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:46.557Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:46.557Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:46.557Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:46.557Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:46.558Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:46.558Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:46.558Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:47.309Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:47.505Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:47.676Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:47.681Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:50.860Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:50.860Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:50.860Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:51.510Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:51.510Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:51.510Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:51.672Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:51.672Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:51.672Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:51.713Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:51.713Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:51.713Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:51.720Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:44:51.720Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:44:52.723Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:54.313Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:54.315Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:54.316Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:54.317Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:44:54.321Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:54.321Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:54.321Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:54.321Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:54.321Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:54.321Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:54.321Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:54.321Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:54.321Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:54.321Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:44:54.321Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:54.321Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:55.151Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:55.262Z [ERROR] AxiosError: Error
+    at VP (/$bunfs/root/claude:174:1143)
+    at <anonymous> (/$bunfs/root/claude:175:10086)
+    at emit (node:events:92:22)
+    at endReadableNT (internal:streams/readable:861:50)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:177:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T20:44:55.268Z [DEBUG] Getting matching hook commands for PostToolUseFailure with query: WebFetch
+2025-12-05T20:44:55.268Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:44:55.268Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:55.392Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:56.037Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:44:58.609Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:58.609Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:58.609Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:59.233Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:59.233Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:59.233Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:59.929Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:44:59.929Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:44:59.929Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:44:59.940Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:44:59.940Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:45:01.288Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:02.841Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:45:02.843Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:45:02.844Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:45:02.845Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:45:02.846Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:45:02.846Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:02.846Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:02.846Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:45:02.846Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:02.846Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:02.846Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:45:02.846Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:02.846Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:02.846Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:45:02.846Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:02.846Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:03.751Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:03.865Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:03.943Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:04.380Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:07.504Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:45:07.504Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:07.504Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:07.816Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:45:07.816Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:07.816Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:08.309Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:45:08.309Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:08.309Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:09.165Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:45:09.165Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:09.165Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:09.175Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:45:09.175Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:45:10.719Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:12.524Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:45:12.525Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:45:12.527Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:45:12.529Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:45:12.529Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:12.529Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:12.529Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:45:12.529Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:12.529Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:12.529Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:45:12.529Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:12.529Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:13.243Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:13.710Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:14.128Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:45:17.262Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:45:17.262Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:17.262Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:17.821Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:45:17.821Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:17.821Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:18.752Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:45:18.752Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:45:18.752Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:45:18.763Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:45:18.763Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:45:20.148Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:46:15.650Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T20:46:15.650Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:46:15.650Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:46:15.653Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-05T20:46:15.653Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:46:15.653Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T20:46:15.686Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T20:46:15.904Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:46:15.904Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:46:15.904Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T20:46:15.904Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T20:46:15.904Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T20:46:15.906Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T20:46:15.906Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T20:46:16.241Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 337ms
+2025-12-05T20:46:18.746Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:46:25.087Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-05T20:46:25.087Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-05T20:46:25.112Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967585112
+2025-12-05T20:46:25.112Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:46:25.112Z [DEBUG] Temp file written successfully, size: 47527 bytes
+2025-12-05T20:46:25.112Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:46:25.112Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967585112 to /Users/dmitry/.claude.json
+2025-12-05T20:46:25.112Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:46:25.117Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967585117
+2025-12-05T20:46:25.117Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:46:25.117Z [DEBUG] Temp file written successfully, size: 47600 bytes
+2025-12-05T20:46:25.117Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:46:25.117Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967585117 to /Users/dmitry/.claude.json
+2025-12-05T20:46:25.117Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:46:25.118Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T20:46:25.317Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T20:46:32.324Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T20:46:35.380Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T20:46:35.421Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T20:46:35.421Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:46:35.421Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:46:57.550Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T20:46:57.552Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T20:46:57.730Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967617730
+2025-12-05T20:46:57.730Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:46:57.731Z [DEBUG] Temp file written successfully, size: 47527 bytes
+2025-12-05T20:46:57.731Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:46:57.731Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967617730 to /Users/dmitry/.claude.json
+2025-12-05T20:46:57.731Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:46:57.733Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967617733
+2025-12-05T20:46:57.733Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:46:57.733Z [DEBUG] Temp file written successfully, size: 47600 bytes
+2025-12-05T20:46:57.733Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:46:57.733Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967617733 to /Users/dmitry/.claude.json
+2025-12-05T20:46:57.733Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:47:35.427Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T20:47:35.427Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:47:35.428Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T20:51:34.204Z [DEBUG] Detected change to /Users/dmitry/.claude/settings.json
+2025-12-05T20:51:34.215Z [DEBUG] Settings changed from userSettings, updating AppState
+2025-12-05T20:51:34.216Z [DEBUG] Replacing all allow rules for destination 'userSettings' with 16 rule(s): ["Bash(mkdir:*)","Bash(npx prettier --write:*)","Read(.claude/**)","Write(.claude/**)","Edit(.claude/**)","Read(tasks/**)","Write(tasks/**)","Edit(tasks/**)","Bash(git add:*)","SlashCommand(/task:architect task-1764889273)","Bash(yarn type-check:*)","Bash(cat:*)","Bash(npx tsc --noEmit)","Bash(yarn lint:*)","Bash(yarn test:*)","Read(//Users/dmitry/.claude-code-docs/docs/**)"]
+2025-12-05T20:51:34.216Z [DEBUG] Replacing all deny rules for destination 'userSettings' with 2 rule(s): ["Read(.env)","Read(../.env)"]
+2025-12-05T20:51:34.216Z [DEBUG] Replacing all allow rules for destination 'localSettings' with 8 rule(s): ["Bash(mkdir:*)","Bash(npx prettier:*)","Bash(npx eslint:*)","Bash(npx tsc:*)","Read(**)","Write(**)","Edit(**)","Bash(git add:*)"]
+2025-12-05T20:51:34.216Z [DEBUG] Replacing all deny rules for destination 'localSettings' with 2 rule(s): ["Read(.env)","Read(../.env)"]
+2025-12-05T20:53:13.348Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-05T20:53:13.348Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-05T20:53:13.354Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T20:53:13.386Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967993386
+2025-12-05T20:53:13.386Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:53:13.386Z [DEBUG] Temp file written successfully, size: 47970 bytes
+2025-12-05T20:53:13.387Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:53:13.387Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967993386 to /Users/dmitry/.claude.json
+2025-12-05T20:53:13.387Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:53:13.390Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764967993390
+2025-12-05T20:53:13.390Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T20:53:13.390Z [DEBUG] Temp file written successfully, size: 48043 bytes
+2025-12-05T20:53:13.390Z [DEBUG] Applied original permissions to temp file
+2025-12-05T20:53:13.390Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764967993390 to /Users/dmitry/.claude.json
+2025-12-05T20:53:13.390Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T20:53:13.390Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T20:53:13.645Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T20:53:20.650Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T20:55:50.955Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:55:50.955Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:55:50.955Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T20:55:50.956Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T20:55:50.956Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T20:55:50.961Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T20:55:50.961Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T20:55:51.320Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 365ms
+2025-12-05T20:55:51.329Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T20:55:51.329Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:55:51.329Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:55:51.330Z [DEBUG] FileHistory: Making snapshot for message f93806b6-42f4-42a4-b6b6-d1313674df63
+2025-12-05T20:55:51.330Z [DEBUG] FileHistory: Added snapshot for f93806b6-42f4-42a4-b6b6-d1313674df63, tracking 0 files
+2025-12-05T20:55:51.337Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T20:55:51.341Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T20:55:52.617Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:55:53.576Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:55:58.750Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-05T20:55:58.754Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-05T20:55:58.754Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:55:58.754Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T20:55:58.774Z [DEBUG] Getting matching hook commands for SubagentStart with query: claude-code-guide
+2025-12-05T20:55:58.774Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:55:58.774Z [DEBUG] Matched 0 unique hooks for query "claude-code-guide" (0 before deduplication)
+2025-12-05T20:55:59.725Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:00.833Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:56:00.837Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:56:00.837Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:00.837Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:56:01.850Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:05.158Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:56:05.158Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:05.158Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:56:05.174Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:56:05.174Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:56:05.919Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:06.922Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:56:06.926Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T20:56:06.930Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:56:06.930Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:06.930Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:56:06.930Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T20:56:06.930Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:06.930Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:56:07.870Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:08.190Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:09.774Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:56:09.774Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:09.774Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:56:11.452Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T20:56:11.452Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:11.452Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T20:56:11.468Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:56:11.468Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:56:12.713Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:13.436Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T20:56:13.439Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T20:56:13.440Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:13.440Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T20:56:13.448Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T20:56:13.467Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-05T20:56:13.467Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:13.467Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T20:56:13.478Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:56:13.478Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:56:14.616Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:15.325Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T20:56:15.329Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T20:56:15.329Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:15.329Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T20:56:15.341Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T20:56:15.358Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-05T20:56:15.358Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:15.358Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T20:56:15.370Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:56:15.370Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:56:16.863Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:25.842Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T20:56:25.842Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:56:25.842Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:56:25.859Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-05T20:56:25.859Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T20:56:25.859Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T20:56:25.875Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T20:56:25.875Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T20:56:25.875Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T20:56:25.876Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T20:56:25.876Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T20:56:25.880Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T20:56:25.880Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T20:56:26.208Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 333ms
+2025-12-05T20:56:28.434Z [DEBUG] Stream started - received first chunk
+2025-12-05T20:56:44.516Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T20:56:44.638Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T20:56:44.638Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:56:44.638Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T20:57:44.644Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T20:57:44.644Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T20:57:44.644Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:00:01.644Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:00:01.866Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:00:08.876Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:00:10.672Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:10.672Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:10.673Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:00:10.674Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:00:10.674Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:00:10.678Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:00:10.678Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:00:11.013Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 340ms
+2025-12-05T21:00:11.020Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:00:11.020Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:00:11.020Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:00:11.021Z [DEBUG] FileHistory: Making snapshot for message 1f54e78b-44ab-4252-8b49-10bcb96b786a
+2025-12-05T21:00:11.021Z [DEBUG] FileHistory: Added snapshot for 1f54e78b-44ab-4252-8b49-10bcb96b786a, tracking 0 files
+2025-12-05T21:00:11.029Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:00:11.032Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:00:11.672Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:13.766Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:18.075Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-05T21:00:18.079Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-05T21:00:18.079Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:18.079Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:00:18.098Z [DEBUG] Getting matching hook commands for SubagentStart with query: claude-code-guide
+2025-12-05T21:00:18.098Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:00:18.098Z [DEBUG] Matched 0 unique hooks for query "claude-code-guide" (0 before deduplication)
+2025-12-05T21:00:18.763Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:20.237Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:00:20.245Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:00:20.245Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:20.245Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:20.245Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T21:00:20.249Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T21:00:20.249Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:20.249Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T21:00:20.274Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:00:20.289Z [ERROR] Error: Error: EISDIR: illegal operation on a directory, read
+    at readFileSync (unknown)
+    at readFileSync (/$bunfs/root/claude:12:370)
+    at cpB (/$bunfs/root/claude:4303:17669)
+    at call (/$bunfs/root/claude:1386:912)
+    at call (/$bunfs/root/claude:1382:5711)
+    at TI7 (/$bunfs/root/claude:2958:17002)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:00:20.298Z [DEBUG] Getting matching hook commands for PostToolUseFailure with query: Read
+2025-12-05T21:00:20.298Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:00:20.298Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T21:00:21.532Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:24.629Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:00:24.629Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:24.629Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:24.647Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:24.647Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:25.469Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:26.158Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:00:26.162Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:00:26.162Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:26.162Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:27.005Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:29.989Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:00:29.989Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:29.989Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:30.009Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:30.009Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:31.256Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:31.964Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-05T21:00:31.968Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-05T21:00:31.968Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:31.968Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:00:32.856Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-05T21:00:32.856Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:32.856Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:00:32.868Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:32.868Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:33.704Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:34.196Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-05T21:00:34.200Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-05T21:00:34.200Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:34.200Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:00:34.786Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-05T21:00:34.786Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:34.786Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:00:34.799Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:34.799Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:35.668Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:36.119Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-05T21:00:36.123Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-05T21:00:36.123Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:36.123Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:00:36.691Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-05T21:00:36.691Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:36.691Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:00:36.702Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:36.702Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:37.709Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:38.888Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:00:38.891Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:00:38.895Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:00:38.895Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:38.895Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:38.895Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:00:38.895Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:38.895Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:39.661Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:39.922Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:43.105Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:00:43.105Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:43.105Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:44.708Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:00:44.708Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:44.708Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:44.725Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:44.725Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:45.800Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:46.698Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:00:46.701Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:00:46.701Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:46.701Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:47.748Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:00:50.746Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:00:50.746Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:00:50.746Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:00:50.764Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:00:50.764Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:00:52.390Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:01:09.876Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T21:01:09.876Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:01:09.876Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:01:09.885Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-05T21:01:09.885Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:01:09.885Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:01:09.903Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:01:09.903Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:01:09.903Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:01:09.904Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:01:09.904Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:01:09.910Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:01:09.910Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:01:10.236Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 333ms
+2025-12-05T21:01:12.324Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:01:33.517Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:01:33.520Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:01:33.520Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:01:33.521Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:01:33.571Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:01:33.571Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:01:33.571Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:02:33.581Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:02:33.581Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:02:33.581Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:04:15.338Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:04:15.339Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:04:15.339Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:04:15.339Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:04:15.339Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:04:15.344Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:04:15.344Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:04:16.310Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 971ms
+2025-12-05T21:04:16.320Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:04:16.320Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:04:16.320Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:04:16.321Z [DEBUG] FileHistory: Making snapshot for message d0a0a985-c03d-4281-81e1-96d8db1984c0
+2025-12-05T21:04:16.322Z [DEBUG] FileHistory: Added snapshot for d0a0a985-c03d-4281-81e1-96d8db1984c0, tracking 0 files
+2025-12-05T21:04:16.331Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:04:16.345Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:04:16.858Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:04:19.102Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:04:27.133Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:04:27.134Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:04:27.135Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:04:27.193Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:04:27.193Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:04:27.193Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:05:27.200Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:05:27.200Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:05:27.200Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:09:44.796Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:09:44.796Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:09:44.796Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:09:44.797Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:09:44.797Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:09:44.801Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:09:44.801Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:09:45.130Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 334ms
+2025-12-05T21:09:45.131Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764968985131
+2025-12-05T21:09:45.131Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T21:09:45.132Z [DEBUG] Temp file written successfully, size: 48068 bytes
+2025-12-05T21:09:45.132Z [DEBUG] Applied original permissions to temp file
+2025-12-05T21:09:45.132Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764968985131 to /Users/dmitry/.claude.json
+2025-12-05T21:09:45.132Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T21:09:45.136Z [DEBUG] FileHistory: Making snapshot for message 41c91f3a-44c3-4fa5-aa46-046827a93b55
+2025-12-05T21:09:45.136Z [DEBUG] FileHistory: Added snapshot for 41c91f3a-44c3-4fa5-aa46-046827a93b55, tracking 0 files
+2025-12-05T21:09:46.061Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:10:00.115Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:10:00.115Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:10:00.115Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:10:00.116Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:10:00.116Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:10:00.121Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:10:00.121Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:10:00.448Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 333ms
+2025-12-05T21:10:00.458Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:10:00.458Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:10:00.458Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:10:00.459Z [DEBUG] FileHistory: Making snapshot for message 1045435a-523c-4a32-9a4d-1817b4ab8eb9
+2025-12-05T21:10:00.460Z [DEBUG] FileHistory: Added snapshot for 1045435a-523c-4a32-9a4d-1817b4ab8eb9, tracking 0 files
+2025-12-05T21:10:00.468Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:10:00.472Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:10:01.199Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:10:02.975Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:10:08.173Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T21:10:08.176Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T21:10:08.176Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:10:08.176Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T21:10:08.194Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:10:08.212Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-05T21:10:08.212Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:10:08.212Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T21:10:08.234Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:10:08.234Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:10:08.235Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:10:08.235Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:10:08.235Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:10:08.239Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:10:08.239Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:10:08.563Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 328ms
+2025-12-05T21:10:12.568Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:10:19.185Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:10:19.240Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:10:19.240Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:10:19.240Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:11:19.249Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:11:19.249Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:11:19.249Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:11:38.636Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:11:38.844Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:11:42.235Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:12:10.194Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:12:10.196Z [DEBUG] UserCommandMessage rendering: "memory" (args: "none")
+2025-12-05T21:12:10.196Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-05T21:12:10.214Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:12:10.420Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:12:16.818Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:12:16.818Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:12:16.818Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:12:16.818Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:12:16.818Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:12:16.823Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:12:16.823Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:12:17.150Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 332ms
+2025-12-05T21:12:17.162Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:12:17.162Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:12:17.162Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:12:17.163Z [DEBUG] FileHistory: Making snapshot for message 9447afa1-59cc-4e22-b807-f0978db5eb12
+2025-12-05T21:12:17.164Z [DEBUG] FileHistory: Added snapshot for 9447afa1-59cc-4e22-b807-f0978db5eb12, tracking 0 files
+2025-12-05T21:12:17.172Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:12:17.177Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:12:17.426Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (unknown)
+    at async tx (unknown)
+    at unknown
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:12:18.757Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:12:20.490Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:12:22.789Z [DEBUG] executePreToolHooks called for tool: Edit
+2025-12-05T21:12:22.792Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2025-12-05T21:12:22.792Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:12:22.792Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2025-12-05T21:12:22.800Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:12:27.811Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 5s
+2025-12-05T21:12:27.815Z [DEBUG] FileHistory: Tracked file modification for /Users/dmitry/.claude/CLAUDE.md
+2025-12-05T21:12:27.818Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/CLAUDE.md.tmp.79613.1764969147818
+2025-12-05T21:12:27.818Z [DEBUG] Preserving file permissions: 100644
+2025-12-05T21:12:27.818Z [DEBUG] Temp file written successfully, size: 704 bytes
+2025-12-05T21:12:27.818Z [DEBUG] Applied original permissions to temp file
+2025-12-05T21:12:27.818Z [DEBUG] Renaming /Users/dmitry/.claude/CLAUDE.md.tmp.79613.1764969147818 to /Users/dmitry/.claude/CLAUDE.md
+2025-12-05T21:12:27.819Z [DEBUG] File /Users/dmitry/.claude/CLAUDE.md written atomically
+2025-12-05T21:12:27.833Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2025-12-05T21:12:27.833Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:12:27.833Z [DEBUG] Matched 2 unique hooks for query "Edit" (2 before deduplication)
+2025-12-05T21:12:27.859Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:12:31.219Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:12:31.263Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:12:31.263Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:12:31.263Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:12:31.264Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:12:31.264Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:12:31.268Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:12:31.268Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:12:31.593Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 330ms
+2025-12-05T21:12:33.853Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:12:35.056Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:12:35.056Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:12:35.056Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:13:21.317Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:13:21.317Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:13:21.318Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:13:21.319Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:13:21.319Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:13:21.322Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:13:21.322Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:13:21.651Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 333ms
+2025-12-05T21:13:21.653Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.79613.1764969201653
+2025-12-05T21:13:21.653Z [DEBUG] Preserving file permissions: 100600
+2025-12-05T21:13:21.654Z [DEBUG] Temp file written successfully, size: 48068 bytes
+2025-12-05T21:13:21.654Z [DEBUG] Applied original permissions to temp file
+2025-12-05T21:13:21.654Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.79613.1764969201653 to /Users/dmitry/.claude.json
+2025-12-05T21:13:21.654Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-05T21:13:21.659Z [DEBUG] FileHistory: Making snapshot for message e17749fa-01f7-4b2b-b5fe-4bc748ac49f1
+2025-12-05T21:13:21.659Z [DEBUG] FileHistory: Added snapshot for e17749fa-01f7-4b2b-b5fe-4bc748ac49f1, tracking 1 files
+2025-12-05T21:13:22.354Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:13:50.529Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:13:50.529Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:13:50.529Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:13:50.530Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:13:50.530Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:13:50.535Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:13:50.535Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:13:50.857Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 328ms
+2025-12-05T21:13:50.868Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:13:50.868Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:13:50.868Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:13:50.869Z [DEBUG] FileHistory: Making snapshot for message f55213b7-5f46-4e1b-b9fa-bf30947301b8
+2025-12-05T21:13:50.869Z [DEBUG] FileHistory: Added snapshot for f55213b7-5f46-4e1b-b9fa-bf30947301b8, tracking 1 files
+2025-12-05T21:13:50.878Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:13:50.884Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:13:51.505Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:13:52.958Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:13:54.557Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T21:13:54.560Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T21:13:54.560Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:13:54.560Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T21:13:54.575Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:13:54.593Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-05T21:13:54.593Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:13:54.593Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T21:13:54.615Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:13:54.615Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:13:54.615Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:13:54.616Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:13:54.616Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:13:54.620Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:13:54.620Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:13:54.938Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 323ms
+2025-12-05T21:13:57.014Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:13:59.775Z [DEBUG] executePreToolHooks called for tool: Edit
+2025-12-05T21:13:59.779Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2025-12-05T21:13:59.779Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:13:59.780Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2025-12-05T21:13:59.788Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:14:04.818Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 5s
+2025-12-05T21:14:04.823Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/CLAUDE.md.tmp.79613.1764969244823
+2025-12-05T21:14:04.823Z [DEBUG] Preserving file permissions: 100644
+2025-12-05T21:14:04.824Z [DEBUG] Temp file written successfully, size: 792 bytes
+2025-12-05T21:14:04.824Z [DEBUG] Applied original permissions to temp file
+2025-12-05T21:14:04.824Z [DEBUG] Renaming /Users/dmitry/.claude/CLAUDE.md.tmp.79613.1764969244823 to /Users/dmitry/.claude/CLAUDE.md
+2025-12-05T21:14:04.824Z [DEBUG] File /Users/dmitry/.claude/CLAUDE.md written atomically
+2025-12-05T21:14:04.839Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2025-12-05T21:14:04.839Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:14:04.839Z [DEBUG] Matched 2 unique hooks for query "Edit" (2 before deduplication)
+2025-12-05T21:14:04.868Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:14:08.195Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:14:08.238Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:14:08.238Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:14:08.238Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:14:08.239Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:14:08.239Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:14:08.243Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:14:08.243Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:14:08.566Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 328ms
+2025-12-05T21:14:11.365Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:14:12.542Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:14:12.542Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:14:12.542Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:15:14.134Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:15:14.135Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:15:14.135Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:15:14.135Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:15:14.135Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:15:14.140Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:15:14.140Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:15:14.466Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 331ms
+2025-12-05T21:15:14.477Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:15:14.477Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:15:14.477Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:15:14.478Z [DEBUG] FileHistory: Making snapshot for message 1340bd45-a0b1-4d25-848e-60b8dfddd8d6
+2025-12-05T21:15:14.479Z [DEBUG] FileHistory: Added snapshot for 1340bd45-a0b1-4d25-848e-60b8dfddd8d6, tracking 1 files
+2025-12-05T21:15:14.488Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:15:14.493Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:15:16.041Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:16.962Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:21.004Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-05T21:15:21.008Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-05T21:15:21.008Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:21.008Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:15:21.028Z [DEBUG] Getting matching hook commands for SubagentStart with query: claude-code-guide
+2025-12-05T21:15:21.028Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:15:21.028Z [DEBUG] Matched 0 unique hooks for query "claude-code-guide" (0 before deduplication)
+2025-12-05T21:15:22.232Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:23.497Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:15:23.504Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:15:23.504Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:23.504Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:15:23.504Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T21:15:23.507Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T21:15:23.507Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:23.507Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T21:15:23.529Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:15:23.540Z [ERROR] Error: Error: EISDIR: illegal operation on a directory, read
+    at readFileSync (unknown)
+    at readFileSync (/$bunfs/root/claude:12:370)
+    at cpB (/$bunfs/root/claude:4303:17669)
+    at call (/$bunfs/root/claude:1386:912)
+    at call (/$bunfs/root/claude:1382:5711)
+    at TI7 (/$bunfs/root/claude:2958:17002)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:15:23.546Z [DEBUG] Getting matching hook commands for PostToolUseFailure with query: Read
+2025-12-05T21:15:23.546Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:15:23.546Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T21:15:25.700Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:26.511Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:15:26.511Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:26.511Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:15:26.529Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:15:26.529Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:15:27.685Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:28.656Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:15:28.660Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-05T21:15:28.663Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:15:28.663Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:28.663Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:15:28.663Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-05T21:15:28.663Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:28.663Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:15:29.544Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:29.618Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-05T21:15:29.618Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:29.618Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:15:34.672Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:15:34.672Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:34.672Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:15:34.695Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:15:34.695Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:15:35.708Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:36.540Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:15:36.544Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:15:36.544Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:36.544Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:15:38.048Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:15:50.179Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:15:50.179Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:15:50.179Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:15:50.198Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:15:50.198Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:15:51.165Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:16:06.773Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T21:16:06.773Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:16:06.773Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:16:06.781Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-05T21:16:06.781Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:16:06.781Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:16:06.798Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:16:06.798Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:16:06.798Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:16:06.799Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:16:06.799Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:16:06.803Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:16:06.803Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:16:07.128Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 330ms
+2025-12-05T21:16:09.793Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:16:19.174Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:16:19.174Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:16:19.174Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:17:19.181Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:17:19.182Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:17:19.182Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:17:50.813Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:17:50.813Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:17:50.814Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:17:50.815Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:17:50.815Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:17:50.819Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:17:50.819Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:17:51.144Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 330ms
+2025-12-05T21:17:51.158Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:17:51.158Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:17:51.158Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:17:51.159Z [DEBUG] FileHistory: Making snapshot for message 3312af06-67fd-4003-a566-dec4011b34f5
+2025-12-05T21:17:51.160Z [DEBUG] FileHistory: Added snapshot for 3312af06-67fd-4003-a566-dec4011b34f5, tracking 1 files
+2025-12-05T21:17:51.170Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:17:51.176Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:17:51.858Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:17:54.022Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:18:07.229Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:18:07.262Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:18:07.262Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:18:07.262Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:19:07.270Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:19:07.270Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:19:07.270Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:21:06.017Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:21:06.017Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:21:06.017Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:21:06.018Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:21:06.018Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:21:06.023Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:21:06.023Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:21:06.356Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 339ms
+2025-12-05T21:21:06.366Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:21:06.366Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:21:06.366Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:21:06.368Z [DEBUG] FileHistory: Making snapshot for message a610c622-5983-4036-bd2c-77e4544734fa
+2025-12-05T21:21:06.368Z [DEBUG] FileHistory: Added snapshot for a610c622-5983-4036-bd2c-77e4544734fa, tracking 1 files
+2025-12-05T21:21:06.377Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:21:06.383Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:21:07.365Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:21:09.235Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:21:12.961Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-05T21:21:12.963Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-05T21:21:12.966Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-05T21:21:12.966Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:12.966Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:21:12.966Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-05T21:21:12.966Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:12.966Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:21:12.977Z [ERROR] RangeError: RangeError: path should be a `path.relative()`d string, but got ".."
+    at jz8 (/$bunfs/root/claude:1488:29233)
+    at cj (/$bunfs/root/claude:1488:29406)
+    at _test (/$bunfs/root/claude:1488:29944)
+    at tI (/$bunfs/root/claude:4303:12769)
+    at Ul (/$bunfs/root/claude:4303:13887)
+    at checkPermissions (/$bunfs/root/claude:2141:2475)
+    at async sQ7 (/$bunfs/root/claude:4078:4812)
+    at async <anonymous> (/$bunfs/root/claude:4078:6297)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:21:14.232Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-05T21:21:14.232Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:14.232Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:21:23.860Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-05T21:21:23.860Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:23.860Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:21:23.876Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:21:23.876Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:21:23.876Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:21:23.876Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:21:23.876Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:21:23.880Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:21:23.880Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:21:24.194Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 318ms
+2025-12-05T21:21:27.272Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:21:30.158Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T21:21:30.161Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T21:21:30.164Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-05T21:21:30.167Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T21:21:30.167Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:30.167Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T21:21:30.167Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T21:21:30.167Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:30.167Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T21:21:30.167Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-05T21:21:30.167Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:30.167Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2025-12-05T21:21:30.184Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:21:30.203Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-05T21:21:30.203Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:30.203Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T21:21:30.215Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:21:30.233Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-05T21:21:30.233Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:30.233Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T21:21:30.245Z [DEBUG] Hook output does not start with {, treating as plain text
+2025-12-05T21:21:30.263Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-05T21:21:30.263Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:21:30.263Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-05T21:21:30.285Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:21:30.285Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:21:30.285Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:21:30.286Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:21:30.286Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:21:30.290Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:21:30.290Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:21:30.609Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 324ms
+2025-12-05T21:21:34.057Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:21:48.061Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:21:48.062Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:21:48.291Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:21:48.291Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:21:48.291Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:22:48.301Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:22:48.301Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:22:48.301Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:24:50.199Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:24:50.199Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:24:50.199Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:24:50.200Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:24:50.200Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:24:50.204Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:24:50.204Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:24:50.530Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 331ms
+2025-12-05T21:24:50.542Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:24:50.542Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:24:50.542Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:24:50.543Z [DEBUG] FileHistory: Making snapshot for message 121e688b-a0f6-4bc3-81b8-5c7824ade4f3
+2025-12-05T21:24:50.543Z [DEBUG] FileHistory: Added snapshot for 121e688b-a0f6-4bc3-81b8-5c7824ade4f3, tracking 1 files
+2025-12-05T21:24:50.552Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:24:50.557Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:24:51.472Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:24:53.727Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:24:57.987Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-05T21:24:57.991Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-05T21:24:57.991Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:24:57.991Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:24:58.013Z [DEBUG] Getting matching hook commands for SubagentStart with query: claude-code-guide
+2025-12-05T21:24:58.013Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:24:58.013Z [DEBUG] Matched 0 unique hooks for query "claude-code-guide" (0 before deduplication)
+2025-12-05T21:24:59.534Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:00.908Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:25:00.912Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-05T21:25:00.915Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:25:00.915Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:00.915Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:00.915Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-05T21:25:00.915Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:00.915Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:25:01.662Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-05T21:25:01.662Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:01.662Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-05T21:25:02.003Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:05.893Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:25:05.893Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:05.893Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:05.911Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:25:05.911Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:25:06.740Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:07.973Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:25:07.977Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:25:07.981Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:25:07.981Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:07.981Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:07.981Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:25:07.981Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:07.981Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:08.975Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:09.517Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:11.873Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:25:11.873Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:11.873Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:12.848Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:25:12.848Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:12.848Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:12.866Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:25:12.866Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:25:13.751Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:14.511Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:25:14.515Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:25:14.515Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:14.515Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:16.022Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:17.337Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:25:17.337Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:17.337Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:25:17.353Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:25:17.353Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:25:18.955Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:19.724Z [DEBUG] executePreToolHooks called for tool: WebSearch
+2025-12-05T21:25:19.729Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebSearch
+2025-12-05T21:25:19.729Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:19.729Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-05T21:25:22.952Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:42.726Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebSearch
+2025-12-05T21:25:42.726Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:42.726Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-05T21:25:42.742Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:25:42.742Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:25:43.617Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:25:48.597Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T21:25:48.597Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:25:48.597Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:25:48.620Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-05T21:25:48.620Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:25:48.620Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:25:48.637Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:25:48.637Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:25:48.637Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:25:48.638Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:25:48.638Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:25:48.642Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:25:48.642Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:25:48.964Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 327ms
+2025-12-05T21:25:51.540Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:26:01.862Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:26:01.863Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:26:01.898Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:26:01.898Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:26:01.898Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:26:59.965Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:26:59.965Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:26:59.965Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:26:59.966Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:26:59.966Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:26:59.972Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:26:59.972Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:27:00.295Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 330ms
+2025-12-05T21:27:00.307Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:27:00.307Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:27:00.307Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:27:00.308Z [DEBUG] FileHistory: Making snapshot for message d1b0d819-b576-40a0-a35f-3f2c3b91248d
+2025-12-05T21:27:00.308Z [DEBUG] FileHistory: Added snapshot for d1b0d819-b576-40a0-a35f-3f2c3b91248d, tracking 1 files
+2025-12-05T21:27:00.317Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:27:00.323Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:27:01.165Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:02.495Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:06.638Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-05T21:27:06.642Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-05T21:27:06.642Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:06.642Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:27:06.663Z [DEBUG] Getting matching hook commands for SubagentStart with query: claude-code-guide
+2025-12-05T21:27:06.663Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:27:06.663Z [DEBUG] Matched 0 unique hooks for query "claude-code-guide" (0 before deduplication)
+2025-12-05T21:27:08.077Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:09.197Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:27:09.202Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:27:09.202Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:09.202Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:10.472Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:13.590Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:27:13.590Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:13.590Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:13.609Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:27:13.609Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:27:14.719Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:16.017Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:27:16.021Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:27:16.024Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:27:16.024Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:16.024Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:16.024Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:27:16.024Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:16.024Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:17.239Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:17.285Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:20.093Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:27:20.093Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:20.093Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:22.603Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:27:22.603Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:22.603Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:22.622Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:27:22.622Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:27:23.472Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:24.363Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:27:24.367Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:27:24.367Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:24.367Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:25.321Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:28.633Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:27:28.633Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:28.633Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:27:28.650Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:27:28.650Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:27:30.062Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:39.627Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T21:27:39.627Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:27:39.627Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:27:39.636Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-05T21:27:39.636Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:27:39.636Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:27:39.657Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:27:39.657Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:27:39.657Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:27:39.658Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:27:39.658Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:27:39.662Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:27:39.662Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:27:39.983Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 326ms
+2025-12-05T21:27:43.978Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:27:56.257Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:27:56.261Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:27:56.261Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:27:56.291Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:27:56.291Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:27:56.291Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:28:56.298Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:28:56.298Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:28:56.298Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:30:30.132Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:30:30.132Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:30:30.133Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:30:30.133Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:30:30.133Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:30:30.138Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:30:30.138Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:30:30.461Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 328ms
+2025-12-05T21:30:30.473Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:30:30.473Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:30:30.473Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:30:30.475Z [DEBUG] FileHistory: Making snapshot for message 0231880a-85ee-48c4-a2b7-b933c2b2a6f1
+2025-12-05T21:30:30.475Z [DEBUG] FileHistory: Added snapshot for 0231880a-85ee-48c4-a2b7-b933c2b2a6f1, tracking 1 files
+2025-12-05T21:30:30.485Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:30:30.490Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:30:31.236Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:30:33.030Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:30:46.303Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:30:46.305Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:30:46.305Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:30:46.340Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:30:46.340Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:30:46.340Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:31:46.348Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:31:46.348Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:31:46.348Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:34:56.733Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:34:56.733Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:34:56.733Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:34:56.733Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:34:56.733Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:34:56.738Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:34:56.738Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:34:57.065Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 332ms
+2025-12-05T21:34:57.077Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-05T21:34:57.077Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:34:57.077Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:34:57.078Z [DEBUG] FileHistory: Making snapshot for message 935d5230-7cf0-4f12-b797-2de6bb51d9bd
+2025-12-05T21:34:57.078Z [DEBUG] FileHistory: Added snapshot for 935d5230-7cf0-4f12-b797-2de6bb51d9bd, tracking 1 files
+2025-12-05T21:34:57.087Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-05T21:34:57.092Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-05T21:34:57.921Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:34:59.736Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:04.094Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-05T21:35:04.097Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-05T21:35:04.097Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:04.097Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:35:04.112Z [DEBUG] Getting matching hook commands for SubagentStart with query: claude-code-guide
+2025-12-05T21:35:04.112Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:35:04.112Z [DEBUG] Matched 0 unique hooks for query "claude-code-guide" (0 before deduplication)
+2025-12-05T21:35:04.756Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:06.272Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:35:06.276Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:35:06.280Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:35:06.280Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:06.280Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:06.280Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:35:06.280Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:06.280Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:06.574Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:35:06.574Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:06.574Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:08.644Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:11.991Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:35:11.991Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:11.991Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:12.007Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:35:12.007Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:35:12.852Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:14.192Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:35:14.195Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:35:14.199Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:35:14.199Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:14.199Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:14.199Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:35:14.199Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:14.199Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:15.547Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:16.174Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:18.036Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:35:18.036Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:18.036Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:19.730Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:35:19.730Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:19.730Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:19.748Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:35:19.748Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:35:21.506Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:22.043Z [DEBUG] executePreToolHooks called for tool: WebSearch
+2025-12-05T21:35:22.047Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebSearch
+2025-12-05T21:35:22.047Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:22.047Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-05T21:35:23.522Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:54.778Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebSearch
+2025-12-05T21:35:54.778Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:54.778Z [DEBUG] Matched 0 unique hooks for query "WebSearch" (0 before deduplication)
+2025-12-05T21:35:54.795Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:35:54.795Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:35:55.911Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:35:57.277Z [DEBUG] executePreToolHooks called for tool: WebFetch
+2025-12-05T21:35:57.283Z [DEBUG] Getting matching hook commands for PreToolUse with query: WebFetch
+2025-12-05T21:35:57.283Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:35:57.283Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:35:58.837Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:36:02.880Z [DEBUG] Getting matching hook commands for PostToolUse with query: WebFetch
+2025-12-05T21:36:02.880Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:36:02.880Z [DEBUG] Matched 0 unique hooks for query "WebFetch" (0 before deduplication)
+2025-12-05T21:36:02.903Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:36:02.903Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:36:03.909Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:36:13.030Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-05T21:36:13.030Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:36:13.030Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:36:13.056Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-05T21:36:13.056Z [DEBUG] Found 1 hook matchers in settings
+2025-12-05T21:36:13.056Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-05T21:36:13.075Z [DEBUG] [TeammateMailbox] Checking mailbox for teammate=5dd4cdf3-e40c-457e-b514-5c1943e093ed session=5dd4cdf3-e40c-457e-b514-5c1943e093ed
+2025-12-05T21:36:13.075Z [DEBUG] [TeammateMailbox] Found 0 message(s) in mailbox
+2025-12-05T21:36:13.075Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-05T21:36:13.076Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-05T21:36:13.076Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-05T21:36:13.080Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-05T21:36:13.080Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-05T21:36:13.398Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 323ms
+2025-12-05T21:36:15.770Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:36:27.265Z [DEBUG] Language not supported while highlighting code, falling back to markdown:
+2025-12-05T21:36:27.308Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-05T21:36:27.308Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:36:27.308Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-05T21:37:27.318Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-05T21:37:27.318Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:37:27.318Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-05T21:42:10.411Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:42:17.419Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:49:56.549Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:49:56.767Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:49:58.734Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:50:03.777Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:50:04.861Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:50:04.990Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:50:12.008Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:50:43.805Z [DEBUG] Stream started - received first chunk
+2025-12-05T21:57:38.752Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:57:38.754Z [DEBUG] FileHistory: Making snapshot for message c7e8137d-e59e-4477-b679-a0d9f4531197
+2025-12-05T21:57:38.756Z [DEBUG] FileHistory: Added snapshot for c7e8137d-e59e-4477-b679-a0d9f4531197, tracking 1 files
+2025-12-05T21:57:38.761Z [DEBUG] UserCommandMessage rendering: "agents" (args: "none")
+2025-12-05T21:57:38.761Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-05T21:57:38.991Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:57:45.016Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:57:45.997Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.59 (expected in multi-process scenarios)
+    at Zh0 (/$bunfs/root/claude:2637:1622)
+    at gCA (/$bunfs/root/claude:2635:35603)
+    at async uG7 (/$bunfs/root/claude:2635:37711)
+    at async tx (/$bunfs/root/claude:2637:236)
+    at async <anonymous> (/$bunfs/root/claude:2637:13004)
+    at processTicksAndRejections (native:7:39)
+2025-12-05T21:57:58.340Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-05T21:57:58.456Z [DEBUG] Checking for native installer update to version 2.0.59
+2025-12-05T21:57:58.529Z [DEBUG] Getting matching hook commands for SessionEnd with query: prompt_input_exit
+2025-12-05T21:57:58.529Z [DEBUG] Found 0 hook matchers in settings
+2025-12-05T21:57:58.529Z [DEBUG] Matched 0 unique hooks for query "prompt_input_exit" (0 before deduplication)

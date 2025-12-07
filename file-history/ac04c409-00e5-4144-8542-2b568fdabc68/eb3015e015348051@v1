@@ -1,0 +1,7 @@
+# Improvement History
+
+## 2025-12-05 - agent:create (command)
+
+**Issue:** Questions asked as plain text instead of interactive AskUserQuestion
+**Change:** Added explicit instruction and example for using AskUserQuestion tool in Step 1
+**Status:** Pending validation

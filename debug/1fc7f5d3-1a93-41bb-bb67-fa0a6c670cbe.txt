@@ -1,0 +1,524 @@
+2025-12-04T16:47:17.840Z [DEBUG] Detected Homebrew cask installation: /usr/local/Caskroom/claude-code/2.0.58/claude
+2025-12-04T16:47:17.879Z [DEBUG] AutoUpdaterWrapper: Installation type: package-manager
+2025-12-04T16:47:17.883Z [DEBUG] Getting matching hook commands for SessionEnd with query: clear
+2025-12-04T16:47:17.883Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:17.883Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T16:47:17.895Z [DEBUG] Cleared all session hooks for session afff4d8b-ef5e-48ff-807a-256d9b7a8aec
+2025-12-04T16:47:17.913Z [DEBUG] Getting matching hook commands for SessionStart with query: clear
+2025-12-04T16:47:17.913Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:17.913Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T16:47:17.921Z [DEBUG] FileHistory: Added snapshot for ba24ba5d-9ea1-454a-ad88-d88b479d0ca2, tracking 0 files
+2025-12-04T16:47:17.942Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-04T16:47:17.942Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-04T16:47:18.034Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-04T16:47:18.034Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:18.034Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T16:47:26.265Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:47:40.331Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:47:40.332Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:47:40.339Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:47:40.339Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:47:40.383Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-04T16:47:40.383Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:40.383Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T16:47:40.386Z [DEBUG] FileHistory: Making snapshot for message ec9180e7-0ee4-4cb1-a637-7775ce2f9222
+2025-12-04T16:47:40.387Z [DEBUG] FileHistory: Added snapshot for ec9180e7-0ee4-4cb1-a637-7775ce2f9222, tracking 0 files
+2025-12-04T16:47:40.409Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-04T16:47:40.439Z [DEBUG] Total plugin output styles loaded: 0
+2025-12-04T16:47:40.450Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-04T16:47:41.881Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:47:44.151Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:47:52.402Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-04T16:47:52.412Z [DEBUG] executePreToolHooks called for tool: Glob
+2025-12-04T16:47:52.420Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-04T16:47:52.420Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:52.420Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-04T16:47:52.420Z [DEBUG] Getting matching hook commands for PreToolUse with query: Glob
+2025-12-04T16:47:52.420Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:52.420Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-04T16:47:54.680Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-04T16:47:54.681Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:54.681Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-04T16:47:54.713Z [DEBUG] Getting matching hook commands for PostToolUse with query: Glob
+2025-12-04T16:47:54.713Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:47:54.713Z [DEBUG] Matched 0 unique hooks for query "Glob" (0 before deduplication)
+2025-12-04T16:47:54.745Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:47:54.746Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:47:54.746Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:47:54.752Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:47:54.753Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:47:55.089Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 344ms
+2025-12-04T16:47:57.366Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:47:57.422Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:00.445Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:48:00.452Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:48:00.457Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:48:00.463Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:48:00.463Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:00.463Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:00.463Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:48:00.463Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:00.463Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:00.463Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:48:00.463Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:00.463Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:00.576Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:48:00.576Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:00.576Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:00.576Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:48:00.576Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:00.576Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:00.576Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:48:00.576Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:00.576Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:00.653Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:48:00.653Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:48:00.653Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:48:00.658Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:48:00.658Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:48:00.968Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 316ms
+2025-12-04T16:48:05.019Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:09.177Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T16:48:09.184Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:48:09.190Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T16:48:09.190Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:09.190Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:09.190Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:48:09.190Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:09.190Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:09.228Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:48:09.228Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:09.228Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:10.885Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T16:48:10.885Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:10.885Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:10.911Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:48:10.911Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:48:10.911Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:48:10.916Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:48:10.916Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:48:11.227Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 316ms
+2025-12-04T16:48:14.616Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:15.713Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:48:18.495Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T16:48:18.501Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:48:18.504Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T16:48:18.504Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:18.504Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:18.504Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:48:18.504Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:18.504Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:18.547Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:48:18.547Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:18.547Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:20.179Z [DEBUG] rg error (signal=null, code=2, stderr: warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use *-baseline build:
+  https://github.com/oven-sh/bun/releases/download/bun-v1.3.2/bun-darwin-x64-baseline.zip
+rg: unrecognized file type: tsx
+), 0 results
+2025-12-04T16:48:20.188Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T16:48:20.188Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:20.189Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:20.217Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:48:20.218Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:48:20.218Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:48:20.223Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:48:20.223Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:48:20.547Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 330ms
+2025-12-04T16:48:25.277Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:33.777Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:48:35.515Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-04T16:48:35.520Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-04T16:48:35.520Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:35.520Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T16:48:35.539Z [DEBUG] tree-sitter: WASM files not found
+2025-12-04T16:48:35.559Z [DEBUG] No session environment scripts found
+2025-12-04T16:48:35.668Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-04T16:48:35.668Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:35.668Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T16:48:35.692Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T16:48:35.696Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T16:48:35.696Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:35.696Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:36.756Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:37.344Z [DEBUG] rg error (signal=null, code=2, stderr: warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use *-baseline build:
+  https://github.com/oven-sh/bun/releases/download/bun-v1.3.2/bun-darwin-x64-baseline.zip
+rg: unrecognized file type: tsx
+), 0 results
+2025-12-04T16:48:37.354Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T16:48:37.354Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:37.354Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:37.381Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:48:37.381Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:48:37.381Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:48:37.386Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:48:37.386Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:48:37.696Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-04T16:48:40.072Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:43.080Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T16:48:43.083Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:48:43.086Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T16:48:43.086Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:43.086Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:43.086Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:48:43.086Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:43.086Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:43.120Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:48:43.120Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:43.120Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:44.765Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T16:48:44.765Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:44.766Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:44.788Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:48:44.789Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:48:44.789Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:48:44.794Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:48:44.794Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:48:45.108Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 320ms
+2025-12-04T16:48:47.980Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:49.745Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:48:49.750Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:48:49.750Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:49.750Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:49.770Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:48:49.770Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:49.770Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:48:49.792Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:48:49.792Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:48:49.792Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:48:49.799Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:48:49.799Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:48:50.111Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-04T16:48:50.802Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:48:53.844Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:48:56.276Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T16:48:56.282Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T16:48:56.282Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:56.282Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:57.963Z [DEBUG] rg error (signal=null, code=2, stderr: warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use *-baseline build:
+  https://github.com/oven-sh/bun/releases/download/bun-v1.3.2/bun-darwin-x64-baseline.zip
+rg: unrecognized file type: tsx
+), 0 results
+2025-12-04T16:48:57.973Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T16:48:57.973Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:48:57.973Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:48:57.997Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:48:57.998Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:48:57.998Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:48:58.003Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:48:58.003Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:48:58.317Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 320ms
+2025-12-04T16:49:00.896Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:49:03.331Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T16:49:03.336Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T16:49:03.336Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:49:03.336Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:49:05.003Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T16:49:05.003Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:49:05.003Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T16:49:05.025Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:49:05.026Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:49:05.026Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:49:05.031Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:49:05.031Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:49:05.337Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 312ms
+2025-12-04T16:49:08.784Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:49:09.959Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T16:49:09.962Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T16:49:09.962Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:49:09.962Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:49:09.985Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T16:49:09.985Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:49:09.985Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T16:49:10.012Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:49:10.013Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:49:10.013Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:49:10.018Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:49:10.018Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:49:10.327Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-04T16:49:11.565Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:49:15.062Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:50:12.754Z [DEBUG] executePreToolHooks called for tool: Write
+2025-12-04T16:50:12.765Z [DEBUG] Getting matching hook commands for PreToolUse with query: Write
+2025-12-04T16:50:12.765Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:50:12.765Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T16:50:12.779Z [DEBUG] Permission suggestions for Write: [
+  {
+    "type": "setMode",
+    "mode": "acceptEdits",
+    "destination": "session"
+  }
+]
+2025-12-04T16:50:12.810Z [DEBUG] MCP server "ide": Calling MCP tool: openDiff
+2025-12-04T16:50:12.834Z [DEBUG] executePermissionRequestHooks called for tool: Write
+2025-12-04T16:50:12.844Z [DEBUG] Getting matching hook commands for PermissionRequest with query: Write
+2025-12-04T16:50:12.844Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:50:12.844Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T16:50:18.814Z [DEBUG] Getting matching hook commands for Notification with query: permission_prompt
+2025-12-04T16:50:18.814Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:50:18.815Z [DEBUG] Matched 0 unique hooks for query "permission_prompt" (0 before deduplication)
+2025-12-04T16:50:20.395Z [DEBUG] MCP server "ide": Tool 'openDiff' completed successfully in 7s
+2025-12-04T16:50:20.400Z [DEBUG] MCP server "ide": Calling MCP tool: close_tab
+2025-12-04T16:50:20.452Z [DEBUG] Detected Homebrew cask installation: /usr/local/Caskroom/claude-code/2.0.58/claude
+2025-12-04T16:50:20.462Z [DEBUG] AutoUpdaterWrapper: Installation type: package-manager
+2025-12-04T16:50:20.479Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:50:20.485Z [DEBUG] MCP server "ide": Tool 'close_tab' completed successfully in 85ms
+2025-12-04T16:50:20.486Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 7ms
+2025-12-04T16:50:20.490Z [DEBUG] FileHistory: Tracked file modification for /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md
+2025-12-04T16:50:21.493Z [DEBUG] rg error (signal=undefined, code=ABORT_ERR, stderr: warn: CPU lacks AVX support, strange crashes may occur. Reinstall Bun or use *-baseline build:
+  https://github.com/oven-sh/bun/releases/download/bun-v1.3.2/bun-darwin-x64-baseline.zip
+), 0 results
+2025-12-04T16:50:21.494Z [ERROR] AbortError: AbortError: The operation was aborted.
+    at unknown
+    at abortChildProcess (node:child_process:937:42)
+    at onAbortListener2 (node:child_process:35:24)
+    at abort (unknown)
+    at <anonymous> (/$bunfs/root/claude:4309:2197)
+2025-12-04T16:50:21.495Z [DEBUG] Writing to temp file: /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.27415.1764867021495
+2025-12-04T16:50:21.496Z [DEBUG] Temp file written successfully, size: 10557 bytes
+2025-12-04T16:50:21.496Z [DEBUG] Renaming /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.27415.1764867021495 to /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md
+2025-12-04T16:50:21.496Z [DEBUG] File /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md written atomically
+2025-12-04T16:50:21.515Z [DEBUG] Getting matching hook commands for PostToolUse with query: Write
+2025-12-04T16:50:21.515Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:50:21.515Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T16:50:21.603Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T16:50:21.603Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T16:50:21.603Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T16:50:21.610Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T16:50:21.610Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T16:50:21.918Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 315ms
+2025-12-04T16:50:25.470Z [DEBUG] Stream started - received first chunk
+2025-12-04T16:50:28.053Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:50:37.031Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-04T16:50:37.031Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:50:37.032Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T16:50:52.325Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T16:51:37.053Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-04T16:51:37.053Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T16:51:37.054Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-04T16:52:08.444Z [DEBUG] BigQuery metrics exported successfully
+2025-12-04T16:52:08.444Z [DEBUG] BigQuery API Response: {
+  "accepted_count": 22,
+  "rejected_count": 0
+}
+2025-12-04T17:07:46.774Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T17:07:46.775Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T17:07:46.775Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T17:07:46.785Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T17:07:46.785Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T17:07:47.105Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 331ms
+2025-12-04T17:07:47.138Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-04T17:07:47.138Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:07:47.138Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T17:07:47.140Z [DEBUG] FileHistory: Making snapshot for message 9d571c3b-d9a5-4783-b03e-f85b778bf4a9
+2025-12-04T17:07:47.140Z [DEBUG] FileHistory: Missing tracked file: tasks/task-001-test/business-analyst-output.md
+2025-12-04T17:07:47.141Z [DEBUG] FileHistory: Added snapshot for 9d571c3b-d9a5-4783-b03e-f85b778bf4a9, tracking 1 files
+2025-12-04T17:07:47.160Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-04T17:07:47.179Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-04T17:07:48.037Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:07:49.559Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:07:55.027Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T17:07:55.028Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T17:07:55.028Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T17:07:55.036Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T17:07:55.036Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T17:07:55.346Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-04T17:07:57.790Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:08:00.455Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-04T17:08:00.459Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-04T17:08:00.459Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:08:00.459Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T17:08:00.598Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-04T17:08:00.598Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:08:00.598Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T17:08:00.621Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T17:08:00.621Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T17:08:00.621Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T17:08:00.625Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T17:08:00.625Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T17:08:00.940Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-04T17:08:01.834Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:08:03.509Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T17:08:04.540Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:08:05.978Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-04T17:08:05.982Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-04T17:08:05.982Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:08:05.982Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T17:08:06.094Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-04T17:08:06.094Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:08:06.094Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T17:08:06.118Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T17:08:06.118Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T17:08:06.118Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T17:08:06.123Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T17:08:06.123Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T17:08:06.432Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 314ms
+2025-12-04T17:08:07.203Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:08:09.207Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:08:21.257Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T17:08:51.867Z [DEBUG] executePreToolHooks called for tool: Write
+2025-12-04T17:08:51.872Z [DEBUG] Getting matching hook commands for PreToolUse with query: Write
+2025-12-04T17:08:51.872Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:08:51.872Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T17:08:51.884Z [DEBUG] Permission suggestions for Write: [
+  {
+    "type": "setMode",
+    "mode": "acceptEdits",
+    "destination": "session"
+  }
+]
+2025-12-04T17:08:51.906Z [DEBUG] MCP server "ide": Calling MCP tool: openDiff
+2025-12-04T17:08:51.915Z [DEBUG] executePermissionRequestHooks called for tool: Write
+2025-12-04T17:08:51.922Z [DEBUG] Getting matching hook commands for PermissionRequest with query: Write
+2025-12-04T17:08:51.922Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:08:51.922Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T17:08:56.383Z [DEBUG] MCP server "ide": Tool 'openDiff' completed successfully in 4s
+2025-12-04T17:08:56.385Z [DEBUG] MCP server "ide": Calling MCP tool: close_tab
+2025-12-04T17:08:56.427Z [DEBUG] Detected Homebrew cask installation: /usr/local/Caskroom/claude-code/2.0.58/claude
+2025-12-04T17:08:56.435Z [DEBUG] AutoUpdaterWrapper: Installation type: package-manager
+2025-12-04T17:08:56.448Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T17:08:56.452Z [DEBUG] MCP server "ide": Tool 'close_tab' completed successfully in 67ms
+2025-12-04T17:08:56.452Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 4ms
+2025-12-04T17:08:56.454Z [DEBUG] Writing to temp file: /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.27415.1764868136454
+2025-12-04T17:08:56.454Z [DEBUG] Temp file written successfully, size: 10557 bytes
+2025-12-04T17:08:56.454Z [DEBUG] Renaming /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.27415.1764868136454 to /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md
+2025-12-04T17:08:56.454Z [DEBUG] File /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md written atomically
+2025-12-04T17:08:56.469Z [DEBUG] Getting matching hook commands for PostToolUse with query: Write
+2025-12-04T17:08:56.469Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:08:56.469Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T17:08:56.509Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T17:08:56.510Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T17:08:56.510Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T17:08:56.515Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T17:08:56.515Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T17:08:57.083Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 574ms
+2025-12-04T17:08:59.491Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:09:01.047Z [DEBUG] executePreToolHooks called for tool: Bash
+2025-12-04T17:09:01.051Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2025-12-04T17:09:01.051Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:09:01.051Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T17:09:01.179Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2025-12-04T17:09:01.179Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:09:01.179Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2025-12-04T17:09:01.202Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T17:09:01.203Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T17:09:01.203Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T17:09:01.207Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T17:09:01.207Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T17:09:01.518Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 316ms
+2025-12-04T17:09:02.122Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:09:05.218Z [DEBUG] Stream started - received first chunk
+2025-12-04T17:09:07.160Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T17:09:14.826Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-04T17:09:14.826Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T17:09:14.826Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T17:09:30.115Z [ERROR] Error: Error
+    at <anonymous> (/$bunfs/root/claude:14:14648)
+    at <anonymous> (/$bunfs/root/claude:32:10252)
+    at emitError (node:events:43:23)
+    at <anonymous> (/$bunfs/root/claude:31:1146)
+    at emitError (node:events:43:23)
+    at <anonymous> (node:_http_client:250:22)
+    at processTicksAndRejections (native:7:39)
+    at request (/$bunfs/root/claude:34:2147)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T17:10:14.762Z [DEBUG] Detected Homebrew cask installation: /usr/local/Caskroom/claude-code/2.0.58/claude
+2025-12-04T17:10:14.767Z [DEBUG] AutoUpdaterWrapper: Installation type: package-manager

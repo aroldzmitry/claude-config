@@ -1,0 +1,73 @@
+# Plan: Fix Subagent Configuration Issues
+
+## Summary
+Fix critical naming inconsistencies and configuration issues in the subagent files to ensure proper routing and execution.
+
+---
+
+## Tasks
+
+### 1. Rename Agent Files (Critical)
+
+**Files to rename:**
+- `client/.claude/agents/tester-agent.md` → `client/.claude/agents/tester.md`
+- `client/.claude/agents/documenter-agent.md` → `client/.claude/agents/documenter.md`
+- `client/.claude/agents/developer-agent.md` → `client/.claude/agents/developer.md`
+
+**Reason:** Orchestrator references agents by name (`tester`, `documenter`, `developer`), but file names have `-agent` suffix causing routing failures.
+
+---
+
+### 2. Fix Orchestrator Tool Names
+
+**File:** `client/.claude/agents/orchestrator.md`
+
+**Change:**
+```
+# Before
+Tools: read_file, write_file, list_files, search_files
+
+# After
+Tools: Read, Write, Glob, Grep
+```
+
+**Reason:** All other agents use capitalized tool names (Read, Write, etc.). Orchestrator should be consistent.
+
+---
+
+### 3. Add Bash Tool to Developer Agent
+
+**File:** `client/.claude/agents/developer.md` (after rename)
+
+**Change:** Add `Bash` to the tools list since developer needs to run:
+- `npx prettier --write`
+- `yarn type-check`
+- `yarn lint`
+
+---
+
+### 4. (Optional) Upgrade Orchestrator Model
+
+**File:** `client/.claude/agents/orchestrator.md`
+
+**Change:** Consider upgrading from `haiku` to `sonnet` for better coordination reasoning.
+
+---
+
+## Files to Modify
+
+| Current Path | Action |
+|--------------|--------|
+| `client/.claude/agents/tester-agent.md` | Rename to `tester.md` |
+| `client/.claude/agents/documenter-agent.md` | Rename to `documenter.md` |
+| `client/.claude/agents/developer-agent.md` | Rename to `developer.md`, add Bash tool |
+| `client/.claude/agents/orchestrator.md` | Fix tool names |
+
+---
+
+## Verification
+
+After changes:
+1. Confirm all agent files follow naming convention: `{agent-name}.md`
+2. Confirm orchestrator tool names match other agents
+3. Confirm developer agent has Bash in tools list

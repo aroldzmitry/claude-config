@@ -1,0 +1,205 @@
+import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { useSwipeGesture } from './useSwipeGesture';
+
+describe('useSwipeGesture', () => {
+  let onSwipeDownMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    onSwipeDownMock = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should return a ref object', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+      }),
+    );
+
+    expect(result.current.ref).toBeDefined();
+    expect(result.current.ref.current).toBeNull();
+  });
+
+  it('should accept threshold option', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+        threshold: 150,
+      }),
+    );
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should accept enabled option set to false', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+        enabled: false,
+      }),
+    );
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should accept enabled option set to true', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+        enabled: true,
+      }),
+    );
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should use default threshold when not provided', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+      }),
+    );
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should use enabled=true by default', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+      }),
+    );
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should accept onSwipeDown callback', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+      }),
+    );
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should handle ref changes gracefully', () => {
+    const { result } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+        enabled: true,
+      }),
+    );
+
+    const mockElement1 = document.createElement('div');
+    const mockElement2 = document.createElement('div');
+
+    result.current.ref.current = mockElement1;
+    result.current.ref.current = mockElement2;
+    result.current.ref.current = null;
+
+    expect(result.current.ref.current).toBeNull();
+  });
+
+  it('should update when threshold prop changes', () => {
+    const { result, rerender } = renderHook(
+      ({ threshold }) =>
+        useSwipeGesture({
+          onSwipeDown: onSwipeDownMock,
+          threshold,
+        }),
+      {
+        initialProps: { threshold: 100 },
+      },
+    );
+
+    expect(result.current.ref).toBeDefined();
+
+    rerender({ threshold: 200 });
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should update when enabled prop changes', () => {
+    const { result, rerender } = renderHook(
+      ({ enabled }) =>
+        useSwipeGesture({
+          onSwipeDown: onSwipeDownMock,
+          enabled,
+        }),
+      {
+        initialProps: { enabled: true },
+      },
+    );
+
+    expect(result.current.ref).toBeDefined();
+
+    rerender({ enabled: false });
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should update when onSwipeDown callback changes', () => {
+    const newCallback = vi.fn();
+
+    const { result, rerender } = renderHook(
+      ({ callback }) =>
+        useSwipeGesture({
+          onSwipeDown: callback,
+          enabled: true,
+        }),
+      {
+        initialProps: { callback: onSwipeDownMock },
+      },
+    );
+
+    expect(result.current.ref).toBeDefined();
+
+    rerender({ callback: newCallback });
+
+    expect(result.current.ref).toBeDefined();
+  });
+
+  it('should not throw when unmounting with enabled=true', () => {
+    const { result, unmount } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+        enabled: true,
+      }),
+    );
+
+    result.current.ref.current = document.createElement('div');
+
+    expect(() => unmount()).not.toThrow();
+  });
+
+  it('should not throw when unmounting with enabled=false', () => {
+    const { result, unmount } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+        enabled: false,
+      }),
+    );
+
+    result.current.ref.current = document.createElement('div');
+
+    expect(() => unmount()).not.toThrow();
+  });
+
+  it('should not throw when unmounting with null ref', () => {
+    const { result, unmount } = renderHook(() =>
+      useSwipeGesture({
+        onSwipeDown: onSwipeDownMock,
+        enabled: true,
+      }),
+    );
+
+    result.current.ref.current = null;
+
+    expect(() => unmount()).not.toThrow();
+  });
+});

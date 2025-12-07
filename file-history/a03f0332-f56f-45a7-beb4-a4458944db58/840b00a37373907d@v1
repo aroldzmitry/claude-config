@@ -1,0 +1,209 @@
+# Agent Improver
+
+Analyze the current conversation to identify which agent needs improvement based on user feedback and corrections made during the session.
+
+## Your Task
+
+1. **Review conversation history** — find where user requested fixes or pointed out issues
+2. **If unclear — ask user** — what specifically didn't work or needs improvement
+3. **Identify the pattern** — what type of issue was it (UI, logic, validation, tests, etc.)
+4. **Determine responsible agent** — which agent should have caught or prevented this
+5. **Research best practices** — search web for how similar tools solve this
+6. **Propose improvement** — specific change to agent instructions
+
+## Analysis Steps
+
+### Step 1: Find User Corrections
+
+Look for patterns in conversation:
+
+- "This should be X, not Y"
+- "Missing X"
+- "Wrong X"
+- "Forgot to X"
+- "X doesn't work"
+- Direct edits user requested after agent output
+
+### Step 2: If Unclear — Ask User
+
+If you cannot identify clear issues from conversation, ask:
+
+- "What specifically didn't work as expected?"
+- "Which part of the result needed manual fixes?"
+- "What should the agent have done differently?"
+- "Is this a recurring issue or first time?"
+
+**Do not proceed until you have clear understanding of the problem.**
+
+### Step 3: Map Issue to Agent
+
+| Issue Type            | Primary Agent   | File                                 |
+| --------------------- | --------------- | ------------------------------------ |
+| UI/styling            | Developer       | `.claude/agents/developer.md`        |
+| Missing functionality | Developer       | `.claude/agents/developer.md`        |
+| Wrong business logic  | BA or Developer | `.claude/agents/business-analyst.md` |
+| Missing tests         | Tester          | `.claude/agents/tester.md`           |
+| Missed edge cases     | Tester          | `.claude/agents/tester.md`           |
+| Accessibility         | Developer       | `.claude/agents/developer.md`        |
+| Responsive/mobile     | Developer       | `.claude/agents/developer.md`        |
+| Documentation         | Documenter      | `.claude/agents/documenter.md`       |
+| Unclear requirements  | BA              | `.claude/agents/business-analyst.md` |
+
+Also check:
+
+- `.claude/commands/*.md` — Slash commands
+- `.claude/skills/*/SKILL.md` — Skills
+- `~/.claude/agents/*.md` — Global agents
+- `~/.claude/commands/*.md` — Global commands
+
+### Step 4: Read Agent File
+
+Read the identified agent file completely. Find:
+
+- Missing rules
+- Incomplete checklists
+- Missing examples
+- Vague instructions
+
+### Step 5: Research Best Practices
+
+**Before proposing changes, search the web for:**
+
+- How other Claude Code agents/skills handle this issue
+- Best practices for AI agent instructions
+- Examples from `anthropics/skills` repository
+- Community solutions in `awesome-claude-code` repositories
+
+Search queries to use:
+
+- `"Claude Code agent" [issue type] best practices`
+- `"AI coding agent" [issue type] instructions`
+- `anthropics/skills [relevant topic]`
+- `claude agent prompt [issue type]`
+
+**Extract actionable patterns** from research before proposing changes.
+
+### Step 6: Propose Change
+
+Show analysis with research findings:
+
+```
+## Analysis
+
+**Issue found:** [what user had to correct]
+**Root cause:** [why agent missed this]
+**Agent to improve:** [agent name]
+**File:** [path]
+
+## Research Findings
+
+**Sources checked:**
+- [source 1]: [key insight]
+- [source 2]: [key insight]
+
+**Best practice identified:** [what works well in similar tools]
+
+## Proposed Change
+
+**Section:** [section name in agent file]
+
+**Add/Modify:**
+```
+
+[exact text to add or change, informed by research]
+
+```
+
+**Rationale:** [why this prevents the issue + how it aligns with best practices]
+```
+
+### Step 7: Ask Confirmation
+
+Ask: "Apply this improvement?"
+
+### Step 8: Create Backup & Apply
+
+If user confirms:
+
+1. Create backup directory if needed:
+
+   ```
+   .claude/agents/.backups/
+   ```
+
+2. Rotate backups:
+
+   - Move `.bak1` → `.bak2` (if exists)
+   - Copy current → `.bak1`
+
+3. Apply the change using Edit tool
+
+4. Report:
+   ```
+   ✅ Updated: [file path]
+   📁 Backup: [backup path]
+   ```
+
+## Rules
+
+- **Ask first if unclear** — don't guess what user wants to improve
+- **Always research before proposing** — find proven solutions
+- Read full agent file before proposing changes
+- Make minimal, focused changes
+- Never remove existing rules
+- Always create backup before editing
+
+## Example Flow
+
+**Scenario: User calls `/agent:improve` but conversation has no obvious issues**
+
+````
+Claude: I reviewed the conversation but couldn't identify a specific issue
+that needs fixing. Could you help me understand:
+
+1. What specifically didn't work as expected?
+2. Which agent's output needed manual corrections?
+3. Is this something that happens often?
+
+User: Developer always forgets to add loading states
+
+Claude: Got it. Let me research how other agents handle this...
+
+[Searches web for "Claude Code agent loading state UI best practices"]
+
+## Analysis
+
+**Issue found:** Developer doesn't add loading states consistently
+**Root cause:** No explicit checklist item for loading states
+**Agent to improve:** Developer
+**File:** `.claude/agents/developer.md`
+
+## Research Findings
+
+**Sources checked:**
+- anthropics/skills examples: Always include UI state checklist
+- awesome-claude-code: Recommend explicit loading/error/empty states
+
+**Best practice:** Explicit checklist for all UI states
+
+## Proposed Change
+
+**Section:** CODE STANDARDS > React
+
+**Add:**
+```markdown
+**UI States (mandatory for async operations):**
+- Loading state while data is fetching
+- Error state with user-friendly message
+- Empty state when no data available
+````
+
+**Rationale:** Makes loading states an explicit requirement, not optional
+
+---
+
+Apply this improvement? [Yes/No]
+
+```
+
+```

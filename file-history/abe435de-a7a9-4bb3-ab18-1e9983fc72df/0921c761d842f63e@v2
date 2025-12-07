@@ -1,0 +1,148 @@
+---
+description: Test implementation and write tests based on developer's code
+allowed-tools: Task, Read, Write, Edit, Glob, Grep, Bash
+argument-hint: <task-id>
+---
+
+# Tester Command
+
+Test implementation for task: $ARGUMENTS
+
+## Instructions
+
+You are orchestrating a testing workflow. Follow these steps exactly:
+
+### Step 1: Verify Required Files Exist
+
+Check that all required files exist:
+
+1. `tasks/$ARGUMENTS/developer-output.md` - Developer implementation (required)
+2. `tasks/$ARGUMENTS/architect-output.md` - Technical plan (required)
+3. `tasks/$ARGUMENTS/business-analyst-output.md` - Business requirements (required)
+
+If developer-output.md not found, report error: "Developer implementation not found. Run /task:developer first."
+If architect-output.md not found, report error: "Architect plan not found. Run /task:architect first."
+If business-analyst-output.md not found, report error: "BA requirements not found. Run /task:create first."
+
+### Step 2: Read and Validate Developer Output
+
+Read `tasks/$ARGUMENTS/developer-output.md` and verify:
+
+1. Status is "Done" (not "Failed" or "Needs Review")
+2. Has "Files Created" section
+3. Has "Files Modified" section
+
+If status is not "Done", report the status and stop.
+
+### Step 3: Read All Context Files
+
+Read all context files to pass to tester agent:
+
+1. Read `tasks/$ARGUMENTS/developer-output.md` completely
+2. Read `tasks/$ARGUMENTS/architect-output.md` completely
+3. Read `tasks/$ARGUMENTS/business-analyst-output.md` completely
+4. Read all files listed in developer's "Files Created" section
+5. Read all files listed in developer's "Files Modified" section
+
+### Step 4: Call Tester Agent
+
+Call the `tester` agent with the following prompt, including ALL file contents:
+
+```
+Task ID: $ARGUMENTS
+
+## Context Files
+
+### Developer Output:
+{paste developer-output.md content}
+
+### Architect Plan:
+{paste architect-output.md content}
+
+### BA Requirements:
+{paste business-analyst-output.md content}
+
+### Implementation Files:
+{paste each created/modified file with its path}
+
+## Your Task
+
+1. **Code Review**: Review all implementation files against:
+   - Architect plan (does code match the plan?)
+   - BA requirements (are acceptance criteria met?)
+   - Code standards (TypeScript, React patterns, accessibility)
+
+2. **Write Unit Tests**: Create tests for:
+   - New services and utilities (MANDATORY)
+   - Complex components (if applicable)
+   - Error interceptor logic
+   - Place tests next to the files: `filename.test.ts`
+
+3. **Run Quality Checks**:
+   - Run: yarn test (for new tests)
+   - Run: yarn lint
+   - Verify all tests pass
+
+4. **Check Acceptance Criteria**: Verify each criterion from BA requirements is met
+
+5. **Report Bugs**: If any issues found, document them clearly
+
+## Output
+
+Write to: tasks/$ARGUMENTS/tester-output.md
+
+Include:
+- Code review results (checklist)
+- Tests written (list of test files)
+- Test execution results
+- Bugs found (if any)
+- Acceptance criteria verification
+- Final status
+```
+
+### Step 5: Verify Tester Output
+
+After the agent completes:
+
+1. Read `tasks/$ARGUMENTS/tester-output.md`
+2. Check status
+3. If "Failed - Found bugs", report bugs to user
+4. If "Done", verify tests were created and pass
+
+### Step 6: Run All Tests
+
+Run the full test suite to verify:
+
+```bash
+yarn test --passWithNoTests
+```
+
+Report any test failures.
+
+### Step 7: Format Output Files
+
+Format all generated files:
+
+```bash
+npx prettier --write tasks/$ARGUMENTS/tester-output.md
+```
+
+Format any test files created by tester.
+
+### Step 8: Report Result
+
+Report to user:
+
+1. Status from tester-output.md
+2. Tests written (count and files)
+3. Test execution results
+4. Bugs found (if any)
+5. Acceptance criteria status
+
+## Important Rules
+
+- Always verify developer-output.md exists and has "Done" status before starting
+- Pass ALL implementation file contents to the tester agent (it cannot read files itself)
+- If tester returns "Failed - Found bugs", these need to go back to developer
+- Report all test failures clearly
+- Do not modify test files after tester writes them (only format with prettier)

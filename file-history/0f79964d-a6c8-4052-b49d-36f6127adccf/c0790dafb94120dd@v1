@@ -1,0 +1,39 @@
+# agent:update Validation Results
+
+**Status:** FAIL
+**Validated:** 2025-12-06
+**File:** `/Users/dmitry/.claude/commands/agent:update.md`
+
+## Summary
+
+The command has good architecture but contains a critical format mismatch with its executor subagent that will cause failures.
+
+## Issues to Fix
+
+### 1. Critical: Format Mismatch with Subagent
+- Command passes `old_string:`/`new_string:` blocks
+- Subagent expects `CONFIRMED. Update [path]: [description]`
+- **Action:** Align formats - either update command or subagent
+
+### 2. High: Add Error Handling Documentation
+Missing coverage for:
+- File not found
+- Validation failures
+- Backup failures
+- Subagent errors
+
+### 3-6. Medium/Low Priority
+- Document final output format
+- Clarify recommendation mode flow
+- Complete migration flow documentation
+- Specify web research mode details
+
+## Recommended Fix Order
+
+1. Fix format mismatch (Critical)
+2. Add error handling (High)
+3. Address medium/low issues as time permits
+
+## Next Steps
+
+Run `/agent:update agent:update` to apply fixes after user approval.

@@ -1,0 +1,403 @@
+2025-12-04T22:27:02.498Z [DEBUG] Getting matching hook commands for SessionEnd with query: clear
+2025-12-04T22:27:02.498Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:02.498Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T22:27:02.499Z [DEBUG] Cleared all session hooks for session f436d6c9-2c75-490f-aac0-2d551f804c7b
+2025-12-04T22:27:02.505Z [DEBUG] Getting matching hook commands for SessionStart with query: clear
+2025-12-04T22:27:02.505Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:02.505Z [DEBUG] Matched 0 unique hooks for query "clear" (0 before deduplication)
+2025-12-04T22:27:02.506Z [DEBUG] FileHistory: Added snapshot for 3efba5be-75d8-4b79-b8ab-40f699e74d8a, tracking 0 files
+2025-12-04T22:27:02.508Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-04T22:27:02.508Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-04T22:27:05.653Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.58 (expected in multi-process scenarios)
+    at Mw0 (/$bunfs/root/claude:2684:1622)
+    at OCA (/$bunfs/root/claude:2682:35354)
+    at async DH7 (/$bunfs/root/claude:2682:37462)
+    at async ix (/$bunfs/root/claude:2684:236)
+    at async <anonymous> (/$bunfs/root/claude:2684:13002)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T22:27:44.459Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:27:44.460Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T22:27:44.460Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T22:27:44.466Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T22:27:44.466Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T22:27:44.789Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 330ms
+2025-12-04T22:27:44.802Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-04T22:27:44.802Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:44.802Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:27:44.803Z [DEBUG] FileHistory: Making snapshot for message bcc9fc42-e3ad-491d-ae1c-e447c0bc2a6e
+2025-12-04T22:27:44.803Z [DEBUG] FileHistory: Added snapshot for bcc9fc42-e3ad-491d-ae1c-e447c0bc2a6e, tracking 0 files
+2025-12-04T22:27:44.813Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-04T22:27:44.828Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-04T22:27:46.007Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:27:47.064Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:27:54.201Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-04T22:27:54.205Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-04T22:27:54.205Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:54.205Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-04T22:27:54.224Z [DEBUG] Getting matching hook commands for SubagentStart with query: business-analyst
+2025-12-04T22:27:54.224Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:54.224Z [DEBUG] Matched 0 unique hooks for query "business-analyst" (0 before deduplication)
+2025-12-04T22:27:55.500Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:27:59.523Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:27:59.526Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:27:59.529Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:27:59.531Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:27:59.534Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:27:59.536Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:27:59.536Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.536Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.537Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:27:59.537Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.537Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.537Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:27:59.537Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.537Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.537Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:27:59.537Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.537Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.537Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:27:59.537Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.537Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.598Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:27:59.598Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.598Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.598Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:27:59.598Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.598Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.598Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:27:59.598Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.598Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.598Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:27:59.598Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.598Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:27:59.598Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:27:59.598Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:27:59.598Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:28:03.929Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:08.617Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:28:08.621Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:28:08.621Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:08.621Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:09.199Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:28:09.199Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:09.200Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:11.402Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:13.825Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:28:13.828Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:28:13.831Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:28:13.831Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:13.831Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:13.831Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:28:13.831Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:13.831Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:28:13.856Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:28:13.856Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:13.856Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:28:14.281Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:28:14.281Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:14.281Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:15.205Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-04T22:28:15.205Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-04T22:28:15.230Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.34322.1764887295230
+2025-12-04T22:28:15.230Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:28:15.230Z [DEBUG] Temp file written successfully, size: 45856 bytes
+2025-12-04T22:28:15.230Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:28:15.230Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.34322.1764887295230 to /Users/dmitry/.claude.json
+2025-12-04T22:28:15.230Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:28:15.232Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.34322.1764887295232
+2025-12-04T22:28:15.233Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:28:15.233Z [DEBUG] Temp file written successfully, size: 45961 bytes
+2025-12-04T22:28:15.233Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:28:15.233Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.34322.1764887295232 to /Users/dmitry/.claude.json
+2025-12-04T22:28:15.233Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:28:16.548Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:18.382Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:28:18.384Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:28:18.385Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:28:18.385Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:18.385Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:18.385Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:28:18.385Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:18.385Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:28:18.397Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:28:18.397Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:18.397Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:28:18.852Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:28:18.852Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:18.852Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:21.480Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:24.263Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:28:24.264Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:28:24.264Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:24.264Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:24.739Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:28:24.739Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:24.739Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:28.340Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:28.900Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:28:28.902Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:28:28.902Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:28.902Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:28:28.910Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:28:28.910Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:28.910Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:28:31.988Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:35.400Z [DEBUG] executePreToolHooks called for tool: Grep
+2025-12-04T22:28:35.402Z [DEBUG] Getting matching hook commands for PreToolUse with query: Grep
+2025-12-04T22:28:35.402Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:35.402Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:35.848Z [DEBUG] Getting matching hook commands for PostToolUse with query: Grep
+2025-12-04T22:28:35.848Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:35.848Z [DEBUG] Matched 0 unique hooks for query "Grep" (0 before deduplication)
+2025-12-04T22:28:38.681Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:41.730Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-04T22:28:41.731Z [DEBUG] Getting matching hook commands for PreToolUse with query: TodoWrite
+2025-12-04T22:28:41.731Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:41.731Z [DEBUG] Matched 0 unique hooks for query "TodoWrite" (0 before deduplication)
+2025-12-04T22:28:41.735Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json.tmp.34322.1764887321735
+2025-12-04T22:28:41.736Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:28:41.736Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json.tmp.34322.1764887321735 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json
+2025-12-04T22:28:41.736Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json written atomically
+2025-12-04T22:28:41.736Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json.tmp.34322.1764887321736
+2025-12-04T22:28:41.736Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:28:41.736Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json.tmp.34322.1764887321736 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json
+2025-12-04T22:28:41.736Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json written atomically
+2025-12-04T22:28:41.736Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json.tmp.34322.1764887321736
+2025-12-04T22:28:41.736Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:28:41.736Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json.tmp.34322.1764887321736 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json
+2025-12-04T22:28:41.736Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json written atomically
+2025-12-04T22:28:41.736Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json.tmp.34322.1764887321736
+2025-12-04T22:28:41.737Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:28:41.737Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json.tmp.34322.1764887321736 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json
+2025-12-04T22:28:41.737Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json written atomically
+2025-12-04T22:28:41.737Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json.tmp.34322.1764887321737
+2025-12-04T22:28:41.737Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:28:41.737Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json.tmp.34322.1764887321737 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json
+2025-12-04T22:28:41.737Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json written atomically
+2025-12-04T22:28:41.737Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json.tmp.34322.1764887321737
+2025-12-04T22:28:41.737Z [DEBUG] Temp file written successfully, size: 337 bytes
+2025-12-04T22:28:41.737Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json.tmp.34322.1764887321737 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json
+2025-12-04T22:28:41.737Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json written atomically
+2025-12-04T22:28:41.737Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json.tmp.34322.1764887321737
+2025-12-04T22:28:41.737Z [DEBUG] Temp file written successfully, size: 341 bytes
+2025-12-04T22:28:41.737Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json.tmp.34322.1764887321737 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json
+2025-12-04T22:28:41.737Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json written atomically
+2025-12-04T22:28:41.742Z [DEBUG] Getting matching hook commands for PostToolUse with query: TodoWrite
+2025-12-04T22:28:41.742Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:28:41.742Z [DEBUG] Matched 0 unique hooks for query "TodoWrite" (0 before deduplication)
+2025-12-04T22:28:44.583Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:28:49.610Z [DEBUG] UserCommandMessage rendering: "clear" (args: "none")
+2025-12-04T22:28:49.610Z [DEBUG] isSkillFormat: false, prefix: "/"
+2025-12-04T22:28:49.621Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.34322.1764887329621
+2025-12-04T22:28:49.621Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:28:49.621Z [DEBUG] Temp file written successfully, size: 45856 bytes
+2025-12-04T22:28:49.621Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:28:49.621Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.34322.1764887329621 to /Users/dmitry/.claude.json
+2025-12-04T22:28:49.621Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:28:49.627Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.34322.1764887329627
+2025-12-04T22:28:49.627Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:28:49.627Z [DEBUG] Temp file written successfully, size: 45961 bytes
+2025-12-04T22:28:49.627Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:28:49.627Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.34322.1764887329627 to /Users/dmitry/.claude.json
+2025-12-04T22:28:49.627Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:28:49.628Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:28:49.862Z [DEBUG] Checking for native installer update to version 2.0.58
+2025-12-04T22:28:56.872Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.58 (expected in multi-process scenarios)
+    at Mw0 (/$bunfs/root/claude:2684:1622)
+    at OCA (/$bunfs/root/claude:2682:35354)
+    at async DH7 (/$bunfs/root/claude:2682:37462)
+    at async ix (/$bunfs/root/claude:2684:236)
+    at async <anonymous> (/$bunfs/root/claude:2684:13002)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T22:29:10.777Z [DEBUG] executePreToolHooks called for tool: Write
+2025-12-04T22:29:10.781Z [DEBUG] Getting matching hook commands for PreToolUse with query: Write
+2025-12-04T22:29:10.781Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:29:10.781Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T22:29:10.790Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:29:10.797Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 7ms
+2025-12-04T22:29:10.798Z [DEBUG] Writing to temp file: /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.34322.1764887350798
+2025-12-04T22:29:10.798Z [DEBUG] Temp file written successfully, size: 4712 bytes
+2025-12-04T22:29:10.798Z [DEBUG] Renaming /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.34322.1764887350798 to /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md
+2025-12-04T22:29:10.799Z [DEBUG] File /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md written atomically
+2025-12-04T22:29:10.806Z [DEBUG] Getting matching hook commands for PostToolUse with query: Write
+2025-12-04T22:29:10.806Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:29:10.806Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T22:29:14.946Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:29:18.497Z [DEBUG] executePreToolHooks called for tool: TodoWrite
+2025-12-04T22:29:18.501Z [DEBUG] Getting matching hook commands for PreToolUse with query: TodoWrite
+2025-12-04T22:29:18.501Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:29:18.501Z [DEBUG] Matched 0 unique hooks for query "TodoWrite" (0 before deduplication)
+2025-12-04T22:29:18.510Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json.tmp.34322.1764887358510
+2025-12-04T22:29:18.510Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:29:18.510Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:29:18.510Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:29:18.510Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json.tmp.34322.1764887358510 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json
+2025-12-04T22:29:18.511Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-02effae4-5a6d-47dd-bffd-f170b967607f.json written atomically
+2025-12-04T22:29:18.511Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json.tmp.34322.1764887358511
+2025-12-04T22:29:18.511Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:29:18.511Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:29:18.511Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:29:18.511Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json.tmp.34322.1764887358511 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json
+2025-12-04T22:29:18.511Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-6f41a76d.json written atomically
+2025-12-04T22:29:18.511Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json.tmp.34322.1764887358511
+2025-12-04T22:29:18.511Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:29:18.511Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:29:18.511Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:29:18.511Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json.tmp.34322.1764887358511 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json
+2025-12-04T22:29:18.511Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-a5292e6f-9461-4c65-ba82-867b5f6bead7.json written atomically
+2025-12-04T22:29:18.511Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json.tmp.34322.1764887358511
+2025-12-04T22:29:18.511Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:29:18.511Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:29:18.511Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:29:18.511Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json.tmp.34322.1764887358511 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json
+2025-12-04T22:29:18.512Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-43f0b163-9e6e-4d00-931e-5e5ba6924b39.json written atomically
+2025-12-04T22:29:18.512Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json.tmp.34322.1764887358512
+2025-12-04T22:29:18.512Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:29:18.512Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:29:18.512Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:29:18.512Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json.tmp.34322.1764887358512 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json
+2025-12-04T22:29:18.512Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f8eb235e-1b5b-452e-ab3d-3e6225a1c9d6.json written atomically
+2025-12-04T22:29:18.512Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json.tmp.34322.1764887358512
+2025-12-04T22:29:18.512Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:29:18.512Z [DEBUG] Temp file written successfully, size: 337 bytes
+2025-12-04T22:29:18.512Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:29:18.512Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json.tmp.34322.1764887358512 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json
+2025-12-04T22:29:18.512Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-f185bca3.json written atomically
+2025-12-04T22:29:18.512Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json.tmp.34322.1764887358512
+2025-12-04T22:29:18.512Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:29:18.512Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:29:18.512Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:29:18.512Z [DEBUG] Renaming /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json.tmp.34322.1764887358512 to /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json
+2025-12-04T22:29:18.512Z [DEBUG] File /Users/dmitry/.claude/todos/5503380d-f88e-486b-a2b1-5a37ca91e5d2-agent-b72e5bd7.json written atomically
+2025-12-04T22:29:18.520Z [DEBUG] Getting matching hook commands for PostToolUse with query: TodoWrite
+2025-12-04T22:29:18.520Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:29:18.520Z [DEBUG] Matched 0 unique hooks for query "TodoWrite" (0 before deduplication)
+2025-12-04T22:29:20.707Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:29:27.469Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-04T22:29:27.469Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:29:27.469Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:29:27.476Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-04T22:29:27.476Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:29:27.476Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-04T22:29:27.492Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:29:27.493Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T22:29:27.493Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T22:29:27.497Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T22:29:27.497Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T22:29:27.811Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-04T22:29:31.099Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:29:36.218Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-04T22:29:36.218Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:29:36.218Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:30:24.098Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:30:24.099Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T22:30:24.099Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T22:30:24.104Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T22:30:24.104Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T22:30:24.416Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 318ms
+2025-12-04T22:30:24.429Z [DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+2025-12-04T22:30:24.429Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:24.429Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:30:24.430Z [DEBUG] FileHistory: Making snapshot for message 969e4c0b-1719-424a-9e42-d493a26022ca
+2025-12-04T22:30:24.430Z [DEBUG] FileHistory: Added snapshot for 969e4c0b-1719-424a-9e42-d493a26022ca, tracking 0 files
+2025-12-04T22:30:24.438Z [DEBUG] MCP server "ide": Calling MCP tool: closeAllDiffTabs
+2025-12-04T22:30:24.444Z [DEBUG] MCP server "ide": Tool 'closeAllDiffTabs' failed after 0s: MCP error -32603: Tool not found: closeAllDiffTabs
+2025-12-04T22:30:25.178Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:30:26.779Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:30:30.434Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:30:30.437Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:30:30.437Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:30.437Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:30.452Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:30:30.452Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:30.452Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:30.469Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:30:30.470Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T22:30:30.470Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T22:30:30.474Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T22:30:30.474Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T22:30:30.788Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 319ms
+2025-12-04T22:30:33.436Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:30:40.931Z [DEBUG] executePreToolHooks called for tool: Task
+2025-12-04T22:30:40.934Z [DEBUG] Getting matching hook commands for PreToolUse with query: Task
+2025-12-04T22:30:40.934Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:40.934Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-04T22:30:40.951Z [DEBUG] Getting matching hook commands for SubagentStart with query: business-analyst
+2025-12-04T22:30:40.951Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:40.951Z [DEBUG] Matched 0 unique hooks for query "business-analyst" (0 before deduplication)
+2025-12-04T22:30:44.327Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:30:47.114Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:30:47.117Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:30:47.120Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:30:47.122Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:30:47.125Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:30:47.125Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.125Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:47.125Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:30:47.125Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.125Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:47.125Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:30:47.125Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.125Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:47.125Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:30:47.125Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.125Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:47.179Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:30:47.179Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.179Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:47.179Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:30:47.179Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.179Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:47.179Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:30:47.179Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.179Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:47.179Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:30:47.179Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:30:47.179Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:30:49.121Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:31:24.240Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:31:26.407Z [DEBUG] executePreToolHooks called for tool: Read
+2025-12-04T22:31:26.412Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2025-12-04T22:31:26.412Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:31:26.412Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:31:26.430Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2025-12-04T22:31:26.430Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:31:26.430Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2025-12-04T22:31:27.701Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:32:02.209Z [DEBUG] executePreToolHooks called for tool: Write
+2025-12-04T22:32:02.213Z [DEBUG] Getting matching hook commands for PreToolUse with query: Write
+2025-12-04T22:32:02.213Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:32:02.213Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T22:32:02.221Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:32:02.541Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 320ms
+2025-12-04T22:32:02.543Z [DEBUG] Writing to temp file: /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.34322.1764887522543
+2025-12-04T22:32:02.543Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:32:02.543Z [DEBUG] Temp file written successfully, size: 5882 bytes
+2025-12-04T22:32:02.543Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:32:02.543Z [DEBUG] Renaming /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md.tmp.34322.1764887522543 to /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md
+2025-12-04T22:32:02.543Z [DEBUG] File /Users/dmitry/WebstormProjects/zephyr-budget-app/client/tasks/task-001-test/business-analyst-output.md written atomically
+2025-12-04T22:32:02.556Z [DEBUG] Getting matching hook commands for PostToolUse with query: Write
+2025-12-04T22:32:02.556Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:32:02.556Z [DEBUG] Matched 0 unique hooks for query "Write" (0 before deduplication)
+2025-12-04T22:32:04.484Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:32:13.698Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-04T22:32:13.698Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:32:13.698Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:32:13.717Z [DEBUG] Getting matching hook commands for PostToolUse with query: Task
+2025-12-04T22:32:13.717Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:32:13.717Z [DEBUG] Matched 0 unique hooks for query "Task" (0 before deduplication)
+2025-12-04T22:32:13.734Z [DEBUG] MCP server "ide": Calling MCP tool: getDiagnostics
+2025-12-04T22:32:13.735Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2025-12-04T22:32:13.735Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2025-12-04T22:32:13.739Z [DEBUG] Hooks: Found 0 total hooks in registry
+2025-12-04T22:32:13.739Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2025-12-04T22:32:15.389Z [DEBUG] MCP server "ide": Tool 'getDiagnostics' completed successfully in 1s
+2025-12-04T22:32:18.396Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:32:21.492Z [DEBUG] Getting matching hook commands for Stop with query: undefined
+2025-12-04T22:32:21.492Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:32:21.492Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:33:21.500Z [DEBUG] Getting matching hook commands for Notification with query: idle_prompt
+2025-12-04T22:33:21.500Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:33:21.500Z [DEBUG] Matched 0 unique hooks for query "idle_prompt" (0 before deduplication)
+2025-12-04T22:33:37.944Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:33:38.170Z [DEBUG] Checking for native installer update to version 2.0.58

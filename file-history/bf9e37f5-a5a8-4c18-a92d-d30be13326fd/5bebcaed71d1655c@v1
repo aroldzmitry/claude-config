@@ -1,0 +1,7 @@
+# Global Instructions
+
+## Claude Code Documentation
+
+For Claude Code questions: use `/docs <topic>`, NOT Task tool with claude-code-guide.
+- Store all instructions for Claude in English
+- Keep responses short and concise; use longer responses only when explicitly requested

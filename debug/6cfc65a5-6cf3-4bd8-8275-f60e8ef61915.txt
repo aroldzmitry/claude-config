@@ -1,0 +1,157 @@
+2025-12-04T22:58:57.656Z [DEBUG] Watching for changes in setting files /Users/dmitry/.claude/settings.json, /Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/settings.local.json...
+2025-12-04T22:58:57.705Z [DEBUG] [LSP MANAGER] initializeLspServerManager() called
+2025-12-04T22:58:57.705Z [DEBUG] [LSP MANAGER] Created manager instance, state=pending
+2025-12-04T22:58:57.705Z [DEBUG] [LSP MANAGER] Starting async initialization (generation 1)
+2025-12-04T22:58:57.705Z [DEBUG] [LSP SERVER MANAGER] initialize() called
+2025-12-04T22:58:57.705Z [DEBUG] [LSP SERVER MANAGER] Calling getAllLspServers()
+2025-12-04T22:58:57.707Z [DEBUG] Applying permission update: Adding 9 allow rule(s) to destination 'localSettings': ["Bash(mkdir:*)","Bash(npx prettier --write:*)","Read(.claude/**)","Write(.claude/**)","Edit(.claude/**)","Read(tasks/**)","Write(tasks/**)","Edit(tasks/**)","Bash(git add:*)"]
+2025-12-04T22:58:57.707Z [DEBUG] Applying permission update: Adding 2 deny rule(s) to destination 'localSettings': ["Read(.env)","Read(../.env)"]
+2025-12-04T22:58:57.708Z [DEBUG] Found 0 plugins (0 enabled, 0 disabled)
+2025-12-04T22:58:57.708Z [DEBUG] Total LSP servers loaded: 0
+2025-12-04T22:58:57.709Z [DEBUG] [LSP SERVER MANAGER] getAllLspServers returned 0 server(s)
+2025-12-04T22:58:57.709Z [DEBUG] LSP manager initialized with 0 servers
+2025-12-04T22:58:57.709Z [DEBUG] LSP server manager initialized successfully
+2025-12-04T22:58:57.709Z [DEBUG] LSP notification handlers registered successfully for all 0 server(s)
+2025-12-04T22:58:57.713Z [DEBUG] Loading skills from directories: managed=/Library/Application Support/ClaudeCode/.claude/skills, user=/Users/dmitry/.claude/skills, project=/Users/dmitry/WebstormProjects/zephyr-budget-app/client/.claude/skills
+2025-12-04T22:58:57.713Z [DEBUG] >>>>> getPluginSkills CALLED <<<<<
+2025-12-04T22:58:57.713Z [DEBUG] Passes: Using fresh cached eligibility data
+2025-12-04T22:58:57.714Z [DEBUG] installed_plugins.json doesn't exist yet at /Users/dmitry/.claude/plugins/installed_plugins.json, returning empty object
+2025-12-04T22:58:57.735Z [DEBUG] Creating shell snapshot for zsh (/bin/zsh)
+2025-12-04T22:58:57.735Z [DEBUG] Looking for shell config file: /Users/dmitry/.zshrc
+2025-12-04T22:58:57.735Z [DEBUG] Snapshots directory: /Users/dmitry/.claude/shell-snapshots
+2025-12-04T22:58:57.735Z [DEBUG] Creating snapshot at: /Users/dmitry/.claude/shell-snapshots/snapshot-zsh-1764889137735-keiv1i.sh
+2025-12-04T22:58:57.735Z [DEBUG] Shell binary exists: true
+2025-12-04T22:58:57.735Z [DEBUG] Execution timeout: 10000ms
+2025-12-04T22:58:57.736Z [DEBUG] Writing to temp file: /Users/dmitry/.claude/todos/6cfc65a5-6cf3-4bd8-8275-f60e8ef61915-agent-6cfc65a5-6cf3-4bd8-8275-f60e8ef61915.json.tmp.45933.1764889137736
+2025-12-04T22:58:57.736Z [DEBUG] Temp file written successfully, size: 2 bytes
+2025-12-04T22:58:57.736Z [DEBUG] Renaming /Users/dmitry/.claude/todos/6cfc65a5-6cf3-4bd8-8275-f60e8ef61915-agent-6cfc65a5-6cf3-4bd8-8275-f60e8ef61915.json.tmp.45933.1764889137736 to /Users/dmitry/.claude/todos/6cfc65a5-6cf3-4bd8-8275-f60e8ef61915-agent-6cfc65a5-6cf3-4bd8-8275-f60e8ef61915.json
+2025-12-04T22:58:57.736Z [DEBUG] File /Users/dmitry/.claude/todos/6cfc65a5-6cf3-4bd8-8275-f60e8ef61915-agent-6cfc65a5-6cf3-4bd8-8275-f60e8ef61915.json written atomically
+2025-12-04T22:58:57.738Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889137738
+2025-12-04T22:58:57.738Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:57.739Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:57.739Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:57.739Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889137738 to /Users/dmitry/.claude.json
+2025-12-04T22:58:57.739Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:57.739Z [DEBUG] getPluginSkills: Processing 0 enabled plugins
+2025-12-04T22:58:57.739Z [DEBUG] Total plugin skills loaded: 0
+2025-12-04T22:58:57.739Z [DEBUG] Total plugin commands loaded: 0
+2025-12-04T22:58:57.739Z [DEBUG] Registered 0 hooks from 0 plugins
+2025-12-04T22:58:57.740Z [DEBUG] Loaded 0 unique skills (managed: 0, user: 0, project: 0, duplicates removed: 0)
+2025-12-04T22:58:57.740Z [DEBUG] getSkills returning: 0 skill dir commands, 0 plugin skills
+2025-12-04T22:58:57.757Z [DEBUG] Acquired lock on running version: /Users/dmitry/.local/share/claude/versions/2.0.58
+2025-12-04T22:58:57.757Z [DEBUG] Total plugin agents loaded: 0
+2025-12-04T22:58:57.761Z [DEBUG] Git remote URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-04T22:58:57.761Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-04T22:58:57.761Z [DEBUG] Parsed repository: zuratech-inc/zephyr-budget-app from URL: https://github.com/zuratech-inc/zephyr-budget-app.git
+2025-12-04T22:58:57.761Z [DEBUG] Path /Users/dmitry/WebstormProjects/zephyr-budget-app/client already tracked for repo zuratech-inc/zephyr-budget-app
+2025-12-04T22:58:57.854Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889137854
+2025-12-04T22:58:57.854Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:57.854Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:57.854Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:57.854Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889137854 to /Users/dmitry/.claude.json
+2025-12-04T22:58:57.854Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:57.855Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889137855
+2025-12-04T22:58:57.855Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:57.855Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:57.855Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:57.855Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889137855 to /Users/dmitry/.claude.json
+2025-12-04T22:58:57.855Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:57.856Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889137856
+2025-12-04T22:58:57.856Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:57.856Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:57.856Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:57.856Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889137856 to /Users/dmitry/.claude.json
+2025-12-04T22:58:57.856Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:58.058Z [DEBUG] Metrics opt-out API response: enabled=true, vcsLinking=false
+2025-12-04T22:58:58.236Z [DEBUG] Ripgrep first use test: PASSED (mode=builtin, path=/Users/dmitry/.local/share/claude/versions/2.0.58)
+2025-12-04T22:58:58.536Z [DEBUG] Shell snapshot created successfully (109677 bytes)
+2025-12-04T22:58:58.630Z [DEBUG] Passes: Using fresh cached eligibility data
+2025-12-04T22:58:58.637Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889138637
+2025-12-04T22:58:58.637Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:58.637Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:58.637Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:58.637Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889138637 to /Users/dmitry/.claude.json
+2025-12-04T22:58:58.637Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:58.639Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889138639
+2025-12-04T22:58:58.639Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:58.639Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:58.639Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:58.639Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889138639 to /Users/dmitry/.claude.json
+2025-12-04T22:58:58.639Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:58.640Z [DEBUG] Getting matching hook commands for SessionStart with query: startup
+2025-12-04T22:58:58.640Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:58:58.640Z [DEBUG] Matched 0 unique hooks for query "startup" (0 before deduplication)
+2025-12-04T22:58:58.642Z [DEBUG] Skills and commands included in Skill tool:
+2025-12-04T22:58:58.642Z [DEBUG] Slash commands included in SlashCommand tool: /task, /pr:create, /pr:review
+2025-12-04T22:58:58.667Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889138667
+2025-12-04T22:58:58.667Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:58.667Z [DEBUG] Temp file written successfully, size: 45857 bytes
+2025-12-04T22:58:58.667Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:58.667Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889138667 to /Users/dmitry/.claude.json
+2025-12-04T22:58:58.667Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:58.668Z [DEBUG] performStartupChecks called
+2025-12-04T22:58:58.668Z [DEBUG] Starting background plugin installations
+2025-12-04T22:58:58.668Z [DEBUG] performBackgroundPluginInstallations called
+2025-12-04T22:58:58.673Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:58:58.692Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889138692
+2025-12-04T22:58:58.692Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:58.692Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:58.692Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:58.692Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889138692 to /Users/dmitry/.claude.json
+2025-12-04T22:58:58.693Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:58:58.700Z [DEBUG] Setting installation status: 0 marketplaces, 0 installable plugins, 0 uninstallable plugins
+2025-12-04T22:58:58.701Z [ERROR] Error: Error: Plugin source missing
+    at nR0 (/$bunfs/root/claude:1505:36819)
+    at nR0 (/$bunfs/root/claude:1505:37506)
+    at sU8 (/$bunfs/root/claude:1506:4122)
+    at sU8 (/$bunfs/root/claude:1506:4194)
+    at aU8 (/$bunfs/root/claude:1506:1623)
+    at aU8 (/$bunfs/root/claude:1506:1925)
+    at <anonymous> (/$bunfs/root/claude:1507:3002)
+    at <anonymous> (/$bunfs/root/claude:1507:3197)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T22:58:58.702Z [DEBUG] Loaded plugins - Enabled: 0, Disabled: 0, Commands: 0, Agents: 0, Errors: 0
+2025-12-04T22:58:58.706Z [DEBUG] MCP server "ide": Starting connection with timeout of 30000ms
+2025-12-04T22:58:58.709Z [DEBUG] Getting matching hook commands for SubagentStart with query: Explore
+2025-12-04T22:58:58.709Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:58:58.709Z [DEBUG] Matched 0 unique hooks for query "Explore" (0 before deduplication)
+2025-12-04T22:58:58.712Z [DEBUG] Getting matching hook commands for SubagentStart with query: Plan
+2025-12-04T22:58:58.712Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:58:58.712Z [DEBUG] Matched 0 unique hooks for query "Plan" (0 before deduplication)
+2025-12-04T22:58:58.716Z [DEBUG] MCP server "ide": Successfully connected to ws-ide server in 12ms
+2025-12-04T22:58:58.716Z [DEBUG] MCP server "ide": Connection established with capabilities: {"hasTools":true,"hasPrompts":false,"hasResources":false,"serverVersion":{"name":"Claude Code JetBrains Plugin","version":"0.1.13-beta"}}
+2025-12-04T22:58:58.928Z [DEBUG] Checking for native installer update to version 2.0.58
+2025-12-04T22:58:59.484Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:58:59.593Z [DEBUG] Writing to temp file: /Users/dmitry/.claude.json.tmp.45933.1764889139593
+2025-12-04T22:58:59.593Z [DEBUG] Preserving file permissions: 100600
+2025-12-04T22:58:59.593Z [DEBUG] Temp file written successfully, size: 45962 bytes
+2025-12-04T22:58:59.593Z [DEBUG] Applied original permissions to temp file
+2025-12-04T22:58:59.593Z [DEBUG] Renaming /Users/dmitry/.claude.json.tmp.45933.1764889139593 to /Users/dmitry/.claude.json
+2025-12-04T22:58:59.593Z [DEBUG] File /Users/dmitry/.claude.json written atomically
+2025-12-04T22:59:00.123Z [DEBUG] Stream started - received first chunk
+2025-12-04T22:59:00.669Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-04T22:59:00.669Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:59:00.669Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:59:01.982Z [DEBUG] Getting matching hook commands for SubagentStop with query: undefined
+2025-12-04T22:59:01.982Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:59:01.982Z [DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+2025-12-04T22:59:05.933Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.58 (expected in multi-process scenarios)
+    at Mw0 (/$bunfs/root/claude:2684:1622)
+    at OCA (/$bunfs/root/claude:2682:35354)
+    at async DH7 (/$bunfs/root/claude:2682:37462)
+    at async ix (/$bunfs/root/claude:2684:236)
+    at async <anonymous> (/$bunfs/root/claude:2684:13002)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T22:59:10.102Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:59:15.324Z [DEBUG] AutoUpdaterWrapper: Installation type: native
+2025-12-04T22:59:15.444Z [DEBUG] Checking for native installer update to version 2.0.58
+2025-12-04T22:59:22.450Z [ERROR] Error: Error: NON-FATAL: Lock acquisition failed for /Users/dmitry/.local/share/claude/versions/2.0.58 (expected in multi-process scenarios)
+    at Mw0 (/$bunfs/root/claude:2684:1622)
+    at OCA (/$bunfs/root/claude:2682:35354)
+    at async DH7 (/$bunfs/root/claude:2682:37462)
+    at async ix (/$bunfs/root/claude:2684:236)
+    at async <anonymous> (/$bunfs/root/claude:2684:13002)
+    at processTicksAndRejections (native:7:39)
+2025-12-04T22:59:41.410Z [DEBUG] Getting matching hook commands for SessionEnd with query: prompt_input_exit
+2025-12-04T22:59:41.410Z [DEBUG] Found 0 hook matchers in settings
+2025-12-04T22:59:41.410Z [DEBUG] Matched 0 unique hooks for query "prompt_input_exit" (0 before deduplication)

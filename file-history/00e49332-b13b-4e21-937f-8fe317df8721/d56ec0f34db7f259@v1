@@ -1,0 +1,16 @@
+# Suggestions Log
+
+Track improvement suggestions per file to avoid repetition.
+
+Format:
+```
+## [date] - [file-name]
+
+### Suggestion: {title}
+**Severity:** Low | Medium | High
+**Description:** {what to improve}
+**Status:** Pending | Implemented | Rejected
+```
+
+---
+

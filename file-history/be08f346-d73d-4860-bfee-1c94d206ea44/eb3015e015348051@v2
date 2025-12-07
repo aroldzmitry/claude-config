@@ -1,0 +1,10 @@
+# Improvement History
+
+## 2025-12-05 - agent:update.md, agent:improve.md
+
+**Issue:** Commands didn't show detailed diff before applying; didn't clean up old files when migrating between scopes
+**Change:**
+- Added "Show ALL changes" instruction in Step 4/Step 7
+- Added "Migration Between Scopes" section
+- Added rules: "Show all changes", "Clean up after migration"
+**Status:** Pending validation

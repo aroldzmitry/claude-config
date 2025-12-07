@@ -1,0 +1,9 @@
+# Improvement History
+
+## 2025-12-05 - agent:improve.md
+
+**Source:** /agent:update (from /agent:lint recommendations)
+**Changes:**
+1. Added explicit web research triggers (when to research vs skip)
+2. Added Step 1.5: Check for Duplicate Recommendations
+**Status:** Applied

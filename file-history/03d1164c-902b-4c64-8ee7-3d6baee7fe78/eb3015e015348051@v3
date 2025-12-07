@@ -1,0 +1,42 @@
+# Improvement History
+
+## 2025-12-05 - agent:improve (UX)
+
+**Issue:** Dialog was not interactive — too much text, no AskUserQuestion usage
+**Change:**
+- Added "Interactive Dialog Rules" section at the top
+- Added AskUserQuestion examples for Step 0, Step 3, Step 8
+- Added rules: auto-detect scope, skip optional steps, max 3-5 lines before question
+**Status:** Pending validation
+
+## 2025-12-05 - agent-lint (update)
+
+**Idea:** Add suggestions logging to avoid repeating same improvements
+**Change:**
+- Added "Suggestions Tracking" section with workflow for reading/writing suggestions log
+- Added "Suggestions Log" to Output Format
+- Agent now checks `~/.claude/agents/.improvements/suggestions.md` before suggesting
+- If no new suggestions — asks user if they want to see pending ones
+**Status:** Applied
+
+## 2025-12-05 - agent-check → agent-lint (rename + fix)
+
+**Issue:** Agent gave false positive — recommended creating file-based version of system agent, didn't understand difference between system/global/project agents
+**Change:**
+- Renamed `agent-check` → `agent-lint` to avoid collision with system agent
+- Added "Agent Types" section explaining system vs global vs project agents
+- Added rule: never recommend creating files for system agents
+- Updated `agent:create` command to reference `agent-lint`
+**Status:** Pending validation
+
+## 2025-12-05 - agent:create (command) - Scope Selection
+
+**Issue:** Command doesn't ask which scope (global/project) to use, defaults to project
+**Change:** Added Step 0: Select Scope with AskUserQuestion, updated Steps 2 and 6 to use selected scope
+**Status:** Pending validation
+
+## 2025-12-05 - agent:create (command)
+
+**Issue:** Questions asked as plain text instead of interactive AskUserQuestion
+**Change:** Added explicit instruction and example for using AskUserQuestion tool in Step 1
+**Status:** Pending validation

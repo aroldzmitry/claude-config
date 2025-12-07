@@ -84,24 +84,6 @@ Show to user:
 Lines: +X / -Y
 ```
 
-### Writing for Claude (not humans)
-
-When generating changes:
-- No full JSON examples — just tool name + key params
-- One clear example enough — no duplicates
-- No external links — not accessible at runtime
-- No decorative formatting — skip `---` dividers, excessive whitespace
-
-Prefer:
-- Explicit constraints over verbose explanations
-- Tables for mappings (compact, scannable)
-- Bullet points over prose
-
-Before adding content, ask:
-1. Would Claude behave differently without this? If no → skip
-2. Is this the same info in different words? → deduplicate
-3. Can this be merged into existing section? → merge
-
 ## Step 5: Confirm with User
 
 Use `AskUserQuestion`: Apply? (Yes / Edit first / No)
@@ -130,12 +112,7 @@ Edit(file_path=[full_file_path], old_string=[exact text], new_string=[new text])
 
 ## Rollback Mode
 
-When `rollback`, `revert`, or `undo` detected:
-
-Redirect to rollback command:
-```
-Use SlashCommand tool: /agent:rollback [file_path]
-```
+If `rollback`/`revert`/`undo` in arguments → use `/agent:rollback [file_path]`
 
 ## Recommendation Mode
 

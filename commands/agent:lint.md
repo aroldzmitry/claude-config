@@ -5,18 +5,8 @@ argument-hint: <file-path>
 
 # Agent Lint
 
-Validate the following item: $ARGUMENTS
-
-## Argument Parsing
-
-Parse `$ARGUMENTS` to extract the **target**: file path or agent/command/skill name.
-
-## Execution
-
-**Always use Task tool** to delegate validation:
+Delegate to agent-lint subagent:
 
 ```
-Task(subagent_type="agent-lint", prompt="Validate [target]. Use web research to find best practices for Claude Code commands and agent design patterns. Use deep reasoning mode: ultrathink")
+Task(subagent_type="agent-lint", prompt="Validate $ARGUMENTS. Use web research for best practices. Use deep reasoning: ultrathink")
 ```
-
-Do NOT perform validation inline — always delegate to the agent-lint subagent via Task tool.

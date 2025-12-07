@@ -5,109 +5,58 @@ argument-hint: [agent-name or purpose]
 
 # Agent Creator
 
-Create a new custom agent following Claude Code best practices.
-
 ## Workflow
 
-0. **Select scope** — global (~/.claude/) or project (.claude/)
-1. **Gather requirements** — purpose, trigger, model
-2. **Check existing agents** — avoid duplication
-3. **Research patterns** — claude-code-guide agent or web search
-4. **Agent structure** — define with YAML frontmatter
-5. **Prepare content** — finalize agent content
-6. **Create via agent:update** — delegate file creation
-7. **Validate** — run agent-lint
+1. **Select scope** — ask: Global (~/.claude/) or Project (.claude/)?
+2. **Gather requirements** — purpose, trigger, model (haiku/sonnet/opus)
+3. **Check existing agents** — avoid duplication
+4. **Research patterns** — claude-code-guide agent or web search
+5. **Create file** — Write agent markdown
+6. **Validate** — run /agent:lint
 
-## Step 0: Select Scope (MANDATORY)
-
-Use `AskUserQuestion` to ask: Global (~/.claude/agents/) or Project (.claude/agents/)?
-
-## Step 1: Gather Requirements (MANDATORY)
+## Step 1: Gather Requirements
 
 Ask using `AskUserQuestion`:
-
 - **Purpose** — what task should this agent perform?
 - **Trigger** — when should it be invoked?
-- **Model** — haiku (fast), sonnet (balanced), opus (complex)
-
-Only proceed when user confirms requirements.
+- **Model** — haiku (fast), sonnet (default), opus (complex)
 
 ## Step 2: Check Existing Agents
 
-Check selected scope for similar agents. Also check other scope to avoid name conflicts.
+Check both scopes for similar agents.
 
-**If similar agent/command found:**
+**If similar found**, ask user:
+- Extend existing
+- Replace
+- Create separate (different name)
+- Cancel
 
-Use `AskUserQuestion` to ask:
+## Step 3: Research Patterns
 
-| Option | Description |
-|--------|-------------|
-| Extend existing | Add new functionality to found agent |
-| Replace | Delete old, create new with same name |
-| Create separate | New agent with different name (explain relationship) |
-| Cancel | Stop creation |
-
-Show user:
-- Found agent name and path
-- Brief description of what it does
-- How new request differs
-
-Only proceed after user confirms approach.
-
-## Step 3: Research Patterns (MANDATORY)
-
-1. Use Task tool with `subagent_type="claude-code-guide"` for Claude Code patterns
-2. Use WebSearch for community examples and current best practices
-
-Output before continuing:
-
-- Key patterns found
-- Pitfalls to avoid
+Use Task tool with `subagent_type="claude-code-guide"` for Claude Code patterns.
+Use WebSearch for community examples.
 
 ## Step 4: Agent Structure
-
-### Writing for Claude (not humans)
-
-Claude doesn't need:
-- Full JSON examples for built-in tools — just tool name + key params
-- Multiple examples of same pattern — one clear example enough
-- External links — not accessible at runtime
-- Decorative formatting — `---` dividers, excessive whitespace
-- "Remember:" summaries — Claude retains context
-
-Claude benefits from:
-- Explicit constraints and boundaries
-- One good/bad example pair per concept
-- Tables for mappings (compact, scannable)
-- Bullet points over prose
 
 ```markdown
 ---
 name: agent-name
-description: When to invoke (Claude uses this to decide)
-tools: Read, Write, Edit, Glob, Grep, Bash
+description: When to invoke (Claude uses this)
+tools: Read, Write, Edit, Glob, Grep
 model: sonnet
-color: blue
 ---
 
 # Agent Title
 
 One-sentence role.
 
-## Input Sources
-
-- `path/to/input` — description
-
 ## Core Responsibilities
-
-### 1. First Task
 
 Instructions with examples.
 
 ## Output Format
 
 Save to: `path/to/output.md`
-First line: `Status: Done | Failed - reason | Needs Review - explanation`
 
 ## Rules
 
@@ -115,106 +64,38 @@ First line: `Status: Done | Failed - reason | Needs Review - explanation`
 - DON'T: anti-patterns
 ```
 
-### Right Altitude
-
-| Too Rigid                            | Optimal                          | Too Vague            |
-| ------------------------------------ | -------------------------------- | -------------------- |
-| "Step 1: Open X, Step 2: Find Y..." | Clear goals + flexible execution | "Do the thing well" |
-
 ### YAML Fields
 
-| Field       | Required | Notes                               |
-| ----------- | -------- | ----------------------------------- |
-| name        | Yes      | lowercase, hyphens                  |
-| description | Yes      | Claude uses for invocation decision |
-| tools       | No       | Whitelist; omit to inherit all      |
-| model       | No       | opus/sonnet/haiku/inherit           |
+| Field | Required | Notes |
+|-------|----------|-------|
+| name | Yes | lowercase, hyphens |
+| description | Yes | Trigger condition |
+| tools | No | Whitelist; omit = inherit all |
+| model | No | haiku/sonnet/opus |
 
-### Model Selection
+### Right Altitude
 
-| Model  | Use When                                |
-| ------ | --------------------------------------- |
-| haiku  | Fast, simple tasks (2x speed, 3x cheaper) |
-| sonnet | Default, balanced                       |
-| opus   | Complex reasoning, architecture         |
+| Too Rigid | Optimal | Too Vague |
+|-----------|---------|-----------|
+| "Step 1: X, Step 2: Y" | Clear goals + flexible execution | "Do it well" |
 
-### Prompting Best Practices Checklist
-
-Before creating, verify:
-
-- [ ] **Complete world picture** — agent knows environment and capabilities
-- [ ] **Consistent instructions** — no contradictions
-- [ ] **No surprises** — inputs/outputs documented
-- [ ] **User perspective** — focus on what user cares about
-- [ ] **Varied examples** — not just happy path
-- [ ] **Critical rules prominent** — important rules at beginning
-
-### Thinking Mode Integration
-
-For agents needing multi-step reasoning, include in prompts:
-- "think step by step" — basic reasoning
-- "think harder" — complex analysis
-- "ultrathink" — deep architectural decisions
-
-Budget ~2-3x tokens for thinking overhead.
-
-## Step 5: Prepare Content
-
-### Before Finalizing
-
-Ask yourself:
-1. Would Claude behave differently without this section? If no → remove
-2. Is this the same info in different words? → deduplicate
-3. Is this obvious to an LLM? (JSON syntax, markdown format) → skip
-4. Can this table be 3 rows instead of 10? → condense
-
-Target path: `{scope}/agents/{agent-name}.md`
-
-Verify content has:
-
-1. Valid YAML frontmatter
-2. Clear description with trigger
-3. Output format documented
-4. Rules include DO and DON'T
-
-Proceed to Step 6 to create the file.
-
-## Step 6: Create File
-
-Write the agent file directly:
+## Step 5: Create File
 
 ```
-Write(file_path={full_path}, content={prepared_content})
+Write(file_path={scope}/agents/{name}.md, content={prepared_content})
 ```
 
 Git commit/push handled by `claude-config-save` skill.
 
-## Step 7: Validate with Agent Lint
+## Step 6: Validate
 
-Run validation before finalizing using SlashCommand:
-
-```bash
-/agent:lint {path} --r ultrathink
+```
+/agent:lint {path}
 ```
 
-### Validation Checklist
-
-| Check | Action if Failed |
-|-------|------------------|
-| Description vague | Make trigger-specific |
-| Tool overreach | Remove unnecessary tools |
-| Conflict detected | Rename or merge with existing |
-| Missing examples | Add good/bad examples |
-
-### Handling Validation Results
-
-- **PASS** → Report success to user
-- **WARN** → Show warnings, ask if user wants to address
-- **FAIL** → Must fix before completing
-
-Do NOT skip validation. It catches issues before they cause problems.
-
-Apply recommendations that align with user's intent. Ask about scope expansions.
+- **PASS** → Report success
+- **WARN** → Show warnings, ask user
+- **FAIL** → Must fix
 
 ## Output
 
@@ -225,35 +106,25 @@ Apply recommendations that align with user's intent. Ask about scope expansions.
 **Purpose:** [brief]
 **Trigger:** [when invoked]
 **Model:** [selected]
-
-Test by: [suggestion]
 ```
 
 ## Rules
 
 - Check existing agents first
 - Use sonnet as default model
-- Keep descriptions specific (not "helps with code")
-- Include DO and DON'T examples
+- Keep descriptions trigger-specific
+- Include DO and DON'T rules
 - Document output format
-- Never give all tools unless needed
-
-## Anti-Patterns
-
-| Anti-Pattern           | Why It's Bad                  | Better Approach                 |
-| ---------------------- | ----------------------------- | ------------------------------- |
-| Hardcoded step-by-step | Brittle, breaks on variations | Describe goals, let agent decide |
-| No examples            | Agent guesses behavior        | Include good/bad examples       |
-| Vague description      | Claude doesn't know when      | Specific trigger conditions     |
-| Too many tools         | Security risk, confusion      | Whitelist only needed tools     |
-| No output format       | Inconsistent results          | Document exact format           |
+- Whitelist only needed tools
+- Don't add decorative formatting or external links
+- One example per concept is enough
 
 ## Example: Code Reviewer Agent
 
 ```markdown
 ---
 name: code-reviewer
-description: Reviews code changes for bugs, security issues, and best practices. Use after developer completes implementation.
+description: Reviews code for bugs and security. Use after implementation.
 tools: Read, Glob, Grep
 model: sonnet
 ---
@@ -262,40 +133,21 @@ model: sonnet
 
 Review code changes and provide actionable feedback.
 
-## Input
+## Checklist
 
-- File paths or git diff
+- No hardcoded secrets
+- Input validation present
+- Functions under 50 lines
 
-## Review Checklist
-
-### Security
-- [ ] No hardcoded secrets
-- [ ] Input validation present
-- [ ] No SQL injection risks
-
-### Quality
-- [ ] Functions under 50 lines
-- [ ] Clear naming
-- [ ] Error handling present
-
-## Output Format
-
-## Code Review: {file}
+## Output
 
 **Status:** Approved | Changes Requested
 
 ### Issues Found
-1. **[Severity]** Description
-   - Location: file:line
-   - Suggestion: how to fix
-
-### Positive Notes
-- What's done well
+1. **[Severity]** Description at file:line
 
 ## Rules
 
 - DO: Focus on bugs and security first
-- DO: Provide specific line references
 - DON'T: Nitpick style if linter handles it
-- DON'T: Rewrite code, just suggest
 ```

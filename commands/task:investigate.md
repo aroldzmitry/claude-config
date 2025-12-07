@@ -32,12 +32,10 @@ Parse `$ARGUMENTS` and identify:
 Before doing any research, use `AskUserQuestion` to understand context:
 
 **Required questions (pick 2-3 most relevant):**
-| Context | Question |
-|---------|----------|
-| Team | Solo / Small team / Enterprise? |
-| State | What exists already? |
-| Goal | Primary objective? |
-| Constraints | Budget/time limits? |
+- Team: Solo / Small team / Enterprise?
+- State: What exists already?
+- Goal: Primary objective?
+- Constraints: Budget/time limits?
 
 **Rules:**
 - Ask 2-3 questions MAX via `AskUserQuestion`
@@ -49,14 +47,12 @@ Before doing any research, use `AskUserQuestion` to understand context:
 
 Think through these lenses (use "ultrathink"):
 
-| Perspective | Questions to Explore |
-|-------------|---------------------|
-| **Problem** | What exactly needs solving? What's the root cause? |
-| **Stakeholders** | Who benefits? Who's affected? What do they care about? |
-| **Constraints** | Time, budget, technical, political limitations? |
-| **Risks** | What could go wrong? What's the worst case? |
-| **Alternatives** | What other approaches exist? Why not those? |
-| **Prior Art** | Has this been solved before? What can we learn? |
+- **Problem** — What exactly needs solving? Root cause?
+- **Stakeholders** — Who benefits? Who's affected?
+- **Constraints** — Time, budget, technical limits?
+- **Risks** — What could go wrong? Worst case?
+- **Alternatives** — Other approaches? Why not those?
+- **Prior Art** — Solved before? What can we learn?
 
 ### 3. Web Research (MANDATORY)
 
@@ -126,22 +122,9 @@ Otherwise, proceed without saving.
 
 ## Rules
 
-- DO: Challenge assumptions in the original question
-- DO: Provide actionable next steps
-- DO: Cite sources from web research
-- DO: Be honest about uncertainty
-- DON'T: Give generic advice
-- DON'T: Skip web research
-- DON'T: Over-promise outcomes
-
-## Output Quality
-
-Good investigation:
-- Surfaces something user hadn't considered
-- Connects to real-world examples
-- Provides clear next action
-
-Bad investigation:
-- Restates the obvious
-- Generic platitudes
-- No concrete recommendations
+- Challenge assumptions in the question
+- Provide actionable next steps
+- Cite sources from web research
+- Be honest about uncertainty
+- Never give generic advice
+- Never skip web research

@@ -27,5 +27,5 @@
     "defaultMode": "default"
   },
   "hooks": {},
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": true
 }

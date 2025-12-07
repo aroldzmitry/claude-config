@@ -43,12 +43,15 @@ Auto-detect by priority:
 |------|-------------|--------------|
 | Agent | `~/.claude/agents/{name}.md` | `.claude/agents/{name}.md` |
 | Command | `~/.claude/commands/{name}.md` | `.claude/commands/{name}.md` |
+| Skill | `~/.claude/skills/{name}/SKILL.md` | `.claude/skills/{name}/SKILL.md` |
 
 If file exists in **both** scopes, ask which one.
 
 ## Step 2: Find Target File
 
-1. Use Glob to search for `{name}.md` in agents/ and commands/
+1. Use Glob to search for:
+   - `{name}.md` in agents/ and commands/
+   - `{name}/SKILL.md` in skills/
 2. If not found → error: "File not found: {name}"
 3. If found → store full path
 

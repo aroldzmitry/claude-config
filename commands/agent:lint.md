@@ -1,5 +1,5 @@
 ---
-description: "Validate an agent or command for quality and conflicts. Always uses web research and deep reasoning."
+description: "Validate an agent, command, or skill for quality and conflicts. Always uses web research and deep reasoning."
 argument-hint: <file-path>
 ---
 
@@ -9,7 +9,7 @@ Validate the following item: $ARGUMENTS
 
 ## Argument Parsing
 
-Parse `$ARGUMENTS` to extract the **target**: file path or agent/command name.
+Parse `$ARGUMENTS` to extract the **target**: file path or agent/command/skill name.
 
 ## Execution
 

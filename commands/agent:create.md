@@ -159,11 +159,11 @@ Verify:
 3. Output format documented
 4. Rules include DO and DON'T
 
-## Step 6: Git Commit (global scope only)
+## Step 6: Git Commit & Push (global scope only)
 
 If file created in `~/.claude/`:
-1. Run: `cd ~/.claude && git add -A && git commit -m "Create agent: {agent-name}"`
-2. If commit fails → log warning, continue
+1. Run: `cd ~/.claude && git add -A && git commit -m "Create agent: {agent-name}" && git push`
+2. If commit/push fails → log warning, continue
 
 ## Step 7: Validate with Agent Lint
 

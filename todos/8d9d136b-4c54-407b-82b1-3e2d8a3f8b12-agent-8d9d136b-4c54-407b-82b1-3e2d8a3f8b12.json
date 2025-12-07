@@ -1,17 +1,1 @@
-[
-  {
-    "content": "Initialize git repo in ~/.claude/",
-    "status": "completed",
-    "activeForm": "Initializing git repo in ~/.claude/"
-  },
-  {
-    "content": "Update agent:update command with auto-commit",
-    "status": "completed",
-    "activeForm": "Updating agent:update command"
-  },
-  {
-    "content": "Update agent:create command with auto-commit",
-    "status": "in_progress",
-    "activeForm": "Updating agent:create command"
-  }
-]
+[]

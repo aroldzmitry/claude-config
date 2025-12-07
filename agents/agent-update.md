@@ -77,11 +77,11 @@ Append to `{scope}/agents/.improvements/history.md`:
 **Status:** Applied
 ```
 
-## Step 5: Git Commit (global scope only)
+## Step 5: Git Commit & Push (global scope only)
 
 If file is in `~/.claude/`:
-1. Run: `cd ~/.claude && git add -A && git commit -m "Update: {filename}"`
-2. If commit fails (nothing to commit) → skip silently
+1. Run: `cd ~/.claude && git add -A && git commit -m "Update: {filename}" && git push`
+2. If commit/push fails → log warning, continue
 
 ## Step 6: Return Report
 

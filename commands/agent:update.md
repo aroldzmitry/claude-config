@@ -138,7 +138,7 @@ Use SlashCommand tool: /agent:rollback [file_path]
 
 When no arguments:
 
-1. Read `{scope}/agents/.improvements/suggestions.md`
+1. Read `~/.claude/.improvements/suggestions.md`
 2. If has recent recommendations (<7 days) → show and ask which to apply
 3. If empty/outdated → ask user what to update
 

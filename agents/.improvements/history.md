@@ -270,3 +270,10 @@ Token optimization — removed redundant examples, JSON templates, duplicate sec
 **Change:** Add test comment to verify agent-update executor behavior
 **Status:** Applied
 
+## 2025-12-07 - agent-lint.md
+**Source:** /agent:update
+**Change:** Rollback: Reverted agent-lint.md to commit cbfb657 (previous version before test comment was added)
+**Status:** Applied
+
+---
+

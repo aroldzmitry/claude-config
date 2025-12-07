@@ -7,8 +7,6 @@ argument-hint: [figma-file-key | "auto" to use cached JSON]
 
 # UI Kit Sync
 
-Synchronize design tokens and components from Figma to production code with intelligent consolidation.
-
 ## Input Sources
 
 | Source | Usage |
@@ -55,16 +53,10 @@ Base URL: `https://api.figma.com`
 
 ### Phase 2: Analyze
 
-1. **Scan existing codebase:**
-   - Read `src/app/styles/variables.scss` for current tokens
-   - Glob `src/shared/ui/**/*.tsx` for existing components
-   - Extract patterns: naming, structure, imports
-
-2. **Build inventory:**
-   - Colors: hex, usage count, semantic context
-   - Typography: fonts, sizes, weights, line heights
-   - Spacing: gaps, paddings, margins
-   - Radii, shadows
+1. **Find existing tokens:** Glob `**/*variables*.scss` or `**/*tokens*.ts`
+2. **Find UI components:** Glob `**/ui/**/*.tsx` or `**/components/**/*.tsx`
+3. **Extract patterns:** naming, structure, imports
+4. **Build inventory:** colors, typography, spacing, radii, shadows
 
 ### Phase 3: Detect Inconsistencies
 
@@ -80,144 +72,50 @@ Classify each inconsistency:
 
 **Detection rules:**
 
-- **Color drift**: ΔE < 5 → consolidate
-- **Spacing anomalies**: 15px among 16px → normalize to grid
-- **Typography drift**: weight 500 vs 600 same context → consolidate
-- **Radius inconsistencies**: 6px vs 8px similar components → normalize
-
-**ΔE (color difference):**
-```
-ΔE = sqrt((R1-R2)² + (G1-G2)² + (B1-B2)²) / 4.42
-```
-- < 1: imperceptible
-- 1-2: barely noticeable
-- 2-5: noticeable on inspection
-- > 5: clearly different
+- **Color drift**: visually similar colors (ΔE < 5) → consolidate to majority
+- **Spacing anomalies**: outliers (15px among 16px) → normalize to grid
+- **Typography drift**: same context, different weights → consolidate
+- **Radius inconsistencies**: similar components, different radii → normalize
 
 ### Phase 4: Resolve
 
 1. **Auto-fix** items >65% majority
-2. **Ask user** for ambiguous (40-65%):
-
-```
-Color inconsistency:
-  #f3f7ff (557 uses)
-  #f2f7ff (60 uses)
-  ΔE = 0.8 (imperceptible)
-
-Options:
-  [1] Use #f3f7ff (recommended)
-  [2] Use #f2f7ff
-  [3] Keep both separate
-```
-
+2. **Ask user** for ambiguous (40-65%) via AskUserQuestion
 3. Build consolidated token set
 
 ### Phase 5: Generate
 
-**Token outputs:**
+**Outputs:**
+- Update token file found in Phase 2 (CSS custom properties or TS constants)
+- Generate React components in existing UI directory, matching project patterns
 
-| File | Content |
-|------|---------|
-| `src/app/styles/variables.scss` | CSS custom properties |
-| `src/shared/design-tokens/tokens.ts` | TypeScript constants (if exists) |
-
-**Component outputs:**
-
-| Location | Content |
-|----------|---------|
-| `src/shared/ui/{component}/` | React component matching project patterns |
-
-**Pattern matching:**
-- Check existing components for import/export style
-- Match folder structure and file naming
-- Follow existing TypeScript interfaces
-- Include all variants and states from Figma
+**Pattern matching:** Check existing components for import/export style, folder structure, TypeScript interfaces. Include all variants and states from Figma.
 
 ### Phase 6: Report
 
-```markdown
-## UI Kit Sync Complete
+Output summary with sections:
+- **Tokens:** counts by category (new/updated)
+- **Auto-Consolidated:** table of normalized values with reasons
+- **User Decisions:** table of ambiguous cases and choices
+- **Files Modified:** list of changed files
 
-### Tokens
-- Colors: {count} ({new} new, {changed} updated)
-- Typography: {count}
-- Spacing: {count}
-- Radii: {count}
+## Token Format
 
-### Auto-Consolidated
-| Original | Normalized | Reason |
-|----------|------------|--------|
-| #f2f7ff (60×) | #f3f7ff | 90% majority |
-| 15px gap | 16px | 8px grid |
+Save to `.claude/docs/FIGMA_TOKENS.json` with keys: `colors[]`, `fonts{}`, `font_sizes_px[]`, `spacing{}`, `shadows[]`, `typography{}`
 
-### User Decisions
-| Issue | Choice |
-|-------|--------|
-| Primary blue | #2563eb |
-
-### Files Modified
-- src/app/styles/variables.scss
-- src/shared/ui/Button/Button.tsx
-```
-
-## Token JSON Schema
-
-```json
-{
-  "source": "Figma API",
-  "file_key": "...",
-  "extracted_at": "YYYY-MM-DD",
-  "colors": [{ "hex": "#000000", "usage_count": 100, "semantic": "text-primary" }],
-  "fonts": { "primary": "Poppins", "secondary": "Inter" },
-  "font_sizes_px": [12, 14, 16, 20, 24, 32],
-  "font_weights": [400, 500, 600],
-  "line_heights_percent": [120, 130, 155],
-  "border_radii_px": [4, 8, 12, 16],
-  "spacing": { "gaps_px": [], "paddings_px": [] },
-  "shadows": [{ "name": "shadow-soft", "css": "..." }],
-  "typography": { "h1": {}, "body": {} }
-}
-```
-
-## Token Naming Convention
-
-```scss
-// Colors
---color-primary-500: #2563eb;
---color-gray-100: #f3f4f6;
-
-// Typography
---font-family-primary: 'Poppins', sans-serif;
---font-size-sm: 14px;
---font-weight-medium: 500;
-
-// Spacing (8px grid)
---spacing-1: 4px;
---spacing-2: 8px;
---spacing-4: 16px;
-
-// Radii
---radius-sm: 4px;
---radius-md: 8px;
-```
+**Naming pattern:** `--{category}-{name}[-{variant}]`
+- Colors: `--color-primary-500`, `--color-gray-100`
+- Spacing: `--spacing-1` (4px), `--spacing-2` (8px)
+- Radii: `--radius-sm`, `--radius-md`
 
 ## Rules
 
-### DO
-- Ask for Figma token if not provided
-- Auto-fix when >65% favors one value
-- Ask user for 40-65% splits
-- Preserve existing semantic names
-- Sort colors by usage_count descending
+- Preserve existing semantic token names
 - Follow existing code patterns exactly
-
-### DON'T
-- Store Figma token in any file
-- Create tokens for one-off values
-- Invent new naming conventions
-- Modify files without showing diff
-- Skip confirmation for ambiguous cases
+- Show diff before modifying files
+- Never store Figma token in files
+- Never create tokens for one-off values
+- Never skip confirmation for ambiguous cases
 
 ## Error Handling
 

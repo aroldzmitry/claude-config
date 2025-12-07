@@ -1,5 +1,13 @@
 # Improvement History
 
+## 2025-12-07 - agent-update.md (Remove Backup System, Use Git)
+
+**Source:** /agent:update
+**Change:** Removed backup system in favor of git-based rollbacks. Updated workflow from 7 to 7 steps (removed Step 2: Backup). Updated git commit messages to include change type and summary. Modified rollback flow to use git history instead of local backups. Updated rules to state "Git is the backup".
+**Status:** Applied
+
+---
+
 ## 2025-12-06 - agent-lint.md (Log Format Update)
 
 **Source:** /agent:update

@@ -38,9 +38,9 @@ Rollback [file_path] to previous version.
 1. Parse file path and change from prompt
 2. Read current file content
 3. Validate syntax of proposed changes
-4. Create backup
-5. Apply changes
-6. Log to history
+4. Apply changes
+5. Log to history
+6. Git commit & push
 7. Return report
 
 ## Step 1: Validate Syntax
@@ -51,13 +51,7 @@ Rollback [file_path] to previous version.
 
 If invalid → return error, do not apply.
 
-## Step 2: Backup
-
-1. Create directory if missing: `{scope}/{type}/.backups/`
-2. Save backup with timestamp: `{name}.md.{YYYY-MM-DD_HH-mm-ss}.bak`
-3. Cleanup: delete backups older than 24 hours for this file
-
-## Step 3: Apply
+## Step 2: Apply
 
 Parse old_string and new_string blocks from prompt.
 Use Edit tool with exact values:
@@ -67,7 +61,7 @@ Use Edit tool with exact values:
 
 If blocks not found → return error.
 
-## Step 4: Log
+## Step 3: Log
 
 Append to `{scope}/agents/.improvements/history.md`:
 ```markdown
@@ -77,37 +71,41 @@ Append to `{scope}/agents/.improvements/history.md`:
 **Status:** Applied
 ```
 
-## Step 5: Git Commit & Push (global scope only)
+## Step 4: Git Commit & Push (global scope only)
 
 If file is in `~/.claude/`:
-1. Run: `cd ~/.claude && git add -A && git commit -m "Update: {filename}" && git push`
-2. If commit/push fails → log warning, continue
+1. Extract change summary from prompt (first 50 chars of change description)
+2. Run: `cd ~/.claude && git add -A && git commit -m "{type}: {filename} - {summary}" && git push`
+   - `{type}`: Update, Add, Remove, or Rollback
+   - `{filename}`: name of changed file
+   - `{summary}`: brief description of what changed
+3. If commit/push fails → log warning, continue
 
-## Step 6: Return Report
+## Step 5: Return Report
 
 ```
 Done: {file path}
-Backup: {backup path}
-Git: committed (or "skipped" if project scope)
+Git: committed and pushed (or "skipped" if project scope)
 ```
 
 ## Rollback
 
 When prompt contains `rollback`, `revert`, or `undo`:
 
-1. Find backup: `{scope}/{type}/.backups/{name}.md.bak1`
-2. Read backup content
-3. Write to original location
+1. Run `git log --oneline -10 -- {file_path}` to find previous commits
+2. Use `git show {commit}:{relative_path}` to get previous content
+3. Write previous content to original location
 4. Log rollback with reason
-5. Return report
+5. Commit the rollback with message: "Rollback: {filename} - reverted to {commit_hash}"
+6. Return report
 
 ## Rules
 
 - **No confirmation needed** — already approved by command
-- **Always backup** before edit
 - **Always log** for audit trail
 - **Validate syntax** before applying
 - **Return errors** if validation fails
+- **Git is the backup** — use git history for rollbacks
 
 ## Error Handling
 

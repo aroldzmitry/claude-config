@@ -26,27 +26,6 @@
     "ask": [],
     "defaultMode": "default"
   },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/auto-commit.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/auto-commit.sh"
-          }
-        ]
-      }
-    ]
-  },
+  "hooks": {},
   "alwaysThinkingEnabled": false
 }

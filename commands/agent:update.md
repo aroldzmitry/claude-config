@@ -125,18 +125,6 @@ After user confirms, apply directly using Edit tool:
 Edit(file_path=[full_file_path], old_string=[exact text], new_string=[new text])
 ```
 
-**Git commit/push happens automatically** via PostToolUse hook.
-
-### Log to History
-
-Append to `{scope}/.improvements/history.md`:
-```markdown
-## [date] - [file]
-**Source:** /agent:update
-**Change:** [summary]
-**Status:** Applied
-```
-
 ## Rollback Mode
 
 When `rollback`, `revert`, or `undo` detected:
@@ -183,7 +171,6 @@ When user requests moving file between global ↔ project:
 
 ## Rules
 
-- **Command does all preparation** — scope, file, read, diff, confirm
-- **Subagent only executes** — validate, backup, apply, log
 - **Always show diff** before applying
 - **Never guess** — ask if unclear
+- Git commit/push handled by `claude-config-save` skill

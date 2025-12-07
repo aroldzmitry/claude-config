@@ -45,6 +45,7 @@ Look for patterns in conversation:
 - "This should be X, not Y"
 - "Missing X", "Wrong X", "Forgot to X"
 - Direct edits user requested after agent output
+- User provided their own solution
 
 ## Step 4: Clarify if Unclear
 

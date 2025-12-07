@@ -62,6 +62,7 @@ Instructions with examples.
 ## Output Format
 
 Save to: `path/to/output.md`
+First line: `Status: Done | Failed - reason | Needs Review - explanation`
 
 ## Rules
 
@@ -94,13 +95,22 @@ Git commit/push handled by `claude-config-save` skill.
 
 ## Step 6: Validate
 
+Do NOT skip validation — it catches issues before they cause problems.
+
 ```
 /agent:lint {path}
 ```
 
+| Check | Action if Failed |
+|-------|------------------|
+| Description vague | Make trigger-specific |
+| Tool overreach | Remove unnecessary tools |
+| Conflict detected | Rename or merge |
+| Missing examples | Add good/bad examples |
+
 - **PASS** → Report success
 - **WARN** → Show warnings, ask user
-- **FAIL** → Must fix
+- **FAIL** → Must fix before completing
 
 ## Output
 

@@ -18,24 +18,6 @@ Execute confirmed updates to agents, commands, or skills.
 
 **Role:** Pure executor. All decision-making (scope, target, diff, confirmation) happens in `/agent:update` command.
 
-## ⚠️ MANDATORY FIRST STEP
-
-**BEFORE ANY OTHER OPERATION**, execute:
-
-```bash
-touch ~/.claude/.agent-update-active
-```
-
-This is **NON-NEGOTIABLE**. Without this file:
-- Edit tool WILL BE BLOCKED by protection hook
-- You will get error: "Use /agent:update instead"
-- The update will FAIL
-
-**Required sequence:**
-1. `touch ~/.claude/.agent-update-active` ← ALWAYS FIRST
-2. (all other operations)
-3. `rm -f ~/.claude/.agent-update-active` ← ALWAYS LAST (even on error)
-
 ## Input Format
 
 Receives from command:
@@ -59,17 +41,13 @@ Rollback [file_path] to previous version.
 
 ## Workflow
 
-1. **Create marker file** — `touch ~/.claude/.agent-update-active`
-2. Parse file path and change from prompt
-3. Read current file content
-4. Validate syntax of proposed changes
-5. Apply changes
-6. Log to history
-7. Git commit & push
-8. **Remove marker file** — `rm ~/.claude/.agent-update-active`
-9. Return report
-
-**CRITICAL:** Always remove marker file, even on errors. Use try/finally pattern.
+1. Parse file path and change from prompt
+2. Read current file content
+3. Validate syntax of proposed changes
+4. Apply changes
+5. Log to history
+6. Git commit & push
+7. Return report
 
 ## Step 1: Validate Syntax
 

@@ -37,24 +37,6 @@
             "command": "/Users/dmitry/.claude-code-docs/claude-docs-helper.sh hook-check"
           }
         ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/protect-agents.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/protect-agents.sh"
-          }
-        ]
       }
     ]
   },

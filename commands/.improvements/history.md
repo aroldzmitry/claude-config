@@ -9,12 +9,12 @@
 ## 2025-12-05 - agent:lint.md
 **Issue:** agent-lint system agent couldn't find global scope files (e.g., agent:improve in ~/.claude/)
 **Change:** Added Scope Hierarchy section with instructions to search both project (.claude/) and global (~/.claude/) scopes
-**Status:** Pending validation
+**Status:** Applied
 
 ## 2025-12-05 - agent:lint.md (update)
 **Issue:** Claude executed validation inline instead of spawning subagent via Task tool
 **Change:** Added explicit Execution section requiring Task tool delegation with example syntax
-**Status:** Pending validation
+**Status:** Applied
 
 ## 2025-12-05 - agent:improve.md (update)
 **Idea:** Add 4 improvements from agent-lint validation

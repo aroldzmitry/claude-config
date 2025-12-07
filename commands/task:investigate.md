@@ -20,6 +20,30 @@ Parse `$ARGUMENTS` and identify:
 - Core problem/question
 - Domain (technical, business, personal, creative)
 - Implicit constraints or context
+- **Hidden assumptions in the question**
+
+**Challenge the question itself:**
+- Is this the right question to ask?
+- What alternatives might the user not be considering?
+- Is there a simpler solution they might be missing?
+
+### 1.5. Discovery Questions (BEFORE research)
+
+Before doing any research, use `AskUserQuestion` to understand context:
+
+**Required questions (pick 2-3 most relevant):**
+| Context | Question |
+|---------|----------|
+| Team | Solo / Small team / Enterprise? |
+| State | What exists already? |
+| Goal | Primary objective? |
+| Constraints | Budget/time limits? |
+
+**Rules:**
+- Ask 2-3 questions MAX via `AskUserQuestion`
+- Use multiple choice options where possible
+- Skip if answer is obvious from $ARGUMENTS
+- DO NOT proceed to web research until context is clear
 
 ### 2. Multi-Angle Analysis
 
@@ -36,13 +60,19 @@ Think through these lenses (use "ultrathink"):
 
 ### 3. Web Research (MANDATORY)
 
+**Tailor search to discovered context:**
+- Solo developer → search "solo/small team [topic]"
+- Enterprise → search "[topic] at scale"
+- Existing stack → include their tech in query
+
 Use `WebSearch` to find:
-- Similar problems and solutions
-- Best practices in the domain
+- Similar problems **in similar contexts**
+- Best practices **for their scale**
 - Common pitfalls
 - Expert opinions
 
 Synthesize findings, don't just list links.
+**Filter out irrelevant results** (e.g., enterprise stats for solo dev).
 
 ### 4. Generate Insights
 

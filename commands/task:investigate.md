@@ -111,16 +111,18 @@ Display to user:
 - [What still needs answering]
 ```
 
-### 6. Ask to Save
+### 6. Offer to Save
 
-Use `AskUserQuestion`:
-- **Save** — write to `~/.claude/investigations/{date}-{slug}.md`
-- **Skip** — display only, don't persist
+After presenting summary, add:
 
-If save selected:
-1. Create file with full investigation
+> If you want to save this investigation, reply "save" or "yes".
+
+If user replies affirmatively:
+1. Create file at `~/.claude/investigations/{date}-{slug}.md`
 2. Add metadata (date, topic, sources)
-3. Confirm save location
+3. Confirm: "Saved to [path]"
+
+Otherwise, proceed without saving.
 
 ## Rules
 

@@ -69,3 +69,9 @@
 2. Step 1.5: Added mandatory "Discovery Questions" phase using AskUserQuestion to gather context (team size, existing state, goals, constraints) before web research
 3. Step 3: Enhanced web research to tailor searches based on discovered context (solo/enterprise/tech stack) and filter irrelevant results
 **Status:** Applied
+
+## 2025-12-07 - task:investigate.md (update)
+
+**Source:** /agent:update
+**Change:** Replaced AskUserQuestion-based save prompt with simple text prompt. Step 6 now displays "If you want to save this investigation, reply 'save' or 'yes'" and waits for user response instead of using tool dialog
+**Status:** Applied

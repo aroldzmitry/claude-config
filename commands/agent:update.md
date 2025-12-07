@@ -117,33 +117,33 @@ Use `AskUserQuestion`: Apply? (Yes / Edit first / No)
 
 If change is **Large** → stop and suggest creating new agent/command instead.
 
-## Step 6: Delegate to Executor
+## Step 6: Apply Changes
 
-Pass ready payload to subagent:
+After user confirms, apply directly using Edit tool:
 
 ```
-Task(subagent_type="agent-update", prompt="CONFIRMED. Update [full_file_path]:
-
-old_string:
-\`\`\`
-[exact text to replace]
-\`\`\`
-
-new_string:
-\`\`\`
-[exact new text]
-\`\`\`
-")
+Edit(file_path=[full_file_path], old_string=[exact text], new_string=[new text])
 ```
 
-**IMPORTANT:** Subagent only executes — no decision-making.
+**Git commit/push happens automatically** via PostToolUse hook.
+
+### Log to History
+
+Append to `{scope}/.improvements/history.md`:
+```markdown
+## [date] - [file]
+**Source:** /agent:update
+**Change:** [summary]
+**Status:** Applied
+```
 
 ## Rollback Mode
 
 When `rollback`, `revert`, or `undo` detected:
 
+Redirect to rollback command:
 ```
-Task(subagent_type="agent-update", prompt="Rollback [full_file_path] to previous version.")
+Use SlashCommand tool: /agent:rollback [file_path]
 ```
 
 ## Recommendation Mode

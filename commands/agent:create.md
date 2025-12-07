@@ -162,7 +162,10 @@ Verify:
 ## Step 6: Git Commit & Push (global scope only)
 
 If file created in `~/.claude/`:
-1. Run: `cd ~/.claude && git add -A && git commit -m "Create agent: {agent-name}" && git push`
+1. Run: `cd ~/.claude && git add -A && git commit -m "Create {type}: {name} - {short-description}" && git push`
+   - `{type}`: agent or command
+   - `{name}`: name from YAML frontmatter
+   - `{short-description}`: first 50 chars of description from frontmatter
 2. If commit/push fails → log warning, continue
 
 ## Step 7: Validate with Agent Lint

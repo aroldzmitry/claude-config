@@ -48,3 +48,9 @@
 **Source:** /agent:update
 **Change:** Updated Rules section to allow Write tool ONLY for suggestions.md output, while maintaining prohibition on Edit tool and direct file modifications
 **Status:** Applied
+
+## 2025-12-07 - agent:create.md (update)
+
+**Source:** /agent:update
+**Change:** Updated Step 6 git commit message format from "Create agent: {agent-name}" to "Create {type}: {name} - {short-description}" with template variables for type, name, and short-description
+**Status:** Applied

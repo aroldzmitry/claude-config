@@ -10,7 +10,7 @@
 
 ## Claude Code Documentation
 
-For Claude Code questions: use `/docs <topic>`, NOT Task tool with claude-code-guide.
+For Claude Code questions: use Task tool with `subagent_type="claude-code-guide"` or WebSearch.
 - Write all file content in English unless user explicitly requests otherwise for specific files
 - Store all instructions for Claude in English
 - Keep responses short and concise; use longer responses only when explicitly requested

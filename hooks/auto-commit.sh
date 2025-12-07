@@ -54,9 +54,26 @@ fi
 # Extract filename for commit message
 FILENAME=$(basename "$FILE_PATH")
 
+# Generate summary from diff (first 50 chars of meaningful change)
+SUMMARY=""
+if $IS_NEW_FILE; then
+    # For new files, get first line of content
+    SUMMARY=$(head -1 "$FILE_PATH" 2>/dev/null | cut -c1-50 | tr -d '\n')
+elif ! $IS_DELETED; then
+    # For updates, get first changed line
+    SUMMARY=$(git diff HEAD -- "$REL_PATH" 2>/dev/null | grep "^+" | grep -v "^+++" | head -1 | sed 's/^+//' | cut -c1-50 | tr -d '\n')
+fi
+
+# Build commit message
+if [[ -n "$SUMMARY" ]]; then
+    COMMIT_MSG="${TYPE}: ${FILENAME} - ${SUMMARY}"
+else
+    COMMIT_MSG="${TYPE}: ${FILENAME}"
+fi
+
 # Commit with descriptive message
 git add "$REL_PATH"
-git commit -m "${TYPE}: ${FILENAME}" --quiet 2>/dev/null || true
+git commit -m "$COMMIT_MSG" --quiet 2>/dev/null || true
 
 # Push to remote (non-blocking, ignore failures)
 git push --quiet 2>/dev/null &

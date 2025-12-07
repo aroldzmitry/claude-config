@@ -12,7 +12,7 @@ Create a new custom agent following Claude Code best practices.
 0. **Select scope** — global (~/.claude/) or project (.claude/)
 1. **Gather requirements** — purpose, trigger, model
 2. **Check existing agents** — avoid duplication
-3. **Research patterns** — /docs agents, then web if needed
+3. **Research patterns** — claude-code-guide agent or web search
 4. **Agent structure** — define with YAML frontmatter
 5. **Prepare content** — finalize agent content
 6. **Create via agent:update** — delegate file creation
@@ -39,8 +39,8 @@ If similar exists → propose extending instead of creating new.
 
 ## Step 3: Research Patterns (MANDATORY)
 
-1. Use SlashCommand tool to invoke `/docs agents` for Claude Code patterns
-2. Use WebSearch for community examples and current best practices (MANDATORY)
+1. Use Task tool with `subagent_type="claude-code-guide"` for Claude Code patterns
+2. Use WebSearch for community examples and current best practices
 
 Output before continuing:
 

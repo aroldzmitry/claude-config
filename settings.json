@@ -17,8 +17,7 @@
       "Bash(yarn:*)",
       "Bash(npm:*)",
       "Bash(git:*)",
-      "Bash(cat:*)",
-      "Read(/Users/dmitry/.claude-code-docs/docs/**)"
+      "Bash(cat:*)"
     ],
     "deny": [
       "Read(.env)",
@@ -28,17 +27,6 @@
     "defaultMode": "default"
   },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dmitry/.claude-code-docs/claude-docs-helper.sh hook-check"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Write",

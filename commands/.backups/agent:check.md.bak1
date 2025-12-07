@@ -1,6 +1,0 @@
----
-description: Validate an agent, command, or skill for quality and conflicts
-argument-hint: <file-path>
----
-
-Validate the following item using the `agent-check` agent: $ARGUMENTS

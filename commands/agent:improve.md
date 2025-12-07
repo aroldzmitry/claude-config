@@ -121,6 +121,9 @@ Report: "Saved. Run /agent:update to apply."
 - **Delegate changes** — via `/agent:update`
 - Maximum 5 recommendations per session
 - Read full agent file before proposing
+- Self-test: would this change have prevented the original issue?
 
 **FORBIDDEN:** Edit, NotebookEdit
 **ALLOWED:** Write ONLY to `~/.claude/.improvements/suggestions.md`
+
+If you catch yourself about to use Edit — STOP and save to suggestions.md instead.

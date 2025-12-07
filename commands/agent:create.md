@@ -25,7 +25,12 @@ Ask using `AskUserQuestion`:
 
 Check both scopes for similar agents.
 
-**If similar found**, ask user:
+**If similar found**, show user:
+- Found agent name and path
+- What it does (from description)
+- How new request differs
+
+Then ask:
 - Extend existing
 - Replace
 - Create separate (different name)

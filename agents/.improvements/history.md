@@ -258,3 +258,8 @@ Token optimization — removed redundant examples, JSON templates, duplicate sec
 1. Added Argument Parsing section with `think`/`ultrathink` flag support
 2. Updated Execution section to pass thinking mode to agent-lint subagent
 **Status:** Applied
+## 2025-12-07 06:07:15 - agents/agent-update.md
+**Source:** /agent:update
+**Change:** Add CRITICAL executor role reminder at top of file
+**Status:** Applied
+

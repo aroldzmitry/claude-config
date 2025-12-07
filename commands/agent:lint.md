@@ -1,4 +1,3 @@
-
 ---
 description: "Validate an agent or command for quality and conflicts. Always uses web research and deep reasoning."
 argument-hint: <file-path>

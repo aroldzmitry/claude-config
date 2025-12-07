@@ -1,66 +1,73 @@
 ---
-description: Sync design tokens and components from Figma to code. Detects inconsistencies, auto-consolidates majorities, asks for ambiguous cases. Use after design updates or to generate UI kit.
-allowed-tools: Read, Write, Edit, Glob, Grep, WebFetch, AskUserQuestion
+description: Sync design tokens from Figma and generate UI components/stories. Analyzes codebase patterns, collects context, then delegates code writing to dev-web agent.
+allowed-tools: Read, Write, Edit, Glob, Grep, WebFetch, AskUserQuestion, Task
 model: sonnet
-argument-hint: [figma-file-key | "auto" to use cached JSON]
+argument-hint: [figma-file-key | "auto" | "story <component>"]
 ---
 
-# UI Kit Sync
+# UI Kit Command
 
-## Input Sources
+Orchestrates UI development tasks: Figma token sync, component generation, and Storybook stories. This command analyzes and prepares context, then delegates actual code writing to `dev-web` agent.
 
-| Source | Usage |
-|--------|-------|
-| Figma file key | Fetch from API (requires token) |
-| `auto` | Use cached `.claude/docs/FIGMA_TOKENS.json` |
-| No argument | Prompt user to choose |
+## Command Modes
 
-## Figma API
-
-### Authentication
-
-Figma Personal Access Token required. Ask user if not provided.
-
-**Header:** `X-Figma-Token: {token}`
-
-### Endpoints
-
-| Endpoint | Data |
+| Argument | Mode |
 |----------|------|
-| `/v1/files/{key}` | File structure, components, styles |
-| `/v1/files/{key}/styles` | Published styles (colors, text, effects) |
+| Figma file key | Sync tokens from Figma API |
+| `auto` | Use cached `.claude/docs/FIGMA_TOKENS.json` |
+| `story <component>` | Generate Storybook story for component |
+| No argument | Prompt user to choose mode |
 
-Base URL: `https://api.figma.com`
+## Architecture
 
-## Workflow Phases
+```
+/dev:uikit (this command)
+    │
+    ├── Phase 1: Discovery & Analysis (this command)
+    │   - Discover project structure
+    │   - Extract Figma tokens OR analyze component
+    │   - Detect inconsistencies
+    │   - Resolve ambiguities with user
+    │
+    └── Phase 2: Implementation (dev-web agent)
+        - Write tokens/components/stories
+        - Follow project patterns
+        - Run quality checks
+```
 
-### Phase 1: Extract
+---
 
-1. **Get file key** — from argument or cached `FIGMA_TOKENS.json`
-2. **Ask for token** — if not provided
-3. **Fetch file data** — WebFetch to Figma API
-4. **Parse tokens:**
+## Mode: Token Sync
+
+### Phase 1: Extract from Figma
+
+**If Figma file key provided:**
+
+1. Ask for Figma Personal Access Token (header: `X-Figma-Token`)
+2. WebFetch `https://api.figma.com/v1/files/{key}`
+3. WebFetch `https://api.figma.com/v1/files/{key}/styles`
+4. Parse tokens:
 
 | Token Type | Source |
 |------------|--------|
 | Colors | `fills`, `strokes` where type is `SOLID` |
-| Typography | `style.fontFamily`, `fontSize`, `fontWeight`, `lineHeight` |
-| Spacing | `itemSpacing` (gaps), `padding*` properties |
+| Typography | `fontFamily`, `fontSize`, `fontWeight`, `lineHeight` |
+| Spacing | `itemSpacing`, `padding*` properties |
 | Radii | `cornerRadius` |
 | Shadows | `effects` where type is `DROP_SHADOW` |
 
-5. **Save to** `.claude/docs/FIGMA_TOKENS.json`
+5. Save to `.claude/docs/FIGMA_TOKENS.json`
 
-### Phase 2: Analyze
+**If `auto`:** Read existing `.claude/docs/FIGMA_TOKENS.json`
 
-1. **Find existing tokens:** Glob `**/*variables*.scss` or `**/*tokens*.ts`
-2. **Find UI components:** Glob `**/ui/**/*.tsx` or `**/components/**/*.tsx`
-3. **Extract patterns:** naming, structure, imports
-4. **Build inventory:** colors, typography, spacing, radii, shadows
+### Phase 2: Analyze Codebase
+
+1. Glob `**/*variables*.scss` or `**/*tokens*.ts` for existing tokens
+2. Glob `**/ui/**/*.tsx` or `**/components/**/*.tsx` for UI components
+3. Extract patterns: naming conventions, file structure, imports
+4. Build inventory of current design tokens
 
 ### Phase 3: Detect Inconsistencies
-
-Classify each inconsistency:
 
 | Pattern | Threshold | Action |
 |---------|-----------|--------|
@@ -70,59 +77,223 @@ Classify each inconsistency:
 | Outlier | <20% uses value B | AUTO-FIX to majority |
 | Novel value | Not in system | ASK: add or map? |
 
-**Detection rules:**
-
-- **Color drift**: visually similar colors (ΔE < 5) → consolidate to majority
-- **Spacing anomalies**: outliers (15px among 16px) → normalize to grid
+Detection rules:
+- **Color drift**: similar colors (ΔE < 5) → consolidate
+- **Spacing anomalies**: outliers (15px among 16px) → normalize
 - **Typography drift**: same context, different weights → consolidate
 - **Radius inconsistencies**: similar components, different radii → normalize
 
-### Phase 4: Resolve
+### Phase 4: Resolve Ambiguities
 
-1. **Auto-fix** items >65% majority
-2. **Ask user** for ambiguous (40-65%) via AskUserQuestion
-3. Build consolidated token set
+Use AskUserQuestion for items with 40-65% split.
 
-### Phase 5: Generate
+### Phase 5: Prepare Context for Developer
 
-**Outputs:**
-- Update token file found in Phase 2 (CSS custom properties or TS constants)
-- Generate React components in existing UI directory, matching project patterns
+Create task context file with:
 
-**Pattern matching:** Check existing components for import/export style, folder structure, TypeScript interfaces. Include all variants and states from Figma.
+```json
+{
+  "task_type": "uikit_sync",
+  "figma_tokens": { /* extracted tokens */ },
+  "existing_tokens_file": "path/to/tokens.scss",
+  "inconsistencies": [
+    { "type": "color", "current": "#fff", "figma": "#fafafa", "action": "update" }
+  ],
+  "user_decisions": { /* resolved ambiguities */ },
+  "patterns": {
+    "naming": "--{category}-{name}[-{variant}]",
+    "file_structure": "description of existing structure"
+  }
+}
+```
 
-### Phase 6: Report
+### Phase 6: Delegate to Developer
 
-Output summary with sections:
-- **Tokens:** counts by category (new/updated)
-- **Auto-Consolidated:** table of normalized values with reasons
-- **User Decisions:** table of ambiguous cases and choices
-- **Files Modified:** list of changed files
+Spawn `dev-web` agent with Task tool:
 
-## Token Format
+```
+Implement UI kit token sync based on prepared context.
 
-Save to `.claude/docs/FIGMA_TOKENS.json` with keys: `colors[]`, `fonts{}`, `font_sizes_px[]`, `spacing{}`, `shadows[]`, `typography{}`
+Read: .claude/tasks/{task-id}/context.json
 
-**Naming pattern:** `--{category}-{name}[-{variant}]`
-- Colors: `--color-primary-500`, `--color-gray-100`
-- Spacing: `--spacing-1` (4px), `--spacing-2` (8px)
-- Radii: `--radius-sm`, `--radius-md`
+Requirements:
+1. Update token file at {existing_tokens_file}
+2. Apply naming pattern: {patterns.naming}
+3. Generate React components for new design tokens
+4. Follow existing project patterns
+
+Output to: .claude/tasks/{task-id}/developer-output.md
+```
+
+---
+
+## Mode: Story Generation
+
+### Phase 1: Discover Project Structure
+
+1. Glob `.storybook/main.{ts,js}` for Storybook config
+2. Find components root:
+   - `src/components/`
+   - `src/ui/`
+   - `components/`
+   - `app/components/`
+3. Glob `**/*.stories.tsx` for existing story patterns
+4. Glob `.storybook/decorators/*.tsx` for decorators
+5. Read `tsconfig.json` for path aliases
+
+If multiple patterns or none found → ask user.
+
+### Phase 2: Locate Component
+
+| Input | Action |
+|-------|--------|
+| Path provided | Verify file exists |
+| Name provided | Search in components root |
+| Multiple matches | Ask user to select |
+| Not found | Report error, stop |
+
+### Phase 3: Analyze Component
+
+Read component file and extract:
+
+| Data | Pattern |
+|------|---------|
+| Props type | `type PropsT`, `type Props`, `interface Props` |
+| Enum props | Imports ending with `KindE`, `TypeE`, `SizeE`, `VariantE` |
+| Default values | Destructuring defaults `{ prop = value }` |
+| Form integration | `useController`, `useFormContext`, `useForm` imports |
+| Children type | `children: ReactNode`, `children: string` |
+
+Read related files:
+- Enum files in same directory
+- Style files for variant class names
+
+### Phase 4: Determine Requirements
+
+| Component Type | Decorator Needed |
+|----------------|------------------|
+| Uses `useController` | Form context decorator |
+| Uses `useFormContext` | Form context decorator |
+| Uses `useParams`, `useNavigate` | Router decorator note |
+| Uses context hooks | Manual setup note |
+
+### Phase 5: Derive Category
+
+| Path Pattern | Category |
+|--------------|----------|
+| `*/form/*` or `*/forms/*` | Form/{ComponentName} |
+| `*/modal/*` or `*/dialog/*` | Overlays/{ComponentName} |
+| `*/sidebar/*` or `*/drawer/*` | Overlays/{ComponentName} |
+| `*/layout/*` | Layout/{ComponentName} |
+| `*/icon/*` or `*/icons/*` | Icons/{ComponentName} |
+| `*/ui/*` | UI/{ComponentName} |
+| Other | Components/{ComponentName} |
+
+### Phase 6: Prepare Context for Developer
+
+Create task context file:
+
+```json
+{
+  "task_type": "storybook_story",
+  "component": {
+    "name": "ComponentName",
+    "path": "path/to/Component.tsx",
+    "props_type": "PropsT",
+    "props": [
+      { "name": "kind", "type": "enum", "enum_name": "ComponentKindE", "values": ["PRIMARY", "SECONDARY"] },
+      { "name": "disabled", "type": "boolean", "default": false },
+      { "name": "onClick", "type": "function" }
+    ]
+  },
+  "story": {
+    "output_path": "path/to/Component.stories.tsx",
+    "category": "UI/ComponentName",
+    "decorators": ["FormDecorator"],
+    "variants_to_generate": ["Default", "Primary", "Secondary", "Disabled"]
+  },
+  "project_patterns": {
+    "path_alias": "@components",
+    "existing_stories_example": "path/to/existing.stories.tsx",
+    "decorator_path": ".storybook/decorators"
+  }
+}
+```
+
+### Phase 7: Delegate to Developer
+
+Spawn `dev-web` agent with Task tool:
+
+```
+Generate Storybook story based on prepared context.
+
+Read: .claude/tasks/{task-id}/context.json
+
+Requirements:
+1. Create CSF3-compliant story at {story.output_path}
+2. Category: {story.category}
+3. Generate stories for variants: {story.variants_to_generate}
+4. Use decorators: {story.decorators}
+5. Match patterns from: {project_patterns.existing_stories_example}
+
+CSF3 structure:
+- Meta with title, component, parameters, tags: ['autodocs']
+- argTypes for each prop with appropriate controls
+- Story for each variant/enum value
+
+Output to: .claude/tasks/{task-id}/developer-output.md
+```
+
+---
+
+## Output
+
+After developer agent completes, summarize:
+
+```markdown
+## UI Kit Task Complete
+
+### Mode: [Token Sync / Story Generation]
+
+### Analysis Summary
+- [Key findings from analysis phase]
+
+### Developer Output
+- Files created: [list]
+- Files modified: [list]
+
+### Quality Checks
+- [Results from developer agent]
+
+### Notes
+- [Any manual review items]
+```
+
+---
 
 ## Rules
 
-- Preserve existing semantic token names
-- Follow existing code patterns exactly
-- Show diff before modifying files
-- Never store Figma token in files
-- Never create tokens for one-off values
-- Never skip confirmation for ambiguous cases
+**DO:**
+- Analyze thoroughly before delegating
+- Ask user for ambiguous cases
+- Pass complete context to developer
+- Match existing project patterns
+
+**DON'T:**
+- Write code directly (delegate to dev-web)
+- Skip user confirmation for ambiguous cases
+- Assume project structure without discovery
+- Store Figma tokens in code files
+
+---
 
 ## Error Handling
 
-| Error | Cause | Action |
-|-------|-------|--------|
-| 403 Forbidden | Invalid token or no access | Ask for valid token |
-| 404 Not Found | Wrong file key | Ask user to verify key |
-| 429 Rate Limit | Too many requests | Wait and retry |
-| No design data | Missing JSON | Prompt for Figma key |
-| Pattern conflict | Codebase inconsistent | Ask user which to follow |
+| Error | Action |
+|-------|--------|
+| 403 Figma | Ask for valid token |
+| 404 Figma | Verify file key with user |
+| No Storybook config | Report, suggest setup |
+| Component not found | Report and stop |
+| Pattern conflict | Ask user which to follow |
+| dev-web agent fails | Report failure reason |

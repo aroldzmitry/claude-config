@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/dmitry/.claude/hooks/auto-commit.sh"
+            "command": "$HOME/.claude/hooks/auto-commit.sh"
           }
         ]
       },
@@ -54,7 +54,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/dmitry/.claude/hooks/auto-commit.sh"
+            "command": "$HOME/.claude/hooks/auto-commit.sh"
           }
         ]
       }

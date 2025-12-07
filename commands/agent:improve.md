@@ -78,6 +78,16 @@ For long conversation histories (100+ messages):
 
 Use `AskUserQuestion` with options: Wrong output / Missing step / Too verbose / Not interactive
 
+## Step 4.5: Impact Analysis
+
+When change involves REMOVING or MODIFYING existing code/config:
+
+1. **Search for dependencies** - use Grep to find all references to the removed/modified item
+2. **List affected files** - show user what else might need changes
+3. **Ask confirmation** - "This change affects X files. Update all? [Yes/No/Show list]"
+
+Never remove or modify something without checking what depends on it.
+
 ## Step 5: Map Issue to Agent
 
 | Issue Type            | Agent           |

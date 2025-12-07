@@ -263,3 +263,10 @@ Token optimization — removed redundant examples, JSON templates, duplicate sec
 **Change:** Add CRITICAL executor role reminder at top of file
 **Status:** Applied
 
+---
+
+## 2025-12-07 - agent-lint.md
+**Source:** /agent:update
+**Change:** Add test comment to verify agent-update executor behavior
+**Status:** Applied
+

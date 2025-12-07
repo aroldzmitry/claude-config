@@ -11,6 +11,8 @@ color: magenta
 
 Validate agents and commands for quality and consistency.
 
+<!-- TEST COMMENT: This is a test comment for verifying agent-update executor behavior -->
+
 ## Agent Types
 
 | Type        | Location           | Can Modify |

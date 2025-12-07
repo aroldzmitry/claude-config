@@ -4,7 +4,6 @@ file-history/
 plans/
 downloads/
 *.log
-.agent-update-active
 
 # Runtime data
 .backups/

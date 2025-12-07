@@ -21,7 +21,7 @@ When user asks to run a slash command (e.g., "запусти /agent:update"), us
 
 ## Agent Modification Rule
 
-When modifying files in `~/.claude/agents/` or `~/.claude/commands/`:
-- Always use `/agent:update` command via SlashCommand tool
-- Never edit agent/command files directly with Edit tool
-- This ensures backups, validation, and history logging
+When modifying files in `~/.claude/`:
+- Use `/agent:update` for complex changes with diff preview
+- Direct Edit is allowed for simple fixes
+- Git commit/push handled automatically by `claude-config-save` skill

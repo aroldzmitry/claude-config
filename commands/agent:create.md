@@ -160,28 +160,17 @@ Verify content has:
 3. Output format documented
 4. Rules include DO and DON'T
 
-Do NOT write file directly — proceed to Step 6.
+Proceed to Step 6 to create the file.
 
-## Step 6: Create via agent:update
+## Step 6: Create File
 
-Use Task tool to delegate file creation:
+Write the agent file directly:
 
 ```
-Task(subagent_type="agent-update", prompt="Create new agent file.
-
-Path: {full_path}
-
-Content:
-\`\`\`markdown
-{prepared_content}
-\`\`\`
-")
+Write(file_path={full_path}, content={prepared_content})
 ```
 
-This ensures:
-- Backup created (if file exists)
-- Git commit & push (for global scope)
-- Consistent creation workflow
+Git commit/push handled by `claude-config-save` skill.
 
 ## Step 7: Validate with Agent Lint
 

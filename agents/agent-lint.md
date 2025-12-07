@@ -7,8 +7,6 @@ ultrathink: true
 color: magenta
 ---
 
-<!-- Test comment for verification -->
-
 # Agent Lint
 
 Validate agents and commands for quality and consistency.
@@ -98,8 +96,8 @@ Before generating improvement suggestions:
    - Global scope: `~/.claude/agents/` or `~/.claude/commands/`
 
 2. **Read existing suggestions log** for that scope:
-   - Project: `{project}/.claude/.improvements/suggestions.md`
-   - Global: `~/.claude/.improvements/suggestions.md`
+   - Project: `{project}/.claude/agents/.improvements/suggestions.md`
+   - Global: `~/.claude/agents/.improvements/suggestions.md`
 
 3. **Check for previously suggested items** for this file:
    - Filter by file path

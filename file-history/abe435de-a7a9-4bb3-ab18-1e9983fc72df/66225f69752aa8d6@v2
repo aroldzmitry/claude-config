@@ -1,4 +1,0 @@
-export enum ModalNameE {
-  TRANSACTION = 'transaction',
-  ERROR = 'error',
-}

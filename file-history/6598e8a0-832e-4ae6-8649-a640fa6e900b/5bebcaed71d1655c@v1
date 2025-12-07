@@ -1,6 +1,0 @@
-# Global Instructions
-
-## Claude Code Documentation
-Use `/docs <topic>` command for Claude Code documentation (hooks, MCP, memory, settings, commands, etc.).
-- Store all instructions for Claude in English
-- Keep responses short and concise; use longer responses only when explicitly requested

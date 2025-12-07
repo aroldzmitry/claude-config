@@ -1,4 +1,0 @@
-export enum ModalTypeE {
-  REGULAR = 'regular',
-  ERROR = 'error',
-}

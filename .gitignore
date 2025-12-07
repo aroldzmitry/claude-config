@@ -1,0 +1,10 @@
+# Temporary files
+debug/
+file-history/
+plans/
+downloads/
+*.log
+
+# Keep backups but not in main tracking
+# agents/.backups/ - keep for rollback
+# commands/.backups/ - keep for rollback

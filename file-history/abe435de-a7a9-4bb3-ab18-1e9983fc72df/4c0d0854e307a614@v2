@@ -1,6 +1,0 @@
-import { ModalNameE } from './ModalNameE';
-
-export type ModalPropsT = {
-  [ModalNameE.TRANSACTION]: void;
-  [ModalNameE.ERROR]: { message: string };
-};

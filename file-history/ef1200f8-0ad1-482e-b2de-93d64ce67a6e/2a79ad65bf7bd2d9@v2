@@ -1,4 +1,0 @@
-import { MOBILE_BREAKPOINT_REM } from 'Shared/constants/breakpoints';
-
-export const isMobile = () =>
-  window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT_REM - 0.01}rem)`).matches;

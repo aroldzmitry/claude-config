@@ -1,0 +1,57 @@
+---
+description: "Apply improvements to agents, commands, or skills. Supports rollback and recommendations from /agent:improve."
+argument-hint: [target] [change-description]
+---
+
+# Agent Update
+
+Apply updates to agent or command: $ARGUMENTS
+
+## Argument Parsing
+
+Parse `$ARGUMENTS` to extract:
+1. **Target:** The file path or agent/command name (optional if applying recommendations)
+2. **Change description:** What to change (optional for recommendation mode)
+3. **Flags:**
+   - `rollback`, `revert`, `undo` — Rollback mode
+   - `--r` — Enable web research for complex changes
+
+**Parsing rules:**
+- No arguments → check for recommendations to apply
+- Name only → direct update mode, agent will ask what to change
+- Name + description → direct update with specific change
+
+**Examples:**
+| Input | Target | Mode |
+|-------|--------|------|
+| (empty) | - | recommendations |
+| `developer` | developer | direct (ask what) |
+| `developer add accessibility checklist` | developer | direct update |
+| `rollback developer` | developer | rollback |
+| `--r agent-lint add examples` | agent-lint | direct + research |
+
+## Execution
+
+**You MUST use the Task tool** to delegate update work:
+
+**No arguments (recommendation mode):**
+```
+Task(subagent_type="agent-update", prompt="Check for recommendations and apply selected ones.")
+```
+
+**Direct update:**
+```
+Task(subagent_type="agent-update", prompt="Update [target]: [change description]")
+```
+
+**With rollback:**
+```
+Task(subagent_type="agent-update", prompt="Rollback [target] to previous version.")
+```
+
+**With `--r` flag:**
+```
+Task(subagent_type="agent-update", prompt="Update [target]: [change]. Use web research to find best practices.")
+```
+
+Do NOT perform updates inline — always delegate to the agent-update subagent via Task tool.

@@ -37,6 +37,15 @@
             "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/protect-agents.sh"
+          }
+        ]
       }
     ]
   },

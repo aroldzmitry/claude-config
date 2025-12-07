@@ -54,3 +54,9 @@
 **Source:** /agent:update
 **Change:** Updated Step 6 git commit message format from "Create agent: {agent-name}" to "Create {type}: {name} - {short-description}" with template variables for type, name, and short-description
 **Status:** Applied
+
+## 2025-12-07 - agent:lint.md (update)
+
+**Source:** /agent:update
+**Change:** Added blank line before YAML frontmatter opening delimiter
+**Status:** Applied

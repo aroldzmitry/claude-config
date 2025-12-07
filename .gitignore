@@ -8,6 +8,7 @@ downloads/
 
 # Runtime data
 .backups/
+.improvements/
 projects/
 shell-snapshots/
 statsig/

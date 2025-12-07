@@ -32,7 +32,7 @@ Auto-detect by priority:
 
 ## Step 2: Check History
 
-Read `{scope}/agents/.improvements/history.md`:
+Read `{scope}/.improvements/history.md`:
 
 - Similar issue addressed before?
 - Recurring pattern (3+ times)? → may need systemic solution
@@ -45,7 +45,7 @@ Before generating new recommendations:
 
 1. Read improvement history:
    ```
-   {scope}/agents/.improvements/history.md
+   {scope}/.improvements/history.md
    ```
 
 2. Filter out issues that:
@@ -157,7 +157,7 @@ Use `AskUserQuestion`: Apply All / 1 only / 1 and 2 / None
 
 ## Step 10: Save & Report
 
-Save to `{scope}/agents/.improvements/suggestions.md`:
+Save to `{scope}/.improvements/suggestions.md`:
 
 ```markdown
 ## [date] - Recommendations for [agent]
@@ -191,7 +191,7 @@ Report: `Saved to suggestions.md. Run /agent:update to apply.`
 - NotebookEdit
 
 **ALLOWED for suggestions only:**
-- Write — ONLY to `{scope}/agents/.improvements/suggestions.md`
+- Write — ONLY to `{scope}/.improvements/suggestions.md`
 
 If you catch yourself about to use Edit — STOP and save to suggestions.md instead.
 
@@ -225,6 +225,6 @@ Claude: [Uses AskUserQuestion: "Which to apply?"]
 User: [Selects "1 only"]
 
 Claude:
-Saved to ~/.claude/agents/.improvements/suggestions.md
+Saved to ~/.claude/.improvements/suggestions.md
 To apply, run: /agent:update
 ```

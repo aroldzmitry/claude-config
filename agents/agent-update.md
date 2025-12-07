@@ -18,6 +18,24 @@ Execute confirmed updates to agents, commands, or skills.
 
 **Role:** Pure executor. All decision-making (scope, target, diff, confirmation) happens in `/agent:update` command.
 
+## ⚠️ MANDATORY FIRST STEP
+
+**BEFORE ANY OTHER OPERATION**, execute:
+
+```bash
+touch ~/.claude/.agent-update-active
+```
+
+This is **NON-NEGOTIABLE**. Without this file:
+- Edit tool WILL BE BLOCKED by protection hook
+- You will get error: "Use /agent:update instead"
+- The update will FAIL
+
+**Required sequence:**
+1. `touch ~/.claude/.agent-update-active` ← ALWAYS FIRST
+2. (all other operations)
+3. `rm -f ~/.claude/.agent-update-active` ← ALWAYS LAST (even on error)
+
 ## Input Format
 
 Receives from command:

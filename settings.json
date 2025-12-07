@@ -43,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/dmitry/.claude/hooks/protect-agents.sh"
+            "command": "$HOME/.claude/hooks/protect-agents.sh"
           }
         ]
       },
@@ -52,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/dmitry/.claude/hooks/protect-agents.sh"
+            "command": "$HOME/.claude/hooks/protect-agents.sh"
           }
         ]
       }

@@ -35,7 +35,24 @@ Only proceed when user confirms requirements.
 ## Step 2: Check Existing Agents
 
 Check selected scope for similar agents. Also check other scope to avoid name conflicts.
-If similar exists → propose extending instead of creating new.
+
+**If similar agent/command found:**
+
+Use `AskUserQuestion` to ask:
+
+| Option | Description |
+|--------|-------------|
+| Extend existing | Add new functionality to found agent |
+| Replace | Delete old, create new with same name |
+| Create separate | New agent with different name (explain relationship) |
+| Cancel | Stop creation |
+
+Show user:
+- Found agent name and path
+- Brief description of what it does
+- How new request differs
+
+Only proceed after user confirms approach.
 
 ## Step 3: Research Patterns (MANDATORY)
 

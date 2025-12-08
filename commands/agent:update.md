@@ -103,20 +103,28 @@ Based on change description and chosen approach:
 
 ### Show Diff
 
+Use git-style inline diff with line-by-line changes:
+
 ```
 ## Proposed Update
 
 **File:** [full path]
 **Section:** [name]
-**Type:** Add | Modify | Remove
+**Lines:** +X / -Y
 
-### Current:
-[existing text]
+### Changes
 
-### After:
-[new text]
+```diff
+ unchanged line
+-removed or old line
++added or new line
+ unchanged line
+-old version of modified line
++new version of modified line
+ unchanged line
+```
 
-Lines: +X / -Y
+**Legend:** `-` = removed, `+` = added, ` ` = unchanged
 ```
 
 ### Show Workflow Preview

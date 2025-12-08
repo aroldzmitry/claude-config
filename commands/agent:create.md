@@ -10,9 +10,12 @@ argument-hint: [agent-name or purpose]
 1. **Select scope** — ask: Global (~/.claude/) or Project (.claude/)?
 2. **Gather requirements** — purpose, trigger, model (haiku/sonnet/opus)
 3. **Check existing agents** — avoid duplication
-4. **Research patterns** — claude-code-guide agent or web search
-5. **Create file** — Write agent markdown
-6. **Validate** — run /agent:lint
+4. **Web research** — search for similar agents and implementations
+5. **Analyze & suggest** — highlight gaps, improvements, best practices
+6. **Preview agent** — show user how agent will work
+7. **Confirm** — wait for explicit user approval
+8. **Create file** — Write agent markdown
+9. **Validate** — run /agent:lint
 
 ## Step 1: Gather Requirements
 
@@ -39,9 +42,94 @@ Then ask:
 ## Step 3: Research Patterns
 
 Use Task tool with `subagent_type="claude-code-guide"` for Claude Code patterns.
-Use WebSearch for community examples.
 
-## Step 4: Agent Structure
+## Step 4: Web Research
+
+Use WebSearch to find similar agent implementations:
+
+1. **Search queries:**
+   - `"Claude Code agent" + {purpose keywords}`
+   - `"AI agent" {task type} best practices 2025`
+   - `"prompt engineering" {domain} agent`
+
+2. **Analyze findings:**
+   - Common patterns used
+   - Typical tool combinations
+   - Error handling approaches
+   - Output formats
+
+3. **Document insights** for next step.
+
+## Step 5: Analysis & Suggestions
+
+Present findings to user using this format:
+
+```
+## Pre-Creation Analysis
+
+### What You're Building
+[Summarize understanding of user's intent]
+
+### Similar Agents Found
+- **[Name]** — [what it does, link if available]
+- **[Name]** — [what it does, link if available]
+
+### Suggestions & Improvements
+Based on research, consider:
+1. **[Aspect]** — [recommendation]
+2. **[Aspect]** — [recommendation]
+
+### Potential Gaps
+You may want to add:
+- [ ] [Missing consideration 1]
+- [ ] [Missing consideration 2]
+
+### Recommended Approach
+[Synthesize best practices into recommendation]
+```
+
+**Ask user:** "Would you like to incorporate any of these suggestions? (Yes / Select specific / No, proceed as-is)"
+
+## Step 6: Preview Agent
+
+Before creating, show user a complete preview:
+
+```
+## Agent Preview
+
+**Name:** {name}
+**Scope:** Global / Project
+**Trigger:** {when this agent activates}
+**Model:** {haiku/sonnet/opus}
+
+### How It Will Work
+
+1. User invokes: `{example invocation}`
+2. Agent receives: {what context/input it gets}
+3. Agent does: {step-by-step behavior}
+4. Agent outputs: {expected output format}
+
+### Example Scenario
+
+**Input:** {example user request}
+**Processing:** {what agent would do}
+**Output:** {example result}
+
+### File Content Preview
+
+[Show complete agent markdown that will be created]
+```
+
+## Step 7: User Confirmation
+
+Use `AskUserQuestion`:
+- **Create agent** — proceed with creation
+- **Modify first** — let user adjust requirements
+- **Cancel** — stop without creating
+
+**Only proceed to creation if user explicitly confirms.**
+
+## Step 8: Agent Structure
 
 ```markdown
 ---
@@ -85,7 +173,7 @@ First line: `Status: Done | Failed - reason | Needs Review - explanation`
 |-----------|---------|-----------|
 | "Step 1: X, Step 2: Y" | Clear goals + flexible execution | "Do it well" |
 
-## Step 5: Create File
+## Step 9: Create File
 
 ```
 Write(file_path={scope}/agents/{name}.md, content={prepared_content})
@@ -93,7 +181,7 @@ Write(file_path={scope}/agents/{name}.md, content={prepared_content})
 
 Git commit/push handled by `claude-config-save` skill.
 
-## Step 6: Validate
+## Step 10: Validate
 
 Do NOT skip validation — it catches issues before they cause problems.
 

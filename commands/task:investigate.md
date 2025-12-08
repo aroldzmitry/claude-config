@@ -1,7 +1,8 @@
 ---
-description: Explore a task from multiple angles, gather insights via web research, provide different perspectives
+description: Explore a task from multiple angles, gather insights via web research, provide different perspectives. Use when user asks to investigate, research, or explore a topic.
 argument-hint: <topic or task description>
 model: opus
+allowed-tools: Read, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, Write
 ---
 
 # Task Investigator
@@ -27,25 +28,19 @@ Parse `$ARGUMENTS` and identify:
 - What alternatives might the user not be considering?
 - Is there a simpler solution they might be missing?
 
-### 1.5. Discovery Questions (BEFORE research)
+### 1.5. Discovery Questions
 
-Before doing any research, use `AskUserQuestion` to understand context:
-
-**Required questions (pick 2-3 most relevant):**
-- Team: Solo / Small team / Enterprise?
-- State: What exists already?
+Use `AskUserQuestion` to gather context before research (2-3 questions max):
+- Team size: Solo / Small team / Enterprise
+- Current state: What exists already?
 - Goal: Primary objective?
 - Constraints: Budget/time limits?
 
-**Rules:**
-- Ask 2-3 questions MAX via `AskUserQuestion`
-- Use multiple choice options where possible
-- Skip if answer is obvious from $ARGUMENTS
-- DO NOT proceed to web research until context is clear
+Skip if obvious from $ARGUMENTS. Do not proceed to research until context is clear.
 
 ### 2. Multi-Angle Analysis
 
-Think through these lenses (use "ultrathink"):
+Think deeply through these lenses (use extended thinking):
 
 - **Problem** — What exactly needs solving? Root cause?
 - **Stakeholders** — Who benefits? Who's affected?
@@ -54,21 +49,16 @@ Think through these lenses (use "ultrathink"):
 - **Alternatives** — Other approaches? Why not those?
 - **Prior Art** — Solved before? What can we learn?
 
-### 3. Web Research (MANDATORY)
+### 3. Web Research
 
-**Tailor search to discovered context:**
-- Solo developer → search "solo/small team [topic]"
-- Enterprise → search "[topic] at scale"
-- Existing stack → include their tech in query
+Tailor search to discovered context:
+- Solo developer → "solo/small team [topic]"
+- Enterprise → "[topic] at scale"
+- Include their tech stack in query
 
-Use `WebSearch` to find:
-- Similar problems **in similar contexts**
-- Best practices **for their scale**
-- Common pitfalls
-- Expert opinions
+Use `WebSearch` to find similar problems in similar contexts, best practices for their scale, common pitfalls, expert opinions.
 
-Synthesize findings, don't just list links.
-**Filter out irrelevant results** (e.g., enterprise stats for solo dev).
+Synthesize findings, don't just list links. Filter out irrelevant results.
 
 ### 4. Generate Insights
 
@@ -81,44 +71,13 @@ Produce:
 
 ### 5. Present Summary
 
-Display to user:
-
-```
-## Investigation: {topic}
-
-### Core Problem
-[One sentence]
-
-### Key Insight
-[The non-obvious takeaway]
-
-### Perspectives Considered
-- [Bullet list of angles explored]
-
-### From Research
-- [Key findings with context]
-
-### Recommendations
-1. **Quick win:** [action]
-2. **Deep work:** [action]
-3. **Explore further:** [question]
-
-### Open Questions
-- [What still needs answering]
-```
+Output structured summary with sections: Core Problem (1 sentence), Key Insight (non-obvious takeaway), Perspectives Considered (bullet list), From Research (key findings with sources), Recommendations (quick win + deep work + explore further), Open Questions.
 
 ### 6. Offer to Save
 
-After presenting summary, add:
+Use `AskUserQuestion` to ask if user wants to save the investigation.
 
-> If you want to save this investigation, reply "save" or "yes".
-
-If user replies affirmatively:
-1. Create file at `~/.claude/investigations/{date}-{slug}.md`
-2. Add metadata (date, topic, sources)
-3. Confirm: "Saved to [path]"
-
-Otherwise, proceed without saving.
+If yes: Create file at `~/.claude/investigations/{date}-{slug}.md` with metadata (date, topic, sources). Confirm path.
 
 ## Rules
 
@@ -128,3 +87,12 @@ Otherwise, proceed without saving.
 - Be honest about uncertainty
 - Never give generic advice
 - Never skip web research
+
+## Error Handling
+
+| Error | Action |
+|-------|--------|
+| Empty $ARGUMENTS | Use `AskUserQuestion` to get topic |
+| WebSearch no results | Note limitation, proceed with analysis based on knowledge |
+| User doesn't answer discovery questions | Use reasonable defaults, note assumptions |
+| Save fails | Report error, continue without saving |

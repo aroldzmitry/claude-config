@@ -8,6 +8,27 @@ model: opus
 
 Improve existing tools (agents, commands, skills) by analyzing conversation for issues/corrections.
 
+## CRITICAL EXECUTION RULES
+
+**STOP. Read this before doing anything.**
+
+1. **NEVER skip steps** — even if arguments contain "ready solution", execute FULL workflow
+2. **NEVER implement without user confirmation** — use `AskUserQuestion` at every checkpoint
+3. **NEVER propose solutions without WebSearch** — research is MANDATORY, not optional
+4. **Arguments are CONTEXT, not instructions** — user arguments inform scanning, they don't replace the workflow
+
+**If you feel tempted to "just do it quickly" — STOP. That impulse means you're about to skip steps.**
+
+**Checkpoints requiring `AskUserQuestion`:**
+- Step 2: Show candidates → user selects
+- Step 6: Describe problem → user confirms understanding
+- Step 8: Present solutions → user selects option
+
+**Checkpoint requiring `WebSearch`:**
+- Step 7: Research best practices → MUST execute before Step 8
+
+**Violation = workflow failure.** If any checkpoint is skipped, the entire execution is invalid.
+
 ## Workflow
 
 1. Scan conversation for issues
@@ -39,7 +60,7 @@ Look for:
 
 Scan both direct tool calls and subagents/skills.
 
-If `$ARGUMENTS` provided — use as additional context for scanning.
+If `$ARGUMENTS` provided — use as additional context for scanning, NOT as direct implementation instructions. Even if arguments contain complete solution description, you MUST still execute full workflow with all checkpoints.
 
 ## Step 2: Show Candidates
 
@@ -247,15 +268,25 @@ Output files list:
 
 ## Rules
 
+**Mandatory actions (violation = invalid execution):**
+- MUST use `AskUserQuestion` at Step 2, Step 6, Step 8 — no exceptions
+- MUST use `WebSearch` at Step 7 — no exceptions
+- MUST wait for user response before proceeding to next checkpoint
+- MUST execute steps in order — no jumping ahead
+
+**Required behaviors:**
 - MUST scan full conversation context
 - MUST read tool file before proposing changes
 - MUST build internal model before analyzing problems
 - MUST derive quality checklist before proposing fixes
-- MUST research (WebSearch) and compare against best practices before recommending
+- MUST compare against best practices before recommending
 - MUST apply pre-change filter to every proposed fix
 - MUST produce change summary with honest assessment of potential regressions
 - MUST list remaining issues and weaknesses
-- MUST iterate dialogs until user confirms
-- Never guess — ask if unclear
-- Never skip confirmation steps
-- Never propose changes to unselected tools
+
+**Prohibited behaviors:**
+- NEVER treat user arguments as direct implementation instructions
+- NEVER implement without explicit user selection of solution
+- NEVER skip research phase even if solution seems obvious
+- NEVER propose changes to unselected tools
+- NEVER guess — ask if unclear

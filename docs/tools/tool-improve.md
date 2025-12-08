@@ -52,5 +52,5 @@ B) Add schema validation (+robust, -complex)
 
 [Implements, verifies]
 
-[M] ~/.claude/commands/tool:create.md
+[M] ~/.claude/commands/tool:create.md (+8/-0, 95 → 103 lines)
 ```

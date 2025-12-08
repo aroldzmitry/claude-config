@@ -11,16 +11,26 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 
 ## Process
 
-1. **Read file** — if `$ARGUMENTS` empty, ask for file path. Determine type (agent/command/skill), extract purpose
-2. **WebSearch** — find 3+ similar tools/approaches: "[tool purpose] Claude Code 2025", "[tool type] LLM prompt best practices"
-3. **Claude docs check** — WebFetch official docs, verify:
+1. **Read file** — if `$ARGUMENTS` empty, ask for file path. Determine type (agent/command/skill), extract purpose, identify scope (global/project)
+2. **Scope scan** — Glob/Grep same-scope agents/commands for conflict detection
+3. **Quality Score** — evaluate 4 criteria (1-10 each):
+   - Clarity: will another Claude understand exactly what to do?
+   - Completeness: all scenarios covered?
+   - Consistency: no contradicting instructions?
+   - Testability: can verify success objectively?
+4. **Conflict detection** — check same-scope tools for:
+   - Same trigger context
+   - Overlapping responsibility
+   - Contradicting instructions
+5. **WebSearch** — find 3+ similar tools/approaches: "[tool purpose] Claude Code 2025", "[tool type] LLM prompt best practices"
+6. **Claude docs check** — WebFetch official docs, verify:
    - YAML frontmatter correctness
    - Required fields present
    - Tool list valid
    - Model selection appropriate
-4. **Compare** — analyze this tool vs alternatives (features, structure, approach)
-5. **Redundancy check** — find duplicate/verbose instructions, non-functional content
-6. **Output report**
+7. **Compare** — analyze this tool vs local scope tools + external alternatives
+8. **Redundancy check** — find duplicate/verbose instructions, non-functional content
+9. **Output report**
 
 ## Output Format
 
@@ -31,6 +41,18 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 ## Steps
 [Numbered list of tool's workflow]
 
+## Quality Score: X.X/10
+
+| Criterion | Score | Notes |
+|-----------|-------|-------|
+| Clarity | X/10 | ... |
+| Completeness | X/10 | ... |
+| Consistency | X/10 | ... |
+| Testability | X/10 | ... |
+
+## Conflicts
+[Found conflicts with same-scope tools or "None"]
+
 ## Documentation Compliance
 - [x] or [ ] YAML frontmatter valid
 - [x] or [ ] Required fields present
@@ -38,7 +60,12 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 - [x] or [ ] Model appropriate
 [Issues if any]
 
-## Comparison
+## Comparison (Local Scope)
+| Tool | Overlap | Differentiation |
+|------|---------|-----------------|
+| [tool] | ... | ... |
+
+## Comparison (External)
 | Aspect | This Tool | Alt 1 | Alt 2 | Alt 3 |
 |--------|-----------|-------|-------|-------|
 | [key aspect] | ... | ... | ... | ... |
@@ -50,12 +77,23 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 - [Found issues or "None"]
 ```
 
+## Scope Hierarchy
+
+| Scope | Location | Compare with |
+|-------|----------|--------------|
+| Global | `~/.claude/` | global + system agents only |
+| Project | `.claude/` | project + global + system |
+
+System agents (built-in): `general-purpose`, `Explore`, `Plan`, `claude-code-guide`, `statusline-setup`
+
 ## Rules
 
-- Always WebSearch before comparing
+- Scan same-scope tools before external comparison
+- Always WebSearch before external comparing
 - Always check official Claude Code docs
 - Report only actionable improvements
 - Keep output concise
+- Quality Score < 6 = needs revision
 
 ## Error Handling
 

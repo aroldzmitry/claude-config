@@ -25,7 +25,7 @@ ALWAYS use these commands instead of manual implementation:
 
 | User Request | Command | Notes |
 |--------------|---------|-------|
-| Create agent/command/skill | `/agent:create` | Guides through requirements, checks duplicates, validates |
+| Create agent/command/skill | `/tool:create` | Iterative confirmation, research, validates, creates docs |
 | Edit/update agent | `/agent:update [name] [change]` | Shows diff, confirms before applying |
 | Check agent quality | `/agent:lint [path]` | Validates structure, conflicts, best practices |
 | Something went wrong | `/agent:improve [context]` | Analyzes issues, generates recommendations (no edits) |
@@ -33,7 +33,7 @@ ALWAYS use these commands instead of manual implementation:
 
 **Key rules:**
 - `/agent:improve` only analyzes — to apply changes, use `/agent:update`
-- `/agent:create` runs `/agent:lint` automatically at the end
+- `/tool:create` runs `/agent:lint` automatically at the end
 - `/agent:update` shows diff before any change — never skip this
 - All commands handle git commit/push via `claude-config-save` skill
 
@@ -43,3 +43,14 @@ When modifying files in `~/.claude/`:
 - Use `/agent:update` for complex changes with diff preview
 - Direct Edit is allowed for simple fixes
 - Git commit/push handled automatically by `claude-config-save` skill
+
+## Claude Tools Format
+
+All agents, commands, skills must be written in **minimalist format**:
+- Write for Claude, not humans
+- No decorative formatting or verbose templates
+- No code blocks with example outputs — describe in one line
+- No tables where a list suffices
+- No redundant examples — one per concept max
+- Each instruction in 1-2 lines
+- Remove anything that doesn't change Claude's behavior

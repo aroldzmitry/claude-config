@@ -65,7 +65,7 @@ Write to `{scope}/agents/` or `{scope}/commands/`.
 
 Structure: YAML frontmatter (description, tools, model) → title → instructions → Output (status + data from 2.2) → Dialogs (from 2.3) → Rules (DO/DON'T).
 
-Principles: no decorative formatting, no redundant examples, write for Claude not humans.
+Follow **Claude Tools Format** from global CLAUDE.md.
 
 ## Phase 6: Requirements Check
 
@@ -73,8 +73,8 @@ Verify created file:
 - All requirements from Phase 2.1 implemented
 - All outputs from Phase 2.2 included
 - All dialogs from Phase 2.3 defined
-- No duplicate instructions
-- No redundant sections
+- Follows **Claude Tools Format**: no verbose templates, no decorative code blocks, each instruction 1-2 lines
+- No duplicate/redundant sections
 
 Fix silently if minor. Report fixes to user if significant.
 

@@ -136,12 +136,6 @@ Present findings in structured format:
 ### Your Goal
 {summarized user intent}
 
-### Current State Analysis
-- **Design System Maturity:** {nascent/developing/mature}
-- **Token Format:** {SCSS/CSS vars/TypeScript/mixed}
-- **Component Library:** {existing patterns found}
-- **Figma Alignment:** {aligned/partial/misaligned}
-
 ### Gap Analysis
 | Area | Current | Ideal | Priority |
 |------|---------|-------|----------|
@@ -447,26 +441,22 @@ After tokens are synced:
 
 #### 3. Story Generation Plan
 
-Present to user:
+Present to user **only gaps** (missing code or missing stories):
 
 ```markdown
-## Component Inventory
+## Missing Components
 
-| Figma Component | Code Match | Story Status | Action |
-|-----------------|------------|--------------|--------|
-| Button_Primary_M | AuButton | Missing | Create |
-| Input | AuField | Missing | Create |
-| Select | AuSelect | Missing | Create |
-| Checkbox | AuCheckbox | Missing | Create |
+Show only Figma components with gaps. Do NOT list matched/aligned items.
+
+| Figma Component | Issue | Action |
+|-----------------|-------|--------|
+| Switch | No code match | Create component |
+| Tags | No code match | Create component |
 ...
 
-**Summary:**
-- Figma components: {X}
-- Matched in code: {Y}
-- Already have stories: {Z}
-- Stories to create: {Y - Z}
+**Summary:** {N} gaps found
 
-Proceed with story generation for all {Y - Z} components?
+Proceed with story generation?
 ```
 
 Use `AskUserQuestion` to confirm.
@@ -601,6 +591,8 @@ Status: Done
 - Skip research for non-trivial changes
 - Assume user knows best approach
 - Give advice without context analysis
+- Output verbose analysis for aligned/working items (only report gaps)
+- List all components when user only needs to see missing ones
 
 ---
 

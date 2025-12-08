@@ -21,7 +21,7 @@ Improve existing tools (agents, commands, skills) by analyzing conversation hist
 7. Checks cross-tool impact — if other tools reference the modified tool, asks user how to resolve
 8. Updates documentation if it exists in `~/.claude/docs/`
 9. Commits and pushes (for user-level files)
-10. Reports all files touched: `[A]` created, `[M]` updated, `[D]` deleted
+10. Reports files: `[A]` created, `[M]` updated, `[D]` deleted
 
 ## Example
 

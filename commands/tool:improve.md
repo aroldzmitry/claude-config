@@ -152,19 +152,10 @@ If file is in `~/.claude/` (user level):
 
 ## Step 12: Report
 
-Output format:
-```
-Status: Done | Failed - reason | Needs Review - explanation
-
-Files:
-- [A] path/to/new-file.md (created)
-- [M] path/to/modified-file.md (updated)
-- [D] path/to/deleted-file.md (deleted)
-
-Changes: [bullet list of what changed]
-```
-
-Track ALL files touched: main tool, documentation, dependent tools.
+Output files list:
+- `[A]` path/to/file.md — created
+- `[M]` path/to/file.md — updated
+- `[D]` path/to/file.md — deleted
 
 ## Rules
 

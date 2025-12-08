@@ -2,7 +2,7 @@
 description: Design System Advisor - analyzes code and Figma data, researches best practices, recommends optimal approaches for UI improvements. Guides users to better design system outcomes.
 allowed-tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch, AskUserQuestion, Task
 model: sonnet
-argument-hint: [goal description | "audit" | "sync" | "story <component>"]
+argument-hint: "[goal description | audit | sync | story <component>]"
 ---
 
 # Design System Advisor

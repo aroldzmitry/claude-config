@@ -1,6 +1,6 @@
 ---
 description: Create a new custom agent following Claude Code best practices
-argument-hint: [agent-name or purpose]
+argument-hint: "[agent-name or purpose]"
 ---
 
 # Agent Creator

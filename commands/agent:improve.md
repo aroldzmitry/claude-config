@@ -1,6 +1,6 @@
 ---
 description: "Analyze what went wrong and generate improvement recommendations. Does not apply changes."
-argument-hint: [issue-context]
+argument-hint: "[issue-context]"
 ---
 
 # Agent Analyzer

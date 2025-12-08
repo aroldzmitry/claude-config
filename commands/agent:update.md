@@ -1,6 +1,6 @@
 ---
 description: "Apply improvements to agents, commands, or skills. Supports rollback and recommendations from /agent:improve."
-argument-hint: [target] [change-description]
+argument-hint: "[target] [change-description]"
 ---
 
 # Agent Update

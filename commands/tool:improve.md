@@ -77,7 +77,7 @@ Use `AskUserQuestion`:
 
 Check official docs if relevant (WebFetch).
 
-Evaluate approaches, prepare 2-3 options.
+**Quality over speed:** Do not stop at first solution found. Evaluate multiple approaches, compare trade-offs, select 2-3 optimal options for user to choose from.
 
 ## Step 7: Present Solutions
 

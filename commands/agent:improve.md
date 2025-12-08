@@ -96,8 +96,13 @@ When REMOVING or MODIFYING existing code/config:
 
 ## Step 8: Research (High+ Severity)
 
-Search for Claude Code patterns, community solutions, best practices.
-Skip for Low severity or well-known patterns.
+**MANDATORY for High+ severity.** Find OPTIMAL solution, not just "add section".
+
+1. WebSearch: "Claude Code {problem} best practices 2025"
+2. Check official docs: claude.com, anthropic.com/engineering
+3. Compare approaches, pick best fit for project
+
+**Output:** Brief summary of findings with source link
 
 ## Step 9: Self-Critique
 
@@ -109,32 +114,30 @@ Before presenting, verify:
 
 ## Step 10: Output & Save
 
-Output format:
-```markdown
-## Analysis
-**Issue:** [what user had to correct]
-**Severity:** [level]
-**Root cause:** [why missed]
-**Agent:** [name]
+**Compact output — only essential info:**
 
-## Recommendations
-### 1. [Title]
-**Section:** [name]
-**Type:** Add | Modify | Remove
-**Change:** [exact text]
-**Rationale:** [why this prevents the issue]
-```
+Issue: [1 sentence]
+Severity: [level] | Agent: [name]
+Root cause: [1 sentence]
 
-Use `AskUserQuestion`: Apply All / Select specific / None
+Recommendation: [title]
+Change: [what to change — reference lines, not full code]
+Rationale: [why]
 
-Save selected to `~/.claude/.improvements/suggestions.md`
+**Rules:**
+- Output only important info — details on user request
+- NO full code blocks — reference line numbers instead
+- Use AskUserQuestion before saving
+
+Save to `~/.claude/.improvements/suggestions.md`
 Report: "Saved. Run /agent:update to apply."
 
 ## Rules
 
 - **Analysis only** — NEVER use Edit tool
 - **Delegate changes** — via `/agent:update`
-- Maximum 5 recommendations per session
+- **Quality over quantity** — 1 optimal recommendation > several mediocre
+- Research BEFORE recommending — find best practice, not first idea
 - Read full agent file before proposing
 - Self-test: would this change have prevented the original issue?
 - **NEVER invent specific values** — if user says "too long", do NOT add "max 10 lines". Only use values user explicitly stated.

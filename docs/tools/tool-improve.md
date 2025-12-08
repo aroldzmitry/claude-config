@@ -26,25 +26,16 @@ Improve existing tools (agents, commands, skills) by analyzing conversation hist
 ## Example
 
 ```
-User: [executes /agent:create which produces incorrect output]
-User: This should include validation step before creating
+User: [executes /tool:create which produces incorrect output]
+User: This should include validation step
 
 User: /tool:improve
 
 Claude: Found issues in:
-1. agent:create — user correction about missing validation step
+1. tool:create — user correction about missing validation
 2. Enter custom
 
 User: 1
 
 Claude: [describes problem, confirms, researches, implements fix]
 ```
-
-## Difference from /agent:improve
-
-| Feature | tool:improve | agent:improve |
-|---------|--------------|---------------|
-| Conversation scanning | Proactive | On request |
-| Shows candidates | Yes | No |
-| Applies changes | Yes | No (saves suggestions) |
-| Git integration | Yes | No |

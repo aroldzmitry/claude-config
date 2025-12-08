@@ -32,7 +32,7 @@ After modifying a file in ~/.claude/, run git commit and push:
 | Operation | Commit Message |
 |-----------|---------------|
 | Create agent | `Add: developer.md - Software Developer agent` |
-| Edit command | `Update: agent:update.md - Fix validation logic` |
+| Edit command | `Update: tool:improve.md - Fix validation logic` |
 | Delete file | `Remove: old-agent.md` |
 
 ## Important

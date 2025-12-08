@@ -57,7 +57,24 @@ If overlap: show what exists, ask — Create new / Update existing / Replace / C
 
 WebSearch for similar implementations and best practices.
 
-Show options with +/- concisely. Iterate until user confirms approach.
+### 4.1 Comparison Table
+
+Show findings as table:
+
+| Tool | Improvement | Benefit | Potential Downsides |
+|------|-------------|---------|---------------------|
+| tool-name | feature/approach | what it adds | risks/complexity/tradeoffs |
+
+### 4.2 Selection
+
+Use `AskUserQuestion` multi-select: which improvements to adopt.
+
+### 4.3 Application Summary
+
+After selection, show how each chosen improvement will be applied:
+- Improvement → how it maps to the tool being created
+
+Iterate until user confirms approach.
 
 ## Phase 5: Create File
 

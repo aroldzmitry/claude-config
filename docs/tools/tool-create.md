@@ -15,7 +15,7 @@ Arguments are optional — missing params will be asked interactively.
 1. Parse arguments, ask missing params (scope, type, model)
 2. Confirm understanding — show summary, flow, output, dialogs
 3. Check duplicates — find similar tools, discuss options
-4. Research — WebSearch for best practices
+4. Research — WebSearch, show comparison table, select improvements
 5. Create file — write concise tool optimized for Claude
 6. Requirements check — verify file matches user requirements
 7. Validate — run /agent:lint
@@ -41,11 +41,17 @@ Is this correct? → User: Yes
 [Checks duplicates — none found]
 [WebSearch: PR summary best practices...]
 
-Options:
-A) Simple diff summary (+fast)
-B) With AI analysis (+detailed, -slower)
+| Tool | Improvement | Benefit | Downsides |
+|------|-------------|---------|-----------|
+| gh pr view | structured output | consistent format | extra parsing |
+| git-cliff  | changelog grouping | better categorization | adds complexity |
 
-→ User: B
+Which to adopt? → User: [both]
+
+Applying: structured output → use markdown template
+Applying: changelog grouping → group by type (feat/fix/docs)
+
+Confirm? → User: Yes
 
 [Creates file, validates with /agent:lint]
 

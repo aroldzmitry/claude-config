@@ -83,6 +83,44 @@ Check same-scope agents for:
 - Has examples (good and bad)
 - Covers main scenarios
 
+## LLM Quality Review
+
+After structural checks, perform holistic quality assessment of the prompt.
+
+### Evaluation Criteria
+
+| Criterion | Question to Answer | Score Guide |
+|-----------|-------------------|-------------|
+| **Clarity** | "If another Claude receives this prompt, will it understand exactly what to do?" | 1-3: Ambiguous, 4-6: Mostly clear, 7-10: Unambiguous |
+| **Completeness** | "Are all likely scenarios covered? What's missing?" | 1-3: Major gaps, 4-6: Some gaps, 7-10: Comprehensive |
+| **Consistency** | "Are there contradicting instructions?" | 1-3: Conflicts, 4-6: Minor tensions, 7-10: Coherent |
+| **Testability** | "Can we objectively verify if the agent succeeded?" | 1-3: No criteria, 4-6: Partial, 7-10: Clear success criteria |
+
+### Scoring Process
+
+1. Read the entire agent/command prompt
+2. For each criterion, answer the question and assign score (1-10)
+3. Calculate average: `Quality Score = (Clarity + Completeness + Consistency + Testability) / 4`
+4. Round to one decimal place
+
+### Quality Score Interpretation
+
+| Score | Meaning | Action |
+|-------|---------|--------|
+| 8-10 | Excellent | Ready for use |
+| 6-7.9 | Good | Minor improvements optional |
+| 4-5.9 | Adequate | Recommend improvements |
+| 1-3.9 | Poor | Needs significant revision |
+
+### Quality Feedback Format
+
+For each criterion with score < 7, provide specific feedback:
+```
+**Clarity: 5/10**
+- "write clean code" — no criteria defined
+- Missing: what "clean" means in this context
+```
+
 ## Web Research
 
 Always search for similar agents and best practices online before generating suggestions.
@@ -131,6 +169,7 @@ Before generating improvement suggestions:
 **File:** {path}
 **Validated:** {date}
 **Status:** PASS | WARN | FAIL
+**Quality Score:** {X.X}/10
 
 ## Summary
 {1-2 sentences}
@@ -146,6 +185,15 @@ Before generating improvement suggestions:
 | Tool Access          | N/A    | ...   |
 | Output Format        | PASS   | ...   |
 | Instructions Quality | PASS   | ...   |
+
+## Quality Review
+
+| Criterion     | Score | Notes |
+| ------------- | ----- | ----- |
+| Clarity       | X/10  | ...   |
+| Completeness  | X/10  | ...   |
+| Consistency   | X/10  | ...   |
+| Testability   | X/10  | ...   |
 
 ## Issues Found (if any)
 

@@ -1,6 +1,6 @@
 # tool:improve
 
-Improve existing tools (agents, commands, skills) by analyzing conversation history.
+Improve existing tools through state machine workflow with mandatory checkpoints.
 
 ## Usage
 
@@ -8,34 +8,87 @@ Improve existing tools (agents, commands, skills) by analyzing conversation hist
 /tool:improve [additional context]
 ```
 
-**Arguments:** Optional context about what to improve.
+**Arguments:** Optional context for scanning (NOT direct implementation instructions).
 
-## How it works
+## Execution Model
 
-1. Scans conversation for tool errors, user corrections, or user-provided solutions
-2. Shows candidates to choose from
-3. Confirms understanding of the problem
-4. **Researches best practices** (MUST use WebSearch) — quality over speed, find optimal solutions
-5. Presents options for user to select
-6. Implements selected solution
-7. Checks cross-tool impact — if other tools reference the modified tool, asks user how to resolve
-8. Updates documentation if it exists in `~/.claude/docs/`
-9. Commits and pushes (for user-level files)
-10. Reports files: `[A]` created, `[M]` updated, `[D]` deleted
+Uses state machine with named artifacts. Each step:
+- **requires**: artifacts from previous steps
+- **outputs**: named artifacts (some displayed to user)
+- **waits**: pauses for user input
+- **actions**: mandatory tool calls
+
+## Workflow
+
+```
+[ISSUES_LIST] ← Step 1: Scan conversation
+      ↓
+[USER_SELECTION] ← Step 2: Show candidates (waits)
+      ↓
+[TOOL_CONTENT] ← Step 3: Read tool
+      ↓
+[INTERNAL_MODEL] ← Step 4: Build model (displays)
+      ↓
+[QUALITY_CHECKLIST] ← Step 5: Derive checklist (displays)
+      ↓
+[PROBLEM_STATEMENT] ← Step 6: Describe problem (waits)
+      ↓
+[RESEARCH_RESULTS] ← Step 7: WebSearch (mandatory)
+      ↓
+[SELECTED_SOLUTION] ← Step 8: Present options (waits)
+      ↓
+[MODIFIED_TOOL] ← Step 9: Implement
+      ↓
+[CHANGE_SUMMARY] ← Step 11: Summary (displays)
+      ↓
+[REMAINING_ISSUES] ← Step 12: Issues (displays)
+      ↓
+Steps 13-15: Docs, Git, Report
+```
+
+## Checkpoints
+
+Execution pauses at:
+- Step 2: User selects tool
+- Step 6: User confirms problem understanding
+- Step 8: User selects solution
+
+Mandatory actions:
+- Step 7: WebSearch (cannot skip)
 
 ## Example
 
 ```
-User: [executes /tool:create which produces incorrect output]
-User: This should include validation step
+User: [tool:create produces wrong output]
+User: Missing validation step
 
 User: /tool:improve
 
-Claude: Found issues in:
-1. tool:create — user correction about missing validation
-2. Enter custom
+Claude:
+[ISSUES_LIST]
+1. tool:create — missing validation — user correction
 
-User: 1
+Which tool? → User: tool:create
 
-Claude: [describes problem, confirms, researches, implements fix]
+[INTERNAL_MODEL]
+| Purpose | Create new tools |
+| ... | ... |
+
+[QUALITY_CHECKLIST]
+| Validation | Missing | Required |
+
+Problem: No validation step. Correct? → User: Correct
+
+[WebSearch: validation patterns...]
+
+[COMPARISON_TABLE]
+...
+
+Options:
+A) Add validation step
+B) ...
+
+→ User: A
+
+[Implements, verifies, summarizes]
 ```

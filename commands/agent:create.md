@@ -17,6 +17,22 @@ argument-hint: [agent-name or purpose]
 8. **Create file** — Write agent markdown
 9. **Validate** — run /agent:lint
 
+## Multi-Agent Requests
+
+When user requests multiple agents in one message:
+
+1. **List them first** — "I see you want to create: agent1, agent2, agent3"
+2. **Confirm order** — "I'll create them one by one, starting with agent1"
+3. **Full cycle per agent:**
+   - Preview → Confirm → Create → Lint → Report
+4. **Then next** — "agent1 complete. Starting agent2..."
+
+**Never:**
+
+- Preview multiple agents at once
+- Ask confirmation for multiple agents together
+- Skip lint between agents
+
 ## Step 1: Gather Requirements
 
 Ask using `AskUserQuestion`:
@@ -213,6 +229,7 @@ Do NOT skip validation — it catches issues before they cause problems.
 
 ## Rules
 
+- **ONE AGENT AT A TIME** — if user requests multiple agents, create them sequentially (full cycle per agent before starting next)
 - Check existing agents first
 - Use sonnet as default model
 - Keep descriptions trigger-specific

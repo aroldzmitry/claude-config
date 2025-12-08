@@ -21,6 +21,7 @@ An intelligent design system advisor that helps you improve your UI architecture
 | Goal description | **Advisory mode** - Analyze goal, research, recommend approach |
 | `audit` | Full design system audit with recommendations |
 | `sync` | Token sync (after advisory confirmation) |
+| `sync --full` or Figma JSON files | **Full sync** - Tokens + stories for all Figma components |
 | `story <component>` | Generate Storybook story for component |
 | No argument | Interactive advisory session |
 
@@ -71,6 +72,18 @@ Parse user input to understand what they want to achieve:
 If unclear, use AskUserQuestion:
 - "What specific outcome are you hoping to achieve?"
 - "What problem are you trying to solve?"
+
+### Input Pattern Detection
+
+| Pattern | Interpreted Mode |
+|---------|------------------|
+| Single Figma file (TOKENS or SCREENS) | Token sync or component analysis |
+| **Both FIGMA_TOKENS.json and FIGMA_SCREENS.json** | **Full sync mode** |
+| File path to component | Story generation for that component |
+| General goal description | Advisory mode |
+
+**When both Figma files provided:**
+Automatically enter Full Sync mode — user expects complete design system integration.
 
 ### Step 2: Gather Context
 
@@ -406,6 +419,107 @@ Requirements:
 4. Follow existing project patterns
 
 Output to: .claude/tasks/{task-id}/developer-output.md
+```
+
+---
+
+## Mode: Full Sync
+
+Triggered when user provides Figma JSON files (both TOKENS and SCREENS) or uses `sync --full`.
+
+### Workflow
+
+#### 1. Token Sync
+Execute regular token sync as in "Mode: Sync" section.
+
+#### 2. Component Inventory
+
+After tokens are synced:
+
+1. Read FIGMA_SCREENS.json for component list (from `pages[].components`)
+2. Glob `**/components/**/*.tsx` and `**/ui/**/*.tsx` to find code components
+3. Match Figma components to code:
+   - `Button_Primary_M` → `AuButton`
+   - `Input` → `AuField`
+   - `Select` → `AuSelect`
+4. Glob `**/*.stories.tsx` to find existing stories
+5. Identify gaps (components without stories)
+
+#### 3. Story Generation Plan
+
+Present to user:
+
+```markdown
+## Component Inventory
+
+| Figma Component | Code Match | Story Status | Action |
+|-----------------|------------|--------------|--------|
+| Button_Primary_M | AuButton | Missing | Create |
+| Input | AuField | Missing | Create |
+| Select | AuSelect | Missing | Create |
+| Checkbox | AuCheckbox | Missing | Create |
+...
+
+**Summary:**
+- Figma components: {X}
+- Matched in code: {Y}
+- Already have stories: {Z}
+- Stories to create: {Y - Z}
+
+Proceed with story generation for all {Y - Z} components?
+```
+
+Use `AskUserQuestion` to confirm.
+
+#### 4. Batch Story Generation
+
+For each matched component without story:
+
+1. Read component file to extract props, enums, variants
+2. Delegate to dev-web with component context:
+
+```
+Task tool with subagent_type="dev-web":
+
+Generate Storybook story for {ComponentName}.
+
+Component path: {path}
+Props: {extracted props}
+Variants: {from Figma SCREENS or enum files}
+
+Requirements:
+1. Create CSF3-compliant story
+2. Use new design tokens (var(--color-*), var(--space-*), etc.)
+3. Include stories for all variants
+4. Match existing story patterns in project
+```
+
+#### 5. Summary
+
+```markdown
+## Full Sync Complete
+
+### Tokens
+- Colors: {count} synced
+- Typography: {count} synced
+- Spacing: {count} synced
+- Radii: {count} synced
+- Shadows: {count} synced
+
+### Stories Created
+- Form/AuButton ({N} variants)
+- Form/AuField ({N} variants)
+- Form/AuSelect ({N} variants)
+- Form/AuCheckbox ({N} variants)
+...
+
+### Storybook Status
+- Total stories: {count}
+- Run `yarn storybook` to preview
+
+### Gaps Remaining
+- Components in Figma but not in code: [list]
+- Consider creating these components next
 ```
 
 ---

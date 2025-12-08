@@ -94,76 +94,53 @@ Analyze the requested change and research best practices:
 
 **Ask user:** "Which approach do you prefer? (A / B / Other)"
 
-## Step 5: Generate Diff with Workflow Preview
+## Step 5: Show Change Summary
 
 Based on change description and chosen approach:
 1. Identify which section(s) to modify
 2. Generate proposed changes
 3. Calculate lines added/removed
 
-### Show Diff
+### Summary Format (for changes >50 lines)
 
-Use git-style inline diff with line-by-line changes:
+```markdown
+## Proposed Changes
 
+**File:** [path]
+**Change type:** [Full redesign / Add section / Modify rule / Fix typo]
+
+### What was
+[2-3 sentence summary of current behavior]
+
+### What will be
+[2-3 sentence summary of new behavior]
+
+### Key changes
+- [change 1]
+- [change 2]
+- [change 3]
+
+**Lines affected:** +X / -Y
 ```
-## Proposed Update
 
-**File:** [full path]
-**Section:** [name]
-**Lines:** +X / -Y
+### Inline Diff (for changes <50 lines)
 
-### Changes
+For small changes, show git-style inline diff:
 
 ```diff
  unchanged line
--removed or old line
-+added or new line
- unchanged line
--old version of modified line
-+new version of modified line
- unchanged line
-```
-
-**Legend:** `-` = removed, `+` = added, ` ` = unchanged
-```
-
-### Show Workflow Preview
-
-Display how the agent will work AFTER changes, highlighting modifications:
-
-```
-## Workflow Preview
-
-**Agent:** {name}
-**After this update:**
-
-### Step-by-Step Behavior
-
-1. {step} ← [unchanged]
-2. {step} ← **[MODIFIED]** was: {old behavior}
-3. {step} ← **[NEW]**
-4. {step} ← [unchanged]
-
-### Example Scenario
-
-**Input:** {example request}
-**Before change:** {old behavior}
-**After change:** {new behavior} ← **[CHANGED]**
-
-### Impact Summary
-
-- **Added:** {what's new}
-- **Modified:** {what changed}
-- **Removed:** {what's gone}
+-removed line
++added line
 ```
 
 ## Step 6: Confirm with User
 
-Use `AskUserQuestion`: Apply? (Yes / Edit first / No)
+Use `AskUserQuestion`: "Apply changes?"
 
+Options:
 - **Yes** → proceed to Step 7
-- **Edit first** → let user modify, then re-confirm
-- **No** → stop
+- **Clarify details** → show more info, then re-confirm
+- **Cancel** → stop
 
 ## Change Size Guidelines
 
@@ -224,3 +201,12 @@ When user requests moving file between global ↔ project:
 - **Always show diff** before applying
 - **Never guess** — ask if unclear
 - Git commit/push handled by `claude-config-save` skill
+
+**Final report format (after applying):**
+```
+Done. [1 sentence: what changed].
+
+Commit: [hash]
+```
+
+Do NOT include: tables, "Key New Capabilities", "Usage Examples", detailed breakdowns.

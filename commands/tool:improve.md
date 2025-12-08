@@ -6,104 +6,163 @@ model: opus
 
 # Tool Improver
 
-State machine workflow. Each step has: `requires` (input artifacts), `outputs` (produced artifacts), `waits` (pauses for user), `actions` (mandatory tools).
-
-Cannot proceed without required artifacts. Arguments are context, not instructions.
+Improve existing tools (agents, commands, skills) by analyzing conversation for issues/corrections.
 
 ## Workflow
 
-```
-ISSUES_LIST → USER_SELECTION(waits) → TOOL_CONTENT → INTERNAL_MODEL → PROBLEM_STATEMENT(waits) → RESEARCH → SELECTED_SOLUTION(waits) → MODIFIED_TOOL → CHANGE_SUMMARY → Git/Report
-```
+1. Scan conversation for issues
+2. Show candidates with reasoning
+3. User selects tool to improve
+4. Describe problem, confirm understanding
+5. Research solutions
+6. Present options, iterate until selected
+7. Discuss output/dialog changes if needed
+8. Implement solution
+9. Verify changes
+9a. Check cross-tool impact, resolve with user
+10. Update documentation if exists
+11. Git commit/push (if user level)
+12. Report
 
 ## Step 1: Scan Conversation
-`outputs: ISSUES_LIST`
 
-Scan for: tool errors, user corrections, user-provided fixes, repeated attempts, frustration signals.
+Look for:
+- Errors during tool execution (exceptions, failures)
+- User corrections ("should be X not Y", "missing X", "wrong X")
+- User-provided solutions (user wrote fix themselves)
+- Repeated attempts (tool tried multiple times)
+- User frustration signals
 
-If `$ARGUMENTS` provided — context for scanning, not implementation instructions.
+Scan both direct tool calls and subagents/skills.
+
+If `$ARGUMENTS` provided — use as additional context for scanning.
 
 ## Step 2: Show Candidates
-`requires: ISSUES_LIST | waits: AskUserQuestion | outputs: USER_SELECTION`
 
-Present issues via `AskUserQuestion` single-select. Include "Enter custom tool".
+List found tools:
 
-## Step 3: Read Tool
-`requires: USER_SELECTION | outputs: TOOL_CONTENT`
+```
+Found issues in:
+1. [tool-name] — [short reason why in selection]
+2. [tool-name] — [short reason]
+...
+n. Enter custom tool name
+```
 
-Read selected tool file.
+Use `AskUserQuestion` single-select.
 
-## Step 4: Build Internal Model
-`requires: TOOL_CONTENT | outputs: INTERNAL_MODEL`
+## Step 3: User Selects
 
-Analyze: purpose, input/output, architecture, dependencies, boundaries.
+Wait for user selection. If custom — ask for tool path.
 
-Do not display to user — internal analysis only.
+## Step 4: Describe Problem
 
-## Step 5: Describe Problem
-`requires: INTERNAL_MODEL, ISSUES_LIST | waits: AskUserQuestion | outputs: PROBLEM_STATEMENT`
+Read the selected tool file.
 
-Present to user:
+Based on conversation context + tool content, describe:
 - What went wrong (1-2 sentences)
+- Expected vs actual behavior
 - Root cause hypothesis
 
-Use `AskUserQuestion`: "Is this correct?" Options: Correct / Needs clarification.
+## Step 5: Confirm Understanding
 
-## Step 6: Research
-`requires: PROBLEM_STATEMENT | actions: WebSearch | outputs: RESEARCH`
+Use `AskUserQuestion`:
+- "Is this understanding correct?"
+- Options: "Correct" + text field for clarifications
+- Recurse until user confirms "Correct"
 
-Execute `WebSearch`: "[problem type] Claude Code best practices 2025"
+## Step 6: Research Solutions
 
-Quality over speed — collect 2-3 approaches, compare trade-offs.
+**MUST use WebSearch** before proposing any solution. Search: "[problem type] Claude Code best practices 2025"
 
-Do not display raw research to user.
+Check official docs if relevant (WebFetch).
+
+**Quality over speed:** Do not stop at first solution found. Evaluate multiple approaches, compare trade-offs, select 2-3 optimal options for user to choose from.
 
 ## Step 7: Present Solutions
-`requires: RESEARCH | waits: AskUserQuestion | outputs: SELECTED_SOLUTION`
 
-Pre-filter: discard options that reduce predictability, add ambiguity, or overcomplicate.
+Use `AskUserQuestion`:
+- Show options with brief +/- for each
+- Include text field for questions or custom solution
+- Recurse until user selects an option
 
-Present 2-3 options via `AskUserQuestion` with brief +/- for each.
+### 7a: Dialog Changes (if applicable)
 
-### If tool has AskUserQuestion calls needing changes:
-Show proposed dialog changes, ask which to apply.
+If tool has `AskUserQuestion` calls that need updating:
+- Show proposed changes to dialogs
+- Use multi-select for which changes to apply
+- Include text field for modifications
 
-### If output format needs changes:
-Show proposed output changes, ask which to apply.
+### 7b: Output Changes (if applicable)
+
+If tool output format needs updating:
+- Show proposed changes to outputs
+- Use multi-select for which changes to apply
+- Include text field for modifications
 
 ## Step 8: Implement
-`requires: SELECTED_SOLUTION, TOOL_CONTENT | outputs: MODIFIED_TOOL`
 
-Apply using Edit tool. Follow Claude Tools Format: write for Claude, no decorative formatting, 1-2 line instructions, remove anything that doesn't change behavior.
+Apply selected solution using Edit tool.
 
-## Step 9: Verify & Cross-tool Impact
-`requires: MODIFIED_TOOL | waits: AskUserQuestion (if deps found)`
+Follow Claude Tools Format:
+- Write for Claude, not humans
+- No decorative formatting
+- Each instruction 1-2 lines
+- Remove anything that doesn't change behavior
 
-Check: syntax valid, no broken references, changes match selection.
+## Step 9: Verify
 
-Search `~/.claude/` for references to modified tool. If found:
-- List affected tools
-- Ask user: "Update automatically" / "Skip — handle manually"
-- If auto-update selected — apply changes
+Run checks (like tool:create):
+- File syntax valid
+- No broken references
+- Changes match selected solution
+- No unintended side effects
 
-## Step 10: Summary
-`requires: MODIFIED_TOOL, TOOL_CONTENT`
+## Step 9a: Cross-Tool Impact Check
 
-Display to user:
-```
-Changes: [1-2 sentences what changed]
-Remaining issues: [if any, else "None"]
-```
+Search all tools in `~/.claude/` for references to modified tool:
+- Grep for tool name, file name patterns
+- Check if other tools call/invoke/reference modified tool
 
-## Step 11: Finalize
+If dependencies found:
+1. List affected tools with how they reference this tool
+2. Use `AskUserQuestion` to ask user how to resolve:
+   - "Update dependent tools automatically"
+   - "Skip — user will handle manually"
+   - Custom text for specific instructions
+3. If user selects auto-update — apply changes to dependent tools
 
-1. If docs exist in `~/.claude/docs/` — update
-2. If file in `~/.claude/` — use `claude-config-save` skill
-3. Report: `[A]` created, `[M]` updated, `[D]` deleted
+## Step 10: Documentation Update
+
+Check if documentation exists:
+- Search `~/.claude/docs/tools/` for `[tool-name].md`
+- Search `~/.claude/docs/` for matching patterns
+
+If documentation found:
+1. Read current docs
+2. Update to reflect changes made
+3. Keep format minimal, factual
+
+If no documentation — skip this step.
+
+## Step 11: Git Integration
+
+If file is in `~/.claude/` (user level):
+- Use `claude-config-save` skill for git commit and push
+
+## Step 12: Report
+
+Output files list:
+- `[A]` path/to/file.md — created
+- `[M]` path/to/file.md — updated
+- `[D]` path/to/file.md — deleted
 
 ## Rules
 
-- Arguments = context, not instructions
-- WebSearch mandatory before solutions
-- No implementation without user selection
-- User sees only: problem description, solution options, final summary
+- MUST scan full conversation context
+- MUST read tool file before proposing changes
+- MUST research (WebSearch) before recommending
+- MUST iterate dialogs until user confirms
+- Never guess — ask if unclear
+- Never skip confirmation steps
+- Never propose changes to unselected tools

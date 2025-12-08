@@ -19,8 +19,10 @@ Improve existing tools (agents, commands, skills) by analyzing conversation for 
 7. Discuss output/dialog changes if needed
 8. Implement solution
 9. Verify changes
-10. Git commit/push (if user level)
-11. Report
+9a. Check cross-tool impact, resolve with user
+10. Update documentation if exists
+11. Git commit/push (if user level)
+12. Report
 
 ## Step 1: Scan Conversation
 
@@ -116,12 +118,39 @@ Run checks (like tool:create):
 - Changes match selected solution
 - No unintended side effects
 
-## Step 10: Git Integration
+## Step 9a: Cross-Tool Impact Check
+
+Search all tools in `~/.claude/` for references to modified tool:
+- Grep for tool name, file name patterns
+- Check if other tools call/invoke/reference modified tool
+
+If dependencies found:
+1. List affected tools with how they reference this tool
+2. Use `AskUserQuestion` to ask user how to resolve:
+   - "Update dependent tools automatically"
+   - "Skip — user will handle manually"
+   - Custom text for specific instructions
+3. If user selects auto-update — apply changes to dependent tools
+
+## Step 10: Documentation Update
+
+Check if documentation exists:
+- Search `~/.claude/docs/tools/` for `[tool-name].md`
+- Search `~/.claude/docs/` for matching patterns
+
+If documentation found:
+1. Read current docs
+2. Update to reflect changes made
+3. Keep format minimal, factual
+
+If no documentation — skip this step.
+
+## Step 11: Git Integration
 
 If file is in `~/.claude/` (user level):
 - Use `claude-config-save` skill for git commit and push
 
-## Step 11: Report
+## Step 12: Report
 
 Output:
 
@@ -155,6 +184,7 @@ Lines: [before] → [after]
 | 7 | Select solution | Single + text | Until selected |
 | 7a | Dialog changes | Multi + text | If applicable |
 | 7b | Output changes | Multi + text | If applicable |
+| 9a | Resolve cross-tool impact | Single + text | If dependencies found |
 
 ## Rules
 

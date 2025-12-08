@@ -18,7 +18,9 @@ Improve existing tools (agents, commands, skills) by analyzing conversation hist
 4. Researches best practices for solutions
 5. Presents options for user to select
 6. Implements selected solution
-7. Commits and pushes (for user-level files)
+7. Checks cross-tool impact — if other tools reference the modified tool, asks user how to resolve
+8. Updates documentation if it exists in `~/.claude/docs/`
+9. Commits and pushes (for user-level files)
 
 ## Example
 

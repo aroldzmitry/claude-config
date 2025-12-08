@@ -15,9 +15,10 @@ Create Claude Code tools (agents, commands, skills) with step-by-step user valid
 3. **Check duplicates** — find similar tools, discuss options
 4. **Research** — web search, show solutions with +/-, iterate until approved
 5. **Create** — write concise file optimized for Claude
-6. **Validate** — run /agent:lint
-7. **Document** — create docs in nearest .claude/docs/
-8. **Report** — file path + line count
+6. **Requirements check** — verify file matches user requirements, check redundancy
+7. **Validate** — run /agent:lint
+8. **Document** — create docs in nearest .claude/docs/
+9. **Report** — file path + line count
 
 ## Phase 1: Input Collection
 
@@ -181,7 +182,35 @@ model: {selected}
 - One example per concept max
 - Write for Claude, not humans
 
-## Phase 6: Validate
+## Phase 6: Requirements Check
+
+Before validation, verify created file against user's requirements:
+
+```
+## Requirements Check
+
+| Requirement | Status |
+|-------------|--------|
+| {from Phase 2.1} | ✅/❌ |
+| {from Phase 2.1} | ✅/❌ |
+
+| Output item | Included |
+|-------------|----------|
+| {from Phase 2.2} | ✅/❌ |
+
+| Dialog | Implemented |
+|--------|-------------|
+| {from Phase 2.3} | ✅/❌ |
+
+**Redundancy check:**
+- [ ] No duplicate instructions
+- [ ] No excessive examples
+- [ ] No unnecessary sections
+```
+
+If any ❌ — fix before proceeding. Show user what was fixed.
+
+## Phase 7: Validate
 
 Run: `/agent:lint {path}`
 
@@ -191,7 +220,7 @@ Run: `/agent:lint {path}`
 | WARN | Show to user, ask to proceed or fix |
 | FAIL | Fix issues, re-validate |
 
-## Phase 7: Documentation
+## Phase 8: Documentation
 
 Create `{nearest .claude/docs}/tools/{name}.md`:
 
@@ -211,7 +240,7 @@ Create `{nearest .claude/docs}/tools/{name}.md`:
 {one practical example}
 ```
 
-## Phase 8: Report
+## Phase 9: Report
 
 ```
 ## Created

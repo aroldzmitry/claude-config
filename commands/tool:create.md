@@ -61,9 +61,13 @@ Show options with +/- concisely. Iterate until user confirms approach.
 
 ## Phase 5: Create File
 
+Before writing, use `subagent_type="claude-code-guide"` to check official docs for correct YAML frontmatter fields and syntax.
+
 Write to `{scope}/agents/` or `{scope}/commands/`.
 
 Structure: YAML frontmatter (description, tools, model) → title → instructions → Output (status + data from 2.2) → Dialogs (from 2.3) → Rules (DO/DON'T).
+
+YAML rules: quote values with special chars (`[]`, `:`, `|`).
 
 Follow **Claude Tools Format** from global CLAUDE.md.
 

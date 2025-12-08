@@ -16,8 +16,11 @@ Analyze Claude tool quality, compare with external alternatives, verify Claude d
 
 - Summary: what tool does
 - Steps: tool's workflow
+- Quality Score: 4 criteria (Clarity, Completeness, Consistency, Testability)
+- Conflicts: issues with same-scope tools
 - Documentation Compliance: YAML/fields/tools checklist
-- Comparison: table vs 3+ external alternatives
+- Comparison (Local): overlap with same-scope tools
+- Comparison (External): table vs 3+ external alternatives
 - Improvements: actionable suggestions with +/-
 - Redundancy: verbose/duplicate content issues
 

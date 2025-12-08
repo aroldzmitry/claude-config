@@ -16,7 +16,7 @@ Create Claude Code tools (agents, commands, skills) with step-by-step user valid
 4. **Research** — web search, show solutions with +/-, iterate until approved
 5. **Create** — write concise file optimized for Claude
 6. **Requirements check** — verify file matches user requirements, check redundancy
-7. **Validate** — run /agent:lint
+7. **Validate** — run /tool:check
 8. **Document** — create docs in nearest .claude/docs/
 9. **Report** — file path + line count
 
@@ -101,7 +101,7 @@ Fix silently if minor. Report fixes to user if significant.
 
 ## Phase 7: Validate
 
-Run `/agent:lint {path}`. Fix if FAIL, ask user if WARN.
+Run `/tool:check {path}`. Fix if FAIL, ask user if WARN.
 
 ## Phase 8: Documentation
 

@@ -13,24 +13,48 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 
 1. **Read file** — if `$ARGUMENTS` empty, ask for file path. Determine type (agent/command/skill), extract purpose, identify scope (global/project)
 2. **Scope scan** — Glob/Grep same-scope agents/commands for conflict detection
-3. **Quality Score** — evaluate 4 criteria (1-10 each):
+3. **Structural Checks** — run 7 checks (see table below)
+4. **Quality Score** — evaluate 4 criteria (1-10 each):
    - Clarity: will another Claude understand exactly what to do?
    - Completeness: all scenarios covered?
    - Consistency: no contradicting instructions?
    - Testability: can verify success objectively?
-4. **Conflict detection** — check same-scope tools for:
+5. **Anti-patterns scan** — detect bad patterns (see table below)
+6. **Conflict detection** — check same-scope tools for:
    - Same trigger context
    - Overlapping responsibility
    - Contradicting instructions
-5. **WebSearch** — find 3+ similar tools/approaches: "[tool purpose] Claude Code 2025", "[tool type] LLM prompt best practices"
-6. **Claude docs check** — WebFetch official docs, verify:
+7. **WebSearch** — find 3+ similar tools/approaches: "[tool purpose] Claude Code 2025", "[tool type] LLM prompt best practices"
+8. **Claude docs check** — WebFetch official docs, verify:
    - YAML frontmatter correctness
    - Required fields present
    - Tool list valid
    - Model selection appropriate
-7. **Compare** — analyze this tool vs local scope tools + external alternatives
-8. **Redundancy check** — find duplicate/verbose instructions, non-functional content
-9. **Output report**
+9. **Compare** — analyze this tool vs local scope tools + external alternatives
+10. **Redundancy check** — find duplicate/verbose instructions, non-functional content
+11. **Output report**
+
+## Structural Checks
+
+| Check | What to verify |
+|-------|----------------|
+| Description Clarity | Specific, unambiguous, actionable? |
+| Responsibility Scope | One clear purpose, boundaries defined? |
+| Conflict Detection | No overlap with other agents? |
+| Redundancy | Not duplicating existing functionality? |
+| Tool Access | Minimal tools, Write/Edit justified? |
+| Output Format | Documented and consistent? |
+| Instructions Quality | Not too rigid/vague, has examples? |
+
+## Anti-patterns
+
+| Pattern | Why bad |
+|---------|---------|
+| "Remember to..." | LLM retains context |
+| JSON/Markdown examples | LLM knows formats |
+| Multiple same-pattern examples | One enough |
+| Restating tool behavior | Tool docs exist |
+| "Important:" everywhere | Dilutes importance |
 
 ## Output Format
 
@@ -41,6 +65,18 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 ## Steps
 [Numbered list of tool's workflow]
 
+## Structural Checks
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| Description Clarity | PASS/WARN/FAIL | ... |
+| Responsibility Scope | PASS/WARN/FAIL | ... |
+| Conflict Detection | PASS/WARN/FAIL | ... |
+| Redundancy | PASS/WARN/FAIL | ... |
+| Tool Access | PASS/WARN/FAIL | ... |
+| Output Format | PASS/WARN/FAIL | ... |
+| Instructions Quality | PASS/WARN/FAIL | ... |
+
 ## Quality Score: X.X/10
 
 | Criterion | Score | Notes |
@@ -49,6 +85,9 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 | Completeness | X/10 | ... |
 | Consistency | X/10 | ... |
 | Testability | X/10 | ... |
+
+## Anti-patterns Found
+[List detected patterns or "None"]
 
 ## Conflicts
 [Found conflicts with same-scope tools or "None"]

@@ -18,7 +18,7 @@ Arguments are optional — missing params will be asked interactively.
 4. Research — WebSearch, show comparison table, select improvements
 5. Create file — write concise tool optimized for Claude
 6. Requirements check — verify file matches user requirements
-7. Validate — run /agent:lint
+7. Validate — run /tool:check
 8. Document — create docs in nearest .claude/docs/
 9. Report — file path, line count, docs path
 
@@ -53,7 +53,7 @@ Applying: changelog grouping → group by type (feat/fix/docs)
 
 Confirm? → User: Yes
 
-[Creates file, validates with /agent:lint]
+[Creates file, validates with /tool:check]
 
 [A] ~/.claude/commands/pr-summary.md
 [A] ~/.claude/docs/tools/pr-summary.md

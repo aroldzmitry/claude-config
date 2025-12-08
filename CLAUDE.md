@@ -24,7 +24,7 @@ When user asks to run a slash command, use SlashCommand tool to invoke it. Do NO
 | User Request | Command | Notes |
 |--------------|---------|-------|
 | Create agent/command/skill | `/tool:create` | Iterative confirmation, research, validates |
-| Check agent quality | `/agent:lint [path]` | Validates structure, conflicts, best practices |
+| Check agent quality | `/tool:check [path]` | Validates structure, conflicts, compares with alternatives |
 | Improve existing tool | `/tool:improve [context]` | Analyzes conversation, researches, applies fix |
 
 All commands handle git commit/push via `claude-config-save` skill.

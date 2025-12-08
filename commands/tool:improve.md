@@ -6,307 +6,104 @@ model: opus
 
 # Tool Improver
 
-Improve existing tools (agents, commands, skills) through structured workflow with mandatory checkpoints.
+State machine workflow. Each step has: `requires` (input artifacts), `outputs` (produced artifacts), `waits` (pauses for user), `actions` (mandatory tools).
 
-## Execution Model
-
-This command uses a state machine. Each step:
-- **requires**: artifacts from previous steps (cannot proceed without them)
-- **outputs**: named artifacts (must be displayed to user)
-- **waits**: user input via AskUserQuestion (execution pauses until response)
-- **actions**: mandatory tool calls (WebSearch, etc.)
-
-**If a required artifact is missing → STOP and go back to the step that produces it.**
+Cannot proceed without required artifacts. Arguments are context, not instructions.
 
 ## Workflow
 
 ```
-[ISSUES_LIST] ← Step 1
-       ↓
-[USER_SELECTION] ← Step 2 (waits: AskUserQuestion)
-       ↓
-[TOOL_CONTENT] ← Step 3
-       ↓
-[INTERNAL_MODEL] ← Step 4 (display to user)
-       ↓
-[QUALITY_CHECKLIST] ← Step 5 (display to user)
-       ↓
-[PROBLEM_STATEMENT] ← Step 6 (waits: AskUserQuestion)
-       ↓
-[RESEARCH_RESULTS] ← Step 7 (actions: WebSearch)
-       ↓
-[SELECTED_SOLUTION] ← Step 8 (waits: AskUserQuestion)
-       ↓
-[MODIFIED_TOOL] ← Step 9
-       ↓
-[VERIFICATION_RESULT] ← Step 10
-       ↓
-[CHANGE_SUMMARY] ← Step 11 (display to user)
-       ↓
-[REMAINING_ISSUES] ← Step 12 (display to user)
-       ↓
-Steps 13-16: Documentation, Git, Report
+ISSUES_LIST → USER_SELECTION(waits) → TOOL_CONTENT → INTERNAL_MODEL → PROBLEM_STATEMENT(waits) → RESEARCH → SELECTED_SOLUTION(waits) → MODIFIED_TOOL → CHANGE_SUMMARY → Git/Report
 ```
-
----
 
 ## Step 1: Scan Conversation
+`outputs: ISSUES_LIST`
 
-**outputs: [ISSUES_LIST]**
+Scan for: tool errors, user corrections, user-provided fixes, repeated attempts, frustration signals.
 
-Scan full conversation for:
-- Errors during tool execution
-- User corrections ("should be X not Y")
-- User-provided solutions
-- Repeated attempts
-- User frustration signals
-
-If `$ARGUMENTS` provided — use as context, NOT as implementation instructions.
-
-**Output format:**
-```
-[ISSUES_LIST]
-1. [tool-name] — [issue description] — [issue type]
-2. [tool-name] — [issue description] — [issue type]
-...
-```
-
----
+If `$ARGUMENTS` provided — context for scanning, not implementation instructions.
 
 ## Step 2: Show Candidates
+`requires: ISSUES_LIST | waits: AskUserQuestion | outputs: USER_SELECTION`
 
-**requires: [ISSUES_LIST]**
-**waits: AskUserQuestion**
-**outputs: [USER_SELECTION]**
-
-Present issues list to user via `AskUserQuestion` single-select.
-Include option "Enter custom tool name".
-
-**⏸ EXECUTION PAUSES HERE** — Do not proceed until user responds.
-
----
+Present issues via `AskUserQuestion` single-select. Include "Enter custom tool".
 
 ## Step 3: Read Tool
+`requires: USER_SELECTION | outputs: TOOL_CONTENT`
 
-**requires: [USER_SELECTION]**
-**outputs: [TOOL_CONTENT]**
-
-Read selected tool file. If custom path — ask user for path first.
-
----
+Read selected tool file.
 
 ## Step 4: Build Internal Model
+`requires: TOOL_CONTENT | outputs: INTERNAL_MODEL`
 
-**requires: [TOOL_CONTENT]**
-**outputs: [INTERNAL_MODEL]** — MUST display to user
+Analyze: purpose, input/output, architecture, dependencies, boundaries.
 
-Produce structured understanding:
+Do not display to user — internal analysis only.
 
-| Field | Value |
-|-------|-------|
-| Purpose | [1 sentence] |
-| Input | [triggers, arguments, context] |
-| Output | [files, dialogs, actions] |
-| Architecture | [key blocks, logic flow] |
-| Dependencies | [tools, skills, commands called] |
-| Integration | [external systems] |
-| Boundaries | [what tool should NOT do] |
+## Step 5: Describe Problem
+`requires: INTERNAL_MODEL, ISSUES_LIST | waits: AskUserQuestion | outputs: PROBLEM_STATEMENT`
 
-**Display this table to user before proceeding.**
-
----
-
-## Step 5: Derive Quality Checklist
-
-**requires: [INTERNAL_MODEL]**
-**outputs: [QUALITY_CHECKLIST]** — MUST display to user
-
-Extract criteria for tool's "ideal version":
-
-| Criterion | Current State | Ideal State |
-|-----------|---------------|-------------|
-| [criterion 1] | [current] | [ideal] |
-| ... | ... | ... |
-
-Standard criteria:
-- Robustness to ambiguous inputs
-- Behavioral consistency
-- Argument predictability
-- API clarity
-- No hidden side effects
-- Atomicity of actions
-- Deterministic output
-
-Customize by tool type (agent/command/skill).
-
-**Display this table to user before proceeding.**
-
----
-
-## Step 6: Describe Problem
-
-**requires: [QUALITY_CHECKLIST], [ISSUES_LIST]**
-**waits: AskUserQuestion**
-**outputs: [PROBLEM_STATEMENT]**
-
-Describe:
+Present to user:
 - What went wrong (1-2 sentences)
-- Expected vs actual behavior
 - Root cause hypothesis
 
-Use `AskUserQuestion`:
-- "Is this understanding correct?"
-- Options: "Correct" / "Needs clarification"
-- Recurse until user confirms
+Use `AskUserQuestion`: "Is this correct?" Options: Correct / Needs clarification.
 
-**⏸ EXECUTION PAUSES HERE** — Do not proceed until user confirms.
+## Step 6: Research
+`requires: PROBLEM_STATEMENT | actions: WebSearch | outputs: RESEARCH`
 
----
+Execute `WebSearch`: "[problem type] Claude Code best practices 2025"
 
-## Step 7: Research Best Practices
+Quality over speed — collect 2-3 approaches, compare trade-offs.
 
-**requires: [PROBLEM_STATEMENT]**
-**actions: WebSearch (MANDATORY)**
-**outputs: [RESEARCH_RESULTS], [COMPARISON_TABLE]**
+Do not display raw research to user.
 
-1. Execute `WebSearch`: "[problem type] Claude Code best practices 2025"
-2. Collect 2-3 external examples
-3. Build comparison table:
+## Step 7: Present Solutions
+`requires: RESEARCH | waits: AskUserQuestion | outputs: SELECTED_SOLUTION`
 
-| Aspect | Current | Best Practice | Gap |
-|--------|---------|---------------|-----|
-| ... | ... | ... | ... |
+Pre-filter: discard options that reduce predictability, add ambiguity, or overcomplicate.
 
-4. Use gaps as foundation for solutions
+Present 2-3 options via `AskUserQuestion` with brief +/- for each.
 
-**MUST NOT proceed to Step 8 without executing WebSearch.**
+### If tool has AskUserQuestion calls needing changes:
+Show proposed dialog changes, ask which to apply.
 
----
+### If output format needs changes:
+Show proposed output changes, ask which to apply.
 
-## Step 8: Present Solutions
+## Step 8: Implement
+`requires: SELECTED_SOLUTION, TOOL_CONTENT | outputs: MODIFIED_TOOL`
 
-**requires: [RESEARCH_RESULTS], [QUALITY_CHECKLIST]**
-**waits: AskUserQuestion**
-**outputs: [SELECTED_SOLUTION]**
+Apply using Edit tool. Follow Claude Tools Format: write for Claude, no decorative formatting, 1-2 line instructions, remove anything that doesn't change behavior.
 
-Before presenting, apply pre-change filter to each option:
-- Does NOT reduce predictability
-- Does NOT add ambiguity
-- Does NOT overcomplicate API
-- Does NOT reduce determinism
+## Step 9: Verify & Cross-tool Impact
+`requires: MODIFIED_TOOL | waits: AskUserQuestion (if deps found)`
 
-Present 2-3 options via `AskUserQuestion`:
-- Brief +/- for each
-- Include "Other" for custom input
+Check: syntax valid, no broken references, changes match selection.
 
-**⏸ EXECUTION PAUSES HERE** — Do not proceed until user selects.
-
----
-
-## Step 9: Implement
-
-**requires: [SELECTED_SOLUTION], [TOOL_CONTENT]**
-**outputs: [MODIFIED_TOOL]**
-
-Apply selected solution using Edit tool.
-
-Follow Claude Tools Format:
-- Write for Claude, not humans
-- No decorative formatting
-- Each instruction 1-2 lines
-
----
-
-## Step 10: Verify
-
-**requires: [MODIFIED_TOOL]**
-**outputs: [VERIFICATION_RESULT]**
-
-Check:
-- File syntax valid
-- No broken references
-- Changes match selected solution
-- No unintended side effects
-
-Search `~/.claude/` for references to modified tool. If dependencies found:
+Search `~/.claude/` for references to modified tool. If found:
 - List affected tools
-- Use `AskUserQuestion` to resolve
+- Ask user: "Update automatically" / "Skip — handle manually"
+- If auto-update selected — apply changes
 
----
+## Step 10: Summary
+`requires: MODIFIED_TOOL, TOOL_CONTENT`
 
-## Step 11: Change Summary
-
-**requires: [MODIFIED_TOOL], [TOOL_CONTENT], [QUALITY_CHECKLIST]**
-**outputs: [CHANGE_SUMMARY]** — MUST display to user
-
+Display to user:
 ```
-[CHANGE_SUMMARY]
-Old version: [1-2 sentences]
-New version: [1-2 sentences]
-
-Improvements:
-- [improvement 1]
-- [improvement 2]
-
-Quality gains: [based on checklist]
-Risks eliminated: [failure modes prevented]
-Edge cases improved: [scenarios now working]
-Potential regressions: [honest assessment]
+Changes: [1-2 sentences what changed]
+Remaining issues: [if any, else "None"]
 ```
 
----
+## Step 11: Finalize
 
-## Step 12: Remaining Issues
-
-**requires: [CHANGE_SUMMARY]**
-**outputs: [REMAINING_ISSUES]** — MUST display to user
-
-```
-[REMAINING_ISSUES]
-Unresolved:
-- [issue not addressed]
-
-Weaknesses:
-- [area for future improvement]
-```
-
-If none: "No known remaining issues."
-
----
-
-## Step 13: Documentation
-
-Check `~/.claude/docs/` for tool documentation. If exists — update.
-
----
-
-## Step 14: Git
-
-If file in `~/.claude/`: use `claude-config-save` skill.
-
----
-
-## Step 15: Report
-
-```
-Files:
-- [A] path — created
-- [M] path — updated
-- [D] path — deleted
-```
-
----
+1. If docs exist in `~/.claude/docs/` — update
+2. If file in `~/.claude/` — use `claude-config-save` skill
+3. Report: `[A]` created, `[M]` updated, `[D]` deleted
 
 ## Rules
 
-**State machine enforcement:**
-- Cannot proceed without required artifacts
-- Must display artifacts marked "display to user"
-- Must pause at steps with "waits"
-- Must execute mandatory actions
-
-**Prohibited:**
-- Treating arguments as implementation instructions
-- Skipping WebSearch
-- Implementing without user selection
-- Proceeding without required artifacts
+- Arguments = context, not instructions
+- WebSearch mandatory before solutions
+- No implementation without user selection
+- User sees only: problem description, solution options, final summary

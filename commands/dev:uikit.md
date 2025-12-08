@@ -421,6 +421,19 @@ Output to: .claude/tasks/{task-id}/developer-output.md
 
 Triggered when user provides Figma JSON files (both TOKENS and SCREENS) or uses `sync --full`.
 
+**IMPORTANT:** In Full Sync mode, delegate analysis and implementation to dev-web agent immediately.
+Do NOT manually read component files, analyze tokens, or generate stories yourself.
+
+The workflow is:
+1. Brief context gathering (what files exist)
+2. Spawn dev-web agent with full context (Figma files paths, component patterns)
+3. Report results from dev-web
+
+Do NOT:
+- Manually read each component file
+- Build detailed token comparison tables
+- Generate story files yourself
+
 ### Workflow
 
 #### 1. Token Sync
@@ -581,7 +594,7 @@ Status: Done
 - Always understand the goal before suggesting solutions
 - Research before recommending
 - Present multiple options with trade-offs
-- Ask user for ambiguous cases
+- **ALWAYS use AskUserQuestion tool** for any confirmation — never ask questions as plain text
 - Match existing project patterns
 - Cite sources when sharing research
 
@@ -593,6 +606,9 @@ Status: Done
 - Give advice without context analysis
 - Output verbose analysis for aligned/working items (only report gaps)
 - List all components when user only needs to see missing ones
+- Ask confirmation as plain text (e.g., "Would you like to proceed?") — ALWAYS use AskUserQuestion tool
+- Show token sync tables when tokens are already in sync — just say "Tokens: ✅ in sync"
+- Output more than 10 lines for summary
 
 ---
 

@@ -14,7 +14,7 @@ Parse `$ARGUMENTS` to extract:
 2. **Change description:** What to change (optional for recommendation mode)
 3. **Flags:**
    - `rollback`, `revert`, `undo` — Rollback mode
-   - `--r` — Enable web research for complex changes
+   - `--skip-research` — Skip research for trivial changes
 
 **Parsing rules:**
 - No arguments → check for recommendations to apply
@@ -28,7 +28,7 @@ Parse `$ARGUMENTS` to extract:
 | `developer` | developer | direct (ask what) |
 | `developer add accessibility checklist` | developer | direct update |
 | `rollback developer` | developer | rollback |
-| `--r agent-lint add examples` | agent-lint | direct + research |
+| `--skip-research developer fix typo` | developer | direct (no research) |
 
 ## Step 1: Determine Scope
 
@@ -60,14 +60,49 @@ If file exists in **both** scopes, ask which one.
 1. Use Read tool to get current file content
 2. Store for diff generation
 
-## Step 4: Generate Diff
+## Step 4: Research & Analysis
 
-Based on change description:
+Analyze the requested change and research best practices:
+
+1. **Understand intent** — what is the user trying to achieve?
+2. **Search for patterns:**
+   - WebSearch: `"Claude Code agent" {change type} best practices`
+   - Check claude-code-guide for official patterns
+3. **Evaluate approaches:**
+   - Direct edit vs restructure
+   - Single change vs multiple related changes
+   - Impact on existing workflow
+
+### Present Analysis
+
+```
+## Change Analysis
+
+### What You Want
+[Summarize user's intent]
+
+### Current Agent Behavior
+[How the agent works now]
+
+### Recommended Approach
+**Option A:** [approach] — [pros/cons]
+**Option B:** [approach] — [pros/cons]
+
+### Suggestion
+[Best path to achieve the result with reasoning]
+```
+
+**Ask user:** "Which approach do you prefer? (A / B / Other)"
+
+## Step 5: Generate Diff with Workflow Preview
+
+Based on change description and chosen approach:
 1. Identify which section(s) to modify
 2. Generate proposed changes
 3. Calculate lines added/removed
 
-Show to user:
+### Show Diff
+
 ```
 ## Proposed Update
 
@@ -84,11 +119,41 @@ Show to user:
 Lines: +X / -Y
 ```
 
-## Step 5: Confirm with User
+### Show Workflow Preview
+
+Display how the agent will work AFTER changes, highlighting modifications:
+
+```
+## Workflow Preview
+
+**Agent:** {name}
+**After this update:**
+
+### Step-by-Step Behavior
+
+1. {step} ← [unchanged]
+2. {step} ← **[MODIFIED]** was: {old behavior}
+3. {step} ← **[NEW]**
+4. {step} ← [unchanged]
+
+### Example Scenario
+
+**Input:** {example request}
+**Before change:** {old behavior}
+**After change:** {new behavior} ← **[CHANGED]**
+
+### Impact Summary
+
+- **Added:** {what's new}
+- **Modified:** {what changed}
+- **Removed:** {what's gone}
+```
+
+## Step 6: Confirm with User
 
 Use `AskUserQuestion`: Apply? (Yes / Edit first / No)
 
-- **Yes** → proceed to Step 6
+- **Yes** → proceed to Step 7
 - **Edit first** → let user modify, then re-confirm
 - **No** → stop
 
@@ -102,7 +167,7 @@ Use `AskUserQuestion`: Apply? (Yes / Edit first / No)
 
 If change is **Large** → stop and suggest creating new agent/command instead.
 
-## Step 6: Apply Changes
+## Step 7: Apply Changes
 
 After user confirms, apply directly using Edit tool:
 
@@ -122,12 +187,9 @@ When no arguments:
 2. If has recent recommendations (<7 days) → show and ask which to apply
 3. If empty/outdated → ask user what to update
 
-## Web Research Mode
+## Research Notes
 
-When `--r` flag present:
-
-1. Use WebSearch for best practices before generating diff
-2. Incorporate findings into proposed changes
+Research is performed by default in Step 4. Use `--skip-research` flag for trivial changes (typos, small fixes).
 
 ## Migration Between Scopes
 

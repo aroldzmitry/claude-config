@@ -130,10 +130,6 @@ Before creating, show user a complete preview:
 **Input:** {example user request}
 **Processing:** {what agent would do}
 **Output:** {example result}
-
-### File Content Preview
-
-[Show complete agent markdown that will be created]
 ```
 
 ## Step 7: User Confirmation

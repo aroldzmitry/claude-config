@@ -184,31 +184,14 @@ model: {selected}
 
 ## Phase 6: Requirements Check
 
-Before validation, verify created file against user's requirements:
+Verify created file:
+- All requirements from Phase 2.1 implemented
+- All outputs from Phase 2.2 included
+- All dialogs from Phase 2.3 defined
+- No duplicate instructions
+- No redundant sections
 
-```
-## Requirements Check
-
-| Requirement | Status |
-|-------------|--------|
-| {from Phase 2.1} | ✅/❌ |
-| {from Phase 2.1} | ✅/❌ |
-
-| Output item | Included |
-|-------------|----------|
-| {from Phase 2.2} | ✅/❌ |
-
-| Dialog | Implemented |
-|--------|-------------|
-| {from Phase 2.3} | ✅/❌ |
-
-**Redundancy check:**
-- [ ] No duplicate instructions
-- [ ] No excessive examples
-- [ ] No unnecessary sections
-```
-
-If any ❌ — fix before proceeding. Show user what was fixed.
+Fix silently if minor. Report fixes to user if significant.
 
 ## Phase 7: Validate
 

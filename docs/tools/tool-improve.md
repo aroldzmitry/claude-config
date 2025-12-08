@@ -45,15 +45,8 @@ Is this correct? → User: Correct
 [WebSearch: validation patterns...]
 
 Options:
-A) Add validation step
-   Benefits: simple, fast to implement
-   Downsides: basic checks only
-   Risks: none
-
-B) Add schema validation
-   Benefits: robust, catches more errors
-   Downsides: more complex, slower
-   Risks: may reject valid edge cases
+A) Add validation step (+simple)
+B) Add schema validation (+robust, -complex)
 
 → User: A
 

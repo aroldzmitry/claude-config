@@ -89,8 +89,13 @@ Check official docs if relevant (WebFetch).
 
 ## Step 7: Present Solutions
 
+For each option, show:
+- **Benefits**: what improves, problems solved
+- **Downsides**: what gets worse, new limitations
+- **Risks**: what could break, potential regressions
+
 Use `AskUserQuestion`:
-- Show options with brief +/- for each
+- Present 2-3 options with full +/- analysis
 - Include text field for questions or custom solution
 - Recurse until user selects an option
 

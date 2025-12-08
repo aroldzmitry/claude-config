@@ -11,7 +11,7 @@ Create Claude Code tools (agents, commands, skills) with step-by-step user valid
 ## Workflow
 
 1. **Input** — parse arguments, ask only missing params
-2. **Confirm understanding** — show summary + flow, iterate until approved
+2. **Confirm understanding** — show summary + flow + output + dialogs, iterate until approved
 3. **Check duplicates** — find similar tools, discuss options
 4. **Research** — web search, show solutions with +/-, iterate until approved
 5. **Create** — write concise file optimized for Claude
@@ -36,7 +36,9 @@ Additional params to ask if not clear from context:
 
 Use `AskUserQuestion` for multiple params at once.
 
-## Phase 2: Understanding + Flow
+## Phase 2: Understanding + Flow + Interaction
+
+### 2.1 Understanding
 
 Show to user:
 
@@ -51,11 +53,44 @@ Show to user:
 1. {step}
 2. {step}
 3. {step}
-
-Confirm or provide corrections.
 ```
 
-**Iterate:** If user has corrections, update and show again. Do not proceed until explicit confirmation.
+### 2.2 Output Design
+
+Suggest possible outputs based on task, let user select:
+
+```
+## Output Data (select what to include)
+
+Based on this tool's purpose, I can output:
+- [ ] {option 1}
+- [ ] {option 2}
+- [ ] {option 3}
+
+Which do you want included?
+```
+
+Define:
+- **Status format** — Done / Failed - reason / Needs Review - explanation
+- **Data returned** — selected items from above
+- **Format** — markdown structure (tables, lists, etc.)
+
+### 2.3 Dialog Design
+
+Define user interactions:
+
+```
+## Dialogs
+
+| Point | Type | Recursive | Options |
+|-------|------|-----------|---------|
+| {when} | single/multi/text | yes → {condition} / no | {opt1}, {opt2} |
+```
+
+- **Type**: single choice / multi choice / free text
+- **Recursive**: iterate until condition met (e.g., "yes → user confirms")
+
+**Iterate:** Show all three sub-sections together. If user has corrections, update and show again. Do not proceed until explicit confirmation.
 
 ## Phase 3: Duplicate Check
 
@@ -122,7 +157,15 @@ model: {selected}
 
 ## Output
 
-{Expected format}
+**Status:** Done | Failed - reason | Needs Review - explanation
+
+{Selected data items from Phase 2.2}
+
+## Dialogs
+
+| Point | Type | Recursive | Options |
+|-------|------|-----------|---------|
+| {from Phase 2.3} |
 
 ## Rules
 

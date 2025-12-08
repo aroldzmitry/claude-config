@@ -13,7 +13,7 @@ Improve existing tools (agents, commands, skills) by analyzing conversation for 
 1. Scan conversation for issues
 2. Show candidates with reasoning
 3. User selects tool to improve
-4. Describe problem, confirm understanding
+4. Build internal model, describe problem, confirm understanding
 5. Research solutions
 6. Present options, iterate until selected
 7. Discuss output/dialog changes if needed
@@ -55,11 +55,19 @@ Use `AskUserQuestion` single-select.
 
 Wait for user selection. If custom — ask for tool path.
 
-## Step 4: Describe Problem
+## Step 4: Build Internal Model & Describe Problem
 
 Read the selected tool file.
 
-Based on conversation context + tool content, describe:
+**First, build internal model** — understand before changing:
+- Purpose: what problem does this tool solve
+- Input: what triggers/arguments/context it expects
+- Output: what it produces (files, dialogs, actions)
+- Architecture: key blocks and logic flow
+- Dependencies: other tools/skills it calls
+- Boundaries: what this tool should NOT do
+
+**Then describe problem** based on conversation context + internal model:
 - What went wrong (1-2 sentences)
 - Expected vs actual behavior
 - Root cause hypothesis

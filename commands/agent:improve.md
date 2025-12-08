@@ -49,7 +49,21 @@ Look for patterns in conversation:
 
 ## Step 4: Clarify if Unclear
 
-Use `AskUserQuestion` with options: Wrong output / Missing step / Too verbose / Not interactive
+**MANDATORY:** If ANY of these are unclear, use AskUserQuestion BEFORE analyzing:
+
+- What exactly went wrong?
+- Which specific behavior to change?
+- What is the expected behavior?
+
+**Signs you need to clarify:**
+- User uses vague terms: "too long", "not working", "wrong"
+- User mentions multiple issues in one message
+- You're not 100% sure what user means
+
+**Do NOT:**
+- Guess what user means
+- Invent interpretations
+- Add specific values user didn't mention
 
 ## Step 5: Impact Analysis
 
@@ -123,6 +137,8 @@ Report: "Saved. Run /agent:update to apply."
 - Maximum 5 recommendations per session
 - Read full agent file before proposing
 - Self-test: would this change have prevented the original issue?
+- **NEVER invent specific values** — if user says "too long", do NOT add "max 10 lines". Only use values user explicitly stated.
+- If recommendation needs a specific number/limit, use `AskUserQuestion` to ask user what value they want
 
 **FORBIDDEN:** Edit, NotebookEdit
 **ALLOWED:** Write ONLY to `~/.claude/.improvements/suggestions.md`

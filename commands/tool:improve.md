@@ -73,9 +73,9 @@ Use `AskUserQuestion`:
 
 ## Step 6: Research Solutions
 
-WebSearch: "[problem type] Claude Code best practices 2025"
+**MUST use WebSearch** before proposing any solution. Search: "[problem type] Claude Code best practices 2025"
 
-Check official docs if relevant.
+Check official docs if relevant (WebFetch).
 
 Evaluate approaches, prepare 2-3 options.
 
@@ -152,50 +152,16 @@ If file is in `~/.claude/` (user level):
 
 ## Step 12: Report
 
-Output:
+Output: `Status: Done` + Changed file path + Changes list + Lines count before/after
 
-```
-Status: Done
-
-Changed: [file path]
-Changes:
-- [change 1]
-- [change 2]
-
-Lines: [before] → [after]
-```
-
-## Output Format
-
-```
-Status: Done | Failed - reason | Needs Review - explanation
-
-Changed: [path]
-Changes: [bullet list]
-Lines: [before] → [after]
-```
-
-## Dialogs
-
-| Step | Dialog | Type | Recurse |
-|------|--------|------|---------|
-| 2 | Select tool | Single + custom | No |
-| 5 | Confirm understanding | Single + text | Until "Correct" |
-| 7 | Select solution | Single + text | Until selected |
-| 7a | Dialog changes | Multi + text | If applicable |
-| 7b | Output changes | Multi + text | If applicable |
-| 9a | Resolve cross-tool impact | Single + text | If dependencies found |
+If failed: `Status: Failed - reason` or `Status: Needs Review - explanation`
 
 ## Rules
 
-**DO:**
-- Scan full conversation context
-- Read tool file before proposing changes
-- Research before recommending
-- Iterate dialogs until user confirms
-- Apply changes directly (batch confirm)
-
-**DON'T:**
-- Guess what user wants — ask if unclear
-- Skip confirmation steps
-- Propose changes to tools not selected
+- MUST scan full conversation context
+- MUST read tool file before proposing changes
+- MUST research (WebSearch) before recommending
+- MUST iterate dialogs until user confirms
+- Never guess — ask if unclear
+- Never skip confirmation steps
+- Never propose changes to unselected tools

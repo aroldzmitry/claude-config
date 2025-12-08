@@ -58,12 +58,22 @@ Orchestrates UI development tasks: Figma token sync, component generation, and S
 
 5. Save to `.claude/docs/FIGMA_TOKENS.json`
 
+> **Note:** The Figma Variables REST API requires an Enterprise plan. For non-Enterprise users, ask if they can export tokens via Tokens Studio plugin or provide a JSON export manually.
+
 **If `auto`:** Read existing `.claude/docs/FIGMA_TOKENS.json`
 
 ### Phase 2: Analyze Codebase
 
-1. Glob `**/*variables*.scss` or `**/*tokens*.ts` for existing tokens
-2. Glob `**/ui/**/*.tsx` or `**/components/**/*.tsx` for UI components
+1. Search for existing token files (try patterns in order):
+   - `**/*variables*.scss`
+   - `**/*tokens*.{ts,scss,css}`
+   - `**/theme/*.{ts,scss}`
+   - `**/styles/*.{ts,scss}`
+   - If none found → ask user for token file location
+2. Search for UI components:
+   - `**/ui/**/*.tsx`
+   - `**/components/**/*.tsx`
+   - `src/**/*.tsx` (fallback)
 3. Extract patterns: naming conventions, file structure, imports
 4. Build inventory of current design tokens
 
@@ -78,7 +88,7 @@ Orchestrates UI development tasks: Figma token sync, component generation, and S
 | Novel value | Not in system | ASK: add or map? |
 
 Detection rules:
-- **Color drift**: similar colors (ΔE < 5) → consolidate
+- **Color drift**: similar colors (RGB channels differ by ≤5 each) → consolidate
 - **Spacing anomalies**: outliers (15px among 16px) → normalize
 - **Typography drift**: same context, different weights → consolidate
 - **Radius inconsistencies**: similar components, different radii → normalize
@@ -251,6 +261,8 @@ Output to: .claude/tasks/{task-id}/developer-output.md
 After developer agent completes, summarize:
 
 ```markdown
+Status: Done
+
 ## UI Kit Task Complete
 
 ### Mode: [Token Sync / Story Generation]
@@ -297,3 +309,30 @@ After developer agent completes, summarize:
 | Component not found | Report and stop |
 | Pattern conflict | Ask user which to follow |
 | dev-web agent fails | Report failure reason |
+
+---
+
+## Scope & Project Integration
+
+This is a **global** command. If a project has its own `/ds:*` commands (e.g., `/ds:tokens`, `/ds:story`), consider:
+
+| Scenario | Action |
+|----------|--------|
+| Project has `/ds:*` commands | Prefer project commands; they have project-specific context |
+| No project commands exist | Use this global command |
+| Conflict between global/project | Ask user which to use |
+
+To check for project commands: `Glob(".claude/commands/ds:*.md")`
+
+---
+
+## Token Format Support
+
+| Format | Support |
+|--------|---------|
+| SCSS variables | Primary (most projects) |
+| CSS custom properties | Supported |
+| TypeScript constants | Supported |
+| W3C DTCG (`.tokens.json`) | Supported - industry standard for tool interoperability |
+
+When W3C DTCG format detected or requested, structure tokens per the [Design Tokens Format Module](https://tr.designtokens.org/format/) specification.

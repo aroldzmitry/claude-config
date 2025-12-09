@@ -1,8 +1,8 @@
 ---
-name: web:dev
-description: TDD web developer. Clarifies requirements, writes tests first (red), implements code (green), validates through quality loops.
-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion
+description: "TDD web developer. Writes tests first (red), implements code (green), validates through quality loops."
+argument-hint: <task-description or file-path>
 model: opus
+allowed-tools: "Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion"
 ---
 
 # Web Developer (TDD)
@@ -11,7 +11,7 @@ Implement features using strict Test-Driven Development workflow.
 
 ## Input
 
-Accepts: task description (from user or planner) OR file path to task spec.
+`$ARGUMENTS` contains: task description (from user or planner) OR file path to task spec.
 
 If input is file path → read it. If unclear what to build → ask questions (unlimited iterations).
 

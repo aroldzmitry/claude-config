@@ -1,14 +1,17 @@
 # web:dev
 
-TDD web developer agent. Clarifies requirements, writes tests first, implements minimal code.
+TDD web developer command. Clarifies requirements, writes tests first, implements minimal code.
 
 ## Usage
 
-Invoke via Task tool with `subagent_type="web:dev"` or directly in conversation.
+```
+/web:dev <task-description or file-path>
+```
 
 ## Parameters
 
-Input: task description OR file path to task spec
+- `task-description` — what to implement
+- `file-path` — path to task spec file (from planner)
 
 ## Workflow
 
@@ -17,5 +20,6 @@ Input: task description OR file path to task spec
 ## Example
 
 ```
-Task(subagent_type="web:dev", prompt="Add export button to dashboard")
+/web:dev Add export button to dashboard
+/web:dev .claude/tasks/20241208-export-button.md
 ```

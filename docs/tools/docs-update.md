@@ -1,12 +1,12 @@
-# dev:docs
+# /docs:update
 
 Generate/update project documentation optimized for Claude (c7score principles).
 
 ## Usage
 
 ```
-/dev:docs           # Incremental update (if possible) or generate
-/dev:docs --force   # Full regeneration
+/docs:update           # Incremental update (if possible) or generate
+/docs:update --force   # Full regeneration
 ```
 
 ## Generated Files
@@ -24,9 +24,9 @@ Generate/update project documentation optimized for Claude (c7score principles).
 ## Example
 
 ```
-/dev:docs
+/docs:update
 
-dev:docs complete (commit: abc1234)
+docs:update complete (commit: abc1234)
 
 Created: llms.txt, ARCHITECTURE.md
 Updated: COMPONENTS.md (+3)

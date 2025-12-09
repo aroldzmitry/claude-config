@@ -28,5 +28,5 @@
   },
   "model": "opus",
   "hooks": {},
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": false
 }

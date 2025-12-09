@@ -17,7 +17,7 @@ If file path → read AC from file. If no file → ask user for AC.
 
 ## Phase 1: Gather Context
 
-1. Read `.claude/docs/` — PATTERNS.md, COMPONENTS.md, SERVICES.md, BUSINESS_RULES.md
+1. Read `.claude/docs/` — all files in directory (project documentation)
 2. If `$ARGUMENTS` is file path → read AC from file
 3. If no file or unclear → AskUserQuestion for AC (what should work?)
 4. If anything unclear → ask follow-up questions (unlimited iterations)
@@ -58,13 +58,13 @@ Analyze each screenshot for:
 
 ## Phase 6: Code Consistency Check
 
-Review changed files against `.claude/docs/`:
+Review changed files against `.claude/docs/` (all project documentation):
 
 ### Patterns & Standards
-- [ ] Follows PATTERNS.md conventions
-- [ ] Uses components from COMPONENTS.md correctly
-- [ ] Services match SERVICES.md structure
-- [ ] Business logic follows BUSINESS_RULES.md
+- [ ] Follows documented conventions
+- [ ] Uses existing components correctly
+- [ ] Services match documented structure
+- [ ] Business logic follows documented rules
 
 ### Duplicates & Consistency
 - [ ] No duplicate code created (check similar files)
@@ -124,7 +124,7 @@ If no issues: output "QA Check: PASS" and done.
 ## Error Handling
 
 - Playwright fails → "Screenshot failed. Configure Playwright environment: `yarn playwright install`". Continue without screenshots.
-- Docs missing → note in report, continue with code review only
+- `.claude/docs/` missing → note in report, continue with code review only
 - Tests fail to run → report error, continue with other checks
 
 ## Rules

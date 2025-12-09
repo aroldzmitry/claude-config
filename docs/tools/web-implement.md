@@ -15,7 +15,9 @@ TDD web developer command. Clarifies requirements, writes tests first, implement
 
 ## Workflow
 
-1. Clarify → 2. Write tests (red) → 3. Implement (green) → 4. Quality checks → 5. Commit
+1. Clarify + extract AC → 2. Write tests (red) → 3. Implement (green) → 4. Quality checks → 5. Review vs AC → 6. Commit
+
+Agent extracts ALL acceptance criteria from task file before planning. Reviews each AC against implementation before committing.
 
 ## Example
 

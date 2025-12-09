@@ -18,9 +18,28 @@ If input is file path → read it. If unclear what to build → ask questions (u
 ## Phase 1: Clarify
 
 1. Read `.claude/docs/` if exists, else Glob/Grep `src/` for context
-2. If requirements unclear → AskUserQuestion, repeat until 100% clear
-3. Show short plan: what tests to write, what to implement
-4. Wait for user: Confirm / Уточнить
+2. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
+3. If AC found → create checklist, confirm understanding of EACH AC before proceeding
+4. If requirements unclear → AskUserQuestion, repeat until 100% clear
+5. Show short plan: what tests to write, what to implement, which ACs each addresses
+6. Wait for user: Confirm / Уточнить
+
+### AC Extraction Rules
+
+When reading task file:
+- Look for "Acceptance Criteria" / "AC" sections
+- Look for checkboxes `- [ ]` in task spec
+- Look for "must" / "should" / "required" statements
+- Extract EXACT wording from spec
+
+Create internal AC checklist mapping:
+- Which tests verify which AC
+- Which implementation addresses which AC
+- Note any AC that seems ambiguous or conflicting
+
+Before showing plan, confirm:
+- "Found X acceptance criteria. Key constraints: [list 2-3 critical ones]. Understood correctly?"
+- Wait for user confirmation before proceeding
 
 ## Phase 2: RED (Write Tests)
 
@@ -54,8 +73,16 @@ After writing:
 
 ## Phase 5: Review
 
-Check all requirements from Phase 1 are met. If something missed:
+Check all requirements from Phase 1 are met:
+1. Review EACH AC from task spec against implementation
+2. For each AC: verify it's addressed (code + tests)
+3. If AC missed → add tests, implement, repeat Phase 3-4
+
+If something missed:
 - Add missing tests → go to Phase 3
+
+Report AC verification:
+- List each AC with status: ✅ Implemented | ❌ Not addressed | ⚠️ Partially
 
 ## Phase 6: Commit
 

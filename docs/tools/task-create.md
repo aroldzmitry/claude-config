@@ -11,7 +11,7 @@ Transform vague task descriptions into detailed requirements.
 
 ## What It Does
 
-1. Reads project context (`.claude/docs/` or `src/`)
+1. Reads project context (`.claude/docs/` then `docs/`)
 2. Asks clarifying questions iteratively
 3. Generates structured plan with:
    - Purpose, User Story

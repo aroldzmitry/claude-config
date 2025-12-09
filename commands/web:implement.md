@@ -17,7 +17,7 @@ If input is file path → read it. If unclear what to build → ask questions (u
 
 ## Phase 1: Clarify
 
-1. Read `.claude/docs/` if exists, else Glob/Grep `src/` for context
+1. Read `.claude/docs/` first, then `docs/` for project context
 2. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
 3. If AC found → create checklist, confirm understanding of EACH AC before proceeding
 4. If requirements unclear → AskUserQuestion, repeat until 100% clear

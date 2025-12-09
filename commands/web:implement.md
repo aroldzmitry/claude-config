@@ -84,9 +84,9 @@ If something missed:
 Report AC verification:
 - List each AC with status: ✅ Implemented | ❌ Not addressed | ⚠️ Partially
 
-## Phase 6: Commit
+## Phase 6: Stage
 
-Stage all changes, create single commit with descriptive message. Do NOT push.
+Stage all modified files with `git add`. User will commit manually.
 
 ## Output
 

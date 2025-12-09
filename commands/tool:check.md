@@ -1,7 +1,7 @@
 ---
 description: "Analyze Claude tool quality, compare with alternatives, check documentation compliance"
 argument-hint: <file-path>
-model: opus
+model: sonnet
 allowed-tools: "Read, Glob, Grep, WebSearch, WebFetch"
 ---
 

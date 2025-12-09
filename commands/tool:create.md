@@ -1,7 +1,7 @@
 ---
 description: Create a new agent, command, or skill with iterative user confirmation
 argument-hint: "[name] [description]"
-model: opus
+model: sonnet
 ---
 
 # Tool Creator

@@ -1,7 +1,7 @@
 ---
 description: "Improve existing tools by analyzing conversation history for issues and corrections"
 argument-hint: "[additional context]"
-model: opus
+model: sonnet
 ---
 
 # Tool Improver

@@ -1,7 +1,7 @@
 ---
 description: "Generate/update project documentation optimized for Claude"
 argument-hint: "[--force]"
-model: opus
+model: haiku
 allowed-tools: "Read, Write, Edit, Glob, Grep, Bash"
 ---
 

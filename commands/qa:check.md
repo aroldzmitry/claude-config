@@ -1,7 +1,7 @@
 ---
 description: "Manual QA check: verifies AC, runs tests, screenshots UI, finds bugs"
 argument-hint: <task-description or file-path>
-model: opus
+model: sonnet
 allowed-tools: "Read, Glob, Grep, Bash, AskUserQuestion"
 ---
 

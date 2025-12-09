@@ -1,11 +1,11 @@
-# web:dev
+# /web:implement
 
 TDD web developer command. Clarifies requirements, writes tests first, implements minimal code.
 
 ## Usage
 
 ```
-/web:dev <task-description or file-path>
+/web:implement <task-description or file-path>
 ```
 
 ## Parameters
@@ -20,6 +20,6 @@ TDD web developer command. Clarifies requirements, writes tests first, implement
 ## Example
 
 ```
-/web:dev Add export button to dashboard
-/web:dev .claude/tasks/20241208-export-button.md
+/web:implement Add export button to dashboard
+/web:implement .claude/tasks/20241208-export-button.md
 ```

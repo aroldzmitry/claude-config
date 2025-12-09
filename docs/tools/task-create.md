@@ -1,12 +1,12 @@
-# /task:plan
+# /task:create
 
 Transform vague task descriptions into detailed requirements.
 
 ## Usage
 
 ```
-/task:plan add export button to dashboard
-/task:plan
+/task:create add export button to dashboard
+/task:create
 ```
 
 ## What It Does

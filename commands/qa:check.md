@@ -17,7 +17,7 @@ If file path → read AC from file. If no file → ask user for AC.
 
 ## Phase 1: Gather Context
 
-1. Read `.claude/docs/` first, then `docs/` for project documentation
+1. Read `.claude/docs/` first, then `docs/`, then Glob/Grep `src/` for context
 2. If `$ARGUMENTS` is file path → read AC from file
 3. If no file or unclear → AskUserQuestion for AC (what should work?)
 4. If anything unclear → ask follow-up questions (unlimited iterations)

@@ -22,7 +22,7 @@ Analyze Claude tool quality, compare with external alternatives, verify Claude d
 - Conflicts: issues with same-scope tools
 - Documentation Compliance: YAML/fields/tools checklist
 - Comparison (Local): overlap with same-scope tools
-- Comparison (External): table vs 3+ external alternatives
+- Comparison (External): table vs 3+ alternatives + Sources list
 - Improvements: actionable suggestions with +/-
 - Redundancy: verbose/duplicate content issues
 

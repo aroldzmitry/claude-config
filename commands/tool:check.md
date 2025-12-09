@@ -105,9 +105,15 @@ Analyze Claude tool (agent/command/skill) for quality, compare with alternatives
 | [tool] | ... | ... |
 
 ## Comparison (External)
+
 | Aspect | This Tool | Alt 1 | Alt 2 | Alt 3 |
 |--------|-----------|-------|-------|-------|
-| [key aspect] | ... | ... | ... | ... |
+| [aspect] | ... | ... | ... | ... |
+
+**Sources:**
+- Alt 1: [Short name](URL)
+- Alt 2: [Short name](URL)
+- Alt 3: [Short name](URL)
 
 ## Improvements
 - [What to improve] — +[benefit] / -[downside]

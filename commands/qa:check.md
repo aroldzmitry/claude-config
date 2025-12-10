@@ -18,9 +18,10 @@ If file path → read AC from file. If no file → ask user for AC.
 ## Phase 1: Gather Context
 
 1. Read `.claude/docs/` first, then `docs/`, then Glob/Grep `src/` for context
-2. If `$ARGUMENTS` is file path → read AC from file
-3. If no file or unclear → AskUserQuestion for AC (what should work?)
-4. If anything unclear → ask follow-up questions (unlimited iterations)
+2. Check if Storybook exists: `Glob **/*.stories.{ts,tsx}` (exclude node_modules). If found → Storybook mode ON
+3. If `$ARGUMENTS` is file path → read AC from file
+4. If no file or unclear → AskUserQuestion for AC (what should work?)
+5. If anything unclear → ask follow-up questions (unlimited iterations)
 
 ## Phase 2: Run Tests
 
@@ -35,7 +36,8 @@ Record: pass/fail count, failed test names.
 1. Run `git diff --name-only HEAD~1` to get changed files
 2. Filter UI files: `*.tsx` in `src/components/`, `src/pages/`, `src/features/`
 3. Map files to routes (check file for route path or infer from filename)
-4. If no UI files changed → skip screenshots
+4. If Storybook mode ON → extract component names from changed files, find corresponding `*.stories.tsx`
+5. If no UI files changed → skip screenshots
 
 ## Phase 4: Take Screenshots
 
@@ -44,6 +46,11 @@ For each identified page:
 2. Navigate to route
 3. Screenshot at desktop (1280x720) and mobile (375x812)
 4. Save to temp folder
+
+If Storybook mode ON and stories exist for changed components:
+1. Start Storybook if not running (detect port from `.storybook/` config or use default 6006)
+2. For each story: navigate to story URL, screenshot all variants
+3. Save to temp folder with naming: `{component}-{story}.png`
 
 Use Playwright. If fails → output error, ask user to configure Playwright environment, continue without screenshots.
 
@@ -78,6 +85,12 @@ Review changed files against `.claude/docs/` (all project documentation):
 - [ ] No commented code
 - [ ] Error handling present
 
+### Storybook (if Storybook mode ON)
+- [ ] All new components in `src/components/` have corresponding `*.stories.tsx`
+- [ ] Story files follow naming convention: `ComponentName.stories.tsx`
+- [ ] Stories document all component variants and props
+- [ ] If component missing story → report as critical issue
+
 ## Phase 7: AC & Scope Checklist
 
 ### AC Verification
@@ -106,9 +119,13 @@ Tests: X/Y passed
 AC: X/Y verified
 UI: [OK/Issues found/Skipped]
 Consistency: [OK/Issues found]
+Storybook: X/Y components documented [only if Storybook mode ON]
 
 Issues:
 - [issue description] (severity)
+
+Components missing stories: [only if Storybook mode ON and missing]
+- ComponentName (src/components/path/ComponentName.tsx)
 ```
 
 If no issues: just status line.

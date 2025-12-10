@@ -18,11 +18,13 @@ If input is file path → read it. If unclear what to build → ask questions (u
 ## Phase 1: Clarify
 
 1. Read `.claude/docs/` first, then `docs/`, then Glob/Grep `src/` for context
-2. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
-3. If AC found → create checklist, confirm understanding of EACH AC before proceeding
-4. If requirements unclear → AskUserQuestion, repeat until 100% clear
-5. Show short plan: what tests to write, what to implement, which ACs each addresses
-6. Wait for user: Confirm / Уточнить
+2. Check if Storybook exists: `Glob **/*.stories.{ts,tsx}` (exclude node_modules). If found → Storybook mode ON
+3. If Storybook mode ON → search existing stories for reusable components matching task requirements
+4. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
+5. If AC found → create checklist, confirm understanding of EACH AC before proceeding
+6. If requirements unclear → AskUserQuestion, repeat until 100% clear
+7. Show short plan: what tests to write, what to implement, which ACs each addresses, which components to reuse from Storybook
+8. Wait for user: Confirm / Уточнить
 
 ### AC Extraction Rules
 
@@ -46,6 +48,7 @@ Before showing plan, confirm:
 Before writing tests:
 1. Verify test infra works — run existing test to confirm setup
 2. Think about edge cases — list all scenarios including errors, empty states, boundaries
+3. If creating new components AND Storybook mode ON → add component stories first (before tests)
 
 Write tests following TDD best practices:
 - One assertion per test — clearer failures
@@ -82,12 +85,15 @@ Check all requirements from Phase 1 are met:
 1. Review EACH AC from task spec against implementation
 2. For each AC: verify it's addressed (code + tests)
 3. If AC missed → add tests, implement, repeat Phase 3-4
+4. If Storybook mode ON → verify all new components have stories. If missing → add stories, repeat Phase 3-4
 
 If something missed:
 - Add missing tests → go to Phase 3
+- Add missing stories → go to Phase 3
 
 Report AC verification:
 - List each AC with status: ✅ Implemented | ❌ Not addressed | ⚠️ Partially
+- If Storybook mode ON → List components with story status: ✅ Documented | ❌ Missing story
 
 ## Phase 6: Stage
 

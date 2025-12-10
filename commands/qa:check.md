@@ -65,8 +65,15 @@ Analyze each screenshot for:
 - Layout issues (overlapping, cut off, misaligned)
 - Spacing inconsistencies
 - Text readability
-- Mobile responsiveness
 - Empty/error/loading states visible correctly
+
+**Mobile viewport specific checks:**
+- Text remains readable (no tiny fonts < 14px)
+- No horizontal overflow/scroll
+- Touch targets sufficient size (min 44x44px for interactive elements)
+- Buttons/inputs not truncated
+- Content doesn't disappear or overlap on narrow screens
+- Spacing adapts appropriately (not too cramped)
 
 ## Phase 6: Code Consistency Check
 
@@ -108,9 +115,10 @@ Review changed files against `.claude/proj_index/` (all project documentation):
 - [ ] No over-engineering
 
 ### UI Quality
-- [ ] Layout correct on desktop
-- [ ] Layout correct on mobile
-- [ ] No visual bugs
+- [ ] Layout correct on desktop (1280x720)
+- [ ] Layout correct on mobile (375x812)
+- [ ] No visual bugs (checked on both viewports)
+- [ ] Mobile responsiveness: text readable, no overflow, touch targets adequate
 - [ ] States (loading/error/empty) handled
 
 ## Phase 8: Report
@@ -122,12 +130,16 @@ QA Check: [PASS/FAIL]
 
 Tests: X/Y passed
 AC: X/Y verified
-UI: [OK/Issues found/Skipped]
+UI Desktop: [OK/Issues found/Skipped]
+UI Mobile: [OK/Issues found/Skipped]
 Consistency: [OK/Issues found]
 Storybook: X/Y components documented [only if Storybook mode ON]
 
 Issues:
 - [issue description] (severity)
+
+Mobile Issues: [only if mobile viewport issues found]
+- [component/story name]: [specific mobile issue]
 
 Components missing stories: [only if Storybook mode ON and missing]
 - ComponentName (src/components/path/ComponentName.tsx)

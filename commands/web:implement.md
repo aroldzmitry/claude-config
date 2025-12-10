@@ -15,6 +15,28 @@ Implement features using strict Test-Driven Development workflow.
 
 If input is file path → read it. If unclear what to build → ask questions (unlimited iterations).
 
+## Phase 0: Analyze Context (for existing components only)
+
+Skip this phase if creating NEW components. Only run when MODIFYING existing components.
+
+Detect modification: task mentions fixing/updating/changing/refactoring existing component OR involves editing existing CSS/SCSS/component files.
+
+When modifying existing component:
+1. Identify component name from task
+2. Search usage: `Grep [ComponentName] --glob *.tsx --output_mode files_with_matches`
+3. Read 2-3 parent components that import/use this component
+4. Check if parents wrap children with `cloneElement` or add classes (like `AuField` pattern)
+5. If parent adds classes: read parent's CSS to understand inherited styles
+6. Document findings: what parent styles/classes are applied, which must be preserved
+7. If unclear whether safe to modify → ask user before proceeding
+
+Common patterns to check:
+- Parent uses `React.cloneElement(children, { className: ... })` → parent adds classes
+- Parent wraps in container with specific CSS → child inherits container styles
+- Component used inside `<AuField>`, `<Form>`, layout wrappers → check wrapper CSS
+
+If conflicts found (parent applies styles that will break): include preservation strategy in implementation plan.
+
 ## Phase 1: Clarify
 
 1. Read `.claude/docs/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/docs/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context

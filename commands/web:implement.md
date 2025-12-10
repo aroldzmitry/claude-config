@@ -17,7 +17,7 @@ If input is file path → read it. If unclear what to build → ask questions (u
 
 ## Phase 1: Clarify
 
-1. Read `.claude/docs/00-INDEX.md` first (if exists). Follow links to other docs ONLY when needed for current task. Then `docs/`, then Glob/Grep `src/` for context
+1. Read `.claude/docs/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/docs/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
 2. Check if Storybook exists: `Glob **/*.stories.{ts,tsx}` (exclude node_modules). If found → Storybook mode ON
 3. If Storybook mode ON → search existing stories for reusable components matching task requirements
 4. If input is file path → read task file and extract ALL Acceptance Criteria (AC)

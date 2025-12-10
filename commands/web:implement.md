@@ -41,12 +41,12 @@ If conflicts found (parent applies styles that will break): include preservation
 
 1. Read `.claude/proj_index/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/proj_index/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
 2. Check if Storybook exists: `Glob **/*.stories.{ts,tsx}` (exclude node_modules). If found → Storybook mode ON
-3. If Storybook mode ON → search existing stories for reusable components matching task requirements
+3. If Storybook mode ON → read 2-3 existing stories to learn project patterns (story structure, exports, argTypes usage)
 4. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
 5. If AC found → create checklist, confirm understanding of EACH AC before proceeding
 6. If requirements unclear → AskUserQuestion, repeat until 100% clear
 7. Determine if research needed (non-trivial problems, styling issues, multiple valid approaches) → go to Phase 1.5
-8. Show short plan: what tests to write, what to implement, which ACs each addresses, which components to reuse from Storybook
+8. Show short plan: what tests to write, what to implement, which ACs each addresses, story structure matching project pattern
 9. Wait for user: Confirm / Уточнить
 
 ## Phase 1.5: Research Solutions (when needed)
@@ -95,7 +95,7 @@ Before showing plan, confirm:
 Before writing tests:
 1. Verify test infra works — run existing test to confirm setup
 2. Think about edge cases — list all scenarios including errors, empty states, boundaries
-3. If creating new components AND Storybook mode ON → add component stories first (before tests)
+3. If creating new components AND Storybook mode ON → add component stories first (before tests). **CRITICAL**: Match existing story pattern from Phase 1 (same export structure, argTypes usage, decorator style)
 
 Write tests following TDD best practices:
 - One assertion per test — clearer failures
@@ -132,7 +132,7 @@ Check all requirements from Phase 1 are met:
 1. Review EACH AC from task spec against implementation
 2. For each AC: verify it's addressed (code + tests)
 3. If AC missed → add tests, implement, repeat Phase 3-4
-4. If Storybook mode ON → verify all new components have stories. If missing → add stories, repeat Phase 3-4
+4. If Storybook mode ON → verify all new components have stories matching project pattern. If missing → add stories, repeat Phase 3-4
 
 If something missed:
 - Add missing tests → go to Phase 3
@@ -141,6 +141,22 @@ If something missed:
 Report AC verification:
 - List each AC with status: ✅ Implemented | ❌ Not addressed | ⚠️ Partially
 - If Storybook mode ON → List components with story status: ✅ Documented | ❌ Missing story
+
+## Phase 5.5: Technical Debt Report
+
+Scan implemented code for deviations from best practices or improvements:
+- Patterns that work but could be better
+- Project patterns that differ from industry best practices
+- Potential refactoring opportunities
+
+If technical debt found:
+1. List items: "Found N potential improvements: [short list]"
+2. Use AskUserQuestion multi-select: "Create refactoring tasks for which items?"
+3. For selected items, ask: "Save as task file or output to console?"
+   - Task file: create `.claude/tasks/refactor-{topic}-{date}.md` with details
+   - Console: output full description inline
+
+Skip if no technical debt found.
 
 ## Phase 6: Stage
 

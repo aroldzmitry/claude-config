@@ -96,6 +96,13 @@ Before writing tests:
 1. Verify test infra works — run existing test to confirm setup
 2. Think about edge cases — list all scenarios including errors, empty states, boundaries
 3. If creating new components AND Storybook mode ON → add component stories first (before tests). **CRITICAL**: Match existing story pattern from Phase 1 (same export structure, argTypes usage, decorator style)
+4. **Responsive stories required**: Create at minimum `Desktop` and `Mobile` story variants using viewport parameters:
+   ```typescript
+   export const Desktop: Story = {};
+   export const Mobile: Story = {
+     parameters: { viewport: { defaultViewport: 'mobile1' } },
+   };
+   ```
 
 Write tests following TDD best practices:
 - One assertion per test — clearer failures
@@ -132,7 +139,7 @@ Check all requirements from Phase 1 are met:
 1. Review EACH AC from task spec against implementation
 2. For each AC: verify it's addressed (code + tests)
 3. If AC missed → add tests, implement, repeat Phase 3-4
-4. If Storybook mode ON → verify all new components have stories matching project pattern. If missing → add stories, repeat Phase 3-4
+4. If Storybook mode ON → verify all new components have stories matching project pattern AND include Mobile viewport variant. If missing → add stories, repeat Phase 3-4
 
 If something missed:
 - Add missing tests → go to Phase 3
@@ -140,7 +147,7 @@ If something missed:
 
 Report AC verification:
 - List each AC with status: ✅ Implemented | ❌ Not addressed | ⚠️ Partially
-- If Storybook mode ON → List components with story status: ✅ Documented | ❌ Missing story
+- If Storybook mode ON → List components with story status: ✅ Documented (Desktop + Mobile) | ⚠️ Missing Mobile | ❌ Missing story
 
 ## Phase 5.5: Technical Debt Report
 
@@ -180,6 +187,7 @@ Follow project patterns. Check `.claude/proj_index/PATTERNS.md` if exists.
 - Functions max 20-30 lines
 - No hardcoded values: use CSS variables, config constants, or project tokens. Never hardcode colors, spacing, breakpoints
 - If CSS variables needed: reference existing design tokens or create new tokens in token files
+- **Mobile-first CSS**: Write base styles for mobile, use `min-width` media queries for larger screens. Never use `max-width` for responsive styles
 
 ## Rules
 

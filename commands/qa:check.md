@@ -49,8 +49,13 @@ For each identified page:
 
 If Storybook mode ON and stories exist for changed components:
 1. Start Storybook if not running (detect port from `.storybook/` config or use default 6006)
-2. For each story: navigate to story URL, screenshot all variants
-3. Save to temp folder with naming: `{component}-{story}.png`
+2. For each story:
+   - Navigate to story URL
+   - Set desktop viewport: `page.setViewportSize({ width: 1280, height: 720 })`
+   - Take screenshot → `{component}-{story}-desktop.png`
+   - Set mobile viewport: `page.setViewportSize({ width: 375, height: 812 })`
+   - Take screenshot → `{component}-{story}-mobile.png`
+3. Save both screenshots to temp folder
 
 Use Playwright. If fails → output error, ask user to configure Playwright environment, continue without screenshots.
 

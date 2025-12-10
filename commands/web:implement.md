@@ -23,8 +23,33 @@ If input is file path → read it. If unclear what to build → ask questions (u
 4. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
 5. If AC found → create checklist, confirm understanding of EACH AC before proceeding
 6. If requirements unclear → AskUserQuestion, repeat until 100% clear
-7. Show short plan: what tests to write, what to implement, which ACs each addresses, which components to reuse from Storybook
-8. Wait for user: Confirm / Уточнить
+7. Determine if research needed (non-trivial problems, styling issues, multiple valid approaches) → go to Phase 1.5
+8. Show short plan: what tests to write, what to implement, which ACs each addresses, which components to reuse from Storybook
+9. Wait for user: Confirm / Уточнить
+
+## Phase 1.5: Research Solutions (when needed)
+
+Trigger research when:
+- Problem has multiple valid approaches
+- Styling/CSS issues where root cause unclear
+- Non-trivial implementation decisions
+- User explicitly asks for options
+
+Steps:
+1. WebSearch: "[problem type] best practices 2025"
+2. WebFetch official docs if relevant
+3. Analyze 3-5 solutions from search results
+4. Present 2-3 best options with:
+   - Benefits: what improves, problems solved
+   - Downsides: what gets worse, new limitations
+   - Trade-offs: when to use this approach
+5. Use AskUserQuestion: single-select with options + text field for custom solution
+6. Wait for user selection before proceeding to Phase 2
+
+Skip this phase for:
+- Simple, well-defined tasks
+- Single obvious solution
+- User already specified exact approach
 
 ### AC Extraction Rules
 
@@ -115,6 +140,8 @@ Follow project patterns. Check `.claude/docs/PATTERNS.md` if exists.
 - Path aliases for imports
 - No console.log, no commented code
 - Functions max 20-30 lines
+- No hardcoded values: use CSS variables, config constants, or project tokens. Never hardcode colors, spacing, breakpoints
+- If CSS variables needed: reference existing design tokens or create new tokens in token files
 
 ## Rules
 

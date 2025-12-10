@@ -61,11 +61,46 @@ Use Playwright. If fails → output error, ask user to configure Playwright envi
 
 ## Phase 5: Visual Analysis
 
-Analyze each screenshot for:
-- Layout issues (overlapping, cut off, misaligned)
-- Spacing inconsistencies
-- Text readability
-- Empty/error/loading states visible correctly
+Analyze each screenshot for common UI bug patterns:
+
+**1. Broken Assets**
+- Gray/blank boxes where images should be (missing image files)
+- Alt text displayed instead of images
+- Missing or broken icons (empty icon placeholders)
+- Broken avatars/profile pictures
+
+**2. Layout Overflow**
+- Elements extending beyond container boundaries
+- Horizontal scrollbars appearing unexpectedly
+- Content cut off at edges (especially text)
+- Elements overlapping each other
+
+**3. Text Issues**
+- "undefined", "null", "[object Object]" displayed in UI
+- Text truncated mid-word without ellipsis
+- Font too small to read (< 14px on mobile, < 12px on desktop)
+- Text overflowing container bounds
+- Missing translations (placeholder keys like "button.save" visible)
+
+**4. Alignment & Spacing**
+- Misaligned elements (buttons not on same baseline)
+- Uneven spacing between similar elements
+- Inconsistent padding/margins
+- Elements floating incorrectly
+- Grid layout broken (uneven columns)
+
+**5. Contrast & Visibility**
+- White text on white background (or similar low-contrast combinations)
+- Disabled state indistinguishable from enabled
+- Focus states invisible or unclear
+- Error messages same color as normal text
+
+**6. Broken UI Components**
+- Buttons without labels or icons
+- Empty dropdowns or selects
+- Form fields with no placeholder or label
+- Spinners/loaders stuck visible
+- Modals/dialogs appearing under overlays
 
 **Mobile viewport specific checks:**
 - Text remains readable (no tiny fonts < 14px)

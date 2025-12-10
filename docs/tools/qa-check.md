@@ -17,12 +17,13 @@ Manual QA verification command. Runs tests, screenshots UI, checks AC and code c
 
 1. **Tests** — runs `yarn test`
 2. **Screenshots** — changed UI pages + Storybook stories (desktop 1280x720 + mobile 375x812)
-3. **Mobile responsiveness** — text readable, no overflow, touch targets adequate (44x44px min)
-4. **AC** — each acceptance criteria implemented
-5. **Scope** — no unrelated changes
-6. **Consistency** — follows PATTERNS.md, no duplicates
-7. **Code quality** — no `any`, no console.log
-8. **Storybook** — verifies new components have stories (when Storybook exists in project)
+3. **Visual bugs** — broken images, layout overflow, text issues, alignment, contrast, broken components
+4. **Mobile responsiveness** — text readable, no overflow, touch targets adequate (44x44px min)
+5. **AC** — each acceptance criteria implemented
+6. **Scope** — no unrelated changes
+7. **Consistency** — follows PATTERNS.md, no duplicates
+8. **Code quality** — no `any`, no console.log
+9. **Storybook** — verifies new components have stories (when Storybook exists in project)
 
 ## Example
 

@@ -24,7 +24,15 @@ Improve existing tools (agents, commands, skills) by analyzing conversation for 
 11. Git commit/push (if user level)
 12. Report
 
-## Step 1: Scan Conversation
+## Step 1: Parse Arguments
+
+If `$ARGUMENTS` provided, extract first word as tool name, rest as additional context.
+- Example: "tool:check skip selection dialog" → tool="tool:check", context="skip selection dialog"
+- Store parsed tool name and context for later use
+- If tool name found in arguments, skip to Step 4 with selected tool
+- If `$ARGUMENTS` empty or whitespace only, continue to Step 2
+
+## Step 2: Scan Conversation
 
 Look for:
 - Errors during tool execution (exceptions, failures)
@@ -35,9 +43,9 @@ Look for:
 
 Scan both direct tool calls and subagents/skills.
 
-If `$ARGUMENTS` provided — use as additional context for scanning.
+Combine scan results with any context from Step 1 arguments.
 
-## Step 2: Show Candidates
+## Step 3: Show Candidates
 
 List found tools:
 
@@ -51,11 +59,12 @@ n. Enter custom tool name
 
 Use `AskUserQuestion` single-select.
 
-## Step 3: User Selects
+## Step 4: User Selects or Confirms
 
-Wait for user selection. If custom — ask for tool path.
+If tool already selected from Step 1 arguments — skip this step.
+Otherwise wait for user selection. If custom — ask for tool path.
 
-## Step 4: Build Internal Model & Describe Problem
+## Step 5: Build Internal Model & Describe Problem
 
 Read the selected tool file.
 
@@ -72,14 +81,14 @@ Read the selected tool file.
 - Expected vs actual behavior
 - Root cause hypothesis
 
-## Step 5: Confirm Understanding
+## Step 6: Confirm Understanding
 
 Use `AskUserQuestion`:
 - "Is this understanding correct?"
 - Options: "Correct" + text field for clarifications
 - Recurse until user confirms "Correct"
 
-## Step 6: Research Solutions
+## Step 7: Research Solutions
 
 **MUST use WebSearch** before proposing any solution. Search: "[problem type] Claude Code best practices 2025"
 
@@ -87,7 +96,7 @@ Check official docs if relevant (WebFetch).
 
 **Quality over speed:** Do not stop at first solution found. Evaluate multiple approaches, compare trade-offs, select 2-3 optimal options for user to choose from.
 
-## Step 7: Present Solutions
+## Step 8: Present Solutions
 
 For each option, show:
 - **Benefits**: what improves, problems solved
@@ -99,21 +108,21 @@ Use `AskUserQuestion`:
 - Include text field for questions or custom solution
 - Recurse until user selects an option
 
-### 7a: Dialog Changes (if applicable)
+### 8a: Dialog Changes (if applicable)
 
 If tool has `AskUserQuestion` calls that need updating:
 - Show proposed changes to dialogs
 - Use multi-select for which changes to apply
 - Include text field for modifications
 
-### 7b: Output Changes (if applicable)
+### 8b: Output Changes (if applicable)
 
 If tool output format needs updating:
 - Show proposed changes to outputs
 - Use multi-select for which changes to apply
 - Include text field for modifications
 
-## Step 8: Implement
+## Step 9: Implement
 
 Apply selected solution using Edit tool.
 

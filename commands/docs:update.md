@@ -96,16 +96,17 @@ Contains:
 
 Sources: analyze src/ for repeating patterns
 
-Contains (c7score format — question → answer, minimal examples):
-- Q: How to create a component? → pattern + 5-line example
-- Q: How to call API? → pattern + 5-line example
-- Q: How to handle forms? → pattern + 5-line example
-- Q: How to manage state? → pattern + 5-line example
+Contains (c7score format — question → answer with file references):
+- Q: How to create a component? → pattern description + file reference (e.g., `src/components/Button/Button.tsx`)
+- Q: How to call API? → pattern description + file reference (e.g., `src/services/apiClient.ts:25-40`)
+- Q: How to handle forms? → pattern description + file reference
+- Q: How to manage state? → pattern description + file reference
 
 Optimization rules:
+- NO code snippets — use file paths with optional line numbers (path:start-end)
 - Remove duplicate patterns across sections
-- Keep examples under 10 lines
-- Use code snippets only, no prose explanations
+- Pattern description: 1-2 sentences max
+- File references must be project-relative (not absolute filesystem paths)
 
 ### COMPONENTS.md
 
@@ -113,13 +114,14 @@ Sources: src/components/**/*.tsx, extract PropsT
 
 Contains:
 - Component list grouped by feature
-- Props API (types only, no descriptions)
-- Usage example (3-5 lines max)
+- Props API (TypeScript interface extracted from file)
+- Usage reference (file path where component is used, e.g., `src/pages/Dashboard.tsx:45`)
 
 Optimization rules:
 - Skip internal/private components
 - Props as TypeScript interface only
-- One usage example per component group
+- NO code snippets — reference actual usage location via file path
+- Props interface: link to source file (e.g., `PropsT: src/components/Button/Button.tsx:5-12`)
 
 ### SERVICES.md
 
@@ -127,14 +129,15 @@ Sources: src/services/**/*.ts, exported functions
 
 Contains:
 - Service list (group by feature)
-- Methods with TypeScript signatures only
+- Methods with TypeScript signatures (extract from source)
 - Return types
-- Usage example (3-5 lines max)
+- Usage reference (file path where service is called, e.g., `src/pages/Login.tsx:23`)
 
 Optimization rules:
 - Skip private/helper functions
 - Signatures only, no implementation details
-- One example per service file
+- NO code snippets — reference actual usage location via file path
+- Method signature: link to source file (e.g., `authService.login(): src/services/auth.ts:15-30`)
 
 ### DESIGN_TOKENS.md
 
@@ -161,21 +164,24 @@ Before generating 00-INDEX.md, optimize existing docs in `.claude/docs/`:
 
 1. Read each file (ARCHITECTURE, PATTERNS, COMPONENTS, SERVICES, DESIGN_TOKENS)
 2. Apply optimization rules:
+   - Replace ALL code snippets with file path references (project-relative)
    - Remove duplicate content across sections
-   - Shorten code examples to 3-10 lines max
-   - Remove prose, keep only code + minimal explanations
+   - Remove prose, keep only minimal descriptions
    - Convert verbose lists to tables where applicable
    - Remove unused/deprecated entries
 3. Rewrite file with optimized content
 4. Preserve frontmatter and structure
 
+File path format: `src/path/to/file.ts` or `src/path/to/file.ts:25-40` (with line numbers)
+
 ## c7score Optimization
 
 Structure docs for LLM retrieval:
 - Question-based headers where possible
-- Minimal runnable code examples (3-10 lines)
+- File path references instead of code snippets (5x token reduction)
 - Clear hierarchy (H1 → H2 → H3)
 - No redundant prose, tables over lists
+- Project-relative paths only: `src/path/file.ts:line-range`
 
 ## Incremental Update Logic
 
@@ -215,7 +221,8 @@ Total reduction: -245 tokens
 - Optimize for token efficiency, not readability
 - No dialogs — auto-detect best mode
 - Preserve manual edits in BUSINESS_RULES.md only
-- Minimize tokens: tables over prose, short examples, no duplicates
-- Use c7score principles: question-driven, code-first, minimal
+- Minimize tokens: file paths over code snippets, tables over prose, no duplicates
+- Use c7score principles: question-driven, file-reference-first, minimal
 - Always run optimization pass on existing files
 - Generate 00-INDEX.md (NOT llms.txt)
+- NEVER embed code snippets — use project-relative file paths with optional line numbers

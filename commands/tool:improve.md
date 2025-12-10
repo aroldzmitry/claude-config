@@ -10,19 +10,20 @@ Improve existing tools (agents, commands, skills) by analyzing conversation for 
 
 ## Workflow
 
-1. Scan conversation for issues
-2. Show candidates with reasoning
-3. User selects tool to improve
-4. Build internal model, describe problem, confirm understanding
-5. Research solutions
-6. Present options, iterate until selected
-7. Discuss output/dialog changes if needed
-8. Implement solution
-9. Verify changes
-9a. Check cross-tool impact, resolve with user
-10. Update documentation if exists
-11. Git commit/push (if user level)
-12. Report
+1. Parse arguments - extract tool name if provided
+2. Scan conversation for issues
+3. Show candidates with reasoning (skip if tool in args)
+4. User selects or confirms tool
+5. Build internal model, describe problem
+6. Confirm understanding with user
+7. Research solutions
+8. Present options, iterate until selected
+9. Implement solution
+10. Verify changes
+10a. Check cross-tool impact, resolve with user
+11. Update documentation if exists
+12. Git commit/push (if user level)
+13. Report
 
 ## Step 1: Parse Arguments
 
@@ -132,7 +133,7 @@ Follow Claude Tools Format:
 - Each instruction 1-2 lines
 - Remove anything that doesn't change behavior
 
-## Step 9: Verify
+## Step 10: Verify
 
 Run checks (like tool:create):
 - File syntax valid
@@ -140,7 +141,7 @@ Run checks (like tool:create):
 - Changes match selected solution
 - No unintended side effects
 
-## Step 9a: Cross-Tool Impact Check
+## Step 10a: Cross-Tool Impact Check
 
 Search all tools in `~/.claude/` for references to modified tool:
 - Grep for tool name, file name patterns
@@ -154,7 +155,7 @@ If dependencies found:
    - Custom text for specific instructions
 3. If user selects auto-update — apply changes to dependent tools
 
-## Step 10: Documentation Update
+## Step 11: Documentation Update
 
 Check if documentation exists:
 - Search `~/.claude/docs/tools/` for `[tool-name].md`
@@ -167,12 +168,12 @@ If documentation found:
 
 If no documentation — skip this step.
 
-## Step 11: Git Integration
+## Step 12: Git Integration
 
 If file is in `~/.claude/` (user level):
 - Use `claude-config-save` skill for git commit and push
 
-## Step 12: Report
+## Step 13: Report
 
 Output files list:
 - `[A]` path/to/file.md — created

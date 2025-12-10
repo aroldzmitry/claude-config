@@ -67,9 +67,14 @@ After writing:
 
 ## Phase 4: Quality
 
-1. Run Prettier on all modified files
-2. Run linter → if errors: fix, Prettier, linter again (max 2 iterations)
-3. Run TypeScript check
+Run from parent directory (`cd ..` first):
+
+1. **Prettier**: `yarn app:format:fix` → auto-fix formatting
+2. **ESLint**: `yarn lint:client` → if errors: fix code, repeat step 1-2 (max 2 iterations)
+3. **TypeScript**: `npx tsc --noEmit --project client/tsconfig.json` → verify types
+4. **Build**: `yarn web:build` → verify production bundle compiles
+
+If any step fails after max iterations → stop, report error with file:line references
 
 ## Phase 5: Review
 

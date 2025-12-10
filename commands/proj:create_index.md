@@ -1,17 +1,17 @@
 ---
-description: "Generate/update project documentation optimized for Claude"
+description: "Generate/update project index optimized for Claude"
 argument-hint: "[--force]"
 model: haiku
 allowed-tools: "Read, Write, Edit, Glob, Grep, Bash"
 ---
 
-# Dev Docs
+# Project Index
 
-Generate and update project documentation in `.claude/docs/`, optimized for LLM consumption (c7score principles).
+Generate and update project index in `.claude/proj_index/`, optimized for LLM consumption (c7score principles).
 
 ## Process
 
-1. Check existing docs in `.claude/docs/`
+1. Check existing docs in `.claude/proj_index/`
 2. Read `last_commit` from each file's frontmatter
 3. If `last_commit` exists → get changes via `git diff {last_commit}..HEAD`
 4. If no `last_commit` or `--force` → full regeneration
@@ -160,7 +160,7 @@ Optimization rules:
 
 ## Optimization Pass (runs every time)
 
-Before generating 00-INDEX.md, optimize existing docs in `.claude/docs/`:
+Before generating 00-INDEX.md, optimize existing docs in `.claude/proj_index/`:
 
 1. Read each file (ARCHITECTURE, PATTERNS, COMPONENTS, SERVICES, DESIGN_TOKENS)
 2. Apply optimization rules:
@@ -200,7 +200,7 @@ If incremental impossible (git not available, no commits) → full regeneration.
 ## Output
 
 ```
-docs:update complete (commit: abc1234)
+proj:create_index complete (commit: abc1234)
 
 Created: 00-INDEX.md, ARCHITECTURE.md, PATTERNS.md
 Updated: COMPONENTS.md (-120 tokens), SERVICES.md (-45 tokens)

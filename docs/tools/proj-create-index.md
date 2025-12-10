@@ -1,17 +1,17 @@
-# /docs:update
+# /proj:create_index
 
-Generate/update project documentation optimized for Claude. Minimizes tokens via optimization pass on every run.
+Generate/update project index optimized for Claude. Minimizes tokens via optimization pass on every run.
 
 ## Usage
 
 ```
-/docs:update           # Incremental update + optimize existing docs
-/docs:update --force   # Full regeneration + optimize
+/proj:create_index           # Incremental update + optimize existing index
+/proj:create_index --force   # Full regeneration + optimize
 ```
 
 ## Process
 
-1. Analyze codebase and generate/update docs
+1. Analyze codebase and generate/update index
 2. **Optimization pass**: Replace code snippets with file paths, remove duplicates, convert prose to tables
 3. Generate `00-INDEX.md` with "when to use" guidance for each file
 
@@ -32,9 +32,9 @@ Generate/update project documentation optimized for Claude. Minimizes tokens via
 ## Example
 
 ```
-/docs:update
+/proj:create_index
 
-docs:update complete (commit: abc1234)
+proj:create_index complete (commit: abc1234)
 
 Created: 00-INDEX.md, ARCHITECTURE.md
 Updated: COMPONENTS.md (-120 tokens)

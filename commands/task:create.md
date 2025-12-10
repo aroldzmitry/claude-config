@@ -15,7 +15,7 @@ Transform loose task descriptions into clear, detailed requirements through iter
 
 ## Process
 
-1. **Read context** — Read `.claude/docs/` first, then `docs/` for project understanding
+1. **Read context** — Read `.claude/proj_index/` first, then `docs/` for project understanding
 2. **Ask questions** — Use AskUserQuestion to clarify. No limit on rounds — keep asking until 100% clear
 3. **Output plan** — Print inline (stays in Claude context)
 4. **Final dialog** — Ask: Save / Refine / Done / Pass to dev

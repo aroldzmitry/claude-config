@@ -39,7 +39,7 @@ If conflicts found (parent applies styles that will break): include preservation
 
 ## Phase 1: Clarify
 
-1. Read `.claude/docs/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/docs/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
+1. Read `.claude/proj_index/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/proj_index/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
 2. Check if Storybook exists: `Glob **/*.stories.{ts,tsx}` (exclude node_modules). If found → Storybook mode ON
 3. If Storybook mode ON → search existing stories for reusable components matching task requirements
 4. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
@@ -156,7 +156,7 @@ Error file format: list of issues with file:line references.
 
 ## Code Standards
 
-Follow project patterns. Check `.claude/docs/PATTERNS.md` if exists.
+Follow project patterns. Check `.claude/proj_index/PATTERNS.md` if exists.
 
 - TypeScript, no `any`
 - Path aliases for imports

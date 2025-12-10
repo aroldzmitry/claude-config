@@ -17,7 +17,7 @@ If file path → read AC from file. If no file → ask user for AC.
 
 ## Phase 1: Gather Context
 
-1. Read `.claude/docs/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/docs/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
+1. Read `.claude/proj_index/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/proj_index/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
 2. Check if Storybook exists: `Glob **/*.stories.{ts,tsx}` (exclude node_modules). If found → Storybook mode ON
 3. If `$ARGUMENTS` is file path → read AC from file
 4. If no file or unclear → AskUserQuestion for AC (what should work?)
@@ -65,7 +65,7 @@ Analyze each screenshot for:
 
 ## Phase 6: Code Consistency Check
 
-Review changed files against `.claude/docs/` (all project documentation):
+Review changed files against `.claude/proj_index/` (all project documentation):
 
 ### Patterns & Standards
 - [ ] Follows documented conventions
@@ -141,7 +141,7 @@ If no issues: output "QA Check: PASS" and done.
 ## Error Handling
 
 - Playwright fails → "Screenshot failed. Configure Playwright environment: `yarn playwright install`". Continue without screenshots.
-- `.claude/docs/` missing → note in report, continue with code review only
+- `.claude/proj_index/` missing → note in report, continue with code review only
 - Tests fail to run → report error, continue with other checks
 
 ## Rules

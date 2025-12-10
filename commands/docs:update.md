@@ -17,8 +17,9 @@ Generate and update project documentation in `.claude/docs/`, optimized for LLM 
 4. If no `last_commit` or `--force` → full regeneration
 5. Analyze codebase
 6. Generate/update files
-7. Create llms.txt (main navigation)
-8. Report
+7. Optimize existing docs (remove duplicates, shorten examples, minimize tokens)
+8. Create 00-INDEX.md (main navigation with "when to use" guidance)
+9. Report
 
 ## Versioning
 
@@ -34,30 +35,51 @@ On update: only modify sections affected by changed files.
 
 ## Generated Files
 
-### llms.txt (always created)
+### 00-INDEX.md (always created)
 
-Navigation index for LLMs. Format:
-```
-# Project: {name}
-> {one-line description}
+Minimal navigation index with "when to use" guidance. Format:
+```markdown
+# {Project Name}
 
-## Docs
-- [ARCHITECTURE](./docs/ARCHITECTURE.md): Tech stack, structure
-- [PATTERNS](./docs/PATTERNS.md): Code conventions
-- [COMPONENTS](./docs/COMPONENTS.md): UI components API
-- [SERVICES](./docs/SERVICES.md): Services API
-- [DESIGN_TOKENS](./docs/DESIGN_TOKENS.md): Design system
+{One sentence description}
 
-## Quick Facts
-- Framework: {detected}
-- State: {detected}
-- Styling: {detected}
-- Testing: {detected}
+## Read Order
+
+Start here, then follow links as needed:
+
+1. **[ARCHITECTURE](./ARCHITECTURE.md)** — Tech stack, project structure, path aliases, key decisions
+   - When: Need tech stack overview, build commands, or path alias reference
+2. **[PATTERNS](./PATTERNS.md)** — Component, form, API, state management patterns
+   - When: Creating components, calling APIs, handling forms, managing state
+3. **[COMPONENTS](./COMPONENTS.md)** — UI components API (forms, layouts, display)
+   - When: Using existing components, checking props/API
+4. **[SERVICES](./SERVICES.md)** — Services and repositories API
+   - When: Calling business logic, data access methods
+5. **[DESIGN_TOKENS](./DESIGN_TOKENS.md)** — Design tokens (colors, typography, spacing)
+   - When: Styling components, need color/spacing/font values
+
+## Quick Reference
+
+| Area          | Stack                                |
+| ------------- | ------------------------------------ |
+| Framework     | {detected}                           |
+| State         | {detected}                           |
+| Styling       | {detected}                           |
+| Testing       | {detected}                           |
+
+## Key Directories
+
+| Path                | Purpose                         |
+| ------------------- | ------------------------------- |
+| {detected paths}    | {detected purpose}              |
 
 ## Commands
-- Dev: {command}
-- Test: {command}
-- Build: {command}
+
+```bash
+{dev-command}      # Dev server
+{test-command}     # Run tests
+{build-command}    # Production build
+```
 ```
 
 ### ARCHITECTURE.md
@@ -74,11 +96,16 @@ Contains:
 
 Sources: analyze src/ for repeating patterns
 
-Contains (c7score format — question → answer):
-- Q: How to create a component? → pattern + example
-- Q: How to call API? → pattern + example
-- Q: How to handle forms? → pattern + example
-- Q: How to manage state? → pattern + example
+Contains (c7score format — question → answer, minimal examples):
+- Q: How to create a component? → pattern + 5-line example
+- Q: How to call API? → pattern + 5-line example
+- Q: How to handle forms? → pattern + 5-line example
+- Q: How to manage state? → pattern + 5-line example
+
+Optimization rules:
+- Remove duplicate patterns across sections
+- Keep examples under 10 lines
+- Use code snippets only, no prose explanations
 
 ### COMPONENTS.md
 
@@ -86,40 +113,69 @@ Sources: src/components/**/*.tsx, extract PropsT
 
 Contains:
 - Component list grouped by feature
-- Props API (from types)
-- Usage example (from imports/usages in code)
+- Props API (types only, no descriptions)
+- Usage example (3-5 lines max)
+
+Optimization rules:
+- Skip internal/private components
+- Props as TypeScript interface only
+- One usage example per component group
 
 ### SERVICES.md
 
 Sources: src/services/**/*.ts, exported functions
 
 Contains:
-- Service list
-- Methods with signatures
+- Service list (group by feature)
+- Methods with TypeScript signatures only
 - Return types
-- Usage example
+- Usage example (3-5 lines max)
+
+Optimization rules:
+- Skip private/helper functions
+- Signatures only, no implementation details
+- One example per service file
 
 ### DESIGN_TOKENS.md
 
 Sources: styles/, tokens/, theme files
 
 Contains:
-- Colors
-- Typography
-- Spacing
-- Breakpoints
+- Colors (name → value table)
+- Typography (name → CSS properties table)
+- Spacing (name → value table)
+- Breakpoints (name → value table)
+
+Optimization rules:
+- Tables only, no prose
+- Skip unused/deprecated tokens
+- Group by semantic meaning (primary, secondary, etc.)
 
 ### BUSINESS_RULES.md
 
 **NOT auto-generated** — creates empty template if missing. User fills manually.
 
+## Optimization Pass (runs every time)
+
+Before generating 00-INDEX.md, optimize existing docs in `.claude/docs/`:
+
+1. Read each file (ARCHITECTURE, PATTERNS, COMPONENTS, SERVICES, DESIGN_TOKENS)
+2. Apply optimization rules:
+   - Remove duplicate content across sections
+   - Shorten code examples to 3-10 lines max
+   - Remove prose, keep only code + minimal explanations
+   - Convert verbose lists to tables where applicable
+   - Remove unused/deprecated entries
+3. Rewrite file with optimized content
+4. Preserve frontmatter and structure
+
 ## c7score Optimization
 
 Structure docs for LLM retrieval:
 - Question-based headers where possible
-- Runnable code examples
+- Minimal runnable code examples (3-10 lines)
 - Clear hierarchy (H1 → H2 → H3)
-- No redundant prose
+- No redundant prose, tables over lists
 
 ## Incremental Update Logic
 
@@ -138,12 +194,14 @@ If incremental impossible (git not available, no commits) → full regeneration.
 ## Output
 
 ```
-dev:docs complete (commit: abc1234)
+docs:update complete (commit: abc1234)
 
-Created: llms.txt, ARCHITECTURE.md, PATTERNS.md
-Updated: COMPONENTS.md (+3), SERVICES.md (+1)
-Unchanged: DESIGN_TOKENS.md
+Created: 00-INDEX.md, ARCHITECTURE.md, PATTERNS.md
+Updated: COMPONENTS.md (-120 tokens), SERVICES.md (-45 tokens)
+Optimized: DESIGN_TOKENS.md (-80 tokens)
 Skipped: BUSINESS_RULES.md (manual)
+
+Total reduction: -245 tokens
 ```
 
 ## Error Handling
@@ -154,8 +212,10 @@ Skipped: BUSINESS_RULES.md (manual)
 
 ## Rules
 
-- Optimize for Claude, not humans
+- Optimize for token efficiency, not readability
 - No dialogs — auto-detect best mode
-- Preserve manual edits where possible
-- Keep files concise
-- Use c7score principles: question-driven, code-first
+- Preserve manual edits in BUSINESS_RULES.md only
+- Minimize tokens: tables over prose, short examples, no duplicates
+- Use c7score principles: question-driven, code-first, minimal
+- Always run optimization pass on existing files
+- Generate 00-INDEX.md (NOT llms.txt)

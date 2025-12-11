@@ -27,6 +27,18 @@
     "defaultMode": "default"
   },
   "model": "opus",
-  "hooks": {},
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/bash-validator.py"
+          }
+        ]
+      }
+    ]
+  },
   "alwaysThinkingEnabled": true
 }

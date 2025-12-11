@@ -211,18 +211,20 @@ When creating state/variant values (positions, sizes, kinds, types):
 
 **Never create types inline.** Always extract to separate file.
 
-1. Search target directory for `*E.ts` files (enum pattern): `Glob [target-dir]/*E.ts`
-2. If enum files found:
-   - Read one example to understand project enum pattern
-   - Create new enum in separate `[Name]E.ts` file following pattern
-   - Use string enum with UPPERCASE keys, lowercase values
-3. If no enum files found in target directory:
-   - Search project-wide for enum/type organization patterns
-   - Check parent directories, common type locations (`src/types/`, `src/shared/types/`)
-   - Follow discovered pattern for file location and naming
-4. If multiple patterns exist or unclear from context:
-   - Use AskUserQuestion to clarify which pattern to follow
-   - Show found patterns with examples
+1. **Detect project's enum/type pattern**:
+   - Search target directory: `Glob [target-dir]/*E.{ts,tsx}` (separate enum files)
+   - Search target directory: `Glob [target-dir]/types/*` (types subdirectory)
+   - Search parent directories and common locations: `src/types/`, `src/shared/types/`, `types/`
+   - Check `PATTERNS.md` for documented conventions
+2. **If pattern found**:
+   - Read 1-2 examples to understand naming, structure, placement
+   - Follow exactly: file naming, directory structure, export format, value casing
+3. **If multiple patterns discovered**:
+   - List patterns with examples from codebase
+   - Use AskUserQuestion: which pattern to follow for this enum
+4. **If no pattern found**:
+   - Use AskUserQuestion: ask user for preferred pattern
+   - Options: separate files in component dir, types/ directory, shared/types/, custom
 
 ### Component Creation Rules
 

@@ -20,19 +20,32 @@ Invoke via Task tool with `subagent_type="lazy:ui-comprehensive-tester"` or ment
 - Unit tests (yarn/npm)
 - E2E tests (Playwright/Cypress)
 - Storybook validation
-- Accessibility audit (axe-core)
+- Accessibility audit (axe-core, WCAG compliance)
 - Performance (Lighthouse/bundle)
+- Usability and exploratory testing
+- Cross-browser and device compatibility
+
+## Testing Methodology
+
+Agent uses professional QA techniques:
+- **Equivalence partitioning** - Groups similar inputs, tests one per group
+- **Boundary value analysis** - Tests min, max, just below/above limits
+- **Decision tables** - Complex business logic with multiple conditions
+- **State transitions** - Verifies UI state changes correctly
+- **Exploratory testing** - Discovers unexpected behaviors
+- **Test planning** - Verifies scope, environment, data, success criteria before execution
 
 ## Output
 
 Returns structured report with:
 - Test summary (total/passed/failed/duration)
 - Component coverage
-- Issues (critical/warnings with file:line)
-- Accessibility violations
+- Issues classified by severity (critical/major/minor/cosmetic with file:line)
+- Accessibility violations (WCAG compliance)
 - Performance metrics
+- Quality metrics (test coverage %, defect density, pass/fail ratio)
 - Screenshot paths
-- Recommendations
+- Recommendations with test design techniques applied
 
 ## Examples
 

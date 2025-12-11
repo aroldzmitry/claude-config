@@ -37,6 +37,22 @@ Common patterns to check:
 
 If conflicts found (parent applies styles that will break): include preservation strategy in implementation plan.
 
+## Phase 0.5: Check Existing Stories (Storybook mode only)
+
+Run ONLY if Storybook mode ON (detected in Phase 1).
+
+Before creating new component stories:
+1. List all components requiring stories from task
+2. For each component, search existing stories: `Grep "import.*[ComponentName]" --glob "*.stories.{ts,tsx}" --output_mode content`
+3. Check for aggregate stories (Icons.stories.tsx, MissingComponents.stories.tsx) that may already document the component
+4. Identify which components:
+   - Already have dedicated stories → skip creating new story
+   - Covered in aggregate stories → skip creating new story
+   - Missing stories → need new story file
+5. Document findings: list components needing new stories vs already covered
+
+If all components already documented → skip story creation in Phase 2, proceed with tests only.
+
 ## Phase 1: Clarify
 
 1. Read `.claude/proj_index/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/proj_index/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
@@ -188,6 +204,36 @@ Follow project patterns. Check `.claude/proj_index/PATTERNS.md` if exists.
 - No hardcoded values: use CSS variables, config constants, or project tokens. Never hardcode colors, spacing, breakpoints
 - If CSS variables needed: reference existing design tokens or create new tokens in token files
 - **Mobile-first CSS**: Write base styles for mobile, use `min-width` media queries for larger screens. Never use `max-width` for responsive styles
+
+### Component Creation Rules
+
+When creating NEW components (not modifying existing):
+1. **Extract to separate file first** — Never define components inline in parent files. Create dedicated component file in appropriate directory before using.
+2. **Create directory structure**: `src/components/[componentName]/[ComponentName].tsx` and `src/components/[componentName]/[componentName].scss`
+3. **Create Storybook story first** (if Storybook mode ON) — Component must have story file in `src/stories/` before being used in implementation
+4. **Story must include Desktop and Mobile variants** — Use viewport parameters for responsive testing
+
+### Styling Rules
+
+**NEVER use inline styles.** All styling MUST be in SCSS files.
+
+Forbidden:
+```typescript
+<div style={{ display: 'flex', padding: '24px' }}>  // WRONG
+```
+
+Required:
+```typescript
+<div className="my-component">  // CORRECT
+```
+```scss
+.my-component {
+  display: flex;
+  padding: var(--spacing-lg);
+}
+```
+
+If component needs styling → create `.scss` file next to component file, import it, use className.
 
 ## Rules
 

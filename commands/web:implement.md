@@ -205,6 +205,18 @@ Follow project patterns. Check `.claude/proj_index/PATTERNS.md` if exists.
 - If CSS variables needed: reference existing design tokens or create new tokens in token files
 - **Mobile-first CSS**: Write base styles for mobile, use `min-width` media queries for larger screens. Never use `max-width` for responsive styles
 
+### Enum/Type Pattern Detection
+
+When creating state/variant values (positions, sizes, kinds, types):
+1. Search target directory for `*E.ts` files (enum pattern): `Glob [target-dir]/*E.ts`
+2. If enum files found:
+   - Read one example to understand project enum pattern
+   - Create new enum in separate `[Name]E.ts` file following pattern
+   - Use string enum with UPPERCASE keys, lowercase values
+3. If no enum files found:
+   - Create type union inline in working file
+   - Document as `export type [Name]T = 'value1' | 'value2'`
+
 ### Component Creation Rules
 
 When creating NEW components (not modifying existing):

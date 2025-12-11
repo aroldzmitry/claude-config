@@ -3,6 +3,7 @@ debug/
 file-history/
 plans/
 downloads/
+ide/
 *.log
 
 # Runtime data

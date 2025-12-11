@@ -11,16 +11,38 @@ Launch `~/.claude/lazy/ui-comprehensive-tester` environment to test the calling 
 
 ## Execution
 
-1. Capture project path: `pwd`
-2. Build test prompt with project path
-3. Execute subprocess with 10-min timeout:
+1. Determine project path (priority order):
+   - If argument provided: use it (resolve relative to pwd)
+   - Else parse prompt for paths: extract directory paths mentioned in agent invocation prompt
+   - Fallback: `pwd`
+2. Validate path exists and is readable
+3. Build test prompt with resolved absolute project path
+4. Execute subprocess with 10-min timeout:
 
 ```bash
 timeout 600 bash -c 'cd ~/.claude/lazy/ui-comprehensive-tester && claude -p "<prompt>" --max-turns 50'
 ```
 
-4. Capture stdout, check exit code
-5. Parse and return results
+5. Capture stdout, check exit code
+6. Parse and return results
+
+## Path Resolution Logic
+
+**Argument parsing:**
+- Check if first word/phrase is path-like (contains `/` or is known dir like `client`, `server`)
+- Resolve relative paths against current `pwd`
+- Convert to absolute path
+
+**Prompt parsing (if no arg):**
+- Scan invocation prompt for directory references
+- Look for patterns: `client/`, `server/`, `/abs/path/`, package names
+- Prefer paths closer to pwd root (monorepo packages)
+- If multiple found, choose most specific (longest path)
+
+**Validation:**
+- Test if path exists: `[ -d "$path" ]`
+- Test if readable: `[ -r "$path/package.json" ]` or similar marker
+- If invalid, report error with path attempted
 
 ## Test Prompt
 
@@ -89,8 +111,17 @@ Execution time: {calculated from start to finish}
 
 If subprocess fails to start: report diagnostic info (path exists, claude available, permissions).
 
+## Output Format
+
+When reporting which project was tested, include:
+```
+Testing project: {RESOLVED_ABSOLUTE_PATH}
+Source: {argument|prompt|pwd}
+```
+
 ## Rules
 
-- Always pass absolute project path
+- Always pass absolute project path to subprocess
 - Never modify project files
 - Wait for subprocess to complete fully
+- Report path resolution clearly in output

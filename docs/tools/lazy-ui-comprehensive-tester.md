@@ -10,6 +10,11 @@ Orchestrates the `~/.claude/lazy/ui-comprehensive-tester` environment which has 
 
 Invoke via Task tool with `subagent_type="lazy:ui-comprehensive-tester"` or mention the agent in conversation.
 
+**Optional argument:** Specify project path to test (relative or absolute)
+- With argument: `prompt="Test client package"` or `prompt="Test /abs/path/to/project"`
+- Without argument: Agent infers from conversation context (e.g., package names mentioned)
+- Fallback: Tests current working directory
+
 ## What It Tests
 
 - Unit tests (yarn/npm)
@@ -29,17 +34,27 @@ Returns structured report with:
 - Screenshot paths
 - Recommendations
 
-## Example
+## Examples
 
+**Testing current directory:**
 ```
 User: Run comprehensive UI tests on this project
-Claude: [Invokes lazy:ui-comprehensive-tester agent]
+Claude: [Invokes lazy:ui-comprehensive-tester]
 
+Testing project: /Users/dmitry/WebstormProjects/zephyr-budget-app/client
+Source: pwd
 Status: Done
+...
+```
 
-## Test Execution Summary
-- Total: 127, Passed: 125, Failed: 2
-- Duration: 3m 42s
+**Testing specific package:**
+```
+User: Test the server package
+Claude: [Invokes lazy:ui-comprehensive-tester with prompt "Test server"]
+
+Testing project: /Users/dmitry/WebstormProjects/zephyr-budget-app/server
+Source: prompt
+Status: Done
 ...
 ```
 

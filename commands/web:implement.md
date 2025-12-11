@@ -208,14 +208,21 @@ Follow project patterns. Check `.claude/proj_index/PATTERNS.md` if exists.
 ### Enum/Type Pattern Detection
 
 When creating state/variant values (positions, sizes, kinds, types):
+
+**Never create types inline.** Always extract to separate file.
+
 1. Search target directory for `*E.ts` files (enum pattern): `Glob [target-dir]/*E.ts`
 2. If enum files found:
    - Read one example to understand project enum pattern
    - Create new enum in separate `[Name]E.ts` file following pattern
    - Use string enum with UPPERCASE keys, lowercase values
-3. If no enum files found:
-   - Create type union inline in working file
-   - Document as `export type [Name]T = 'value1' | 'value2'`
+3. If no enum files found in target directory:
+   - Search project-wide for enum/type organization patterns
+   - Check parent directories, common type locations (`src/types/`, `src/shared/types/`)
+   - Follow discovered pattern for file location and naming
+4. If multiple patterns exist or unclear from context:
+   - Use AskUserQuestion to clarify which pattern to follow
+   - Show found patterns with examples
 
 ### Component Creation Rules
 

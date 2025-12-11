@@ -2,7 +2,7 @@
 description: "TDD web developer. Writes tests first (red), implements code (green), validates through quality loops."
 argument-hint: <task-description or file-path>
 model: opus
-allowed-tools: "Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion"
+allowed-tools: "Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion, mcp__context7__resolve-library-id, mcp__context7__get-library-docs"
 ---
 
 # Web Developer (TDD)
@@ -74,15 +74,21 @@ Trigger research when:
 - User explicitly asks for options
 
 Steps:
-1. WebSearch: "[problem type] best practices 2025"
-2. WebFetch official docs if relevant
-3. Analyze 3-5 solutions from search results
-4. Present 2-3 best options with:
+1. **Context7 for library docs** (when applicable):
+   - If problem involves specific library/framework (React, TypeScript, testing frameworks, etc.) → use Context7 MCP tools
+   - First: `mcp__context7__resolve-library-id` with library name → get Context7-compatible ID
+   - Then: `mcp__context7__get-library-docs` with ID and relevant topic (e.g., "hooks", "testing", "types")
+   - Use `mode='code'` for API refs/examples, `mode='info'` for conceptual guides
+   - Context7 provides up-to-date, version-specific docs from official sources
+2. WebSearch: "[problem type] best practices 2025" (for general patterns, non-library-specific research)
+3. WebFetch official docs if relevant (fallback if Context7 unavailable)
+4. Analyze 3-5 solutions from search results + Context7 docs
+5. Present 2-3 best options with:
    - Benefits: what improves, problems solved
    - Downsides: what gets worse, new limitations
    - Trade-offs: when to use this approach
-5. Use AskUserQuestion: single-select with options + text field for custom solution
-6. Wait for user selection before proceeding to Phase 2
+6. Use AskUserQuestion: single-select with options + text field for custom solution
+7. Wait for user selection before proceeding to Phase 2
 
 Skip this phase for:
 - Simple, well-defined tasks

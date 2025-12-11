@@ -36,6 +36,25 @@ When modifying files in `~/.claude/`:
 - Direct Edit is allowed for simple changes
 - Git commit/push handled automatically by `claude-config-save` skill
 
+## Git Safety Rules
+
+**FORBIDDEN git operations:**
+- `git reset --hard` - NEVER use, destructive and loses work
+- `git reset --soft/--mixed` - NEVER use, rewrites history
+- `git push --force` or `git push -f` - NEVER use, destructive to remote
+- `git push --force-with-lease` - NEVER use without explicit user approval
+
+**Required for rollbacks:**
+- Use `git revert <commit>` to undo changes (creates new commit, preserves history)
+- Use `git revert <commit1>..<commit2>` to revert range
+- Always preserve commit history - never rewrite it
+
+**If user requests rollback:**
+1. Ask which commit to revert to
+2. Use `git log --oneline` to show history
+3. Use `git revert` to create undo commit
+4. If user explicitly requests force push - warn about risks and ask confirmation
+
 ## Claude Tools Format
 
 All agents, commands, skills must be written in **minimalist format**:

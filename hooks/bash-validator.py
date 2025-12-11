@@ -20,6 +20,8 @@ BLOCKED_PATTERNS = [
     (r"\bgit\s+push\s+--force\b", "git push --force is forbidden - preserves history"),
     (r"\bgit\s+push\s+-f\b", "git push -f is forbidden - use regular push"),
     (r"\bgit\s+push\s+--force-with-lease\b", "git push --force-with-lease requires explicit approval"),
+    (r"\bgit\s+rebase\b", "git rebase rewrites history - use merge instead"),
+    (r"\bgit\s+filter-branch\b", "git filter-branch rewrites entire history"),
 
     # Dangerous file operations
     (r"\brm\s+-rf\s+/", "rm -rf on root paths is forbidden"),

@@ -205,26 +205,27 @@ Follow project patterns. Check `.claude/proj_index/PATTERNS.md` if exists.
 - If CSS variables needed: reference existing design tokens or create new tokens in token files
 - **Mobile-first CSS**: Write base styles for mobile, use `min-width` media queries for larger screens. Never use `max-width` for responsive styles
 
-### Enum/Type Pattern Detection
+### Enum/Type Organization
 
 When creating state/variant values (positions, sizes, kinds, types):
 
 **Never create types inline.** Always extract to separate file.
 
-1. **Detect project's enum/type pattern**:
-   - Search target directory: `Glob [target-dir]/*E.{ts,tsx}` (separate enum files)
-   - Search target directory: `Glob [target-dir]/types/*` (types subdirectory)
-   - Search parent directories and common locations: `src/types/`, `src/shared/types/`, `types/`
-   - Check `PATTERNS.md` for documented conventions
-2. **If pattern found**:
-   - Read 1-2 examples to understand naming, structure, placement
-   - Follow exactly: file naming, directory structure, export format, value casing
-3. **If multiple patterns discovered**:
-   - List patterns with examples from codebase
-   - Use AskUserQuestion: which pattern to follow for this enum
-4. **If no pattern found**:
-   - Use AskUserQuestion: ask user for preferred pattern
-   - Options: separate files in component dir, types/ directory, shared/types/, custom
+1. **Analyze how project organizes similar types**:
+   - Read `PATTERNS.md` if exists - check for type/enum organization rules
+   - Search target directory for existing enum/type files: `Grep "export enum\|export type.*=" [target-dir] --output_mode files_with_matches`
+   - If found files - analyze their naming pattern, file structure, placement
+   - Search common type locations: `Glob src/types/**/*.ts`, `Glob src/shared/types/**/*.ts`, `Glob **/types/**/*.ts`
+   - Look for similar types in codebase: `Grep "export (enum|type) [A-Z].*Position|Size|Kind|Type" --output_mode content` to see naming conventions
+
+2. **Extract pattern from examples**:
+   - Read 2-3 similar type/enum files
+   - Document: file naming (suffix? prefix? plain name?), directory (alongside component? types/ dir? shared?), export format (enum vs type union vs const), value casing
+
+3. **Follow discovered pattern** or **ask if unclear**:
+   - If single consistent pattern found → follow it exactly
+   - If multiple patterns → AskUserQuestion with examples: "Project has patterns: [list]. Which to use?"
+   - If no pattern found → AskUserQuestion: "How should types be organized?" with options based on common conventions
 
 ### Component Creation Rules
 

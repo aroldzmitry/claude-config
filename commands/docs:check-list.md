@@ -41,28 +41,23 @@ Each entity becomes one or more checklist items.
 
 ### 3. Normalize to User-Observable Assertions
 
-Convert steps to **user-visible outcomes only**. Focus on UX contract, not implementation.
+Convert steps to **user-visible outcomes only**. Focus on high-level UX validation, not granular state checks.
 
-**Good examples (user-observable):**
+**Good examples (manual QA level):**
 - "User clicks login" → `CL-###: Login button visible and enabled`
-- "API returns error" → `CL-###: Error message displayed with retry button`
-- "Data saves" → `CL-###: Success confirmation appears within 3s`
-- "Account created" → `CL-###: Success banner shows "Account created successfully"`
+- "API returns error" → `CL-###: Error message displayed with recovery option`
+- "Data saves" → `CL-###: Success confirmation appears`
+- "Account created" → `CL-###: User redirected to expected destination`
 
-**Forbidden patterns (implementation details):**
-- ❌ "Backend returns 200 OK with user ID"
-- ❌ "API creates user account"
-- ❌ "Database saves record"
-- ❌ "Server validates email format"
-- ❌ "Session token stored in Redis"
+**Forbidden patterns:**
+- ❌ Implementation details ("Backend returns 200 OK", "Database saves record")
+- ❌ Intermediate UI states ("field focused", "validating state", "field filled")
+- ❌ Duplicate error conditions (separate checks for network/500/race when behavior is identical)
 
-**Reformulation rules:**
-- Backend status → User-visible outcome ("200 OK" → "Success message visible")
-- API action → UI state change ("API creates user" → "User sees confirmation")
-- Database operation → Data visibility ("Record saved" → "Data appears in list")
-- Server validation → UI feedback ("Server validates" → "Validation error/success shown")
-
-Types: visibility (`element_visible`), state (`state_loading`, `state_error`), navigation (`navigates_to`), confirmation (`message_shown`), errors (`err_ui_visible`)
+**Consolidation rules:**
+- Merge similar error scenarios → single "Error handling works correctly" check
+- Skip intermediate states → focus on initial and final states only
+- Combine redundant validations → one check per unique user outcome
 
 ### 4. Group by Theme
 
@@ -84,23 +79,21 @@ From Alternative Paths, create `if-then` items:
 
 ### 6. Add Error Contract
 
-From Negative Scenarios + Error UI Requirements:
-- Error message text matches contract
-- Retry button present (if applicable)
-- Close/Cancel button available
-- Loading state cleared on error
-- Form data preserved on retry (if specified)
-- Background interaction blocked during error
+From Negative Scenarios + Error UI Requirements, create **consolidated error checks**:
+- Group similar error types (network/500/timeout) → single "Error UI displays correctly" check
+- Only create separate items if error behavior differs (e.g., retry available vs. not)
+- Standard error UI contract: message visible, recovery option (if applicable), loading cleared
+- Skip redundant checks across error scenarios
 
-### 7. Map to Component States
+### 7. Map to Component States (Reduced)
 
-From Component Mapping section, ensure each component + state has ≥1 check:
-- Idle state
-- Loading state
-- Success state
-- Error state
-- Empty state
-- Disabled state
+From Component Mapping section, create checks for **critical states only**:
+- Initial/idle state (page load)
+- Loading state (during async operations)
+- Success state (completion confirmation)
+- Error state (error display)
+- Skip intermediate states: focused, filled, validating, disabled (unless critical to UX)
+- Skip empty state unless explicitly mentioned as important in flow
 
 ### 8. Validation
 
@@ -109,8 +102,8 @@ Three checks before output:
 **Coverage Check**
 - Every Goal has ≥1 item
 - Every Alternative Path has ≥1 item
-- Every Negative Scenario has ≥1 item
-- Every Component state has ≥1 item
+- Error scenarios consolidated into 2-3 generic checks (not one per scenario)
+- Component states: only critical states (idle/loading/success/error)
 
 If gap detected → ask user if intentional or add missing items.
 
@@ -123,10 +116,11 @@ If gap detected → ask user if intentional or add missing items.
 - No subjective terms without criteria ("smooth" → fail unless defined as "<200ms animation")
 - Observable in UI (not internal system state)
 - **No implementation details** (no API status codes, backend operations, database states)
-- For each assertion, verify: "Can a user see/experience this without dev tools?" If no → reject and reformulate to user-observable outcome
-- For each assertion, verify reasoning: "Why is this Pass/Fail? What exact UI state proves this?" If answer unclear → reject assertion
+- **No intermediate states** (focused, filled, validating, disabled) unless critical
+- For each assertion, verify: "Can a user see/experience this without dev tools?" If no → reject
+- For each assertion, verify: "Is this check duplicated elsewhere?" If yes → consolidate
 
-If fails → reformulate to match user-observable pattern or ask user to clarify.
+Target: 20-30 items for typical flow (not 60+). If exceeding 40 items → aggressive consolidation needed.
 
 ### 9. Ask Questions (Only When Needed)
 
@@ -187,9 +181,11 @@ File: `docs/checkLists/[flow-folder]/[flow-filename].md`
 | CL-003 | [CRITICAL] | Email validation on blur | Invalid email → inline error "Invalid email format" | Happy Path Step 2 |
 | ... | ... | ... | ... | ... |
 
-## Submit & State Transitions, Success & Navigation, Alternative Conditions, Errors & Recovery, Accessibility Basics, Analytics Events
+## Submit & Success, Alternative Conditions, Error Handling, Accessibility
 
 [Same table structure as above, one example row per section + ...]
+
+Note: Analytics Events section is optional — only include if analytics tracking is critical to flow validation.
 
 ## Out of Scope
 
@@ -221,7 +217,8 @@ Coverage: Goals (X), Alternatives (Y), Errors (Z), States (W)
 - Never invent requirements not in flow
 - Binary only — Pass/Fail, no subjective terms
 - **User-observable only** — no API/backend/database implementation details
-- Reformulate technical details to UX outcomes ("API returns 200" → "Success message visible")
+- **Manual QA focus** — high-level UX validation, not test case granularity
+- **Consolidate aggressively** — merge similar error scenarios, skip intermediate states
+- Target 20-30 items for typical flow (40 max for complex flows)
 - Include severity: [CRITICAL], [IMPORTANT], [OPTIONAL]
-- Use standardized state/error prefixes (see step 3)
-- Minimum coverage: entry, exit, loading, success, error, empty, disabled, recovery, navigation, error text contract, accessibility (keyboard + focus), out-of-scope exclusions
+- Minimum coverage: entry, happy path, alternatives, consolidated error handling, success/navigation, basic accessibility

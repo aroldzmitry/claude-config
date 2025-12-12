@@ -20,8 +20,8 @@ Create executable, testable user flow documentation by combining project context
 3. **Gather system boundaries** — Always ask/confirm (4 questions)
 4. **Controlled mode only** — Ask user to select goals + user types
 5. **Auto-generate rest** — Use project context + web research for remaining 7 steps
-6. **Save flow** — Write to `docs/user-flows/{name}.md`
-7. **Update index** — Add/update entry in `docs/USER_FLOWS.md`
+6. **Save flow** — Write to `docs/userFlows/{name}.md`
+7. **Update index** — Add/update entry in `docs/userFlows/USER_FLOWS.md`
 
 ## Modes
 
@@ -69,7 +69,7 @@ Use web research if project patterns insufficient.
 
 ## Output Format
 
-File: `docs/user-flows/{flow-name}.md`
+File: `docs/userFlows/{flow-name}.md`
 
 ```markdown
 # User Flow: {Goal Name}
@@ -135,13 +135,13 @@ E6. Direct URL access → [redirect/initialization]
 ## Final Steps
 
 After generating flow:
-1. **Update docs/USER_FLOWS.md**
+1. **Update docs/userFlows/USER_FLOWS.md**
    - Create file if missing (with header: "# User Flows")
-   - Add entry: `- [Goal Name](./user-flows/{flow-name}.md)`
+   - Add entry: `- [Goal Name](./{flow-name}.md)`
    - If section doesn't exist, create "## Documented Flows" section
 
 2. **Output Summary**
-   - Path: `docs/user-flows/{flow-name}.md`
+   - Path: `docs/userFlows/{flow-name}.md`
    - Goal: `[flow-goal-summary]`
 
 ## Rules

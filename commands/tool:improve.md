@@ -99,10 +99,22 @@ Check official docs if relevant (WebFetch).
 
 ## Step 8: Present Solutions
 
-For each option, show:
-- **Benefits**: what improves, problems solved
-- **Downsides**: what gets worse, new limitations
-- **Risks**: what could break, potential regressions
+**Format**: Use structured lists, never tables. For each option:
+
+```markdown
+## Option N: [Name]
+
+**Benefits:**
+- [Benefit 1]
+- [Benefit 2]
+
+**Downsides:**
+- [Downside 1]
+- [Downside 2]
+
+**Risks:**
+- [Risk 1]
+```
 
 Use `AskUserQuestion`:
 - Present 2-3 options with full +/- analysis

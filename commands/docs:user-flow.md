@@ -90,32 +90,55 @@ File: `docs/userFlows/{flow-name}.md`
 ## Goal: {Goal 1}
 
 ### Happy Path
-Entry point: [URL/button/CTA]
-Sequence:
-1. [screen] → [action] → [result]
-2. ...
 
-Success criteria: [what user sees at end]
+**Entry point**: [URL/button/CTA]
+
+### Preconditions
+- [Authentication status required]
+- [Data or entities that must exist]
+- [UI state before starting (page loaded, etc.)]
+
+**Sequence**:
+1. [user action] → [system action] → [UI state reflects change] → [result]
+2. [user sees/receives feedback]
+3. ...
+
+Success criteria:
+- [User-observable outcome with timing (e.g., "within 3 seconds")]
+- [Visible confirmation elements user can identify]
+- [Data persisted or action completed]
+
+### Exit Paths
+- [Normal exit: how user leaves this flow]
+- [Alternative exit: modal/sidebar closes]
+- [Error exit: if something goes wrong]
 
 ### Alternative Paths
-A1. [error scenario] → [recovery path]
+A1. [scenario] → [recovery path]
 A2. [cancellation] → [return point]
 A3. [edge case] → [handling]
 
 ### Negative Scenarios
-E1. No internet → [offline behavior]
+E1. No internet → [offline behavior, loading state, error message]
 E2. 401 Unauthorized → [re-auth flow]
 E3. Server error (500) → [retry/error message]
 E4. Expired session → [force login]
 E5. Inconsistent data → [validation error]
-E6. Direct URL access → [redirect/initialization]
+E6. [Domain-specific error] → [recovery]
+
+**Error UI Requirements** (for all errors):
+- Error message text clearly visible
+- Retry CTA present and functional (if applicable)
+- Close/Cancel CTA available
+- No background interaction while error shown
+- Loading state cleared on error
 
 ### UX Validation Checklist
-- [ ] Next action clear without hints?
-- [ ] System state visible to user?
-- [ ] Action safely cancellable?
-- [ ] Result confirmed to user?
-- [ ] No dead ends?
+- [x] Next action clear without hints? [Explanation]
+- [x] System state visible to user? [Explanation]
+- [x] Action safely cancellable? [Explanation]
+- [x] Result confirmed to user? [Explanation]
+- [x] No dead ends? [Explanation]
 
 ### Component Mapping
 | Step | Page/Route | Components | States | Analytics |

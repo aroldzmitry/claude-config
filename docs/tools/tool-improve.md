@@ -47,9 +47,27 @@ Is this correct? → User: Correct
 
 [WebSearch: validation patterns...]
 
-Options:
-A) Add validation step (+simple)
-B) Add schema validation (+robust, -complex)
+## Option A: Add Validation Step
+
+**Benefits:**
+- Simple implementation
+
+**Downsides:**
+- Basic validation only
+
+**Risks:**
+- Low
+
+## Option B: Add Schema Validation
+
+**Benefits:**
+- Robust validation
+
+**Downsides:**
+- More complex
+
+**Risks:**
+- Medium complexity
 
 → User: A
 

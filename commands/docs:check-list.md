@@ -201,11 +201,7 @@ Coverage: Goals (X), Alternatives (Y), Errors (Z), States (W)
 ## Rules
 
 - Never invent requirements not in flow
-- Every item must trace to flow section
 - Binary only — Pass/Fail, no subjective terms
-- Ask questions only when answer prevents speculation
 - Include severity: [CRITICAL], [IMPORTANT], [OPTIONAL]
-- Use standardized state/error prefixes
-- Validate coverage before output
-- Check for out-of-scope items from other flows
+- Use standardized state/error prefixes (see step 3)
 - Minimum coverage: entry, exit, loading, success, error, empty, disabled, recovery, navigation, error text contract, accessibility (keyboard + focus), out-of-scope exclusions

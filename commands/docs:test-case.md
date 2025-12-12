@@ -1,11 +1,11 @@
 ---
 description: Generate test cases from user flow and checklist documents. Outputs markdown file with TC-IDs, steps, test data, and coverage report.
-allowed-tools: Read, Write
+allowed-tools: Read, Write, Bash
 argument-hint: <flow-file> <checklist-file> [test-data-catalog] [env-profile]
 model: sonnet
 ---
 
-# docs:use-case
+# docs:test-case
 
 Generate test cases from user flow document + checklist with traceability and coverage validation.
 
@@ -71,6 +71,8 @@ Step 8: Output single markdown file to `docs/testCases/<area>/[user-flow-file-na
 - Test Cases section (grouped by priority or type)
 - Coverage Report section (gaps, orphans, backend items)
 - Out of scope reminders
+
+Step 9: Add generated file to git tracking. Run `git add <output-file-path>` to stage file for commit.
 
 ## Output
 

@@ -1,4 +1,4 @@
-# docs:use-case
+# docs:test-case
 
 Generate test cases from user flow and checklist documents with traceability and coverage validation.
 
@@ -14,7 +14,7 @@ Converts user flow document + checklist into automation-ready test cases with:
 ## Usage
 
 ```bash
-/docs:use-case <flow-file> <checklist-file> [test-data-catalog] [env-profile]
+/docs:test-case <flow-file> <checklist-file> [test-data-catalog] [env-profile]
 ```
 
 ## Parameters
@@ -37,7 +37,7 @@ Contains:
 ## Example
 
 ```bash
-/docs:use-case docs/userFlows/authentication/user-registration.md docs/checkLists/authentication/01-register.md
+/docs:test-case docs/userFlows/authentication/user-registration.md docs/checkLists/authentication/01-register.md
 ```
 
 Generates:
@@ -77,3 +77,4 @@ Steps:
 - Never invents requirements not in flow/checklist
 - Separates E2E from backend-only checks (marks as Integration/Contract)
 - Validates all input files exist before processing
+- Automatically stages generated test case file with `git add` for commit tracking

@@ -48,26 +48,10 @@ Is this correct? → User: Correct
 [WebSearch: validation patterns...]
 
 ## Option A: Add Validation Step
-
-**Benefits:**
-- Simple implementation
-
-**Downsides:**
-- Basic validation only
-
-**Risks:**
-- Low
+**Benefits:** Simple | **Downsides:** Basic only | **Risks:** Low
 
 ## Option B: Add Schema Validation
-
-**Benefits:**
-- Robust validation
-
-**Downsides:**
-- More complex
-
-**Risks:**
-- Medium complexity
+**Benefits:** Robust | **Downsides:** More complex | **Risks:** Medium
 
 → User: A
 

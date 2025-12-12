@@ -122,9 +122,11 @@ If gap detected → ask user if intentional or add missing items.
 - Every item is binary (Pass/Fail)
 - No subjective terms without criteria ("smooth" → fail unless defined as "<200ms animation")
 - Observable in UI (not internal system state)
+- **No implementation details** (no API status codes, backend operations, database states)
+- For each assertion, verify: "Can a user see/experience this without dev tools?" If no → reject and reformulate to user-observable outcome
 - For each assertion, verify reasoning: "Why is this Pass/Fail? What exact UI state proves this?" If answer unclear → reject assertion
 
-If fails → ask user to clarify or remove.
+If fails → reformulate to match user-observable pattern or ask user to clarify.
 
 ### 9. Ask Questions (Only When Needed)
 
@@ -218,6 +220,8 @@ Coverage: Goals (X), Alternatives (Y), Errors (Z), States (W)
 
 - Never invent requirements not in flow
 - Binary only — Pass/Fail, no subjective terms
+- **User-observable only** — no API/backend/database implementation details
+- Reformulate technical details to UX outcomes ("API returns 200" → "Success message visible")
 - Include severity: [CRITICAL], [IMPORTANT], [OPTIONAL]
 - Use standardized state/error prefixes (see step 3)
 - Minimum coverage: entry, exit, loading, success, error, empty, disabled, recovery, navigation, error text contract, accessibility (keyboard + focus), out-of-scope exclusions

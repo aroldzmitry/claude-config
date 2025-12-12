@@ -65,7 +65,7 @@ Step 7: Validate coverage:
 - List backend-only items moved to Integration/Contract
 - If gaps: ask targeted questions but output best-effort result
 
-Step 8: Output single markdown file to `docs/testCases/<area>/<flowId>-testcases.md`:
+Step 8: Output single markdown file to `docs/testCases/<area>/[user-flow-file-name].md` (preserving flow file name pattern):
 - Metadata block (Flow name, source files, generated date)
 - Test Data section
 - Test Cases section (grouped by priority or type)
@@ -109,4 +109,4 @@ Data:
 - Never create vague steps like "test should work" or "verify behavior"
 - Skip analytics tests unless user explicitly requests coverage
 - Never renumber existing TC-IDs or checklist IDs unless user asks
-- Output single markdown file only to docs/testCases/<area>/<flowId>-testcases.md
+- Output single markdown file only to docs/testCases/<area>/[user-flow-file-name].md

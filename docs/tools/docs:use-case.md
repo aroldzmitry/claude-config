@@ -26,7 +26,7 @@ Converts user flow document + checklist into automation-ready test cases with:
 
 ## Output
 
-Single markdown file: `docs/testCases/<area>/<flowId>-testcases.md`
+Single markdown file: `docs/testCases/<area>/[user-flow-file-name].md` (preserves flow file name pattern)
 
 Contains:
 - Metadata block (flow name, sources, date)
@@ -41,7 +41,7 @@ Contains:
 ```
 
 Generates:
-- `docs/testCases/authentication/user-registration-testcases.md`
+- `docs/testCases/authentication/user-registration.md`
 - Test cases: TC-REG-001, TC-REG-002, etc.
 - Coverage report with CRITICAL item validation
 

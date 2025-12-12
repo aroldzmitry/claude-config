@@ -99,21 +99,11 @@ Check official docs if relevant (WebFetch).
 
 ## Step 8: Present Solutions
 
-**Format**: Use structured lists, never tables. For each option:
+**Format**: Use compact lists, never tables. For each option:
 
 ```markdown
 ## Option N: [Name]
-
-**Benefits:**
-- [Benefit 1]
-- [Benefit 2]
-
-**Downsides:**
-- [Downside 1]
-- [Downside 2]
-
-**Risks:**
-- [Risk 1]
+**Benefits:** [concise] | **Downsides:** [concise] | **Risks:** [concise]
 ```
 
 Use `AskUserQuestion`:
@@ -176,7 +166,7 @@ Check if documentation exists:
 If documentation found:
 1. Read current docs
 2. Update to reflect changes made
-3. Keep format minimal, factual
+3. **Minimize changes**: smallest edit sufficient for Claude to understand unambiguously
 
 If no documentation — skip this step.
 

@@ -39,14 +39,30 @@ Extract testable entities from flow sections:
 
 Each entity becomes one or more checklist items.
 
-### 3. Normalize to Observable Assertions
+### 3. Normalize to User-Observable Assertions
 
-Convert steps to UI-observable facts:
+Convert steps to **user-visible outcomes only**. Focus on UX contract, not implementation.
+
+**Good examples (user-observable):**
 - "User clicks login" → `CL-###: Login button visible and enabled`
 - "API returns error" → `CL-###: Error message displayed with retry button`
 - "Data saves" → `CL-###: Success confirmation appears within 3s`
+- "Account created" → `CL-###: Success banner shows "Account created successfully"`
 
-Types: visibility (`element_visible`), state (`state_loading`, `state_error`), navigation (`navigates_to`), data (`data_saved`), errors (`err_network`, `err_auth`)
+**Forbidden patterns (implementation details):**
+- ❌ "Backend returns 200 OK with user ID"
+- ❌ "API creates user account"
+- ❌ "Database saves record"
+- ❌ "Server validates email format"
+- ❌ "Session token stored in Redis"
+
+**Reformulation rules:**
+- Backend status → User-visible outcome ("200 OK" → "Success message visible")
+- API action → UI state change ("API creates user" → "User sees confirmation")
+- Database operation → Data visibility ("Record saved" → "Data appears in list")
+- Server validation → UI feedback ("Server validates" → "Validation error/success shown")
+
+Types: visibility (`element_visible`), state (`state_loading`, `state_error`), navigation (`navigates_to`), confirmation (`message_shown`), errors (`err_ui_visible`)
 
 ### 4. Group by Theme
 

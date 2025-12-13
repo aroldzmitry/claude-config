@@ -17,8 +17,7 @@ Create Claude Code tools (agents, commands, skills) with step-by-step user valid
 5. **Create** — write concise file optimized for Claude
 6. **Requirements check** — verify file matches user requirements, check redundancy
 7. **Validate** — run /tool:check
-8. **Document** — create docs in nearest .claude/docs/
-9. **Report** — file path + line count
+8. **Report** — file path + line count
 
 ## Phase 1: Input Collection
 
@@ -105,13 +104,9 @@ Fix silently if minor. Report fixes to user if significant.
 
 Run `/tool:check {path}`. Fix if FAIL, ask user if WARN.
 
-## Phase 8: Documentation
+## Phase 8: Report
 
-Create `{nearest .claude/docs}/tools/{name}.md` with: purpose, usage, parameters, one example.
-
-## Phase 9: Report
-
-Output: file path, line count, docs path.
+Output: file path, line count.
 
 ## Rules
 

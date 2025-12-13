@@ -21,9 +21,8 @@ Improve existing tools (agents, commands, skills) by analyzing conversation for 
 9. Implement solution
 10. Verify changes
 10a. Check cross-tool impact, resolve with user
-11. Update documentation if exists
-12. Git commit/push (if user level)
-13. Report
+11. Git commit/push (if user level)
+12. Report
 
 ## Step 1: Parse Arguments
 
@@ -157,25 +156,12 @@ If dependencies found:
    - Custom text for specific instructions
 3. If user selects auto-update — apply changes to dependent tools
 
-## Step 11: Documentation Update
-
-Check if documentation exists:
-- Search `~/.claude/docs/tools/` for `[tool-name].md`
-- Search `~/.claude/docs/` for matching patterns
-
-If documentation found:
-1. Read current docs
-2. Update to reflect changes made
-3. **Minimize changes**: smallest edit sufficient for Claude to understand unambiguously
-
-If no documentation — skip this step.
-
-## Step 12: Git Integration
+## Step 11: Git Integration
 
 If file is in `~/.claude/` (user level):
 - Use `claude-config-save` skill for git commit and push
 
-## Step 13: Report
+## Step 12: Report
 
 Output files list:
 - `[A]` path/to/file.md — created

@@ -47,6 +47,30 @@ Test Cases expects:
 - `tests/e2e/<area>/<checklist-id>.spec.ts` — Checklist test files (short isolated tests)
 - Updated component files with added `data-testid` attributes
 
+## Console Output Format
+
+After completion, output to console (do NOT create REPORT.md file):
+
+**Summary:**
+- Status: success/partial/failed
+- Test files generated: [count]
+- Test cases covered: [TC-IDs]
+- Checklist items tested: [CL-IDs]
+
+**Generated Files:**
+- List each .spec.ts file with line count
+
+**Coverage:**
+- TC-ID → CL-IDs mapping
+- CL-ID → test file mapping
+
+**Gaps:**
+- CRITICAL checklist items without coverage
+
+**Validation:**
+- Linting status
+- TypeScript errors (if any)
+
 ## Test Generation Rules
 
 **Test Traceability:**
@@ -94,17 +118,14 @@ yarn test:e2e             # All E2E tests
 yarn test:e2e --grep "TC-001"  # Specific test case
 ```
 
-## Output: Status & Data
+## Final Output
 
-**Status:** `success` | `partial` (gaps found or validation errors) | `failed` (blocker)
-
-**Data:**
-- `testFiles` — List of generated .spec.ts files with line counts
-- `dataTestIdChanges` — List of components updated with new data-testid
-- `coverage` — Table: TC-ID → test file, CL-ID → test file
-- `gaps` — CRITICAL items without coverage + reasons
-- `validationErrors` — TypeScript/ESLint errors that auto-fix couldn't resolve (file:line format)
-- `assumptions` — List of assumptions made during generation
+Output to console only (do NOT save as file). Include:
+- Status (success/partial/failed)
+- Generated test files list with line counts
+- Coverage mapping (TC-ID → CL-IDs, CL-ID → test files)
+- CRITICAL gaps (items without coverage)
+- Validation results (linting, TypeScript errors)
 
 ## Example Generated Test
 

@@ -28,7 +28,7 @@ Agent must identify cross-flow patterns and extract them to Shared Standards, no
 4. **Controlled mode only** — Ask user to select goals + user types
 5. **Auto-generate content** — Use evidence-first approach: search codebase BEFORE writing technical details
 6. **Normalize and deduplicate** — Extract shared behaviors to standards (mandatory)
-7. **Run Flow Sanity Checks** — Validate all 7 checks, fix violations before writing (mandatory)
+7. **Pre-Write Validation** — Output checklist, fix violations, confirm all pass (BLOCKING)
 8. **Save flow** — Write to `docs/userFlows/{name}.md`
 9. **Update indexes** — Update `docs/userFlows/USER_FLOWS.md` and `docs/standards/STANDARDS.md`
 
@@ -113,18 +113,36 @@ Agent MUST perform before saving flow:
 
 This step is NOT optional. Agent must complete normalization before proceeding to Step 7.
 
-### Step 7: Flow Sanity Checks (Mandatory)
+### Step 7: Flow Sanity Checks (Mandatory Pre-Write Validation)
 
-Before writing file, agent runs all 7 validation checks (see "Flow Sanity Checks" section):
-1. Preconditions Check — remove cross-flow preconditions
-2. External Systems Check — verify or mark "needs confirmation"
-3. User Types Check — remove types that can't start flow
-4. Negative Scenarios Check — domain errors OR standard references only
-5. Cross-Flow Ownership Check — move scenarios to correct flow
-6. Timing Promises Check — remove unsourced timing values
-7. Infrastructure Error Separation — replace inline with standard references + scope
+Agent MUST output validation checklist BEFORE using Write tool. Format:
 
-Fix all violations before proceeding to save.
+```markdown
+## Pre-Write Validation Checklist
+
+**Evidence-First:**
+- [ ] All Contract statements cite file paths (searched with Grep/Read)
+- [ ] No Assumption statements without source
+- [ ] Technical details converted to Observable OR verified in codebase
+
+**Sanity Checks (all 7 MUST pass):**
+- [ ] 1. Preconditions: only flow-blocking items (removed cross-flow)
+- [ ] 2. External Systems: codebase-verified only (removed infra like PostgreSQL/Redis)
+- [ ] 3. User Types: match preconditions (removed contradictions)
+- [ ] 4. Negative Scenarios: domain errors OR standard refs (no inline infra)
+- [ ] 5. Cross-Flow: scenarios belong here (moved others to correct flow)
+- [ ] 6. Timing: sourced values only (removed unsourced "within X seconds")
+- [ ] 7. Infra Errors: standard refs with scope (no inline descriptions)
+
+**Verbosity:**
+- [ ] No parenthetical explanations: "Guest" not "Guest (unauthenticated)"
+- [ ] No long notes: "None" not "None (explanation...)"
+- [ ] No technical details in Observable: "not authenticated" not "(no valid JWT token)"
+
+**Status:** ✅ All checks passed / ⚠️ Violations found (fixing...)
+```
+
+If violations found → fix → re-run checklist → confirm all pass → then Write.
 
 ## Output Format
 
@@ -395,13 +413,14 @@ For other uncertainties, convert to Observable or generalize.
 - Every scenario must return user to goal or safe state
 - Happy path must be testable (→ can become Playwright test)
 - Normalization step (Step 6) is MANDATORY, never skip
-- Flow Sanity Checks (all 7) are MANDATORY before Write, never skip
+- **Pre-Write Validation (Step 7) is BLOCKING — output checklist, fix violations, confirm all pass before Write**
 - Check existing flows AND standards to avoid duplicates
-- **User Flow MUST NOT contain full definitions of shared behaviors**
-- **User Flow MAY ONLY reference standards by ID and name with scope**
+- User Flow MUST NOT contain full definitions of shared behaviors
+- User Flow MAY ONLY reference standards by ID and name with scope
 - Before creating new standard, check `docs/standards/STANDARDS.md` for existing match
 - Negative Scenarios contain ONLY domain errors, business violations, flow-specific edge cases
 - Infrastructure errors (network, auth, server) ALWAYS reference standards with scope, never inline
-- **All statements must be Observable or Contract with evidence — Assumptions prohibited**
-- **Evidence-first: search codebase before claiming technical implementation exists**
+- All statements must be Observable or Contract with evidence — Assumptions prohibited
+- Evidence-first: search codebase before claiming technical implementation exists
 - Infrastructure standard references must include scope: "Applies: Standard NET-001 (scope: form submission)"
+- Minimize verbosity: no parenthetical explanations, no technical details in user-facing statements

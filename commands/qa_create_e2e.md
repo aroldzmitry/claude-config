@@ -46,7 +46,6 @@ Test Cases expects:
 - `tests/e2e/<area>/<testcase-id>.spec.ts` — E2E test files (one per test case)
 - `tests/e2e/<area>/<checklist-id>.spec.ts` — Checklist test files (short isolated tests)
 - Updated component files with added `data-testid` attributes
-- `coverage-report.md` — Maps TC-ID/CL-ID to test files + CRITICAL gaps + assumptions
 
 ## Test Generation Rules
 

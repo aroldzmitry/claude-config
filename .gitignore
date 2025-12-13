@@ -15,3 +15,8 @@ statsig/
 todos/
 tasks/
 history.jsonl
+
+# Cache and runtime directories
+stats-cache.json
+plugins/
+investigations/

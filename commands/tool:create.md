@@ -67,7 +67,9 @@ Show findings as table:
 
 ### 4.2 Selection
 
-Use `AskUserQuestion` multi-select: which improvements to adopt.
+MUST invoke `AskUserQuestion` multi-select tool with improvements from 4.1 table as options. Each option label = improvement name, description = benefit + downside.
+
+Do NOT proceed to 4.3 until user selects improvements.
 
 ### 4.3 Application Summary
 

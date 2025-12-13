@@ -15,11 +15,11 @@ Parse command args as: `user-flow-file-path checklist-file-path [test-data-catal
 
 Step 0: Validate files. Check user-flow and checklist files exist and are readable. If not, output error: "File not found: <path>" and exit. Derive FLOWCODE from flow file name (e.g., `user-registration.md` → `REG`, `budget-creation.md` → `BUDG`).
 
-Step 1: Read user-flow file and extract: Goals, User types, Preconditions, Happy Path, Alternative paths, Negative scenarios, Success criteria, Error UI, Component mapping, Boundaries.
+Step 1: Read user-flow file and extract: Goals, User types, Preconditions, Happy Path, Alternative paths, Negative scenarios, Success criteria, Infrastructure Behaviors (with standard references), Component mapping, Boundaries.
 
 Step 2: Read checklist file and extract: Item ID, Severity (CRITICAL/IMPORTANT/OPTIONAL), Expected result, Source section.
 
-Step 3: Build requirement map. Link each checklist item to flow section by matching source reference. Treat Goals, Success criteria, Alternative paths, Negative scenarios, Error UI as requirements nodes.
+Step 3: Build requirement map. Link each checklist item to flow section by matching source reference. Treat Goals, Success criteria, Alternative paths, Negative scenarios, Infrastructure Behaviors as requirements nodes. For Infrastructure Behaviors, note that these reference shared standards (e.g., "Applies: Standard EH-001") rather than inline definitions.
 
 Step 4: Decide test cases using coverage strategy:
 - One happy path E2E for core CRITICAL items

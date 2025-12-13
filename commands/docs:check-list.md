@@ -33,7 +33,8 @@ Extract testable entities from flow sections:
 - Happy Path → sequence results
 - Exit Paths → navigation targets
 - Alternative Paths → conditional logic
-- Negative Scenarios → error handling
+- Negative Scenarios → domain-specific error handling
+- Infrastructure Behaviors → shared standard references (if present)
 - UX Validation Checklist → UX requirements
 - Component Mapping → UI states (idle/loading/success/error/empty/disabled)
 
@@ -79,10 +80,12 @@ From Alternative Paths, create `if-then` items:
 
 ### 6. Add Error Contract
 
-From Negative Scenarios + Error UI Requirements, create **consolidated error checks**:
-- Group similar error types (network/500/timeout) → single "Error UI displays correctly" check
+From Negative Scenarios + Infrastructure Behaviors sections, create **consolidated error checks**:
+- For domain-specific errors (from Negative Scenarios): create specific checks for each unique error type
+- For infrastructure errors (from Infrastructure Behaviors): reference shared standards (e.g., "Error handling follows Standard EH-001")
+- Group similar error types (network/500/timeout) → single check referencing the standard
 - Only create separate items if error behavior differs (e.g., retry available vs. not)
-- Standard error UI contract: message visible, recovery option (if applicable), loading cleared
+- For flows with inline error definitions (legacy format): extract standard error UI contract (message visible, recovery option, loading cleared)
 - Skip redundant checks across error scenarios
 
 ### 7. Map to Component States (Reduced)
@@ -136,7 +139,9 @@ Ask only if checklist would become speculation without answer:
 
 **Error Text Contract**
 "Where are error messages documented?"
-- Default: use flow's Error UI Requirements if present
+- Default: check flow's Infrastructure Behaviors section for standard references
+- If Infrastructure Behaviors absent: check for legacy Error UI Requirements section
+- If neither present: use generic error contract (message visible, recovery option, loading cleared)
 
 **Data Persistence**
 "Should form data persist on cancel/back/reload?"

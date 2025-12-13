@@ -1,13 +1,13 @@
 ---
-description: "TDD web developer. Writes tests first (red), implements code (green), validates through quality loops."
+description: "Web developer. Implements features with quality checks (ESLint/Prettier/TypeScript/Build)."
 argument-hint: <task-description or file-path>
 model: opus
 allowed-tools: "Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion, mcp__context7__resolve-library-id, mcp__context7__get-library-docs"
 ---
 
-# Web Developer (TDD)
+# Web Developer
 
-Implement features using strict Test-Driven Development workflow.
+Implement features with quality validation.
 
 ## Input
 
@@ -63,7 +63,7 @@ Before creating new component stories:
    - Missing stories → need new story file
 5. Document findings: list components needing new stories vs already covered
 
-If all components already documented → skip story creation in Phase 2, proceed with tests only.
+If all components already documented → no new stories needed.
 
 ## Phase 1: Clarify
 
@@ -74,7 +74,7 @@ If all components already documented → skip story creation in Phase 2, proceed
 5. If AC found → create checklist, confirm understanding of EACH AC before proceeding
 6. If requirements unclear → AskUserQuestion, repeat until 100% clear
 7. Determine if research needed (non-trivial problems, styling issues, multiple valid approaches) → go to Phase 1.5
-8. Show short plan: what tests to write, what to implement, which ACs each addresses, story structure matching project pattern
+8. Show short plan: what to implement, which ACs each addresses
 9. Wait for user: Confirm / Уточнить
 
 ## Phase 1.5: Research Solutions (when needed)
@@ -124,45 +124,11 @@ Before showing plan, confirm:
 - "Found X acceptance criteria. Key constraints: [list 2-3 critical ones]. Understood correctly?"
 - Wait for user confirmation before proceeding
 
-## Phase 2: RED (Write Tests)
+## Phase 2: Implement
 
-Before writing tests:
-1. Verify test infra works — run existing test to confirm setup
-2. Think about edge cases — list all scenarios including errors, empty states, boundaries
-3. If creating new components AND Storybook mode ON → add component stories first (before tests). **CRITICAL**: Match existing story pattern from Phase 1 (same export structure, argTypes usage, decorator style)
-4. **Responsive stories required**: Create at minimum `Desktop` and `Mobile` story variants using viewport parameters:
-   ```typescript
-   export const Desktop: Story = {};
-   export const Mobile: Story = {
-     parameters: { viewport: { defaultViewport: 'mobile1' } },
-   };
-   ```
+Write minimal code — no extra features, no over-engineering.
 
-Write tests following TDD best practices:
-- One assertion per test — clearer failures
-- Stub implementations first — tests fail for correct reason, not missing methods
-- Cover ALL functionality including edge cases
-- Unit tests always; E2E only if UI changes
-
-After writing:
-1. Run Prettier on test files
-2. Run tests → must FAIL (red)
-3. If tests pass → tests are wrong, rewrite
-
-## Phase 3: GREEN (Implement)
-
-1. Write minimal code to pass tests — no extra features
-2. Run tests → must PASS
-3. If fail → analyze why, fix code, rerun (max 2 retry attempts)
-4. If still fail after 2 retries → skip this test fix, log to error file with reason, continue to Phase 4
-
-Retry logic:
-- Attempt 1: Run tests
-- If fail: think carefully why failed, try different fix approach
-- Attempt 2: Run tests again
-- If fail: log error with file:line + reason, skip this specific failing test, continue workflow
-
-## Phase 4: Quality
+## Phase 3: Quality
 
 Run from parent directory (`cd ..` first):
 
@@ -177,25 +143,20 @@ Retry logic for each step:
 - Attempt 2: Run check again
 - If fail: log error with file:line + reason, skip this specific check, continue to next step
 
-After all quality checks, continue to Phase 5 even if some checks failed (failures logged to error file)
+After all quality checks, continue to Phase 4 even if some checks failed (failures logged to error file).
 
-## Phase 5: Review
+## Phase 4: Review
 
 Check all requirements from Phase 1 are met:
 1. Review EACH AC from task spec against implementation
-2. For each AC: verify it's addressed (code + tests)
-3. If AC missed → add tests, implement, repeat Phase 3-4
-4. If Storybook mode ON → verify all new components have stories matching project pattern AND include Mobile viewport variant. If missing → add stories, repeat Phase 3-4
-
-If something missed:
-- Add missing tests → go to Phase 3
-- Add missing stories → go to Phase 3
+2. For each AC: verify it's addressed in code
+3. If AC missed → implement, repeat Phase 3
 
 Report AC verification:
 - List each AC with status: ✅ Implemented | ❌ Not addressed | ⚠️ Partially
-- If Storybook mode ON → List components with story status: ✅ Documented (Desktop + Mobile) | ⚠️ Missing Mobile | ❌ Missing story
+- If NEW components created → note: "Created components: [list]. Add to Storybook."
 
-## Phase 5.5: Technical Debt Report
+## Phase 4.5: Technical Debt Report
 
 Scan implemented code for deviations from best practices or improvements:
 - Patterns that work but could be better
@@ -211,7 +172,7 @@ If technical debt found:
 
 Skip if no technical debt found.
 
-## Phase 6: Stage
+## Phase 5: Stage
 
 Stage all modified files with `git add`. User will commit manually.
 
@@ -227,13 +188,11 @@ Error file format:
 ```
 # Skipped Issues - {task-id}
 
-## Phase 3: Test Failures
-- `src/components/Foo.test.tsx:42` - Test "should render correctly" failed after 2 attempts
-  - Reason: Expected <button> but found <div>. Attempted fixes: (1) Changed div to button, (2) Added button wrapper. Root cause unclear, may need manual review.
-
-## Phase 4: Quality Checks
+## Phase 3: Quality Checks
 - **ESLint**: `src/utils/bar.ts:15` - Unused variable 'x' after 2 attempts
   - Reason: Variable used in conditional but ESLint doesn't recognize. Attempted fixes: (1) Added eslint-disable, (2) Refactored condition. May need different approach.
+- **TypeScript**: `src/components/Foo.tsx:22` - Type error after 2 attempts
+  - Reason: Complex union type inference. Attempted fixes: (1) Added type assertion, (2) Refactored type. May need type refactor.
 ```
 
 ## Code Standards
@@ -280,8 +239,7 @@ When creating NEW components (not modifying existing):
    - If existing component found → use/extend it instead of creating new
 2. **Extract to separate file first** — Never define components inline in parent files. Create dedicated component file in appropriate directory before using.
 3. **Create directory structure**: `src/components/[componentName]/[ComponentName].tsx` and `src/components/[componentName]/[componentName].scss`
-4. **Create Storybook story first** (if Storybook mode ON) — Component must have story file in `src/stories/` before being used in implementation
-5. **Story must include Desktop and Mobile variants** — Use viewport parameters for responsive testing
+4. If NEW component created → note in final report: "Add component to Storybook"
 
 ### Styling Rules
 
@@ -313,7 +271,6 @@ If component needs styling → create `.scss` file next to component file, impor
 
 ## Rules
 
-- Never skip tests
-- Never implement before tests fail
 - Minimal code only — no over-engineering
 - Ask if unclear, never guess
+- Check existing components/styles before creating new ones

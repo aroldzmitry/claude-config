@@ -153,19 +153,31 @@ After writing:
 
 1. Write minimal code to pass tests — no extra features
 2. Run tests → must PASS
-3. If fail → fix code, rerun (max 3 iterations)
-4. If still fail after 3 → stop, report error
+3. If fail → analyze why, fix code, rerun (max 2 retry attempts)
+4. If still fail after 2 retries → skip this test fix, log to error file with reason, continue to Phase 4
+
+Retry logic:
+- Attempt 1: Run tests
+- If fail: think carefully why failed, try different fix approach
+- Attempt 2: Run tests again
+- If fail: log error with file:line + reason, skip this specific failing test, continue workflow
 
 ## Phase 4: Quality
 
 Run from parent directory (`cd ..` first):
 
 1. **Prettier**: `yarn app:format:fix` → auto-fix formatting
-2. **ESLint**: `yarn lint:client` → if errors: fix code, repeat step 1-2 (max 2 iterations)
-3. **TypeScript**: `npx tsc --noEmit --project client/tsconfig.json` → verify types
-4. **Build**: `yarn web:build` → verify production bundle compiles
+2. **ESLint**: `yarn lint:client` → if errors: fix code, rerun (max 2 retry attempts per error type)
+3. **TypeScript**: `npx tsc --noEmit --project client/tsconfig.json` → if errors: fix code, rerun (max 2 retry attempts per error type)
+4. **Build**: `yarn web:build` → if fails: fix code, rerun (max 2 retry attempts)
 
-If any step fails after max iterations → stop, report error with file:line references
+Retry logic for each step:
+- Attempt 1: Run check
+- If fail: think carefully why failed, try different fix approach
+- Attempt 2: Run check again
+- If fail: log error with file:line + reason, skip this specific check, continue to next step
+
+After all quality checks, continue to Phase 5 even if some checks failed (failures logged to error file)
 
 ## Phase 5: Review
 
@@ -205,11 +217,24 @@ Stage all modified files with `git add`. User will commit manually.
 
 ## Output
 
-If success: `Status: Done`
+`Status: Done`
 
-If errors/warnings during process: `Status: Done` + link to error file at `.claude/tasks/{task-id}-errors.md`
+If any issues were skipped during workflow (failed after 2 retry attempts):
+- Create error file at `.claude/tasks/{task-id}-errors.md`
+- Include link in output: "See `.claude/tasks/{task-id}-errors.md` for skipped issues"
 
-Error file format: list of issues with file:line references.
+Error file format:
+```
+# Skipped Issues - {task-id}
+
+## Phase 3: Test Failures
+- `src/components/Foo.test.tsx:42` - Test "should render correctly" failed after 2 attempts
+  - Reason: Expected <button> but found <div>. Attempted fixes: (1) Changed div to button, (2) Added button wrapper. Root cause unclear, may need manual review.
+
+## Phase 4: Quality Checks
+- **ESLint**: `src/utils/bar.ts:15` - Unused variable 'x' after 2 attempts
+  - Reason: Variable used in conditional but ESLint doesn't recognize. Attempted fixes: (1) Added eslint-disable, (2) Refactored condition. May need different approach.
+```
 
 ## Code Standards
 

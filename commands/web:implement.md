@@ -15,6 +15,18 @@ Implement features using strict Test-Driven Development workflow.
 
 If input is file path → read it. If unclear what to build → ask questions (unlimited iterations).
 
+## Phase 0.1: Check Project Documentation
+
+**ALWAYS RUN FIRST** — before any code search or creation.
+
+1. Read `.claude/proj_index/00-INDEX.md` — project map and patterns location
+2. If INDEX references component/style patterns → read those docs immediately
+3. Look for sections: "Component Organization", "Component Library", "Styling Guide", "Existing Components"
+4. Document findings: where should new components go, how to find existing ones, naming conventions
+5. If no documentation found → proceed to Phase 0 (existing components) or Phase 1 (new components)
+
+**Key rule**: Always prefer **documented patterns over assumptions**. If docs say "check this directory" or "use this pattern" → follow exactly.
+
 ## Phase 0: Analyze Context (for existing components only)
 
 Skip this phase if creating NEW components. Only run when MODIFYING existing components.
@@ -55,7 +67,7 @@ If all components already documented → skip story creation in Phase 2, proceed
 
 ## Phase 1: Clarify
 
-1. Read `.claude/proj_index/00-INDEX.md` first. If no INDEX → read all `.md` files in `.claude/proj_index/`. Follow links ONLY when needed. Then `docs/`, then Glob/Grep `src/` for context
+1. Use findings from Phase 0.1 (project documentation patterns). If creating NEW component/style → search for existing ones per documentation OR apply Phase 0.1 search rules if docs don't specify
 2. Check if Storybook exists: `Glob **/*.stories.{ts,tsx}` (exclude node_modules). If found → Storybook mode ON
 3. If Storybook mode ON → read 2-3 existing stories to learn project patterns (story structure, exports, argTypes usage)
 4. If input is file path → read task file and extract ALL Acceptance Criteria (AC)
@@ -236,14 +248,25 @@ When creating state/variant values (positions, sizes, kinds, types):
 ### Component Creation Rules
 
 When creating NEW components (not modifying existing):
-1. **Extract to separate file first** — Never define components inline in parent files. Create dedicated component file in appropriate directory before using.
-2. **Create directory structure**: `src/components/[componentName]/[ComponentName].tsx` and `src/components/[componentName]/[componentName].scss`
-3. **Create Storybook story first** (if Storybook mode ON) — Component must have story file in `src/stories/` before being used in implementation
-4. **Story must include Desktop and Mobile variants** — Use viewport parameters for responsive testing
+1. **ALWAYS check for existing component/style first** (from Phase 0.1):
+   - Per documentation: check specified directories or patterns
+   - If docs missing: search `Grep "[ComponentName|functionality]" --glob "*.tsx"` to find similar components
+   - Read 2-3 found components to understand project patterns
+   - If existing component found → use/extend it instead of creating new
+2. **Extract to separate file first** — Never define components inline in parent files. Create dedicated component file in appropriate directory before using.
+3. **Create directory structure**: `src/components/[componentName]/[ComponentName].tsx` and `src/components/[componentName]/[componentName].scss`
+4. **Create Storybook story first** (if Storybook mode ON) — Component must have story file in `src/stories/` before being used in implementation
+5. **Story must include Desktop and Mobile variants** — Use viewport parameters for responsive testing
 
 ### Styling Rules
 
 **NEVER use inline styles.** All styling MUST be in SCSS files.
+
+**BEFORE creating new CSS classes:**
+1. Check if styling can be composed from existing utility/component classes
+2. Per Phase 0.1: check if project has design tokens, utility CSS, or existing patterns for this style
+3. If existing pattern found → use it (e.g., existing `.spinner` class instead of creating `.registration-loading-spinner`)
+4. Only create NEW CSS class if pattern doesn't exist and it's genuinely new functionality
 
 Forbidden:
 ```typescript

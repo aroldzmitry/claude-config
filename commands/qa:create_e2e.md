@@ -7,7 +7,7 @@ allowed-tools: Write, Edit, Read, Glob, Grep, Bash(yarn:*)
 # qa:create_e2e — Generate E2E Tests from Test Cases
 
 Generate Playwright E2E and checklist tests from documentation with:
-- Full test-to-requirement traceability (TC-ID/CL-ID mapping in comments)
+- Full test-to-requirement traceability (TC-ID/CL-ID via Playwright annotations and tags)
 - Hierarchical data-testid naming (domain.component.element format)
 - Network mocking for error scenarios (500, 409, timeouts)
 - Test data fixtures with setup/teardown
@@ -50,9 +50,11 @@ Test Cases expects:
 ## Test Generation Rules
 
 **Test Traceability:**
-- Each test includes TC-ID or CL-ID in file name and comment header
-- Comment format: `// TC-001: User registration | Maps to: docs/testCases/authentication/01-register.md`
-- Enables Jira/TestRail integration for requirement tracking
+- Each test uses Playwright tags (e.g., `@TC-001`) and annotations for metadata
+- TC-ID in test.describe tag enables `--grep @TC-001` filtering
+- CL-ID coverage tracked via annotations (type: 'coverage')
+- Document paths stored in annotations (type: 'testCase')
+- No traceability comments in generated code
 
 **data-testid Naming:**
 - Hierarchical format: `domain.component.element` (e.g., `auth.login-form.submit-btn`)
@@ -99,39 +101,38 @@ yarn test:e2e --grep "TC-001"  # Specific test case
 ## Example Generated Test
 
 ```typescript
-// TC-001: User registration with valid data
-// Maps to: docs/testCases/authentication/01-register.md
-// Covers: CL-001 (Form submit enabled), CL-003 (Success message)
-
 import { test, expect } from '@playwright/test';
 import testIds from '@test/testIds';
 
 const TEST_DATA = { email: 'test-user@example.com', password: 'SecurePass123!' };
 
-test('TC-001: User registration', async ({ page, request }) => {
-  // Setup: Create fixture
-  const user = await request.post('/api/users/seed', { data: { email: TEST_DATA.email } });
-  const userId = user.json().id;
+test.describe('User registration with valid data', {
+  tag: ['@TC-001', '@auth', '@registration'],
+  annotation: [
+    { type: 'testCase', description: 'docs/testCases/authentication/01-register.md' },
+    { type: 'coverage', description: 'CL-001, CL-003' }
+  ]
+}, () => {
+  test('successful registration redirects to dashboard', async ({ page, request }) => {
+    const user = await request.post('/api/users/seed', { data: { email: TEST_DATA.email } });
+    const userId = user.json().id;
 
-  // Act: Navigate and fill form
-  await page.goto('/register');
-  await page.fill(`[data-testid="${testIds.auth.register.emailInput}"]`, TEST_DATA.email);
-  await page.fill(`[data-testid="${testIds.auth.register.passwordInput}"]`, TEST_DATA.password);
-  await page.click(`[data-testid="${testIds.auth.register.submitBtn}"]`);
+    await page.goto('/register');
+    await page.fill(`[data-testid="${testIds.auth.register.emailInput}"]`, TEST_DATA.email);
+    await page.fill(`[data-testid="${testIds.auth.register.passwordInput}"]`, TEST_DATA.password);
+    await page.click(`[data-testid="${testIds.auth.register.submitBtn}"]`);
 
-  // Assert
-  await expect(page).toHaveURL('/dashboard');
-  await expect(page.locator('text=Welcome, Test User')).toBeVisible();
+    await expect(page).toHaveURL('/dashboard');
+    await expect(page.locator('text=Welcome, Test User')).toBeVisible();
 
-  // Cleanup
-  await request.delete(`/api/users/${userId}`);
-});
+    await request.delete(`/api/users/${userId}`);
+  });
 
-test('TC-001-error: Registration fails with 409', async ({ page }) => {
-  await page.route('**/api/register', route =>
-    route.fulfill({ status: 409, body: JSON.stringify({ error: 'Email already exists' }) })
-  );
-  // ... test steps follow TC document
+  test('fails with 409 when email exists', async ({ page }) => {
+    await page.route('**/api/register', route =>
+      route.fulfill({ status: 409, body: JSON.stringify({ error: 'Email already exists' }) })
+    );
+  });
 });
 ```
 
@@ -140,19 +141,21 @@ test('TC-001-error: Registration fails with 409', async ({ page }) => {
 **DO:**
 - Extract data-testid from test case documents (preferred) or component code
 - Add missing data-testid attributes using hierarchical naming
+- Wrap tests in test.describe() with tag (TC-ID) and annotations (doc path, CL-IDs)
 - Generate one test per test case (strict step order)
 - Generate short isolated tests for checklist items
 - Mock network errors when TC specifies error scenario
 - Include setup/teardown (fixtures) for test data
-- Document TC-ID/CL-ID mapping in test comments
 - Report all CRITICAL gaps
 
 **DON'T:**
+- Add traceability comments (use annotations/tags instead)
+- Add generic file header comments
+- Comment self-explanatory code (project standard)
 - Invent new requirements not in checklist/test cases
 - Change expected results from documentation
 - Mix multiple test cases in single test
 - Use CSS selectors or nth-child (always use data-testid)
 - Hardcode test data in test steps (extract from "Test Data" section)
-- Skip traceability comments
 - Ignore document formatting errors (report them in gaps)
 - Test backend directly unless TC explicitly requires it

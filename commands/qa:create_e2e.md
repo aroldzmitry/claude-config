@@ -79,6 +79,13 @@ Test Cases expects:
 - Validates document structure before generation
 - Reports missing sections or malformed data as BLOCKER in gaps
 
+## Test Validation
+
+After generating tests, run validation:
+1. `yarn lint:fix` on generated test files (auto-fix eslint issues)
+2. `npx tsc --noEmit` on generated files (type-check without emitting)
+3. Report unfixable errors in `validationErrors` output data
+
 ## Test Execution
 
 Run generated tests:
@@ -89,13 +96,14 @@ yarn test:e2e --grep "TC-001"  # Specific test case
 
 ## Output: Status & Data
 
-**Status:** `success` | `partial` (gaps found) | `failed` (blocker)
+**Status:** `success` | `partial` (gaps found or validation errors) | `failed` (blocker)
 
 **Data:**
 - `testFiles` — List of generated .spec.ts files with line counts
 - `dataTestIdChanges` — List of components updated with new data-testid
 - `coverage` — Table: TC-ID → test file, CL-ID → test file
 - `gaps` — CRITICAL items without coverage + reasons
+- `validationErrors` — TypeScript/ESLint errors that auto-fix couldn't resolve (file:line format)
 - `assumptions` — List of assumptions made during generation
 
 ## Example Generated Test
@@ -146,6 +154,8 @@ test.describe('User registration with valid data', {
 - Generate short isolated tests for checklist items
 - Mock network errors when TC specifies error scenario
 - Include setup/teardown (fixtures) for test data
+- Run `yarn lint:fix` and `tsc --noEmit` after generation
+- Report validation errors that auto-fix couldn't resolve
 - Report all CRITICAL gaps
 
 **DON'T:**

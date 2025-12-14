@@ -23,13 +23,18 @@ For Claude Code questions: use Task tool with `subagent_type="claude-code-guide"
 - Store all instructions for Claude in English
 - Keep responses short and concise; use longer responses only when explicitly requested
 
-## Tool Selection Rule
+## Tool Selection Rule (MANDATORY)
+
+⚠️ **MANDATORY PROCESS - MUST FOLLOW EVERY TIME BEFORE SELECTING ANY TOOL:**
 
 Before choosing a tool/agent/command:
-1. Read ALL available options (built-in agents, slash commands, skills)
-2. Compare specificity - choose the most specific match, not first match
-3. Look for explicit signals: "USE PROACTIVELY when...", exact question patterns
-4. Never stop at first "suitable" option - always scan complete list
+1. **STOP** - Pause before any tool selection
+2. **Read ALL available options** - Scan complete list of built-in agents, slash commands, skills in function descriptions
+3. **Find exact match** - Look for "USE PROACTIVELY when...", specific question patterns, domain signals
+4. **Compare specificity** - Choose most specific match, never the first suitable option
+5. **Verify selection** - Confirm this is THE BEST match, not just adequate
+
+Do NOT proceed with tool selection until all 5 steps are completed. If uncertain, ask user for clarification rather than guessing.
 
 ## Command Execution Rule
 

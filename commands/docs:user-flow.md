@@ -27,10 +27,11 @@ Agent must identify cross-flow patterns and extract them to Shared Standards, no
 3. Gather system boundaries (4 questions: product, user tasks, boundaries, external systems)
 4. Controlled mode only: ask user to select goals + user types
 5. Auto-generate content using evidence-first approach (search codebase before claiming implementation)
-6. Normalize and deduplicate (extract shared behaviors to standards)
-7. Consolidate patterns (merge redundant alternative path variations)
-8. Run pre-write validation (output checklist, fix violations, confirm all pass)
-9. Save flow and update indexes
+6. Extract field validation rules (analyze server/client validation code, update `docs/standards/FIELD-VALIDATIONS.md`)
+7. Normalize and deduplicate (extract shared behaviors to standards)
+8. Consolidate patterns (merge redundant alternative path variations)
+9. Run pre-write validation (output checklist, fix violations, confirm all pass)
+10. Save flow and update indexes
 
 ## Modes
 
@@ -86,6 +87,16 @@ Prohibited in sequences:
 3. **Extract or reference**: remove full definitions from flow, replace with standard ID reference, keep only domain-specific scenarios
 4. **Create new standards** if needed: write to `docs/standards/{ID}-{name}.md`
 
+### Field Validation Extraction (Mandatory for Form Flows)
+
+When flow contains form inputs, extract validation rules:
+1. Search codebase for validation (server-side validators, client-side validation schemas)
+2. Identify validation rules per field: format (email, phone), length (min/max), pattern (regex), required/optional
+3. Read existing `docs/standards/FIELD-VALIDATIONS.md` to check if field already documented
+4. Add/update field entries in FIELD-VALIDATIONS.md with: field name, validation rules, error messages, examples
+5. In flow document "Form Fields" section: reference field with required/optional status and link to FIELD-VALIDATIONS.md anchor
+6. In flow document "Negative Scenarios": add section "Field Validation" with link to FIELD-VALIDATIONS.md, remove inline validation details
+
 ### Pattern Consolidation (Mandatory Before Writing)
 
 Before writing flow, scan Alternative Paths and Negative Scenarios:
@@ -104,11 +115,19 @@ Output checklist BEFORE using Write tool:
 - NO file paths or code references in sequences
 - NO technical implementation details anywhere in document
 
+**Field Validation (for form flows):**
+- Form Fields section present with all input fields listed
+- Each field links to FIELD-VALIDATIONS.md anchor
+- Each field shows required/optional status
+- FIELD-VALIDATIONS.md updated with all field validation rules
+- Negative Scenarios has "Field Validation" section linking to FIELD-VALIDATIONS.md
+- NO inline validation details in flow (moved to FIELD-VALIDATIONS.md)
+
 **Sanity Checks (all MUST pass):**
 1. Preconditions: only flow-blocking items (removed cross-flow)
 2. External Systems: third-party only (removed backend/database/infra)
 3. User Types: match preconditions (no contradictions)
-4. Negative Scenarios: domain errors OR standard refs (no inline infra)
+4. Negative Scenarios: domain errors OR standard refs (no inline infra or field validation)
 5. Cross-Flow: scenarios belong here (moved to correct flow if not)
 6. Timing: sourced values only (no unsourced "within X seconds")
 7. Infrastructure Errors: standard refs with scope (no inline descriptions)
@@ -154,6 +173,10 @@ File: `docs/userFlows/{flow-name}.md`
 - [Observable outcome]
 - [Visible confirmation]
 
+### Form Fields
+- **Name field**: required, validation: [FIELD-VALIDATIONS#field-name](../standards/FIELD-VALIDATIONS.md#field-name)
+- **Email field**: required, validation: [FIELD-VALIDATIONS#email](../standards/FIELD-VALIDATIONS.md#email)
+
 ### Exit Paths
 - Normal: [how flow completes]
 - Cancel: [alternative exit]
@@ -163,8 +186,11 @@ A1. [edge case] → [recovery]
 A2. [cancellation] → [return point]
 
 ### Negative Scenarios
+**Field Validation**
+See [Field Validations](../standards/FIELD-VALIDATIONS.md) for all field-level validation errors (format, required, length, etc.)
+
 **Domain-Specific**
-N1. [Invalid input] → [validation, recovery]
+N1. [Business rule violation] → [recovery]
 **Infrastructure**
 Applies: Standard NET-001 (scope: form submission)
 
@@ -180,6 +206,46 @@ Applies: Standard NET-001 (scope: form submission)
 |------|-------|-----------|--------|---------|
 | 1 | /login | Login form | idle | auth.login.form |
 | 2 | /login | Email input field | input | auth.login.email-input |
+```
+
+Field Validation Registry: `docs/standards/FIELD-VALIDATIONS.md`
+
+```markdown
+# Field Validation Rules
+
+Central registry for all form field validation rules. Referenced by user flows to avoid duplication.
+
+## Email
+
+**Validation Rules**:
+- Format: Valid email format (RFC 5322)
+- Required: Context-dependent (see flow)
+- Client-side: None (submit button disabled when empty)
+- Server-side: express-validator `isEmail()`
+
+**Error Messages**:
+- Empty: "Email is required"
+- Invalid format: Default express-validator message
+
+**Examples**:
+- Valid: user@example.com
+- Invalid: invalidemail, test@, user@domain
+
+**Flows using this field**: 01-register, 02-login, 03-edit-profile
+
+## Name
+
+**Validation Rules**:
+- Format: Text, any characters
+- Required: Yes
+- Length: No min/max enforced
+- Client-side: Required check only
+- Server-side: `notEmpty()`
+
+**Error Messages**:
+- Empty: "Name is required"
+
+**Flows using this field**: 01-register, 03-edit-profile
 ```
 
 Shared Standard file: `docs/standards/{ID}-{name}.md`
@@ -222,22 +288,31 @@ Applies to: [all flows | specific context]
    - Add entry: `[Goal Name](./flow-name.md) — one-line summary`
    - If category section doesn't exist, create it
 
-2. **Update docs/standards/STANDARDS.md**
+2. **Update docs/standards/FIELD-VALIDATIONS.md**
+   - Create file if missing (use template above)
+   - For each field in flow: check if field section exists
+   - Add new field sections or update existing with discovered validation rules
+   - Update "Flows using this field" list with current flow number
+
+3. **Update docs/standards/STANDARDS.md**
    - Create file if missing (with header: "# Shared Standards")
    - Add section "## Available Standards" if missing
+   - Ensure FIELD-VALIDATIONS.md is listed: `- [Field Validation Rules](./FIELD-VALIDATIONS.md) — Central registry for form field validation`
    - For each new standard created: `- {ID} [{Name}](./{ID}-{name}.md) — one-line description`
    - For reused standards: verify entry exists
    - Add/update section "## Standard Categories" grouping by type (Error Handling, Loading, Auth, etc.)
 
-3. **Stage Files in Git**
-   - Collect all created/modified files: flow markdown, standards markdown, index files
+4. **Stage Files in Git**
+   - Collect all created/modified files: flow markdown, field validations, standards markdown, index files
    - Run `git add` for each file to stage changes
    - Example: `git add docs/userFlows/{flow-name}.md docs/userFlows/USER_FLOWS.md`
+   - If field validations updated: `git add docs/standards/FIELD-VALIDATIONS.md`
    - If standards created: `git add docs/standards/{ID}-{name}.md docs/standards/STANDARDS.md`
 
-4. **Output Summary**
+5. **Output Summary**
    - Path: `docs/userFlows/{flow-name}.md`
    - Goals documented: `[list]`
+   - Field validations: `[list of fields added/updated in FIELD-VALIDATIONS.md]`
    - Shared standards used: `[list of standard IDs referenced]`
    - Shared standards created: `[list of new standard IDs with names]`
    - Files staged: `[list of git-added files]`

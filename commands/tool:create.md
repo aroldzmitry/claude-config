@@ -68,15 +68,6 @@ Show findings as table:
 
 MUST invoke `AskUserQuestion` multi-select tool with improvements from 4.1 table as options. Each option label = improvement name, description = benefit + downside.
 
-Do NOT proceed to 4.3 until user selects improvements.
-
-### 4.3 Application Summary
-
-After selection, show how each chosen improvement will be applied:
-- Improvement → how it maps to the tool being created
-
-Iterate until user confirms approach.
-
 ## Phase 5: Create File
 
 Before writing, use `subagent_type="claude-code-guide"` to check official docs for correct YAML frontmatter fields and syntax.

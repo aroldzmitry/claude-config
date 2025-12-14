@@ -231,11 +231,18 @@ Applies to: [all flows | specific context]
    - For reused standards: verify entry exists
    - Add/update section "## Standard Categories" grouping by type (Error Handling, Loading, Auth, etc.)
 
-3. **Output Summary**
+3. **Stage Files in Git**
+   - Collect all created/modified files: flow markdown, standards markdown, index files
+   - Run `git add` for each file to stage changes
+   - Example: `git add docs/userFlows/{flow-name}.md docs/userFlows/USER_FLOWS.md`
+   - If standards created: `git add docs/standards/{ID}-{name}.md docs/standards/STANDARDS.md`
+
+4. **Output Summary**
    - Path: `docs/userFlows/{flow-name}.md`
    - Goals documented: `[list]`
    - Shared standards used: `[list of standard IDs referenced]`
    - Shared standards created: `[list of new standard IDs with names]`
+   - Files staged: `[list of git-added files]`
 
 ## Shared Standard Criteria
 

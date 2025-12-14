@@ -9,29 +9,91 @@ model: sonnet
 
 Generate test cases from user flow document + checklist with traceability and coverage validation.
 
+## Terminology
+
+Observable — user-visible UI behavior (no backend operations, no API details).
+E2E (End-to-End) — test covering full user journey from entry to exit.
+Integration — test verifying backend/API interaction without UI.
+Contract — test validating API request/response structure.
+Bi-directional Traceability — every requirement has test, every test links to requirement.
+
 ## Instructions
 
 Parse command args as: `user-flow-file-path checklist-file-path [test-data-catalog-path] [environment-profile-path]`
 
-Step 0: Validate files. Check user-flow and checklist files exist and are readable. If not, output error: "File not found: <path>" and exit. Derive FLOWCODE from flow file name (e.g., `user-registration.md` → `REG`, `budget-creation.md` → `BUDG`).
+### Input Requirements
 
-Step 1: Read user-flow file and extract: Goals, User types, Preconditions, Happy Path, Alternative paths, Negative scenarios, Success criteria, Infrastructure Behaviors (with standard references), Component mapping, Boundaries.
+User Flow MUST contain: System Context, Goals, User Types, Happy Path, Alternative Paths, Negative Scenarios, Component Mapping.
+Checklist MUST contain: CL-IDs, Severity ([CRITICAL]/[IMPORTANT]/[OPTIONAL]), Expected Result, Source (flow section reference).
 
-Step 2: Read checklist file and extract: Item ID, Severity (CRITICAL/IMPORTANT/OPTIONAL), Expected result, Source section.
+### Step 0: Pre-Validation (Blocking)
 
-Step 3: Build requirement map. Link each checklist item to flow section by matching source reference. Treat Goals, Success criteria, Alternative paths, Negative scenarios, Infrastructure Behaviors as requirements nodes. For Infrastructure Behaviors, note that these reference shared standards (e.g., "Applies: Standard EH-001") rather than inline definitions.
+Check files exist and are readable. If not → output error "File not found: <path>" and exit.
 
-Step 4: Decide test cases using coverage strategy:
-- One happy path E2E for core CRITICAL items
-- One E2E per CRITICAL alternative that changes outcome
-- One E2E per CRITICAL error family (group similar errors if UI contract is same)
-- One cancellation test if CRITICAL or frequently used
+Read flow and checklist, verify:
+
+**Flow Structure Valid**
+- All required sections present (System Context, Goals, Happy Path, Alternative Paths, Negative Scenarios, Component Mapping)
+- Goals are verb-based
+- Happy Path contains ONLY observable statements (user actions, visible responses)
+
+**Checklist Structure Valid**
+- Every item has CL-ID format (CL-###)
+- Every item has severity tag
+- Every item has Source column (traceability to flow section)
+- Expected Results are user-observable (no backend ops, no API codes)
+
+If validation fails → output violations list → stop → ask user to fix files.
+
+If all pass → derive FLOWCODE from flow file name (e.g., `user-registration.md` → `REG`) → proceed to Step 1.
+
+### Step 1: Extract Flow Data
+
+Read user-flow file and extract: Goals, User types, Preconditions, Happy Path, Alternative paths, Negative scenarios, Success criteria, Infrastructure Behaviors (standard references), Component mapping, Boundaries.
+
+### Step 2: Extract Checklist Data
+
+Read checklist file and extract: Item ID (CL-###), Severity, Expected result, Source section.
+
+### Step 3: Build Requirement Map & Section Mapping
+
+Link each checklist item to flow section by matching Source reference.
+
+**Section Mapping Table:**
+
+| Flow Section | Test Type | Priority Guidance | Coverage Strategy |
+|---|---|---|---|
+| Happy Path | E2E | P0 (CRITICAL) | One comprehensive test covering core flow |
+| Alternative Paths | E2E | P0-P1 | One test per CRITICAL alternative that changes outcome |
+| Negative Scenarios (domain) | E2E | P0-P1 | One test per CRITICAL error type |
+| Negative Scenarios (infra refs) | Integration/Contract | P2 | Backend validation, not UI |
+| Component Mapping (UI states) | E2E | P0-P1 | Verify idle/loading/success/error states |
+| Success Criteria | E2E | P0 | Include in Happy Path test |
+| UX Validation | E2E | P1-P2 | Accessibility checks if IMPORTANT |
+
+For Infrastructure Behaviors (standard refs like "Standard NET-001"): create Integration/Contract tests, NOT E2E.
+
+### Step 4: Decide Test Cases
+
+Use coverage strategy from Section Mapping Table (Step 3).
+- One Happy Path E2E for core CRITICAL items
+- One E2E per CRITICAL Alternative that changes outcome
+- One E2E per CRITICAL error type (domain-specific)
+- Integration/Contract tests for Infrastructure Behaviors (standard refs)
 - IMPORTANT items: cover if risky or historically flaky
-- OPTIONAL: skip unless explicitly requested
+- OPTIONAL: skip unless user requests
 
-Step 5: Define test data. If test-data-catalog provided, use its IDs (e.g., TD-EMAIL-VALID-UNIQUE). If not, create inline section with reusable IDs. Use unique email for create flows, seeded records for duplicates, specify cleanup.
+### Step 5: Define Test Data
 
-Step 6: Write each test case:
+If test-data-catalog provided → use IDs (e.g., TD-EMAIL-VALID-UNIQUE).
+If not → create inline Test Data section with reusable IDs.
+- Use unique emails for create flows
+- Use seeded records for duplicate scenarios
+- Specify cleanup strategy (API deletion, database reset, etc.)
+
+### Step 6: Write Test Cases
+
+Each test case format:
 - TC ID: TC-<FLOWCODE>-###
 - Fields: Title, Priority (P0=CRITICAL, P1=IMPORTANT, P2=OPTIONAL), Type (E2E/Component/Integration/Contract), Preconditions, Test Data, Cleanup, Covers (checklist IDs)
 - Steps: Action / Expected (no combined steps). Expected must be UI-observable (URL, visible text, element state, error panel).
@@ -59,56 +121,69 @@ Steps:
    Expected: Success message shown, URL is /login
 ```
 
-Step 7: Validate coverage:
-- List CRITICAL items not covered
-- List test cases with no checklist IDs
-- List backend-only items moved to Integration/Contract
-- If gaps: ask targeted questions but output best-effort result
+### Step 7: Pre-Output Validation (Mandatory, Blocking)
 
-Step 8: Output single markdown file to `docs/testCases/<area>/[user-flow-file-name].md` (preserving flow file name pattern):
+Output validation checklist BEFORE creating test file. If violations → fix → re-run → confirm pass → proceed.
+
+**6 Validation Checks:**
+
+1. **Observable-Only Enforcement** — Every Expected Result is user-visible (no backend ops, API status codes, database states)
+2. **Bi-directional Traceability** — Every CRITICAL checklist item covered by ≥1 test; every test links to ≥1 CL-ID via Covers field
+3. **Test Type Accuracy** — E2E tests have UI steps only; Integration/Contract tests for backend/API validation
+4. **Coverage Completeness** — Happy Path has P0 test; every CRITICAL Alternative/Error has test
+5. **Test Data References** — All test data uses TD-IDs (not literal strings); cleanup strategy specified
+6. **Priority Alignment** — P0 tests cover CRITICAL items; P1 covers IMPORTANT; P2 covers OPTIONAL
+
+If violations → fix → re-run all 6 → confirm pass → proceed.
+
+### Step 8: Output Test Cases File
+
+Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
 - Metadata block (Flow name, source files, generated date)
 - Test Data section
 - Test Cases section (grouped by priority or type)
 - Coverage Report section (gaps, orphans, backend items)
 - Out of scope reminders
 
-Step 9: Add generated file to git tracking. Run `git add <output-file-path>` to stage file for commit.
+### Step 9: Stage for Git
 
-## Output
+After creating file, run:
+```bash
+git add docs/testCases/<area>/[user-flow-file-name].md
+```
 
-Status: Complete | Gaps identified | Need clarification
+### Step 10: Report
 
-Data:
-- Test cases generated (count by priority)
-- Coverage % (checklist items covered)
-- Blockers (if any)
+Output:
+```
+Test Cases: docs/testCases/<area>/[flow-name].md
+Generated: X test cases (Y P0, Z P1, W P2)
+Coverage: N% of CRITICAL checklist items
+Validation: All 6 checks passed
+Gaps: [list if any]
+```
 
-## Dialogs
+## Dialogs (Compact Format with Defaults)
 
-**Dialog 1: Environment & Error Setup (if blocking info missing)**
-- When: Preconditions, error-forcing strategy, or auth setup unclear
-- Type: Multi-select (pick applicable, others default)
-- Options:
-  - Target environment: staging / local / prod-like (default: staging)
-  - Error forcing: mock layer / feature flag / test endpoint / requires manual hook (default: mark steps "requires test hook")
-  - Error contract: exact text match / presence only (default: presence only)
-  - Auth preconditions: test hook / manual login / feature flag (default: test hook)
-- Action: Apply selections or mark blocked steps
+Use `AskUserQuestion` ONLY if test cases become unexecutable without answer. Use defaults:
 
-**Dialog 2: Coverage Summary (shown after test case generation completes)**
-- Shows: count P0/P1/P2 cases, coverage %, list of gaps
-- Ask: Proceed with output / adjust case count / add details for gaps
+- Target Environment → staging
+- Error Forcing → mark steps "requires test hook" (manual setup needed)
+- Error Contract → presence only (not exact text match)
+- Auth Preconditions → test hook (automated login helper)
+- Test Data Strategy → inline Test Data section with TD-IDs
+
+Do NOT ask: Test priorities (use Section Mapping), test types (use flow section), coverage targets (CRITICAL items mandatory).
 
 ## Rules
 
-- Extract ONLY from flow and checklist, never invent requirements
-- Make every test case executable with UI-observable expected results
-- Link every test case to checklist IDs via Covers field
-- Use test data IDs (TD-*) not literal strings
-- Separate E2E from backend-only checks (mark as Integration/Contract type)
-- Keep test count lean: few high-value cases, not one per checklist item
-- Report coverage gaps honestly in Coverage Report section
-- Never create vague steps like "test should work" or "verify behavior"
-- Skip analytics tests unless user explicitly requests coverage
-- Never renumber existing TC-IDs or checklist IDs unless user asks
-- Output single markdown file only to docs/testCases/<area>/[user-flow-file-name].md
+- Extract ONLY from flow/checklist — never invent requirements
+- Every test case: executable, UI-observable Expected Results, links to CL-IDs via Covers field
+- NO backend assertions in E2E tests (API status, database states) — use Integration/Contract type
+- Use test data IDs (TD-*), not literal strings; specify cleanup strategy
+- Keep test count lean (few high-value cases, not one per checklist item)
+- Bi-directional traceability: every CRITICAL item covered, every test traces to requirement
+- Pre-Output Validation MANDATORY — 6 checks must pass before creating file
+- Section Mapping Table determines test type/priority
+- Target: 1 Happy Path E2E, 1 E2E per CRITICAL alternative/error, Integration/Contract for infra refs
+- Output single markdown file to `docs/testCases/<area>/[user-flow-file-name].md`

@@ -110,6 +110,13 @@ After generating tests, run validation:
 2. `npx tsc --noEmit` on generated files (type-check without emitting)
 3. Report unfixable errors in `validationErrors` output data
 
+## Stage for Git
+
+After validation, stage generated test files:
+```bash
+git add tests/e2e/<area>/*.spec.ts
+```
+
 ## Test Execution
 
 Run generated tests:

@@ -2,7 +2,7 @@
 description: "Create comprehensive user flow documentation through semi-automatic interactive dialogue"
 argument-hint: "<flow-description>: describe what user flow to document"
 model: sonnet
-allowed-tools: "Read, Glob, Grep, AskUserQuestion, Write, Bash, WebSearch, WebFetch"
+allowed-tools: "Read, Task, AskUserQuestion, Write, Bash, WebSearch, WebFetch"
 ---
 
 # User Flow Generator
@@ -20,14 +20,22 @@ Agent must identify cross-flow patterns and extract them to Shared Standards, no
 
 `$ARGUMENTS` contains flow description. If empty → ask user.
 
+## Tool Usage Rules
+
+**Read Tool**: ONLY for docs/ directory (existing flows, standards, project documentation). NEVER for project source code.
+
+**Project Questions**: For implementation details (validation rules, business logic, API contracts, component behavior), MUST delegate to proj:ask-about subagent via Task tool.
+
+Example: "What validation rules exist for email field?" → `Task(subagent_type='proj:ask-about', prompt='Find validation rules for email field in registration flow')`
+
 ## Process
 
-1. Analyze project context (`.claude/CLAUDE.md`, existing flows, standards, codebase)
+1. Analyze project context (`.claude/CLAUDE.md`, existing flows/standards via Read, project structure via proj:ask-about)
 2. Determine mode: simple descriptions → auto mode, complex → controlled mode
 3. Gather system boundaries (4 questions: product, user tasks, boundaries, external systems)
 4. Controlled mode only: ask user to select goals + user types
-5. Auto-generate content using evidence-first approach (search codebase before claiming implementation)
-6. Extract field validation rules (analyze server/client validation code, update `docs/standards/FIELD-VALIDATIONS.md`)
+5. Auto-generate content using evidence-first approach (delegate codebase questions to proj:ask-about)
+6. Extract field validation rules (delegate to proj:ask-about for validation code analysis, update `docs/standards/FIELD-VALIDATIONS.md`)
 7. Normalize and deduplicate (extract shared behaviors to standards)
 8. Consolidate patterns (merge redundant alternative path variations)
 9. Run pre-write validation (output checklist, fix violations, confirm all pass)
@@ -90,8 +98,8 @@ Prohibited in sequences:
 ### Field Validation Extraction (Mandatory for Form Flows)
 
 When flow contains form inputs, extract validation rules:
-1. Search codebase for validation (server-side validators, client-side validation schemas)
-2. Identify validation rules per field: format (email, phone), length (min/max), pattern (regex), required/optional
+1. Delegate to proj:ask-about: "Find validation rules for [field names] in [flow context]" (server-side validators, client-side schemas, error messages)
+2. Parse subagent response to identify rules per field: format (email, phone), length (min/max), pattern (regex), required/optional
 3. Read existing `docs/standards/FIELD-VALIDATIONS.md` to check if field already documented
 4. Add/update field entries in FIELD-VALIDATIONS.md with: field name, validation rules, error messages, examples
 5. In flow document "Form Fields" section: reference field with required/optional status and link to FIELD-VALIDATIONS.md anchor

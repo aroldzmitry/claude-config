@@ -54,7 +54,7 @@ Confirm with user:
 
 For each goal, generate:
 
-**Happy Path**: Observable user experience from entry point to success. Add Contract statements only when verified in codebase.
+**Happy Path**: Observable user experience only - what user sees, does, and observes. NO backend operations, NO Contract statements, NO file paths.
 
 **Alternative Paths**: Domain-specific errors, cancellations, edge cases with recovery.
 
@@ -62,19 +62,24 @@ For each goal, generate:
 
 **UX Validation**: Clarity, state visibility, cancellability, confirmations.
 
-**Component Mapping**: Pages, routes, component states, analytics. Verify components exist in codebase.
+**Component Mapping**: Generic UI element names (form, button, field), routes, UI states, test IDs. NO implementation class names.
 
 Use web research for UX patterns (best practices, accessibility), NOT for inventing technical implementation details.
 
-### Evidence-First Pattern
+### Observable-Only Pattern
 
-Before claiming any technical implementation:
-1. Search codebase with `Grep` for patterns (auth, validation, session handling)
-2. Read files to verify behavior matches claim
-3. If verified → cite as Contract with file reference
-4. If not found → convert to Observable OR ask user
+Happy Path sequences contain ONLY what user sees and does:
+1. User action (clicks button, enters text, navigates)
+2. Visible system response (page displays, button shows loading, message appears)
+3. Observable state change (redirected to page, notification visible, field changes color)
 
-Prohibited: inventing implementation details. Required: ground all Contract statements in verifiable evidence.
+Prohibited in sequences:
+- Backend operations (validates, checks database, creates record, sends request)
+- File paths or code references
+- Component class names or implementation details
+- Technical processes invisible to user
+
+Implementation details belong in Implementation Notes section only.
 
 ### Flow Normalization (Mandatory Before Writing)
 
@@ -95,10 +100,11 @@ Before writing flow, scan Alternative Paths and Negative Scenarios:
 
 Output checklist BEFORE using Write tool:
 
-**Evidence-First:**
-- All Contract statements cite file paths
-- No Assumption statements without source
-- Technical details converted to Observable OR verified in codebase
+**Observable-Only:**
+- Happy Path contains ONLY user-visible actions and responses
+- NO backend operations in sequences
+- NO file paths or code references in sequences
+- Technical details ONLY in Implementation Notes section
 
 **Sanity Checks (all MUST pass):**
 1. Preconditions: only flow-blocking items (removed cross-flow)
@@ -112,7 +118,8 @@ Output checklist BEFORE using Write tool:
 
 **Verbosity:**
 - No parenthetical explanations: "Guest" not "Guest (unauthenticated)"
-- No technical details in Observable: "not authenticated" not "(no valid JWT token)"
+- No technical details in sequences: "User redirected to login" not "System validates JWT and redirects"
+- No backend operations: "Success notification displays" not "Backend returns 201 and notification displays"
 
 If violations found → fix → re-run checklist → confirm all pass → then Write.
 
@@ -171,9 +178,10 @@ Applies: Standard NET-001 (scope: form submission)
 - [x] No dead ends? [Yes/Explanation]
 
 ### Component Mapping
-| Step | Route | Components | States |
-|------|-------|-----------|--------|
-| 1 | /login | Form | idle |
+| Step | Route | Components | States | Test ID |
+|------|-------|-----------|--------|---------|
+| 1 | /login | Login form | idle | auth.login.form |
+| 2 | /login | Email input field | input | auth.login.email-input |
 ```
 
 Shared Standard file: `docs/standards/{ID}-{name}.md`
@@ -240,29 +248,32 @@ Behavior qualifies as Shared Standard if ALL apply:
 
 Typical candidates: network/auth/server errors, loading states, empty states, permission denied, offline mode.
 
-## Statement Types
+## Statement Types for Happy Path Sequences
 
-**Observable** — User-visible UI behavior (messages, buttons, redirects, loading states).
-- Example: "UI shows email validation error below input field"
-- NOT: "Backend validates email format in real-time via WebSocket"
+**Observable** — ONLY type allowed in Happy Path sequences. User-visible UI behavior (messages, buttons, redirects, loading states).
+- Good: "Validation error displays below email field"
+- Good: "Submit button shows loading indicator"
+- Good: "User redirected to login page"
+- Bad: "Backend validates email format" (invisible to user)
+- Bad: "System checks database for duplicate email" (backend operation)
+- Bad: "POST request sent to /api/user" (technical implementation)
 
-**Contract** — System obligation verified in codebase (API endpoints, validation rules, data persistence).
-- Example: "POST /api/register creates user account (see server/routes/auth.ts:42)"
-- NOT: "Backend stores session in Redis" (unless verified in codebase)
+**Implementation Details** — Belongs ONLY in Implementation Notes section at end of document.
+- Security implementation (encryption, hashing)
+- Backend validation logic
+- Database operations
+- API endpoints and file paths
+- Component class names
 
-**Assumption** — PROHIBITED without source.
-- If source unavailable → convert to Observable or ask user
-- If technical detail unknown → generalize to UI behavior
+### Observable-Only Enforcement
 
-### Evidence-First Implementation
+Happy Path must be convertible to Playwright test steps:
+1. Can tester see this on screen? → Observable, include it
+2. Is this backend processing? → Remove from sequence
+3. Is this technical detail? → Move to Implementation Notes
+4. Does this have file path? → Remove from sequence
 
-Before claiming technical details (Redis, JWT, SMTP, real-time validation, prefill):
-1. Search codebase with `Grep` for relevant patterns (auth, session, email, validation)
-2. Read implementation files to confirm behavior
-3. If not found → do NOT invent, convert to Observable or mark "Unknown - needs confirmation"
-
-Prohibited: inventing implementation details to "sound complete".
-Required: ground all Contract statements in verifiable evidence.
+All technical verification belongs in Implementation Notes, never in sequences.
 
 ## Flow Sanity Checks - 7 Mandatory Checks
 
@@ -333,15 +344,15 @@ For other uncertainties, convert to Observable or generalize.
 11. Before creating new standard, check `docs/standards/STANDARDS.md` for existing match
 12. Negative Scenarios contain ONLY domain errors, business violations, flow-specific edge cases
 13. Infrastructure errors (network, auth, server) ALWAYS reference standards with scope, never inline
-14. All statements must be Observable or Contract with evidence — Assumptions prohibited
-15. Evidence-first: search codebase before claiming technical implementation exists
+14. Happy Path sequences contain ONLY Observable statements — NO backend operations, NO file paths
+15. Technical implementation details belong ONLY in Implementation Notes section
 16. Infrastructure standard references must include scope: "Applies: Standard NET-001 (scope: form submission)"
-17. Minimize verbosity: no parenthetical explanations, no technical details in user-facing statements
+17. Minimize verbosity: no parenthetical explanations, no technical details in sequences
 18. System Boundaries questions are mandatory, non-negotiable
 19. User Types section: only list types who can START this flow (not all users in system)
 20. Alternative Paths: domain-specific edge cases, cancellations, user recoveries
 21. Negative Scenarios in flow: only domain/business errors (infrastructure → standards)
 22. Cross-Goal Notes: interactions between goals, shared state, dependencies
-23. Component Mapping: verify all component names/paths exist in actual codebase
+23. Component Mapping: use generic UI element names (form, button, field), NOT implementation class names
 24. UX Validation Checklist: all 5 must pass before marking flow complete
 25. Test each generated flow becomes actual Playwright test to verify happy path accuracy

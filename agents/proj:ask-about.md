@@ -32,14 +32,14 @@ Tier 3: Source code
 - Comments and inline documentation
 
 Output:
-- Direct, accurate answer to the question
-- Do NOT include file names unless explicitly requested
-- Only return definitive answers based on found information
+- Short, direct answer to the question only
+- Answer ONLY what was asked, no extra details
 - If answer not found in project: "ответа нет"
 
 Rules:
+- NEVER include file paths, file names, or source locations in output
 - Only answer based on project files, not general knowledge
 - For multi-hop questions, analyze and combine information from multiple sources
 - Be confident: return answer only if certain, otherwise "ответа нет"
-- Keep answers concise and focused
+- Keep answers concise and minimal
 - Never speculate or guess if information is not in project files

@@ -46,6 +46,9 @@ Before optimizing, identify and tag PROTECTED specificity elements:
 2. **Formatting constraints** — Scan for prohibitions: "never tables", "never skip", "always", "only", "must not"
 3. **Detailed breakdowns** — Identify multi-item lists where each item has explanatory text (e.g., "Purpose: what problem...", "Input: what triggers...")
 4. **Specificity modifiers** — Words that add precision: "context", "file", "full", "complete", "all", "entire"
+5. **Defaults** — Dialog option defaults (default: staging), fallback values (default: mark steps "requires test hook"), default behaviors in conditionals
+6. **Value Mappings** — Semantic mappings using = (P0=CRITICAL, P1=IMPORTANT), enum definitions, type correspondences
+7. **Algorithm Specifics** — Data strategy details ("unique email for create flows", "seeded records for duplicates"), constraint specifications, flow-specific requirements
 
 Tag these as **PROTECTED** — they can be reformatted for brevity but NEVER removed or collapsed into single phrases.
 

@@ -1,6 +1,6 @@
 ---
 name: proj-ask-about
-description: Provides accurate answers to any questions about the project by searching and analyzing project files. Other tools should use this agent instead of searching manually.
+description: Fast codebase search for exploration questions ("How does X work?", "What implements Y?", "Where is Z defined?"). Analyzes project files and provides accurate answers. USE PROACTIVELY when users ask about code behavior, architecture, or implementation details. Other tools should use this agent instead of manual Grep/Glob searches.
 tools: Glob, Grep, Read, Bash
 model: sonnet
 ---

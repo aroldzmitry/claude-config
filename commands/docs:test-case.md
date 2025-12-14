@@ -7,73 +7,97 @@ model: sonnet
 
 # docs:test-case
 
-Generate test cases from user flow + checklist with traceability and coverage validation.
+Generate test cases from user flow document + checklist with traceability and coverage validation.
 
-## Process
+## Instructions
 
-Parse args: `user-flow-path checklist-path [test-data-catalog] [env-profile]`
+Parse command args as: `user-flow-file-path checklist-file-path [test-data-catalog-path] [environment-profile-path]`
 
-Step 0: Validate files exist. If not → error "File not found: <path>" and exit. Derive FLOWCODE from flow filename (e.g., `user-registration.md` → `REG`).
+Step 0: Validate files. Check user-flow and checklist files exist and are readable. If not, output error: "File not found: <path>" and exit. Derive FLOWCODE from flow file name (e.g., `user-registration.md` → `REG`, `budget-creation.md` → `BUDG`).
 
-Step 1: Extract from user-flow: Goals, User types, Preconditions, Happy Path, Alternative paths, Negative scenarios, Success criteria, Infrastructure Behaviors (standard references), Component mapping, Boundaries.
+Step 1: Read user-flow file and extract: Goals, User types, Preconditions, Happy Path, Alternative paths, Negative scenarios, Success criteria, Infrastructure Behaviors (with standard references), Component mapping, Boundaries.
 
-Step 2: Extract from checklist: Item ID, Severity, Expected result, Source section.
+Step 2: Read checklist file and extract: Item ID, Severity (CRITICAL/IMPORTANT/OPTIONAL), Expected result, Source section.
 
-Step 3: Build requirement map by linking checklist items to flow sections via source reference. Infrastructure Behaviors reference shared standards (e.g., "Applies: Standard EH-001").
+Step 3: Build requirement map. Link each checklist item to flow section by matching source reference. Treat Goals, Success criteria, Alternative paths, Negative scenarios, Infrastructure Behaviors as requirements nodes. For Infrastructure Behaviors, note that these reference shared standards (e.g., "Applies: Standard EH-001") rather than inline definitions.
 
-Step 4: Decide test cases via coverage strategy:
+Step 4: Decide test cases using coverage strategy:
 - One happy path E2E for core CRITICAL items
 - One E2E per CRITICAL alternative that changes outcome
-- One E2E per CRITICAL error family (group similar errors if UI contract same)
+- One E2E per CRITICAL error family (group similar errors if UI contract is same)
 - One cancellation test if CRITICAL or frequently used
-- IMPORTANT: cover if risky/historically flaky
-- OPTIONAL: skip unless requested
+- IMPORTANT items: cover if risky or historically flaky
+- OPTIONAL: skip unless explicitly requested
 
-Step 5: Define test data. Use test-data-catalog IDs if provided (e.g., TD-EMAIL-VALID-UNIQUE), otherwise create inline section. Specify cleanup.
+Step 5: Define test data. If test-data-catalog provided, use its IDs (e.g., TD-EMAIL-VALID-UNIQUE). If not, create inline section with reusable IDs. Use unique email for create flows, seeded records for duplicates, specify cleanup.
 
-Step 6: Write test cases with format:
+Step 6: Write each test case:
 - TC ID: TC-<FLOWCODE>-###
-- Fields: Title, Priority (P0/P1/P2), Type (E2E/Component/Integration/Contract), Preconditions, Test Data, Cleanup, Covers
-- Steps: Action / Expected (UI-observable only: URL, visible text, element state)
+- Fields: Title, Priority (P0=CRITICAL, P1=IMPORTANT, P2=OPTIONAL), Type (E2E/Component/Integration/Contract), Preconditions, Test Data, Cleanup, Covers (checklist IDs)
+- Steps: Action / Expected (no combined steps). Expected must be UI-observable (URL, visible text, element state, error panel).
 
-Example structure:
+Example:
 ```
 TC-REG-001: Register happy path
-Priority: P0 | Type: E2E
-Preconditions: User not authenticated
+Priority: P0
+Type: E2E
+Preconditions: User not authenticated, /registration reachable
 Test Data: Name=TD-NAME-ASCII, Email=TD-EMAIL-VALID-UNIQUE
-Cleanup: Delete user via API | Covers: CL-001, CL-002
+Cleanup: Delete created user via API
+Covers: CL-001, CL-002, CL-006, CL-011
 
 Steps:
-1. Navigate to /registration → Expected: Form visible, button disabled
-2. Fill fields with test data → Expected: Validation indicators shown
-3. Click Register → Expected: Loading shown, form disabled
-4. Wait for redirect → Expected: Success message, URL is /login
+1. Navigate to /registration
+   Expected: Registration form visible, Register button disabled
+2. Fill Full Name with TD-NAME-ASCII
+   Expected: Field shows value
+3. Fill Email with TD-EMAIL-VALID-UNIQUE
+   Expected: Email valid indicator shown, Register enabled
+4. Click Register
+   Expected: Loading shown, form disabled
+5. Wait for success and redirect
+   Expected: Success message shown, URL is /login
 ```
 
-Step 7: Validate coverage. List CRITICAL items not covered, orphan test cases, backend-only items. If gaps → ask targeted questions but output best-effort result.
+Step 7: Validate coverage:
+- List CRITICAL items not covered
+- List test cases with no checklist IDs
+- List backend-only items moved to Integration/Contract
+- If gaps: ask targeted questions but output best-effort result
 
-Step 8: Output to `docs/testCases/<area>/[flow-filename].md`: Metadata, Test Data section, Test Cases (grouped by priority), Coverage Report (gaps, orphans, backend items), Out of scope.
+Step 8: Output single markdown file to `docs/testCases/<area>/[user-flow-file-name].md` (preserving flow file name pattern):
+- Metadata block (Flow name, source files, generated date)
+- Test Data section
+- Test Cases section (grouped by priority or type)
+- Coverage Report section (gaps, orphans, backend items)
+- Out of scope reminders
 
-Step 9: Git stage with `git add <output-path>`.
+Step 9: Add generated file to git tracking. Run `git add <output-file-path>` to stage file for commit.
 
 ## Output
 
 Status: Complete | Gaps identified | Need clarification
-- Test cases count by priority (P0/P1/P2)
+
+Data:
+- Test cases generated (count by priority)
 - Coverage % (checklist items covered)
 - Blockers (if any)
 
 ## Dialogs
 
-**Dialog 1: Environment & Error Setup** (only if blocking info missing)
-When: Preconditions, error-forcing, or auth unclear
-Options: Target env (staging/local/prod), Error forcing (mock/flag/hook), Error contract (exact/presence), Auth (hook/manual/flag)
-Action: Apply selections or mark blocked steps
+**Dialog 1: Environment & Error Setup (if blocking info missing)**
+- When: Preconditions, error-forcing strategy, or auth setup unclear
+- Type: Multi-select (pick applicable, others default)
+- Options:
+  - Target environment: staging / local / prod-like (default: staging)
+  - Error forcing: mock layer / feature flag / test endpoint / requires manual hook (default: mark steps "requires test hook")
+  - Error contract: exact text match / presence only (default: presence only)
+  - Auth preconditions: test hook / manual login / feature flag (default: test hook)
+- Action: Apply selections or mark blocked steps
 
-**Dialog 2: Coverage Summary** (after generation)
-Shows: P0/P1/P2 count, coverage %, gaps
-Ask: Proceed / adjust count / add gap details
+**Dialog 2: Coverage Summary (shown after test case generation completes)**
+- Shows: count P0/P1/P2 cases, coverage %, list of gaps
+- Ask: Proceed with output / adjust case count / add details for gaps
 
 ## Rules
 

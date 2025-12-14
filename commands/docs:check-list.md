@@ -111,8 +111,8 @@ Organize items into sections using Section Mapping (see below):
 - **Success & Navigation** — confirmation, redirect, data persistence
 - **Alternative Conditions** — conditional logic from Alternative Paths
 - **Errors & Recovery** — negative scenarios, retry, standard references
-- **Accessibility Basics** — keyboard nav, focus, ARIA roles for forms
-- **Analytics Events** — if Component Mapping includes analytics
+- **Accessibility** — ONLY if flow has UX Validation Checklist section with accessibility requirements
+- **Analytics Events** — ONLY if Component Mapping includes analytics tracking
 
 ### 6. Add Conditional Checks
 
@@ -157,7 +157,8 @@ From Component Mapping section, create checks for **critical states only**:
 | Negative Scenarios (domain) | Errors & Recovery | Error-specific checks |
 | Negative Scenarios (infra refs) | Errors & Recovery | Standard references (e.g., "follows Standard NET-001") |
 | Component Mapping | Submit & Success + states | UI state transitions (idle/loading/success/error) |
-| UX Validation Checklist | Accessibility Basics | UX contract checks |
+| UX Validation Checklist (if present) | Accessibility | Accessibility checks from flow ONLY |
+| Component Mapping (analytics) | Analytics Events | Analytics tracking (if explicitly in flow) |
 
 ### 10. Pre-Output Validation (Mandatory, Blocking)
 
@@ -184,16 +185,15 @@ External Systems (OAuth, SMTP, Plaid, payment gateways) inform scope, NOT checkl
 
 ### 12. Ask Questions (Only When Needed)
 
-Use `AskUserQuestion` ONLY if checklist becomes speculation. Use defaults:
+Use `AskUserQuestion` ONLY if checklist becomes unexecutable without answer. Use defaults:
 
 - Browser/Device Support → Chrome/Firefox/Safari desktop + mobile (375px, 1280px)
-- UX Metrics → <3s data fetch, <1s navigation
 - Error Text Contract → check flow's Negative Scenarios for standard refs; fallback: generic (message visible, recovery option, loading cleared)
 - Data Persistence → no persistence unless flow specifies
 - Roles/Permissions → use flow's User Types
 - Test Data → note as `[TEST-DATA-REQUIRED]`
 
-Do NOT ask: External Systems, Field validations, Error standards, Happy path steps (extract from flow).
+Do NOT ask: UX Metrics/timing (only use if flow specifies), External Systems, Field validations, Error standards, Happy path steps, Accessibility (only from flow's UX Validation Checklist).
 
 ### 13. Output Format
 
@@ -224,11 +224,17 @@ File: `docs/checkLists/{flow-name}.md`
 |----|----------|-------|-----------------|--------|
 | CL-003 | [CRITICAL] | Email validation on blur | Invalid email → inline error "Invalid email format" | Happy Path Step 2 |
 
-## Submit & Success, Alternative Conditions, Error Handling, Accessibility
+## Submit & Success, Alternative Conditions, Error Handling
 
 [Same table structure, one example row per section]
 
-Note: Analytics Events section is optional — only include if analytics tracking is critical to flow validation.
+## Accessibility (if flow has UX Validation Checklist)
+
+[Only include this section if flow explicitly defines accessibility requirements]
+
+## Analytics Events (if explicitly tracked in flow)
+
+[Only include if Component Mapping includes analytics tracking]
 
 ## Out of Scope
 

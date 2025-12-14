@@ -17,13 +17,14 @@ Analyzes and optimizes existing Claude tools (commands, agents, skills). Removes
 
 1. **Load tool** — Read target tool file
 2. **Extract functions** — List all functional components and critical rules
-3. **Check official docs** — WebSearch for official Claude Code documentation for this tool type
-4. **Analyze redundancy** — Identify verbose sections, duplicate patterns, unnecessary examples
-5. **Optimize** — Remove non-critical verbosity, condense examples, deduplicate sections
-6. **Validate** — Check all functional components preserved
-7. **Restore if needed** — If any functionality lost, restore it and re-validate (iterate until 100% preserved)
-8. **Commit and push** — Stage changes with git add, commit with optimization summary, push to remote
-9. **Report** — Output optimization report
+3. **Pre-optimization analysis** — Identify and tag protected specificity elements
+4. **Check official docs** — WebSearch for official Claude Code documentation for this tool type
+5. **Analyze redundancy** — Identify verbose sections, duplicate patterns, unnecessary examples
+6. **Optimize** — Remove non-critical verbosity, condense examples, deduplicate sections (respecting protected elements)
+7. **Validate** — Check all functional components preserved
+8. **Restore if needed** — If any functionality lost, restore it and re-validate (iterate until 100% preserved)
+9. **Commit and push** — Stage changes with git add, commit with optimization summary, push to remote
+10. **Report** — Output optimization report
 
 ## Functionality Extraction
 
@@ -36,6 +37,17 @@ Extract all functional components:
 - Dialog flows and interactions
 - Output formats that tools depend on
 - Integration points with other tools
+
+## Pre-Optimization Analysis (Step 3)
+
+Before optimizing, identify and tag PROTECTED specificity elements:
+
+1. **Behavioral directives** — Scan for action verbs: "ask if", "understand before", "recurse", "iterate", "check", "verify"
+2. **Formatting constraints** — Scan for prohibitions: "never tables", "never skip", "always", "only", "must not"
+3. **Detailed breakdowns** — Identify multi-item lists where each item has explanatory text (e.g., "Purpose: what problem...", "Input: what triggers...")
+4. **Specificity modifiers** — Words that add precision: "context", "file", "full", "complete", "all", "entire"
+
+Tag these as **PROTECTED** — they can be reformatted for brevity but NEVER removed or collapsed into single phrases.
 
 ## Output Format
 
@@ -93,6 +105,10 @@ If tool path not provided, ask once:
 - Remove integration points or dependencies
 - Remove output specifications that other tools depend on
 - Remove dialog definitions or interaction patterns
+- Remove specificity modifiers (like "context" in "conversation context", "file" in "tool file")
+- Remove behavioral action directives (like "ask if unclear", "understand before changing")
+- Collapse detailed breakdowns into single lines when each item has explanatory text
+- Remove formatting constraints (like "never tables", "compact lists")
 - Simplify beyond clarity (if it becomes unclear, restore)
 
 ## Validation Checklist

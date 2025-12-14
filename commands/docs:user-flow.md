@@ -79,8 +79,6 @@ Prohibited in sequences:
 - Component class names or implementation details
 - Technical processes invisible to user
 
-Implementation details belong in Implementation Notes section only.
-
 ### Flow Normalization (Mandatory Before Writing)
 
 1. **Identify shared behaviors**: behaviors identical across multiple flows, infrastructure concerns, system reactions (not user intentions)
@@ -104,7 +102,7 @@ Output checklist BEFORE using Write tool:
 - Happy Path contains ONLY user-visible actions and responses
 - NO backend operations in sequences
 - NO file paths or code references in sequences
-- Technical details ONLY in Implementation Notes section
+- NO technical implementation details anywhere in document
 
 **Sanity Checks (all MUST pass):**
 1. Preconditions: only flow-blocking items (removed cross-flow)
@@ -265,22 +263,13 @@ Typical candidates: network/auth/server errors, loading states, empty states, pe
 - Bad: "System checks database for duplicate email" (backend operation)
 - Bad: "POST request sent to /api/user" (technical implementation)
 
-**Implementation Details** — Belongs ONLY in Implementation Notes section at end of document.
-- Security implementation (encryption, hashing)
-- Backend validation logic
-- Database operations
-- API endpoints and file paths
-- Component class names
-
 ### Observable-Only Enforcement
 
 Happy Path must be convertible to Playwright test steps:
 1. Can tester see this on screen? → Observable, include it
-2. Is this backend processing? → Remove from sequence
-3. Is this technical detail? → Move to Implementation Notes
-4. Does this have file path? → Remove from sequence
-
-All technical verification belongs in Implementation Notes, never in sequences.
+2. Is this backend processing? → Remove from document
+3. Is this technical detail? → Remove from document
+4. Does this have file path? → Remove from document
 
 ## Flow Sanity Checks - 7 Mandatory Checks
 
@@ -352,7 +341,7 @@ For other uncertainties, convert to Observable or generalize.
 12. Negative Scenarios contain ONLY domain errors, business violations, flow-specific edge cases
 13. Infrastructure errors (network, auth, server) ALWAYS reference standards with scope, never inline
 14. Happy Path sequences contain ONLY Observable statements — NO backend operations, NO file paths
-15. Technical implementation details belong ONLY in Implementation Notes section
+15. NO technical implementation details anywhere in document
 16. Infrastructure standard references must include scope: "Applies: Standard NET-001 (scope: form submission)"
 17. Minimize verbosity: no parenthetical explanations, no technical details in sequences
 18. System Boundaries questions are mandatory, non-negotiable

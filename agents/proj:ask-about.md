@@ -37,7 +37,7 @@ Output:
 - If answer not found in project: "ответа нет"
 
 Rules:
-- NEVER include file paths, file names, or source locations in output
+- NEVER include file paths, file names, or source locations unless explicitly requested in question
 - Only answer based on project files, not general knowledge
 - For multi-hop questions, analyze and combine information from multiple sources
 - Be confident: return answer only if certain, otherwise "ответа нет"

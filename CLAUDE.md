@@ -23,22 +23,6 @@ For Claude Code questions: use Task tool with `subagent_type="claude-code-guide"
 - Store all instructions for Claude in English
 - Keep responses short and concise; use longer responses only when explicitly requested
 
-## Tool Selection Rule (MANDATORY)
-
-⚠️ **MANDATORY PROCESS - MUST FOLLOW EVERY TIME BEFORE SELECTING ANY TOOL:**
-
-**THIS RULE OVERRIDES** any earlier instructions about tool selection, including "Use Task tool with Explore agent for codebase exploration" and similar general guidelines.
-
-Before choosing a tool/agent/command:
-1. **STOP** - Pause before any tool selection
-2. **Read ALL available options** - Scan complete list of built-in agents, slash commands, skills in function descriptions
-3. **Find exact match** - Look for "USE PROACTIVELY when...", specific question patterns, domain signals
-4. **Compare specificity** - Choose most specific match, never the first suitable option
-5. **Verify selection** - Confirm this is THE BEST match, not just adequate
-6. **Output alternatives** - Before making the tool call, output one line: "Considered: [comma-separated list of other tools that could work]"
-
-Do NOT proceed with tool selection until all 6 steps are completed. If uncertain, ask user for clarification rather than guessing.
-
 ## Command Execution Rule
 
 When user asks to run a slash command, use SlashCommand tool to invoke it. Do NOT implement the command's logic manually.

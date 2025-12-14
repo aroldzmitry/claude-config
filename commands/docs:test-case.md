@@ -44,6 +44,8 @@ If all pass → derive FLOWCODE from flow file name (e.g., `user-registration.md
 
 Read user-flow file and extract: Goals, User types, Preconditions, Happy Path, Alternative paths, Negative scenarios, Success criteria, Infrastructure Behaviors (standard references), Component mapping, Boundaries.
 
+**For each infrastructure standard reference (NET-001, SRV-001, etc.)**: Read standard file from `docs/standards/` to extract exact error messages, UI requirements, timing constraints.
+
 Map flow sections to test requirements using Section Mapping Table below.
 
 **Section Mapping Table:**
@@ -74,15 +76,25 @@ If test-data-catalog provided → use IDs (e.g., TD-EMAIL-VALID-UNIQUE).
 If not → create inline Test Data section with reusable IDs.
 - Use unique emails for create flows
 - Use seeded records for duplicate scenarios
-- Specify cleanup strategy (API deletion, database reset, etc.)
+- Cleanup strategy: use only if explicitly documented in flow or standards; otherwise state "Cleanup: See test infrastructure docs"
+
+**Validation**: Verify Test Data IDs match their usage in test cases (e.g., TD-NAME-VALID used for Name field, not Email field).
 
 ### Step 4: Write Test Cases
 
 Each test case format:
 - TC ID: TC-<FLOWCODE>-###
-- Fields: Title, Priority (P0/P1/P2), Type (E2E/Integration/Contract), Preconditions, Test Data, Cleanup, Covers (flow section references)
-- Steps: Action / Expected (no combined steps). Expected must be UI-observable (URL, visible text, element state, error panel).
+- Fields: Title, Priority (P0/P1/P2), Type (E2E/E2E+Mock/Integration/Contract), Preconditions, Test Data, Cleanup, Covers (flow section references)
+- Steps: Action / Expected / Source (no combined steps)
+  - **Expected**: UI-observable only (URL, visible text, element state). Extract ONLY from flow or standard file—do NOT invent UI details (border colors, animations, exact wording unless quoted in source).
+  - **Source**: Citation showing origin (e.g., "Flow line 29", "Standard NET-001 UI Requirements", "Field Validations#email")
 - Covers field examples: "Happy Path Steps 1-5", "Alternative A1", "Negative Scenario N2"
+
+**Test Types**:
+- **E2E**: UI steps from flow only, no mocking
+- **E2E+Mock**: UI steps with infrastructure mocking (network/server errors from standards)
+- **Integration**: API-level tests, no UI steps
+- **Contract**: API request/response validation
 
 Example:
 ```
@@ -90,36 +102,39 @@ TC-REG-001: Register happy path
 Priority: P0
 Type: E2E
 Preconditions: User not authenticated, /registration reachable
-Test Data: Name=TD-NAME-ASCII, Email=TD-EMAIL-VALID-UNIQUE
-Cleanup: Delete created user via API
-Covers: Happy Path Steps 1-5
+Test Data: Name=TD-NAME-VALID, Email=TD-EMAIL-VALID-UNIQUE
+Cleanup: See test infrastructure docs
+Covers: Happy Path Steps 1-4
 
 Steps:
 1. Navigate to /registration
-   Expected: Registration form visible, Register button disabled
-2. Fill Full Name with TD-NAME-ASCII
-   Expected: Field shows value
-3. Fill Email with TD-EMAIL-VALID-UNIQUE
-   Expected: Email valid indicator shown, Register enabled
-4. Click Register
-   Expected: Loading shown, form disabled
-5. Wait for success and redirect
-   Expected: Success message shown, URL is /login
+   Expected: Registration form displays with name and email fields, both fields empty, submit button disabled
+   Source: Flow line 29
+2. Enter full name in name field
+   Expected: Field accepts input
+   Source: Flow line 30
+3. Enter email address in email field
+   Expected: Field accepts input, submit button becomes enabled
+   Source: Flow line 31
+4. Click "Register" button
+   Expected: Button shows loading state, success notification displays "Account created successfully", user redirected to login page /login
+   Source: Flow line 32, Success Criteria lines 35-37
 ```
 
 ### Step 5: Pre-Output Validation (Mandatory, Blocking)
 
 Output validation checklist BEFORE creating test file. If violations → fix → re-run → confirm pass → proceed.
 
-**5 Validation Checks:**
+**6 Validation Checks:**
 
-1. **Observable-Only Enforcement** — Every Expected Result is user-visible (no backend ops, API status codes, database states)
+1. **Observable-Only Enforcement** — Every Expected Result is user-visible (no backend ops, API status codes, database states). No UI implementation details unless quoted in source (e.g., no "border turns red" unless flow/standard states it).
 2. **Flow-Based Traceability** — Every flow section covered by ≥1 test; every test links to flow sections via Covers field
-3. **Test Type Accuracy** — E2E tests have UI steps only; Integration/Contract tests for backend/API validation
+3. **Test Type Accuracy** — E2E tests have UI steps only; E2E+Mock tests have UI steps with mocked infrastructure; Integration/Contract tests for backend/API validation with no UI steps
 4. **Coverage Completeness** — Happy Path has P0 test; every Alternative/Error from flow has test
-5. **Test Data References** — All test data uses TD-IDs (not literal strings); cleanup strategy specified
+5. **Test Data References** — All test data uses TD-IDs (not literal strings); TD-ID names match usage (TD-NAME-* for name fields, TD-EMAIL-* for email fields)
+6. **Source Citation** — Every Expected Result has Source field citing exact document location (flow line number, standard section, field validation reference)
 
-If violations → fix → re-run all 5 → confirm pass → proceed.
+If violations → fix → re-run all 6 → confirm pass → proceed.
 
 ### Step 6: Output Test Cases File
 
@@ -144,8 +159,9 @@ Output:
 Test Cases: docs/testCases/<area>/[flow-name].md
 Generated: X test cases (Y P0, Z P1, W P2)
 Coverage: X flow sections tested
-Validation: All 5 checks passed
+Validation: All 6 checks passed
 Gaps: [list if any]
+Standards read: [list standard files consulted]
 ```
 
 ## Dialogs (Compact Format with Defaults)
@@ -162,13 +178,16 @@ Do NOT ask: Test priorities (use Section Mapping), test types (use flow section)
 
 ## Rules
 
-- Extract ONLY from flow — never invent requirements
-- Every test case: executable, UI-observable Expected Results, links to flow sections via Covers field
-- NO backend assertions in E2E tests (API status, database states) — use Integration/Contract type
-- Use test data IDs (TD-*), not literal strings; specify cleanup strategy
+- Extract ONLY from flow and standards — never invent requirements, UI details, error messages, or behaviors
+- Every Expected Result must cite source (flow line number, standard section, field validation reference)
+- Read infrastructure standard files (NET-001, SRV-001, etc.) to extract exact error messages, UI requirements, retry behaviors
+- NO UI implementation details unless quoted in source (no "border turns red", "spinner animation", exact colors unless documented)
+- NO backend assertions in E2E/E2E+Mock tests (API status, database states) — use Integration/Contract type
+- Use test data IDs (TD-*), not literal strings; validate TD-ID names match field usage
 - Keep test count lean (few high-value cases covering all flow sections)
-- Flow-based traceability: every flow section covered, every test traces to flow sections
-- Pre-Output Validation MANDATORY — 5 checks must pass before creating file
+- Flow-based traceability: every flow section covered, every test traces to flow sections via Covers field
+- Pre-Output Validation MANDATORY — 6 checks must pass before creating file
 - Section Mapping Table determines test type/priority
-- Target: 1 Happy Path E2E, 1 E2E per CRITICAL alternative/error, Integration/Contract for infra refs
+- Test types: E2E (UI-only), E2E+Mock (UI with infrastructure mocking), Integration (API-only), Contract (API structure)
+- Target: 1 Happy Path E2E, 1 E2E per CRITICAL alternative/error, E2E+Mock for infra standard refs
 - Output single markdown file to `docs/testCases/<area>/[user-flow-file-name].md`

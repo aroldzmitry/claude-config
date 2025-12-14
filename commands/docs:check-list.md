@@ -18,13 +18,11 @@ Flow MUST contain these sections:
 - User Types
 - Goal sections with: Happy Path, Form Fields (for form flows), Exit Paths, Alternative Paths, Negative Scenarios, UX Validation Checklist, Component Mapping
 
-## Terminology (Aligned with docs:user-flow)
+## Terminology
 
-Shared Standard — system-wide behavior documented in `docs/standards/{ID}-{name}.md`, referenced by flows as "Standard {ID}" with scope.
-
-Field Validations — centralized validation rules in `docs/standards/FIELD-VALIDATIONS.md`, referenced by flows in Form Fields section.
-
-Observable — user-visible UI behavior only (no backend operations, no implementation details).
+Shared Standard — system-wide behavior in `docs/standards/{ID}-{name}.md`, referenced as "Standard {ID}" with scope.
+Field Validations — validation rules in `docs/standards/FIELD-VALIDATIONS.md`.
+Observable — user-visible UI behavior (no backend/implementation details).
 
 ## Process
 
@@ -56,30 +54,13 @@ Each entity becomes one or more checklist items.
 
 ### 3. Normalize to User-Observable Assertions
 
-Convert Happy Path steps to **user-visible outcomes only**. Apply Observable-Only Pattern (from docs:user-flow).
+Convert Happy Path steps to user-visible outcomes only (see Terminology: Observable).
 
-**Observable — ONLY type allowed**
-User-visible UI behavior (messages, buttons, redirects, loading states).
-- Good: "Validation error displays below email field"
-- Good: "Submit button shows loading indicator"
-- Good: "User redirected to login page"
-- Bad: "Backend validates email format" (invisible to user)
-- Bad: "System checks database for duplicate email" (backend operation)
-- Bad: "POST request sent to /api/user" (technical implementation)
-
-**Conversion test (4 questions):**
-1. Can tester see this on screen? → Observable, include it
-2. Is this backend processing? → Remove from checklist
-3. Is this technical detail? → Remove from checklist
-4. Does this have file path? → Remove from checklist
-
-**Forbidden patterns:**
-- ❌ Implementation details ("Backend returns 200 OK", "Database saves record", "API status 201")
-- ❌ Intermediate UI states ("field focused", "validating state", "field filled") unless critical
-- ❌ Duplicate error conditions (separate checks for network/500/race when behavior identical)
-- ❌ Backend operations ("validates credentials", "checks database", "sends request")
-- ❌ File paths or code references ("LoginForm.tsx", "src/api/auth.ts")
-- ❌ Component implementation names ("AuthProvider", "useLoginMutation hook")
+**Forbidden:**
+- ❌ Backend ops ("validates", "checks database", "API returns 200")
+- ❌ Implementation details (file paths, class names, hook names)
+- ❌ Intermediate states ("focused", "validating") unless critical
+- ❌ Duplicate error checks (network/500/timeout → single standard reference)
 
 **3-part Happy Path transformation pattern:**
 
@@ -100,27 +81,12 @@ Checklist items:
 - CL-002: Validation error displays below field on invalid email
 - CL-003: Error message text matches [FIELD-VALIDATIONS#email](../standards/FIELD-VALIDATIONS.md#email)
 
-**Consolidation Guidelines (Aggressive Merging Required):**
-
-Pattern: Multiple alternatives describing same UI behavior → single check.
-
-Example 1 — Field Validation:
-- Before: A1: name empty → error, A2: email empty → error, A3: both empty → error
-- After: CL-###: Required field validation displays inline errors (see FIELD-VALIDATIONS.md)
-
-Example 2 — Infrastructure Errors:
-- Before: N1: network timeout → retry, N2: 500 error → retry, N3: race condition → retry
-- After: CL-###: Error handling follows Standard NET-001 (scope: form submission)
-
-Example 3 — Similar User Actions:
-- Before: CL-001: Cancel button visible, CL-002: Cancel button enabled, CL-003: Cancel button clickable
-- After: CL-001: Cancel button visible and functional
-
-Rules:
-- Merge 3+ similar error scenarios → single check referencing standard or pattern
-- Skip intermediate states → only initial and final states
-- Combine redundant validations → one check per unique user outcome
-- If 5+ items describe same UI contract → consolidate to 1-2 items max
+**Consolidation (Aggressive Merging Required):**
+- Merge 3+ similar scenarios → single check (e.g., field validations → FIELD-VALIDATIONS.md reference)
+- Infrastructure errors → standard references (e.g., NET-001)
+- Similar UI checks → combine (e.g., "button visible + enabled + clickable" → "button visible and functional")
+- Skip intermediate states → initial/final only
+- If 5+ items same UI contract → consolidate to 1-2 max
 
 ### 4. Extract Form Field Validations
 
@@ -195,125 +161,39 @@ From Component Mapping section, create checks for **critical states only**:
 
 ### 10. Pre-Output Validation (Mandatory, Blocking)
 
-Output validation checklist BEFORE creating checklist file. If violations found → fix → re-run validation → confirm all pass → then proceed to output.
+Output validation checklist BEFORE creating file. If violations → fix → re-run → confirm pass → proceed.
 
-**Validation Checklist:**
+**8 Validation Checks:**
 
-1. **Observable-Only Enforcement**
-   - Every item is user-visible (no backend ops, no API codes, no database states)
-   - NO file paths or code references
-   - NO component implementation details (class names, hook names)
-   - Test: "Can user see/experience this without dev tools?" If no → violation
-   - Example violation: "CL-005: Backend returns 201 status" → replace with "CL-005: Success message displays"
+1. **Observable-Only** — Every item user-visible (no backend ops, API codes, file paths, class names)
+2. **Item Count** — 20-30 typical (40 max); if >40 → consolidate
+3. **Coverage** — Every Goal ≥1 item; every CRITICAL Alternative ≥1 item; errors consolidated (2-3 total)
+4. **Traceability** — Every item traces to flow section; no invented requirements
+5. **Binary Assertions** — Pass/Fail only (no "smooth"/"fast" without criteria)
+6. **Consolidation Applied** — No redundant variations; infrastructure errors → standard refs
+7. **Severity Assigned** — Every item has [CRITICAL]/[IMPORTANT]/[OPTIONAL]
+8. **External Systems Scope** — Systems inform boundaries, NOT checklist items; integration errors → user-observable outcomes
 
-2. **Item Count Target**
-   - Total items: 20-30 for typical flow (40 max for complex)
-   - If >40 items → aggressive consolidation required
-   - Test: Count items per section, identify merge candidates
-   - Example violation: 15 error items → consolidate to 2-3 using standard references
+If violations → fix → re-run all 8 → confirm pass → proceed.
 
-3. **Coverage Completeness**
-   - Every Goal has ≥1 item
-   - Every CRITICAL Alternative Path has ≥1 item
-   - Error scenarios consolidated (2-3 checks total, not one per scenario)
-   - Component states: only critical (idle/loading/success/error), skip intermediate
-   - Test: Check coverage matrix against flow sections
-   - Example violation: Goal "Create account" has no success check → add success navigation item
+### 11. External Systems Handling
 
-4. **Traceability**
-   - Every item traces to specific flow section via Source column
-   - NO invented requirements (not in flow)
-   - If untraceable → mark `[NEEDS-CLARIFICATION]` and ask user
-   - Test: For each item, find matching flow section reference
-   - Example violation: "CL-020: Password strength meter visible" but flow has no password field → remove or clarify
-
-5. **Binary Assertions Only**
-   - Every item is Pass/Fail (no subjective terms without criteria)
-   - "Smooth" fails unless defined as "<200ms animation"
-   - "Fast" fails unless defined with timing threshold
-   - Test: Scan for subjective terms (smooth, fast, clean, intuitive, seamless)
-   - Example violation: "CL-012: Form loads smoothly" → replace with "CL-012: Form renders within 1s"
-
-6. **Consolidation Applied**
-   - No redundant variations describing same pattern (see Consolidation Guidelines)
-   - No duplicate checks across sections
-   - Infrastructure errors → standard references only
-   - Test: Identify items with similar expected results, merge if UI contract identical
-   - Example violation: CL-015/016/017 all check "error message visible" for different errors → merge to "Error UI follows Standard EH-001"
-
-7. **Severity Assigned**
-   - Every item has [CRITICAL], [IMPORTANT], or [OPTIONAL]
-   - CRITICAL = flow cannot complete without this (entry, happy path success, critical errors)
-   - IMPORTANT = common user need or historically flaky
-   - OPTIONAL = nice-to-have (analytics, edge error messages)
-   - Test: Verify every row has severity tag
-   - Example violation: Missing severity → assign based on impact to flow completion
-
-8. **External Systems Scope**
-   - Flow's External Systems section informs boundaries but does NOT become checklist items
-   - External system integration errors → reference standards or domain-specific checks
-   - Test: Ensure no items like "CL-030: SMTP server reachable" (infrastructure, not user-observable)
-   - Example violation: "CL-025: Plaid API responds" → replace with "CL-025: Bank connection flow completes or shows error"
-
-If violations found → fix violations → re-run all 8 checks → confirm all pass → proceed to output.
-
-### 11. External Systems Warning
-
-Flow's System Context may list External Systems (OAuth, SMTP, Plaid, payment gateways, etc.).
-
-**How to handle:**
-- External systems inform scope and boundaries (what integrations exist)
-- They do NOT become standalone checklist items
-- Integration errors → reference domain-specific error checks or standards
-- User-observable integration outcomes only
-
-**Examples:**
-- Flow lists "External Systems: Google OAuth"
-  - Good: CL-015: Google login button visible on login page
-  - Good: CL-016: OAuth flow completes or shows error message
-  - Bad: CL-017: Google OAuth API responds with 200 status (backend, not observable)
-
-- Flow lists "External Systems: Stripe"
-  - Good: CL-020: Payment form accepts card input
-  - Good: CL-021: Payment success/failure message displays
-  - Bad: CL-022: Stripe API webhook received (backend event, not user-visible)
+External Systems (OAuth, SMTP, Plaid, payment gateways) inform scope, NOT checklist items.
+- Create items for user-observable outcomes only (login button visible, payment success message)
+- NO backend checks (API responds, webhook received, server reachable)
 
 ### 12. Ask Questions (Only When Needed)
 
-Use `AskUserQuestion` ONLY if checklist would become speculation without answer. Most questions have safe defaults — use them.
+Use `AskUserQuestion` ONLY if checklist becomes speculation. Use defaults:
 
-Ask only for:
+- Browser/Device Support → Chrome/Firefox/Safari desktop + mobile (375px, 1280px)
+- UX Metrics → <3s data fetch, <1s navigation
+- Error Text Contract → check flow's Negative Scenarios for standard refs; fallback: generic (message visible, recovery option, loading cleared)
+- Data Persistence → no persistence unless flow specifies
+- Roles/Permissions → use flow's User Types
+- Test Data → note as `[TEST-DATA-REQUIRED]`
 
-**Browser/Device Support** (if flow mentions specific platforms or user reports browser issues)
-"Which browsers and breakpoints must this flow support?"
-- Default: Chrome/Firefox/Safari desktop + mobile (375px, 1280px)
-
-**UX Metrics** (if flow has timing requirements or SLA documented)
-"What are timing expectations for loading states?"
-- Default: <3s for data fetch, <1s for navigation
-
-**Error Text Contract** (only if flow's Negative Scenarios lack standard references AND domain errors unclear)
-"Where are error messages documented?"
-- Default: check flow's Negative Scenarios for standard references (format: "Applies: Standard {ID} (scope: context)")
-- If no standard references: use generic error contract (message visible, recovery option, loading cleared)
-
-**Data Persistence** (only if flow mentions draft/autosave or user explicitly asks)
-"Should form data persist on cancel/back/reload?"
-- Default: no persistence unless flow specifies
-
-**Roles & Permissions** (only if flow's User Types conflict or are missing)
-"What user roles/permissions exist for this flow?"
-- Default: use flow's User Types section
-
-**Test Data** (only if specific data values affect flow outcome)
-"What test data should be used for verification?"
-- Default: note as `[TEST-DATA-REQUIRED]` in Notes section
-
-Do NOT ask about:
-- External Systems (use flow's System Context)
-- Field validations (use flow's Form Fields section + FIELD-VALIDATIONS.md)
-- Error standards (use flow's Negative Scenarios standard references)
-- Happy path steps (extract from flow's Happy Path section)
+Do NOT ask: External Systems, Field validations, Error standards, Happy path steps (extract from flow).
 
 ### 13. Output Format
 
@@ -337,18 +217,16 @@ File: `docs/checkLists/{flow-name}.md`
 | ID | Severity | Check | Expected Result | Source |
 |----|----------|-------|-----------------|--------|
 | CL-001 | [CRITICAL] | Page loads without errors | No console errors; all assets load | Preconditions |
-| ... | ... | ... | ... | ... |
 
 ## Form & Validation
 
 | ID | Severity | Check | Expected Result | Source |
 |----|----------|-------|-----------------|--------|
 | CL-003 | [CRITICAL] | Email validation on blur | Invalid email → inline error "Invalid email format" | Happy Path Step 2 |
-| ... | ... | ... | ... | ... |
 
 ## Submit & Success, Alternative Conditions, Error Handling, Accessibility
 
-[Same table structure as above, one example row per section + ...]
+[Same table structure, one example row per section]
 
 Note: Analytics Events section is optional — only include if analytics tracking is critical to flow validation.
 
@@ -378,54 +256,14 @@ Coverage: Goals (X), Alternatives (Y), Errors (Z), States (W)
 Validation: All 8 checks passed
 ```
 
-## Rules (Priority Order)
+## Rules
 
-**Extraction Rules**
-1. Extract ONLY from flow document — never invent requirements
-2. Every item must be user-observable (testable without dev tools)
-3. Every item must be binary (Pass/Fail, no subjective terms)
-4. Every item must trace to flow section (Happy Path Step X, Alternative A2, etc.)
-
-**Observable-Only Rules**
-5. NO backend operations ("validates", "checks database", "sends request")
-6. NO API implementation details (status codes, endpoints, request/response structure)
-7. NO file paths or code references ("LoginForm.tsx", "src/api")
-8. NO component implementation names (class names, hook names, provider names)
-9. Apply 4-question test: Can user see it? Backend processing? Technical detail? File path?
-
-**Consolidation Rules**
-10. Merge 3+ similar scenarios → single check (see Consolidation Guidelines)
-11. Infrastructure errors → standard references (not inline descriptions)
-12. Skip intermediate states (focused, filled, validating) → only initial/loading/success/error
-13. One check per unique user outcome (not one per variation)
-14. Target 20-30 items (40 max); if >40 → aggressive consolidation required
-
-**Scope Rules**
-15. External Systems inform boundaries but are NOT checklist items
-16. Integration errors → user-observable outcomes only (not API reachability)
-17. Out-of-scope items → separate section, not mixed with checks
-18. Flow boundaries (System Context) define what to include/exclude
-
-**Priority Rules**
-19. CRITICAL = flow cannot complete without (entry, happy path success, critical errors)
-20. IMPORTANT = common user need or historically flaky
-21. OPTIONAL = nice-to-have (analytics, edge error messages, extra validation)
-22. Every item MUST have severity tag
-
-**Coverage Rules**
-23. Every Goal ≥1 item (success criteria check)
-24. Every CRITICAL Alternative ≥1 item
-25. Error scenarios consolidated (2-3 total, not one per error)
-26. Component states: only critical (idle/loading/success/error)
-
-**Structure Rules**
-27. Source column required (trace to flow section)
-28. Severity column required ([CRITICAL]/[IMPORTANT]/[OPTIONAL])
-29. Expected Result must be observable UI behavior
-30. Section grouping: Page Load, Form, Submit, Success, Alternatives, Errors, Accessibility
-
-**Validation Rules (Blocking)**
-31. Pre-Output Validation is MANDATORY — 8 checks must pass before creating file
-32. If violations found → fix → re-run validation → confirm pass → then output
-33. Never skip validation steps
-34. Report validation status in output summary
+- Extract ONLY from flow — never invent requirements
+- Every item: user-observable, binary (Pass/Fail), traces to flow section
+- NO backend ops, API details, file paths, class names
+- Consolidate: merge 3+ similar → single check; infrastructure errors → standard refs; skip intermediate states
+- External Systems inform scope, NOT checklist items
+- Severity required: [CRITICAL] (flow-blocking), [IMPORTANT] (common/flaky), [OPTIONAL] (nice-to-have)
+- Coverage: Every Goal ≥1 item; every CRITICAL Alternative ≥1 item; errors consolidated (2-3 total)
+- Target 20-30 items (40 max)
+- Pre-Output Validation MANDATORY — 8 checks must pass before output

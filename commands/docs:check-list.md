@@ -28,32 +28,6 @@ Observable — user-visible UI behavior only (no backend operations, no implemen
 
 ## Process
 
-### 0. Pre-Checklist Validation (Blocking)
-
-Read flow file and verify:
-
-**Flow Structure Valid**
-- All required sections present (System Context, Goals, Happy Path, Alternative Paths, Negative Scenarios, UX Validation, Component Mapping)
-- Goals are verb-based
-- User Types match preconditions
-
-**Observable Enforcement**
-- Happy Path contains ONLY observable statements (user actions, visible responses, state changes)
-- NO backend operations in sequences
-- NO implementation details (file paths, class names, API endpoints)
-
-**Error Consolidation**
-- Negative Scenarios use standard references OR domain-specific errors
-- Infrastructure errors referenced as "Applies: Standard {ID} (scope: context)"
-
-**Exit Paths Clear**
-- All goals have explicit exit conditions
-- All alternatives have recovery paths
-
-If validation fails → output violations list → stop → ask user to fix flow → re-run validation.
-
-If all pass → proceed to step 1.
-
 ### 1. Extract Boundaries
 
 Read flow's System Context, Goals, Preconditions sections.
@@ -221,7 +195,7 @@ From Component Mapping section, create checks for **critical states only**:
 
 ### 10. Pre-Output Validation (Mandatory, Blocking)
 
-Output validation checklist BEFORE creating checklist file. If violations found → fix → re-run validation → confirm all pass → then proceed to step 11.
+Output validation checklist BEFORE creating checklist file. If violations found → fix → re-run validation → confirm all pass → then proceed to output.
 
 **Validation Checklist:**
 

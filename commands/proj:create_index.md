@@ -7,21 +7,23 @@ allowed-tools: "Read, Write, Edit, Glob, Grep, Bash"
 
 # Project Index
 
-Generate/update `.claude/proj_index/` docs optimized for LLM consumption (c7score).
+Generate and update project index in `.claude/proj_index/`, optimized for LLM consumption (c7score principles).
 
 ## Process
 
-1. Check `.claude/proj_index/`, read `last_commit` from frontmatter
-2. If `last_commit` exists → `git diff {last_commit}..HEAD`, if none or `--force` → full regeneration
-3. Analyze codebase
-4. Generate/update files
-5. Optimize existing docs (remove duplicates, file paths over code snippets)
-6. Create 00-INDEX.md
-7. Report
+1. Check existing docs in `.claude/proj_index/`
+2. Read `last_commit` from each file's frontmatter
+3. If `last_commit` exists → get changes via `git diff {last_commit}..HEAD`
+4. If no `last_commit` or `--force` → full regeneration
+5. Analyze codebase
+6. Generate/update files
+7. Optimize existing docs (remove duplicates, shorten examples, minimize tokens)
+8. Create 00-INDEX.md (main navigation with "when to use" guidance)
+9. Report
 
 ## Versioning
 
-Frontmatter in each file:
+Each generated file has frontmatter:
 ```yaml
 ---
 last_commit: abc1234
@@ -29,152 +31,171 @@ generated: 2024-12-08
 ---
 ```
 
-On update: modify only sections affected by changed files.
+On update: only modify sections affected by changed files.
 
 ## Generated Files
 
-### 00-INDEX.md
+### 00-INDEX.md (always created)
 
-Main navigation with "when to use" guidance:
+Minimal navigation index with "when to use" guidance. Format:
 ```markdown
-# {Project}
+# {Project Name}
 
-{One sentence}
+{One sentence description}
 
 ## Read Order
 
-1. **[ARCHITECTURE](./ARCHITECTURE.md)** — Stack, structure, paths, decisions
-   - When: Tech overview, commands, path aliases
-2. **[PATTERNS](./PATTERNS.md)** — Component, form, API, state patterns
-   - When: Creating components, APIs, forms, state
-3. **[COMPONENTS](./COMPONENTS.md)** — UI component API
-   - When: Using components, checking props
-4. **[SERVICES](./SERVICES.md)** — Service/repository API
-   - When: Business logic, data access
-5. **[DESIGN_TOKENS](./DESIGN_TOKENS.md)** — Colors, typography, spacing
-   - When: Styling, design values
+Start here, then follow links as needed:
+
+1. **[ARCHITECTURE](./ARCHITECTURE.md)** — Tech stack, project structure, path aliases, key decisions
+   - When: Need tech stack overview, build commands, or path alias reference
+2. **[PATTERNS](./PATTERNS.md)** — Component, form, API, state management patterns
+   - When: Creating components, calling APIs, handling forms, managing state
+3. **[COMPONENTS](./COMPONENTS.md)** — UI components API (forms, layouts, display)
+   - When: Using existing components, checking props/API
+4. **[SERVICES](./SERVICES.md)** — Services and repositories API
+   - When: Calling business logic, data access methods
+5. **[DESIGN_TOKENS](./DESIGN_TOKENS.md)** — Design tokens (colors, typography, spacing)
+   - When: Styling components, need color/spacing/font values
 
 ## Quick Reference
 
-| Area      | Stack      |
-| --------- | ---------- |
-| Framework | {detected} |
-| State     | {detected} |
-| Styling   | {detected} |
-| Testing   | {detected} |
+| Area          | Stack                                |
+| ------------- | ------------------------------------ |
+| Framework     | {detected}                           |
+| State         | {detected}                           |
+| Styling       | {detected}                           |
+| Testing       | {detected}                           |
 
 ## Key Directories
 
-| Path     | Purpose    |
-| -------- | ---------- |
-| {paths}  | {purpose}  |
+| Path                | Purpose                         |
+| ------------------- | ------------------------------- |
+| {detected paths}    | {detected purpose}              |
 
 ## Commands
 
 ```bash
-{dev}    # Dev server
-{test}   # Tests
-{build}  # Build
+{dev-command}      # Dev server
+{test-command}     # Run tests
+{build-command}    # Production build
 ```
 ```
 
 ### ARCHITECTURE.md
 
-**Sources**: package.json, tsconfig.json, folders
+Sources: package.json, tsconfig.json, folder structure
 
-**Contains**: Stack, structure, commands, path aliases
+Contains:
+- Tech stack (framework, state, styling, testing)
+- Project structure (key directories)
+- Build/dev commands
+- Path aliases
 
 ### PATTERNS.md
 
-**Sources**: src/ patterns
+Sources: analyze src/ for repeating patterns
 
-**c7score Q&A format**:
-- Q: How to create component? → 1-2 sentence pattern + file ref (`src/components/Button/Button.tsx`)
-- Q: How to call API? → pattern + file ref (`src/services/apiClient.ts:25-40`)
-- Q: How to handle forms? → pattern + file ref
-- Q: How to manage state? → pattern + file ref
+Contains (c7score format — question → answer with file references):
+- Q: How to create a component? → pattern description + file reference (e.g., `src/components/Button/Button.tsx`)
+- Q: How to call API? → pattern description + file reference (e.g., `src/services/apiClient.ts:25-40`)
+- Q: How to handle forms? → pattern description + file reference
+- Q: How to manage state? → pattern description + file reference
 
-**Rules**:
-- NO code snippets — file paths with optional lines (path:start-end)
-- No duplicates
-- 1-2 sentences max
-- Project-relative paths
+Optimization rules:
+- NO code snippets — use file paths with optional line numbers (path:start-end)
+- Remove duplicate patterns across sections
+- Pattern description: 1-2 sentences max
+- File references must be project-relative (not absolute filesystem paths)
 
 ### COMPONENTS.md
 
-**Sources**: src/components/\*\*/\*.tsx, PropsT
+Sources: src/components/**/*.tsx, extract PropsT
 
-**Contains**: Component groups, Props API, usage refs
+Contains:
+- Component list grouped by feature
+- Props API (TypeScript interface extracted from file)
+- Usage reference (file path where component is used, e.g., `src/pages/Dashboard.tsx:45`)
 
-**Rules**:
-- Skip private components
-- Props as TypeScript interface
-- NO code snippets — usage file path
-- Link to source (`PropsT: src/components/Button/Button.tsx:5-12`)
+Optimization rules:
+- Skip internal/private components
+- Props as TypeScript interface only
+- NO code snippets — reference actual usage location via file path
+- Props interface: link to source file (e.g., `PropsT: src/components/Button/Button.tsx:5-12`)
 
 ### SERVICES.md
 
-**Sources**: src/services/\*\*/\*.ts, exports
+Sources: src/services/**/*.ts, exported functions
 
-**Contains**: Service groups, method signatures, return types, usage refs
+Contains:
+- Service list (group by feature)
+- Methods with TypeScript signatures (extract from source)
+- Return types
+- Usage reference (file path where service is called, e.g., `src/pages/Login.tsx:23`)
 
-**Rules**:
-- Skip private functions
-- Signatures only
-- NO code snippets — usage file path
-- Link to source (`authService.login(): src/services/auth.ts:15-30`)
+Optimization rules:
+- Skip private/helper functions
+- Signatures only, no implementation details
+- NO code snippets — reference actual usage location via file path
+- Method signature: link to source file (e.g., `authService.login(): src/services/auth.ts:15-30`)
 
 ### DESIGN_TOKENS.md
 
-**Sources**: styles/, tokens/, theme
+Sources: styles/, tokens/, theme files
 
-**Contains**: Colors, typography, spacing, breakpoints (tables)
+Contains:
+- Colors (name → value table)
+- Typography (name → CSS properties table)
+- Spacing (name → value table)
+- Breakpoints (name → value table)
 
-**Rules**:
-- Tables only
-- Skip unused/deprecated
-- Group semantically
+Optimization rules:
+- Tables only, no prose
+- Skip unused/deprecated tokens
+- Group by semantic meaning (primary, secondary, etc.)
 
 ### BUSINESS_RULES.md
 
-**NOT auto-generated** — empty template if missing, user fills manually.
+**NOT auto-generated** — creates empty template if missing. User fills manually.
 
-## Optimization Pass
+## Optimization Pass (runs every time)
 
-Before generating 00-INDEX.md, optimize existing `.claude/proj_index/` docs:
+Before generating 00-INDEX.md, optimize existing docs in `.claude/proj_index/`:
 
-1. Read each file
-2. Replace ALL code snippets with file paths (project-relative)
-3. Remove duplicate content
-4. Remove prose, keep minimal descriptions
-5. Convert lists to tables where applicable
-6. Remove unused entries
-7. Rewrite with optimized content
-8. Preserve frontmatter/structure
+1. Read each file (ARCHITECTURE, PATTERNS, COMPONENTS, SERVICES, DESIGN_TOKENS)
+2. Apply optimization rules:
+   - Replace ALL code snippets with file path references (project-relative)
+   - Remove duplicate content across sections
+   - Remove prose, keep only minimal descriptions
+   - Convert verbose lists to tables where applicable
+   - Remove unused/deprecated entries
+3. Rewrite file with optimized content
+4. Preserve frontmatter and structure
 
-File path format: `src/path/file.ts` or `src/path/file.ts:25-40`
+File path format: `src/path/to/file.ts` or `src/path/to/file.ts:25-40` (with line numbers)
 
-## c7score Principles
+## c7score Optimization
 
-- Question-based headers
-- File paths instead of code (5x token reduction)
+Structure docs for LLM retrieval:
+- Question-based headers where possible
+- File path references instead of code snippets (5x token reduction)
 - Clear hierarchy (H1 → H2 → H3)
-- Tables over lists
-- Project-relative paths: `src/path/file.ts:line-range`
+- No redundant prose, tables over lists
+- Project-relative paths only: `src/path/file.ts:line-range`
 
-## Incremental Update
+## Incremental Update Logic
 
-1. `git diff --name-only {last_commit}..HEAD`
-2. Map to sections:
-   - src/components/\* → COMPONENTS.md
-   - src/services/\* → SERVICES.md
+1. Get changed files: `git diff --name-only {last_commit}..HEAD`
+2. Map to doc sections:
+   - src/components/* → COMPONENTS.md
+   - src/services/* → SERVICES.md
    - package.json → ARCHITECTURE.md
-   - styles/\* → DESIGN_TOKENS.md
-3. Regenerate affected sections only
+   - styles/* → DESIGN_TOKENS.md
+3. Regenerate only affected sections
 4. Preserve unchanged sections
-5. Update `last_commit`
+5. Update `last_commit` in frontmatter
 
-If git unavailable → full regeneration.
+If incremental impossible (git not available, no commits) → full regeneration.
 
 ## Output
 
@@ -193,15 +214,15 @@ Total reduction: -245 tokens
 
 - No git → full regeneration, note in output
 - No src/ → error, stop
-- Docs without frontmatter → add frontmatter, update
+- Existing docs without frontmatter → add frontmatter, update
 
 ## Rules
 
-- Optimize for tokens, not readability
-- No dialogs — auto-detect
+- Optimize for token efficiency, not readability
+- No dialogs — auto-detect best mode
 - Preserve manual edits in BUSINESS_RULES.md only
-- File paths over code, tables over prose, no duplicates
-- c7score: question-driven, file-reference-first, minimal
-- Always run optimization pass
+- Minimize tokens: file paths over code snippets, tables over prose, no duplicates
+- Use c7score principles: question-driven, file-reference-first, minimal
+- Always run optimization pass on existing files
 - Generate 00-INDEX.md (NOT llms.txt)
-- NEVER embed code snippets — project-relative paths with optional lines
+- NEVER embed code snippets — use project-relative file paths with optional line numbers

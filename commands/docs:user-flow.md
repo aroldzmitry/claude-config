@@ -11,8 +11,8 @@ Create executable, testable user flow documentation by combining project context
 
 ## Core Concepts
 
-**User Flow** — documents user intention and domain-specific scenarios for achieving a goal.
-**Shared Standard** — documents system-wide behaviors (error handling, loading, auth) that apply across multiple flows.
+User Flow — documents user intention and domain-specific scenarios for achieving a goal.
+Shared Standard — documents system-wide behaviors (error handling, loading, auth) that apply across multiple flows.
 
 Agent must identify cross-flow patterns and extract them to Shared Standards, not duplicate inline.
 
@@ -22,9 +22,9 @@ Agent must identify cross-flow patterns and extract them to Shared Standards, no
 
 ## Tool Usage Rules
 
-**Read Tool**: ONLY for docs/ directory (existing flows, standards, project documentation). NEVER for project source code.
+Read Tool: ONLY for docs/ directory (existing flows, standards, project documentation). NEVER for project source code.
 
-**Project Questions**: For implementation details (validation rules, business logic, API contracts, component behavior), MUST delegate to proj:ask-about subagent via Task tool.
+Project Questions: For implementation details (validation rules, business logic, API contracts, component behavior), MUST delegate to proj:ask-about subagent via Task tool.
 
 Example: "What validation rules exist for email field?" → `Task(subagent_type='proj:ask-about', prompt='Find validation rules for email field in registration flow')`
 
@@ -43,9 +43,9 @@ Example: "What validation rules exist for email field?" → `Task(subagent_type=
 
 ## Modes
 
-**Auto Mode** (simple flows): Agent extracts flow automatically from description + context. No additional questions except system boundaries.
+Auto Mode (simple flows): Agent extracts flow automatically from description + context. No additional questions except system boundaries.
 
-**Controlled Mode** (complex flows): Agent asks user to select:
+Controlled Mode (complex flows): Agent asks user to select:
 - Goals (from suggestions or custom)
 - User types (check project docs first; if missing use defaults: Guest, New User, Active User, Restricted User)
 Then auto-generates paths/scenarios for selected items.
@@ -63,15 +63,15 @@ Confirm with user:
 
 For each goal, generate:
 
-**Happy Path**: Observable user experience only - what user sees, does, and observes. NO backend operations, NO Contract statements, NO file paths.
+Happy Path: Observable user experience only - what user sees, does, and observes. NO backend operations, NO Contract statements, NO file paths.
 
-**Alternative Paths**: Domain-specific errors, cancellations, edge cases with recovery.
+Alternative Paths: Domain-specific errors, cancellations, edge cases with recovery.
 
-**Negative Scenarios**: ONLY domain/business errors and flow-specific edge cases. Infrastructure errors → standard references with scope.
+Negative Scenarios: ONLY domain/business errors and flow-specific edge cases. Infrastructure errors → standard references with scope.
 
-**UX Validation**: Clarity, state visibility, cancellability, confirmations.
+UX Validation: Clarity, state visibility, cancellability, confirmations.
 
-**Component Mapping**: Generic UI element names (form, button, field), routes, UI states, test IDs. NO implementation class names.
+Component Mapping: Generic UI element names (form, button, field), routes, UI states, test IDs. NO implementation class names.
 
 Use web research for UX patterns (best practices, accessibility), NOT for inventing technical implementation details.
 
@@ -117,13 +117,13 @@ Before writing flow, scan Alternative Paths and Negative Scenarios:
 
 Output checklist BEFORE using Write tool:
 
-**Observable-Only:**
+Observable-Only:
 - Happy Path contains ONLY user-visible actions and responses
 - NO backend operations in sequences
 - NO file paths or code references in sequences
 - NO technical implementation details anywhere in document
 
-**Field Validation (for form flows):**
+Field Validation (for form flows):
 - Form Fields section present with all input fields listed
 - Each field links to FIELD-VALIDATIONS.md anchor
 - Each field shows required/optional status
@@ -131,7 +131,7 @@ Output checklist BEFORE using Write tool:
 - Negative Scenarios has "Field Validation" section linking to FIELD-VALIDATIONS.md
 - NO inline validation details in flow (moved to FIELD-VALIDATIONS.md)
 
-**Sanity Checks (all MUST pass):**
+Sanity Checks (all MUST pass):
 1. Preconditions: only flow-blocking items (removed cross-flow)
 2. External Systems: third-party only (removed backend/database/infra)
 3. User Types: match preconditions (no contradictions)
@@ -141,7 +141,7 @@ Output checklist BEFORE using Write tool:
 7. Infrastructure Errors: standard refs with scope (no inline descriptions)
 8. Pattern Consolidation: no redundant variations (consolidated to patterns)
 
-**Verbosity:**
+Verbosity:
 - No parenthetical explanations: "Guest" not "Guest (unauthenticated)"
 - No technical details in sequences: "User redirected to login" not "System validates JWT and redirects"
 - No backend operations: "Success notification displays" not "Backend returns 201 and notification displays"
@@ -156,10 +156,11 @@ File: `docs/userFlows/{flow-name}.md`
 # User Flow: {Goal Name}
 
 ## System Context
-**Product**: [description]
-**User Task**: [what user solves]
-**Boundaries**: Start: [entry], End: [exit]
-**External Systems**: [third-party integrations — omit line if none]
+
+Product: [description]
+User Task: [what user solves]
+Boundaries: Start: [entry], End: [exit]
+External Systems: [third-party integrations — omit line if none]
 
 ## Goals
 - [verb-based goal 1]
@@ -171,19 +172,27 @@ File: `docs/userFlows/{flow-name}.md`
 ## Goal: {Goal Name}
 
 ### Happy Path
-**Entry point**: [URL/button/location]
-### Preconditions
+
+Entry point: [URL/button/location]
+
+#### Preconditions
+
 - [Required auth/data/state]
-**Sequence**:
+
+Sequence:
+
 1. [User action] → [System response] → [UI state change]
 2. [User observes result]
-**Success Criteria**:
+
+Success Criteria:
+
 - [Observable outcome]
 - [Visible confirmation]
 
 ### Form Fields
-- **Name field**: required, validation: [FIELD-VALIDATIONS#field-name](../standards/FIELD-VALIDATIONS.md#field-name)
-- **Email field**: required, validation: [FIELD-VALIDATIONS#email](../standards/FIELD-VALIDATIONS.md#email)
+
+- Name field: required, validation: [FIELD-VALIDATIONS#field-name](../standards/FIELD-VALIDATIONS.md#field-name)
+- Email field: required, validation: [FIELD-VALIDATIONS#email](../standards/FIELD-VALIDATIONS.md#email)
 
 ### Exit Paths
 - Normal: [how flow completes]
@@ -194,12 +203,14 @@ A1. [edge case] → [recovery]
 A2. [cancellation] → [return point]
 
 ### Negative Scenarios
-**Field Validation**
+
+Field Validation
 See [Field Validations](../standards/FIELD-VALIDATIONS.md) for all field-level validation errors (format, required, length, etc.)
 
-**Domain-Specific**
+Domain-Specific
 N1. [Business rule violation] → [recovery]
-**Infrastructure**
+
+Infrastructure
 Applies: Standard NET-001 (scope: form submission)
 
 ### UX Validation Checklist
@@ -225,35 +236,35 @@ Central registry for all form field validation rules. Referenced by user flows t
 
 ## Email
 
-**Validation Rules**:
+Validation Rules:
 - Format: Valid email format (RFC 5322)
 - Required: Context-dependent (see flow)
 - Client-side: None (submit button disabled when empty)
 - Server-side: express-validator `isEmail()`
 
-**Error Messages**:
+Error Messages:
 - Empty: "Email is required"
 - Invalid format: Default express-validator message
 
-**Examples**:
+Examples:
 - Valid: user@example.com
 - Invalid: invalidemail, test@, user@domain
 
-**Flows using this field**: 01-register, 02-login, 03-edit-profile
+Flows using this field: 01-register, 02-login, 03-edit-profile
 
 ## Name
 
-**Validation Rules**:
+Validation Rules:
 - Format: Text, any characters
 - Required: Yes
 - Length: No min/max enforced
 - Client-side: Required check only
 - Server-side: `notEmpty()`
 
-**Error Messages**:
+Error Messages:
 - Empty: "Name is required"
 
-**Flows using this field**: 01-register, 03-edit-profile
+Flows using this field: 01-register, 03-edit-profile
 ```
 
 Shared Standard file: `docs/standards/{ID}-{name}.md`
@@ -338,7 +349,7 @@ Typical candidates: network/auth/server errors, loading states, empty states, pe
 
 ## Statement Types for Happy Path Sequences
 
-**Observable** — ONLY type allowed in Happy Path sequences. User-visible UI behavior (messages, buttons, redirects, loading states).
+Observable — ONLY type allowed in Happy Path sequences. User-visible UI behavior (messages, buttons, redirects, loading states).
 - Good: "Validation error displays below email field"
 - Good: "Submit button shows loading indicator"
 - Good: "User redirected to login page"
@@ -358,42 +369,42 @@ Happy Path must be convertible to Playwright test steps:
 
 After generating content, BEFORE writing file, run checklist and fix violations:
 
-**1. Preconditions**: Only include conditions without which flow cannot start.
+1. Preconditions: Only include conditions without which flow cannot start.
 - Fix: Remove preconditions belonging to other flows.
 - Example violation: "Email service operational" in registration → belongs to login flow
 - Test: Does this precondition prevent THIS flow's entry point from loading?
 
-**2. External Systems**: Only third-party integrations (OAuth, SMTP, payment gateways, Plaid). Exclude internal backend API, database, infrastructure.
+2. External Systems: Only third-party integrations (OAuth, SMTP, payment gateways, Plaid). Exclude internal backend API, database, infrastructure.
 - Fix: Remove internal systems (PostgreSQL, Redis, backend API). If no real external systems exist, remove "External Systems" line from output.
 - Example violation: "Backend REST API" or "PostgreSQL" in registration → internal implementation, not external
 - Test: Is this a third-party service with its own authentication/API, or internal infrastructure?
 
-**3. User Types**: Only types who can START this flow based on preconditions.
+3. User Types: Only types who can START this flow based on preconditions.
 - Fix: Remove user types blocked by preconditions.
 - Example violation: "Authenticated User" in registration → contradicts "not authenticated" precondition
 - Test: Can this user type satisfy all preconditions?
 
-**4. Negative Scenarios**: Only domain errors OR standard references.
+4. Negative Scenarios: Only domain errors OR standard references.
 - Fix: Replace technical details with standard refs (NET-001, SRV-001, AUTH-001).
 - Example violation: "Session cookie not set" or "JavaScript disabled" → too granular, use standard
 - Test: Is this a business rule violation OR covered by existing standard?
 
-**5. Cross-Flow Ownership**: Scenarios belong to different flow? Move them.
+5. Cross-Flow Ownership: Scenarios belong to different flow? Move them.
 - Fix: Keep only brief mention in Cross-Goal Notes.
 - Example violation: "SMTP configuration details" in registration → belongs to email flow
 - Test: Is this scenario's primary goal different from this flow's goal?
 
-**6. Timing Promises**: No time values unless sourced from requirements.
+6. Timing Promises: No time values unless sourced from requirements.
 - Fix: Remove unsourced timing; use "shows confirmation before redirect".
 - Example violation: "within 2 seconds" without documented SLA or measurement
 - Test: Is this timing value documented in project requirements or measured?
 
-**7. Infrastructure Errors**: ONLY standard references with scope.
+7. Infrastructure Errors: ONLY standard references with scope.
 - Fix: Replace inline descriptions with "Applies: Standard NET-001 (scope: form submission)".
 - Example violation: "Retry logic with exponential backoff" inline → reference standard with scope
 - Test: Is this error about infrastructure/platform rather than business domain?
 
-**8. Pattern Consolidation**: No redundant variations of same behavior.
+8. Pattern Consolidation: No redundant variations of same behavior.
 - Fix: Consolidate A1/A2/A3 describing same pattern into single alternative.
 - Example violation: A1: name empty, A2: email empty, A3: both empty → consolidate to "Required fields not filled"
 - Test: Do multiple alternatives describe variations of same validation/UI pattern?

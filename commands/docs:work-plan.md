@@ -137,7 +137,6 @@ If refactor spans external pages:
 - Git add all created files
 
 **DON'T:**
-- Add 'Summary', 'what exists', 'why' sections — only actionable data for Claude
 - Write code or patches
 - Invent new requirements
 - Guess when uncertain

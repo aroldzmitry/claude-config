@@ -120,9 +120,7 @@ Create internal AC checklist mapping:
 - Which implementation addresses which AC
 - Note any AC that seems ambiguous or conflicting
 
-Before showing plan, confirm:
-- "Found X acceptance criteria. Key constraints: [list 2-3 critical ones]. Understood correctly?"
-- Wait for user confirmation before proceeding
+Confirm: "Found X acceptance criteria. Key constraints: [list 2-3 critical]. Understood correctly?" → wait for confirmation
 
 ## Phase 2: Implement
 
@@ -180,20 +178,7 @@ Stage all modified files with `git add`. User will commit manually.
 
 `Status: Done`
 
-If any issues were skipped during workflow (failed after 2 retry attempts):
-- Create error file at `.claude/tasks/{task-id}-errors.md`
-- Include link in output: "See `.claude/tasks/{task-id}-errors.md` for skipped issues"
-
-Error file format:
-```
-# Skipped Issues - {task-id}
-
-## Phase 3: Quality Checks
-- **ESLint**: `src/utils/bar.ts:15` - Unused variable 'x' after 2 attempts
-  - Reason: Variable used in conditional but ESLint doesn't recognize. Attempted fixes: (1) Added eslint-disable, (2) Refactored condition. May need different approach.
-- **TypeScript**: `src/components/Foo.tsx:22` - Type error after 2 attempts
-  - Reason: Complex union type inference. Attempted fixes: (1) Added type assertion, (2) Refactored type. May need type refactor.
-```
+If checks failed after 2 attempts: create `.claude/tasks/{task-id}-errors.md` with file:line, reason, attempted fixes
 
 ## Code Standards
 
@@ -247,21 +232,8 @@ When creating state/variant values (positions, sizes, kinds, types):
 
 **Examples:**
 
-✅ Correct - modify base component:
-```tsx
-// Base component owns loading state
-<Button isLoading={isSubmitting} loadingTestId="...">Submit</Button>
-```
-
-❌ Wrong - wrapper in consumer:
-```tsx
-// Consumer controls button internals
-<Button>
-  {isLoading ? <div data-testid="..."><Spinner /></div> : 'Submit'}
-</Button>
-```
-
-**Why wrong**: Consumer controls component's internal rendering. Button doesn't know its state. Creates wrapper DOM elements.
+✅ `<Button isLoading={isSubmitting} loadingTestId="...">Submit</Button>` — base component owns state
+❌ `<Button>{isLoading ? <div><Spinner /></div> : 'Submit'}</Button>` — consumer controls internals, creates wrapper elements
 
 ### Component Creation Rules
 
@@ -285,23 +257,8 @@ When creating NEW components (not modifying existing):
 3. If existing pattern found → use it (e.g., existing `.spinner` class instead of creating `.registration-loading-spinner`)
 4. Only create NEW CSS class if pattern doesn't exist and it's genuinely new functionality
 
-Forbidden:
-```typescript
-<div style={{ display: 'flex', padding: '24px' }}>  // WRONG
-```
-
-Required:
-```typescript
-<div className="my-component">  // CORRECT
-```
-```scss
-.my-component {
-  display: flex;
-  padding: var(--spacing-lg);
-}
-```
-
-If component needs styling → create `.scss` file next to component file, import it, use className.
+Forbidden: `<div style={{ display: 'flex' }}>` — inline styles not allowed
+Required: `<div className="my-component">` + `.scss` file with styles using CSS variables
 
 ## Rules
 

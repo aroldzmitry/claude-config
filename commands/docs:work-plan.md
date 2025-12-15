@@ -15,35 +15,43 @@ User flow must contain: Happy Path, Preconditions, Alternative Paths, Negative S
 
 ## Output
 
-### Implementation Instruction File
-
-File: `./docs/workPlans/{flow-name}-implementation-plan.md`
-
-**Format:** Developer instructions only. No reports, no test plans, no questions.
-
-**Sections:**
-
-1. **Implementation Instructions** — Step-by-step actions grouped by layer (UI → State → API → Domain → Infrastructure)
-   - Each instruction: Action | File path | What to change | Contract/component to use | Closes REQ-IDs
-   - If refactoring needed: What to refactor | Why | Expected result
-
-2. **Dependency Changes** — Packages/configs to add
-   - Package name | Purpose | Where used | Installation command
-   - If empty: hide section
-
-3. **Pattern Conflicts** — Requirements conflicting with current patterns
-   - What conflicts | Current pattern | Proposed resolution | Risk
-   - If empty: hide section
-
-4. **Related Documentation** — Links to user flow and standards
-
-### Console Summary
+### Console Summary (Always)
 
 ```
 Requirements: N total (UI: X | API: Y | State: Z | Domain: W | Infrastructure: V)
 Status: Implemented: A | Partial: B | Missing: C | Conflicts: D
 Impact: M files modified | P packages added
 ```
+
+If all requirements implemented (Missing + Partial + Conflicts = 0):
+- Print "✅ All requirements implemented. No work needed."
+- Skip file creation
+- Exit
+
+### Implementation Instruction File (Only When Work Needed)
+
+File: `./docs/workPlans/{flow-name}-implementation-plan.md`
+
+**Created only when:** Missing > 0 OR Partial > 0 OR Conflicts > 0
+
+**Format:** Actionable TODO steps only. No status reports, no "already implemented" sections.
+
+**Sections:**
+
+1. **Implementation Instructions** — Step-by-step actions for Missing/Partial/Conflict requirements only, grouped by layer (UI → State → API → Domain → Infrastructure)
+   - Each instruction: Action | File path | What to change | Contract/component to use | Closes REQ-IDs
+   - If refactoring needed: What to refactor | Why | Expected result
+   - Omit all Implemented requirements
+
+2. **Dependency Changes** — Packages/configs to add
+   - Package name | Purpose | Where used | Installation command
+   - Hide section if empty
+
+3. **Pattern Conflicts** — Requirements conflicting with current patterns
+   - What conflicts | Current pattern | Proposed resolution | Risk
+   - Hide section if empty
+
+4. **Related Documentation** — Links to user flow and standards
 
 ## Process
 
@@ -129,13 +137,22 @@ If new packages/configs needed:
 - Where used (file paths)
 - Installation command
 
-**Step 3.5: Write Implementation Instruction File**
-Output instructions grouped by layer (UI first → Infrastructure last).
-Each instruction: 1-2 lines, actionable, with file path and REQ-ID reference.
-Hide empty sections (Dependency Changes, Pattern Conflicts).
-
-**Step 3.6: Print Console Summary**
+**Step 3.5: Print Console Summary**
 Show requirement count by layer, status distribution, impact metrics (files/packages).
+
+**Step 3.6: Decide File Creation**
+If Missing + Partial + Conflicts = 0:
+- Print "✅ All requirements implemented. No work needed."
+- Skip file creation
+- Exit (do not git add)
+
+**Step 3.7: Write Implementation Instruction File (Conditional)**
+Only if Missing + Partial + Conflicts > 0:
+- Output instructions for Missing/Partial/Conflict requirements only, grouped by layer (UI first → Infrastructure last)
+- Each instruction: 1-2 lines, actionable, with file path and REQ-ID reference
+- Omit all sections describing already Implemented requirements
+- Hide empty sections (Dependency Changes, Pattern Conflicts)
+- Git add created file
 
 ## Rules
 
@@ -152,11 +169,13 @@ Show requirement count by layer, status distribution, impact metrics (files/pack
 - Invent requirements not in flow
 - Guess when uncertain — ask or mark as "Needs Verification"
 - Output reports or analysis — only instructions
+- Create file when everything implemented — console summary only
+- Include "already implemented" sections in plan file
 
 ## Starting Workflow
 
 1. Get user flow file path from `$ARGUMENTS` (required)
 2. Execute Phase 1: Parse & Decompose
 3. Execute Phase 2: Analyze & Match
-4. Execute Phase 3: Plan & Output
-5. Git add plan file
+4. Execute Phase 3: Plan & Output (Steps 3.1-3.7, including conditional file creation)
+5. If file created: git add plan file

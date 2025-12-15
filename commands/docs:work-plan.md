@@ -18,9 +18,10 @@ User flow must contain: Happy Path, Preconditions, Alternative Paths, Negative S
 ### Console Summary (Always)
 
 ```
-Requirements: N total (UI: X | API: Y | State: Z | Domain: W | Infrastructure: V)
+Requirements: N total (UI: X | API: Y | State: Z | Test IDs: T | Domain: W | Infrastructure: V)
 Status: Implemented: A | Partial: B | Missing: C | Conflicts: D
 Impact: M files modified | P packages added
+Test Coverage: E2E tests found: N | Test IDs defined: M | Missing in code: K
 ```
 
 If all requirements implemented (Missing + Partial + Conflicts = 0):
@@ -61,9 +62,33 @@ File: `./docs/workPlans/{flow-name}-implementation-plan.md`
 Extract: roles, preconditions, main steps, alternatives, error scenarios, non-functional requirements, standard references.
 Build flow model with requirement IDs.
 
-**Step 1.2: Decompose into Atomic Requirements by Layer**
+**Step 1.2: Parse Test Artifacts for Test ID Requirements**
+Find test case file: `docs/testCases/{flow-dir}/{flow-name}.md`
+Find checklist file: `docs/checkLists/{flow-dir}/{flow-name}.md`
+Find E2E test files: `tests/e2e/{flow-dir}/*.spec.ts` matching flow name
+Read `tests/testIds.ts` for centralized test ID definitions
+
+Extract from test cases:
+- Expected UI elements mentioned in steps (buttons, inputs, notifications, spinners)
+- data-testid values referenced in test assertions
+
+Extract from checklists:
+- Critical/Important items requiring UI verification (CL-XXX items with [CRITICAL] or [IMPORTANT])
+- UI elements mentioned in "Expected Result" column
+
+Extract from E2E tests:
+- All `data-testid="..."` locators used in test assertions
+- Elements expected to be visible/enabled/disabled during flow
+
+Extract from testIds.ts:
+- Defined test IDs for the flow domain (e.g., `testIds.auth.registration.*`)
+
+Result: Test ID requirement list (TESTID → Element → Purpose → Test Coverage)
+
+**Step 1.3: Decompose into Atomic Requirements by Layer**
 For each flow element, extract atomic requirements per layer:
 - UI: components, forms, modals, notifications, loading states, error displays
+- Test IDs: data-testid attributes on interactive/verifiable elements for E2E coverage
 - Routing: routes, navigation, redirects, guards
 - State: local state, global state, cache, form state
 - API Contracts: endpoints, request/response shapes, error codes
@@ -102,6 +127,13 @@ For each atomic requirement, determine status:
 - **Missing:** Not implemented
 - **Conflicts:** Requirement contradicts current pattern
 
+For test ID requirements specifically:
+- Grep codebase for each test ID value from testIds.ts
+- Check if `data-testid="{value}"` exists in relevant component files
+- Mark as **Missing** if test ID defined in testIds.ts but not used in component code
+- Mark as **Partial** if test ID used but on wrong element or conditionally missing
+- Mark as **Exists** if test ID present on correct element in all required states
+
 Result: Requirement status map (REQ-ID → Status → File:line → Pattern used)
 
 ### Phase 3: Plan & Output
@@ -122,7 +154,8 @@ Group requirements by file/module. For each:
 - What contract needed (API shape, props interface)
 - What state to add (local/global, shape)
 - What UI components to use (existing or new)
-- Verification (how to test manually)
+- What test IDs to add (element, attribute value from testIds.ts, conditional logic if needed)
+- Verification (how to test manually, which E2E tests will pass)
 
 **Step 3.3: Generate Refactoring Plan**
 If existing module needs rework to fit flow:
@@ -157,10 +190,13 @@ Only if Missing + Partial + Conflicts > 0:
 ## Rules
 
 **DO:**
-- Extract requirements only from flow + linked standards
+- Extract requirements from flow + linked standards + test cases + checklists
+- Parse test artifacts (test cases, checklists, E2E tests, testIds.ts) to identify test ID requirements
+- Detect missing test IDs even when functionality exists
 - Use existing project patterns (scan before inventing)
 - Output instructions only (no explanations, no test plans)
 - Group instructions by layer for logical execution order
+- Include test ID requirements with element location and test coverage info
 - Hide sections with no content
 - Git add created plan files
 
@@ -175,7 +211,7 @@ Only if Missing + Partial + Conflicts > 0:
 ## Starting Workflow
 
 1. Get user flow file path from `$ARGUMENTS` (required)
-2. Execute Phase 1: Parse & Decompose
-3. Execute Phase 2: Analyze & Match
+2. Execute Phase 1: Parse & Decompose (Steps 1.1-1.3, including test artifact parsing)
+3. Execute Phase 2: Analyze & Match (Steps 2.1-2.2, including test ID verification)
 4. Execute Phase 3: Plan & Output (Steps 3.1-3.7, including conditional file creation)
 5. If file created: git add plan file

@@ -229,6 +229,40 @@ When creating state/variant values (positions, sizes, kinds, types):
    - If multiple patterns → AskUserQuestion with examples: "Project has patterns: [list]. Which to use?"
    - If no pattern found → AskUserQuestion: "How should types be organized?" with options based on common conventions
 
+### Component Modification vs Wrapper Pattern
+
+**Decision Rule**: Who owns this UI concern?
+
+**Modify base component** (add props) when adding:
+- Visual states of component itself: loading, disabled, error, success indicators
+- Internal UI elements: spinners, icons, badges within component
+- Test IDs for component's internal elements
+- Layout variations component should support
+
+**Use wrapper/custom hook** when adding:
+- Business logic from domain layer
+- Data fetching or transformation
+- Multiple components composition
+- Domain-specific validation or formatting
+
+**Examples:**
+
+✅ Correct - modify base component:
+```tsx
+// Base component owns loading state
+<Button isLoading={isSubmitting} loadingTestId="...">Submit</Button>
+```
+
+❌ Wrong - wrapper in consumer:
+```tsx
+// Consumer controls button internals
+<Button>
+  {isLoading ? <div data-testid="..."><Spinner /></div> : 'Submit'}
+</Button>
+```
+
+**Why wrong**: Consumer controls component's internal rendering. Button doesn't know its state. Creates wrapper DOM elements.
+
 ### Component Creation Rules
 
 When creating NEW components (not modifying existing):

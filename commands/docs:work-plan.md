@@ -5,141 +5,157 @@ argument-hint: [user-flow-file-path]
 
 # Work Plan Generator
 
-You are a planning agent that converts user flow documents into actionable implementation plans for developers.
+Converts user flow documents into developer implementation instructions by analyzing codebase patterns and matching requirements to code.
 
 ## Input
 
-User provides: path to a single user flow markdown file (in `.claude/proj_index/flows/` or similar)
+Path to user flow markdown file (`.claude/proj_index/flows/` or `docs/userFlows/`).
 
-User flow must contain:
-- Happy Path steps
-- Preconditions
-- Alternative Paths & Negative Scenarios
-- Success Criteria
-- Links to standards (VAL, LS, NET, SRV docs, error contracts, API specs)
-
-You request NOTHING else. No separate input files needed.
+User flow must contain: Happy Path, Preconditions, Alternative Paths, Negative Scenarios, Success Criteria, Links to standards.
 
 ## Output
 
-### Main Document: Implementation Plan
+### Implementation Instruction File
 
 File: `./docs/workPlans/{flow-name}-implementation-plan.md`
 
+**Format:** Developer instructions only. No reports, no test plans, no questions.
+
 **Sections:**
 
-1. **Implementation Status** — Summary line: "Status: Complete | X items need work"
+1. **Implementation Instructions** — Step-by-step actions grouped by layer (UI → State → API → Domain → Infrastructure)
+   - Each instruction: Action | File path | What to change | Contract/component to use | Closes REQ-IDs
+   - If refactoring needed: What to refactor | Why | Expected result
 
-2. **Checklist** — Table: REQ-ID | What | Source | Standards | Status | File:line
-   - Include only: ⚠️ Partial, ❌ Missing, 🔍 Needs Verification
-   - Exclude: ✅ Implemented items
-   - If empty: hide section, show "All requirements implemented"
-
-3. **Tasks** — Ordered list (1-liner per task):
-   - Action | File | Verification | Closes REQ-IDs
+2. **Dependency Changes** — Packages/configs to add
+   - Package name | Purpose | Where used | Installation command
    - If empty: hide section
 
-4. **Files Modified** — List of files to be changed
+3. **Pattern Conflicts** — Requirements conflicting with current patterns
+   - What conflicts | Current pattern | Proposed resolution | Risk
    - If empty: hide section
 
-5. **Related Documentation** — Links to user flow and standards only (no checklist, no test cases)
+4. **Related Documentation** — Links to user flow and standards
 
-### Optional Documents
-
-Created only if user approves task splits:
-
-**Separate Task Proposal** — `./docs/workPlans/{flow-name}-task-{id}.md`
-- Goal (concise)
-- Scope (what it touches)
-- Risk (what can break)
-- Definition of Ready (prerequisites)
-- Blocking flag (yes/no)
-
-### Console Report
+### Console Summary
 
 ```
-Items: N total (Implemented: A | Partial: B | Missing: C | Needs Verification: D)
-Action Items: X (shown in checklist)
+Requirements: N total (UI: X | API: Y | State: Z | Domain: W | Infrastructure: V)
+Status: Implemented: A | Partial: B | Missing: C | Conflicts: D
+Impact: M files modified | P packages added
 ```
 
 ## Process
 
-### Step 1: Parse User Flow
+### Phase 1: Parse & Decompose
 
-Extract checklist from:
-- Happy Path steps
-- Preconditions
-- Alternative Paths
-- Negative Scenarios
-- Success Criteria
-- Output transitions
-- Linked standards (VAL, LS, NET, SRV)
+**Step 1.1: Parse Flow into Structure**
+Extract: roles, preconditions, main steps, alternatives, error scenarios, non-functional requirements, standard references.
+Build flow model with requirement IDs.
 
-Result: Implementation Checklist (ID, description, source, standards links)
+**Step 1.2: Decompose into Atomic Requirements by Layer**
+For each flow element, extract atomic requirements per layer:
+- UI: components, forms, modals, notifications, loading states, error displays
+- Routing: routes, navigation, redirects, guards
+- State: local state, global state, cache, form state
+- API Contracts: endpoints, request/response shapes, error codes
+- Domain Logic: business rules, validations, transformations
+- Error Handling: try/catch, error boundaries, fallbacks
+- Permissions: access control, role checks, feature flags
+- i18n: text keys, translations, locale handling
+- Telemetry: events, metrics, traces (if specified in flow)
 
-### Step 2: Locate Entry Points
+Result: Requirement matrix (REQ-ID → Layer → What needed)
 
-Find in codebase:
-- Route / page component
-- Form components
-- Hooks / services for submission
-- Error handling layer
-- Loading state layer
-- Validation layer
-- Notification layer
-- API contract files
+### Phase 2: Analyze & Match
 
-Result: Implementation Map (files + modules per checklist item)
+**Step 2.1: Scan Project Patterns**
+Find how project does:
+- Module structure (feature folders, barrel exports)
+- Routes (file-based, config-based)
+- DI (context, hooks, providers)
+- API client (fetch wrapper, axios, react-query)
+- Repositories (data access pattern)
+- State management (Redux, Zustand, Context, local)
+- Forms (Formik, React Hook Form, uncontrolled)
+- Modals (portal pattern, library)
+- Notifications (toast library, custom)
+- Error handling (boundaries, global handler)
+- i18n (react-i18next, custom)
+- Styling (CSS modules, styled-components, Tailwind)
 
-### Step 3: Audit Checklist
+Result: Pattern catalog (category → pattern → example file:line)
 
-For each item:
-- What exists in code
-- What's partial
-- What's missing
-- Needs rework (yes/no)
-- Code location (file:line)
-- Standards compliance
-- Dependencies touched
+**Step 2.2: Match Requirements to Code**
+For each atomic requirement, determine status:
+- ✅ **Exists:** Fully implemented per patterns
+- ⚠️ **Partial:** Implemented but incomplete or not per patterns
+- ❌ **Missing:** Not implemented
+- 🔴 **Conflicts:** Requirement contradicts current pattern
 
-Result: Checklist with Status (track all, output only actionable items)
+Result: Requirement status map (REQ-ID → Status → File:line → Pattern used)
 
-### Step 4: Plan Implementation
+### Phase 3: Plan & Output
 
-For each Partial / Missing / Needs rework item — output 1-liner:
-- Action | File | Verification | Closes REQ-IDs
+**Step 3.1: Select Optimal Implementation**
+For each Partial/Missing/Conflict requirement, choose best path:
+- Prefer existing patterns over new patterns
+- Prefer minimal architecture changes
+- Prefer module reuse over creation
+- Prefer UX consistency with existing flows
 
-### Step 5: Verify Plan (Internal Only)
+Result: Implementation decisions (REQ-ID → Approach → Why)
 
-Check before saving plan:
-- Risks identified (high-risk modules, breaking changes, standards compliance)
-- Dependencies mapped (shared components, external APIs, cross-flow impacts)
-- Approvals needed (new dependencies, architectural changes)
+**Step 3.2: Generate File & Module Change Plan**
+Group requirements by file/module. For each:
+- Where to go (file path)
+- What to change (add/modify/remove/move)
+- What contract needed (API shape, props interface)
+- What state to add (local/global, shape)
+- What UI components to use (existing or new)
+- Verification (how to test manually)
 
-Do NOT add these to output document. Use only for internal validation.
+**Step 3.3: Generate Refactoring Plan**
+If existing module needs rework to fit flow:
+- What to refactor (function/component/module)
+- Why (pattern mismatch, conflict, tech debt)
+- Expected result (new structure, behavior)
+
+**Step 3.4: Generate Dependency Plan**
+If new packages/configs needed:
+- Package name
+- Purpose (what layer uses it)
+- Where used (file paths)
+- Installation command
+
+**Step 3.5: Write Implementation Instruction File**
+Output instructions grouped by layer (UI first → Infrastructure last).
+Each instruction: 1-2 lines, actionable, with file path and REQ-ID reference.
+Hide empty sections (Dependency Changes, Pattern Conflicts).
+
+**Step 3.6: Print Console Summary**
+Show requirement count by layer, status distribution, impact metrics (files/packages).
 
 ## Rules
 
 **DO:**
-- Extract only from flow + linked docs
-- Output minimal format: Status summary + conditional sections (Checklist/Tasks/Files only if non-empty)
-- Show implementation stats in console report (all items counted)
-- Hide completed items from checklist (track internally, exclude from output)
-- When all implemented: show "All requirements implemented" instead of checklist
-- Find existing patterns in codebase first
-- Git add all created files
+- Extract requirements only from flow + linked standards
+- Use existing project patterns (scan before inventing)
+- Output instructions only (no explanations, no test plans)
+- Group instructions by layer for logical execution order
+- Hide sections with no content
+- Git add created plan files
 
 **DON'T:**
 - Write code or patches
-- Invent new requirements
-- Guess when uncertain
+- Invent requirements not in flow
+- Guess when uncertain — ask or mark as "Needs Verification"
+- Output reports or analysis — only instructions
 
 ## Starting Workflow
 
-1. Ask user for user flow file path if not provided in `$ARGUMENTS`
-2. Read and parse flow
-3. Search codebase for entry points
-4. Audit each checklist item
-5. Build work plan (verify risks/dependencies internally, exclude from document)
-6. Output plan + console report
-7. Git add files if created
+1. Get user flow file path from `$ARGUMENTS` or ask user
+2. Execute Phase 1: Parse & Decompose
+3. Execute Phase 2: Analyze & Match
+4. Execute Phase 3: Plan & Output
+5. Git add plan file

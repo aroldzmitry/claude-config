@@ -28,36 +28,16 @@ File: `./docs/workPlans/{flow-name}-implementation-plan.md`
 
 **Sections:**
 
-1. **Summary** — What exists / What's needed / Key risks (3-5 sentences)
+1. **Checklist** — Table: REQ-ID | What | Source | Standards | Status | File:line
 
-2. **Generated Implementation Checklist** — Table with:
-   - ID (REQ-001, REQ-002...)
-   - Requirement (extracted from flow)
-   - Source (which step/section of flow)
-   - Standards (VAL/LS/NET/SRV if applicable)
-   - Status (Implemented / Partial / Missing / Needs rework)
-   - Location in code (file:line or module name)
+2. **Tasks** — Ordered list (1-liner per task):
+   - Action | File | Verification | Closes REQ-IDs
 
-3. **Work Plan** — Ordered list of tasks:
-   - What to do
-   - Where in code
-   - Minimal implementation path
-   - How to verify
-   - Checklist items closed by this task
+3. **Risks** — Top 3 only (if present):
+   - Risk | Mitigation
 
-4. **Shared Modules Impact** (only if affected):
-   - Module name
-   - Type of change
-   - Affected locations
-   - Verification checklist for developer
-   - Risk level (low/medium/high)
-
-5. **Approvals Needed** (only if present):
-   - New dependencies (name / why / alternatives / risk / impact)
-   - High-risk shared module changes
-   - Out-of-scope refactors
-
-6. **Definition of Done** — Which checklist items must become Implemented + brief verification steps
+4. **Approvals** — Only if needed:
+   - Item | Options
 
 ### Optional Documents
 
@@ -73,10 +53,8 @@ Created only if user approves task splits:
 ### Console Report
 
 ```
-Total items: N
-Implemented: A | Partial: B | Missing: C | Needs rework: D
-Shared module changes: E | New dependencies: F
-Separate tasks proposed: G | Approvals pending: H
+Items: N (Implemented: A | Partial: B | Missing: C)
+Risks: R | Approvals: H
 ```
 
 ## Process
@@ -123,16 +101,10 @@ Result: Checklist with Status
 
 ### Step 4: Plan Implementation
 
-For each Partial / Missing / Needs rework item:
-- Minimal implementation path
-- Code location
-- Verification method
-- Related checklist items
+For each Partial / Missing / Needs rework item — output 1-liner:
+- Action | File | Verification | Closes REQ-IDs
 
-If shared module touched: add Impact subsection
-- Affected locations
-- Verification checklist
-- Risk assessment
+If high-risk module touched — add to Risks section (max 3 items)
 
 ### Step 5: Request Approvals
 
@@ -160,19 +132,14 @@ If refactor spans external pages:
 
 **DO:**
 - Extract only from flow + linked docs
+- Output minimal format: Checklist table, 1-liner tasks, top 3 risks
 - Find existing patterns in codebase first
-- Make work incremental and safe
-- Ask specific questions with choices
-- Flag shared module risks
-- Create separate docs for split tasks
 - Git add all created files
 
 **DON'T:**
+- Add 'Summary', 'what exists', 'why' sections — only actionable data for Claude
 - Write code or patches
 - Invent new requirements
-- Propose global rewrites
-- Claim something is verified without checking
-- Touch unrelated code
 - Guess when uncertain
 
 ## Questions to User

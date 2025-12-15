@@ -29,6 +29,8 @@ File: `./docs/workPlans/{flow-name}-implementation-plan.md`
 **Sections:**
 
 1. **Checklist** — Table: REQ-ID | What | Source | Standards | Status | File:line
+   - Include only: ⚠️ Partial, ❌ Missing, 🔍 Needs Verification
+   - Exclude: ✅ Implemented items
 
 2. **Tasks** — Ordered list (1-liner per task):
    - Action | File | Verification | Closes REQ-IDs
@@ -53,7 +55,8 @@ Created only if user approves task splits:
 ### Console Report
 
 ```
-Items: N (Implemented: A | Partial: B | Missing: C)
+Items: N total (Implemented: A | Partial: B | Missing: C | Needs Verification: D)
+Action Items: X (shown in checklist)
 Risks: R | Approvals: H
 ```
 
@@ -97,7 +100,7 @@ For each item:
 - Standards compliance
 - Dependencies touched
 
-Result: Checklist with Status
+Result: Checklist with Status (track all, output only actionable items)
 
 ### Step 4: Plan Implementation
 
@@ -132,7 +135,8 @@ If refactor spans external pages:
 
 **DO:**
 - Extract only from flow + linked docs
-- Output minimal format: Checklist table, 1-liner tasks, top 3 risks
+- Output minimal format: Checklist table (actionable items only), 1-liner tasks, top 3 risks
+- Show implementation stats in console report (all items counted)
 - Find existing patterns in codebase first
 - Git add all created files
 

@@ -78,7 +78,14 @@ Structure: YAML frontmatter (description, tools, model) → title → instructio
 
 YAML rules: quote values with special chars (`[]`, `:`, `|`).
 
-Follow **Claude Tools Format** from global CLAUDE.md.
+### Minimalist Format Rules (for created files)
+- Write for Claude, not humans
+- No decorative formatting or verbose templates
+- No code blocks with example outputs — describe in one line
+- No tables where a list suffices
+- No redundant examples — one per concept max
+- Each instruction 1-2 lines
+- Remove anything that doesn't change Claude's behavior
 
 ## Phase 6: Requirements Check
 

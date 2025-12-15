@@ -20,11 +20,20 @@ Analyzes and optimizes existing Claude tools (commands, agents, skills). Removes
 3. **Pre-optimization analysis** — Identify and tag protected specificity elements
 4. **Check official docs** — WebSearch for official Claude Code documentation for this tool type
 5. **Analyze redundancy** — Identify verbose sections, duplicate patterns, unnecessary examples
-6. **Optimize** — Remove non-critical verbosity, condense examples, deduplicate sections (respecting protected elements)
+6. **Optimize** — Remove non-critical verbosity, condense examples, deduplicate sections (respecting protected elements and minimalist format rules)
 7. **Validate** — Check all functional components preserved
 8. **Restore if needed** — If any functionality lost, restore it and re-validate (iterate until 100% preserved)
 9. **Commit and push** — Stage changes with git add, commit with optimization summary, push to remote
 10. **Report** — Output optimization report
+
+### Minimalist Format Rules (apply during optimization)
+- Write for Claude, not humans
+- No decorative formatting or verbose templates
+- No code blocks with example outputs — describe in one line
+- No tables where a list suffices
+- No redundant examples — one per concept max
+- Each instruction 1-2 lines
+- Remove anything that doesn't change Claude's behavior
 
 ## Functionality Extraction
 

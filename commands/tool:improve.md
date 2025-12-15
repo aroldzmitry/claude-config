@@ -85,11 +85,16 @@ If outputs need updating: show proposed changes, use multi-select.
 
 ## Step 9: Implement
 
-Apply selected solution using Edit tool. Follow minimalist format:
+Apply selected solution using Edit tool.
+
+### Minimalist Format Rules (for output files)
 - Write for Claude, not humans
-- No decorative text
+- No decorative formatting or verbose templates
+- No code blocks with example outputs — describe in one line
+- No tables where a list suffices
+- No redundant examples — one per concept max
 - Each instruction 1-2 lines
-- Remove anything that doesn't change behavior
+- Remove anything that doesn't change Claude's behavior
 - When removing feature — remove it, don't add inverse rule
 
 ## Step 10: Verify

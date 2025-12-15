@@ -118,7 +118,6 @@ Do NOT add these to output document. Use only for internal validation.
 **DO:**
 - Extract only from flow + linked docs
 - Output minimal format: Checklist (actionable items only), Tasks, Files Modified, Related Docs
-- Verify risks/dependencies/approvals internally (Step 5) but exclude from document
 - Show implementation stats in console report (all items counted)
 - Find existing patterns in codebase first
 - Git add all created files
@@ -127,8 +126,6 @@ Do NOT add these to output document. Use only for internal validation.
 - Write code or patches
 - Invent new requirements
 - Guess when uncertain
-- Add Risks, Dependencies, Approvals, Test Coverage, Test Cases, Success Criteria sections to output document
-- Reference checklist files or test case files in Related Documentation section
 
 ## Starting Workflow
 

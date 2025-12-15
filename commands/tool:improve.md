@@ -90,6 +90,7 @@ Apply selected solution using Edit tool. Follow minimalist format:
 - No decorative text
 - Each instruction 1-2 lines
 - Remove anything that doesn't change behavior
+- When removing feature — remove it, don't add inverse rule
 
 ## Step 10: Verify
 

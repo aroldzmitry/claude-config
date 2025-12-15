@@ -28,16 +28,21 @@ File: `./docs/workPlans/{flow-name}-implementation-plan.md`
 
 **Sections:**
 
-1. **Checklist** — Table: REQ-ID | What | Source | Standards | Status | File:line
+1. **Implementation Status** — Summary line: "Status: Complete | X items need work"
+
+2. **Checklist** — Table: REQ-ID | What | Source | Standards | Status | File:line
    - Include only: ⚠️ Partial, ❌ Missing, 🔍 Needs Verification
    - Exclude: ✅ Implemented items
+   - If empty: hide section, show "All requirements implemented"
 
-2. **Tasks** — Ordered list (1-liner per task):
+3. **Tasks** — Ordered list (1-liner per task):
    - Action | File | Verification | Closes REQ-IDs
+   - If empty: hide section
 
-3. **Files Modified** — List of files to be changed
+4. **Files Modified** — List of files to be changed
+   - If empty: hide section
 
-4. **Related Documentation** — Links to user flow and standards only (no checklist, no test cases)
+5. **Related Documentation** — Links to user flow and standards only (no checklist, no test cases)
 
 ### Optional Documents
 
@@ -117,8 +122,10 @@ Do NOT add these to output document. Use only for internal validation.
 
 **DO:**
 - Extract only from flow + linked docs
-- Output minimal format: Checklist (actionable items only), Tasks, Files Modified, Related Docs
+- Output minimal format: Status summary + conditional sections (Checklist/Tasks/Files only if non-empty)
 - Show implementation stats in console report (all items counted)
+- Hide completed items from checklist (track internally, exclude from output)
+- When all implemented: show "All requirements implemented" instead of checklist
 - Find existing patterns in codebase first
 - Git add all created files
 

@@ -35,11 +35,9 @@ File: `./docs/workPlans/{flow-name}-implementation-plan.md`
 2. **Tasks** — Ordered list (1-liner per task):
    - Action | File | Verification | Closes REQ-IDs
 
-3. **Risks** — Top 3 only (if present):
-   - Risk | Mitigation
+3. **Files Modified** — List of files to be changed
 
-4. **Approvals** — Only if needed:
-   - Item | Options
+4. **Related Documentation** — Links to user flow and standards only (no checklist, no test cases)
 
 ### Optional Documents
 
@@ -57,7 +55,6 @@ Created only if user approves task splits:
 ```
 Items: N total (Implemented: A | Partial: B | Missing: C | Needs Verification: D)
 Action Items: X (shown in checklist)
-Risks: R | Approvals: H
 ```
 
 ## Process
@@ -107,35 +104,21 @@ Result: Checklist with Status (track all, output only actionable items)
 For each Partial / Missing / Needs rework item — output 1-liner:
 - Action | File | Verification | Closes REQ-IDs
 
-If high-risk module touched — add to Risks section (max 3 items)
+### Step 5: Verify Plan (Internal Only)
 
-### Step 5: Request Approvals
+Check before saving plan:
+- Risks identified (high-risk modules, breaking changes, standards compliance)
+- Dependencies mapped (shared components, external APIs, cross-flow impacts)
+- Approvals needed (new dependencies, architectural changes)
 
-For each new dependency:
-- Create "Approval Required" block
-- Name / purpose / alternatives / risk / impact
-- Ask user for decision (Approve / Reject / Suggest alternative)
-
-For high-risk shared module changes:
-- Create "Approval Required" block
-- Propose: Include in task / Separate task (blocking) / Separate task (non-blocking) / Skip
-
-Without approval: mark plan as pending
-
-### Step 6: Task Splits
-
-If refactor spans external pages:
-- Show two options: Include now / Separate task
-- Ask user
-- If separate: create Separate Task Proposal document
-- Add blocking/non-blocking flag
-- Add to git tracking
+Do NOT add these to output document. Use only for internal validation.
 
 ## Rules
 
 **DO:**
 - Extract only from flow + linked docs
-- Output minimal format: Checklist table (actionable items only), 1-liner tasks, top 3 risks
+- Output minimal format: Checklist (actionable items only), Tasks, Files Modified, Related Docs
+- Verify risks/dependencies/approvals internally (Step 5) but exclude from document
 - Show implementation stats in console report (all items counted)
 - Find existing patterns in codebase first
 - Git add all created files
@@ -144,15 +127,8 @@ If refactor spans external pages:
 - Write code or patches
 - Invent new requirements
 - Guess when uncertain
-
-## Questions to User
-
-Only ask about:
-1. New dependencies (Approve / Reject / Alternative)
-2. Task scope (Include / Split blocking / Split non-blocking / Skip)
-3. High-risk changes (Proceed / Separate / Skip)
-
-Each question: concrete, per-checklist-item, with options.
+- Add Risks, Dependencies, Approvals, Test Coverage, Test Cases, Success Criteria sections to output document
+- Reference checklist files or test case files in Related Documentation section
 
 ## Starting Workflow
 
@@ -160,7 +136,6 @@ Each question: concrete, per-checklist-item, with options.
 2. Read and parse flow
 3. Search codebase for entry points
 4. Audit each checklist item
-5. Build work plan
-6. Ask approvals if needed
-7. Output plan + console report
-8. Git add files if created
+5. Build work plan (verify risks/dependencies internally, exclude from document)
+6. Output plan + console report
+7. Git add files if created

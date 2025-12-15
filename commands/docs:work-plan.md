@@ -9,7 +9,7 @@ Converts user flow documents into developer implementation instructions by analy
 
 ## Input
 
-Path to user flow markdown file (`.claude/proj_index/flows/` or `docs/userFlows/`).
+User must provide path to user flow markdown file via `$ARGUMENTS`.
 
 User flow must contain: Happy Path, Preconditions, Alternative Paths, Negative Scenarios, Success Criteria, Links to standards.
 
@@ -70,7 +70,8 @@ Result: Requirement matrix (REQ-ID → Layer → What needed)
 ### Phase 2: Analyze & Match
 
 **Step 2.1: Scan Project Patterns**
-Find how project does:
+Read `.claude/proj_index/00-INDEX.md` first to understand project architecture and patterns.
+Then scan code to find how project implements:
 - Module structure (feature folders, barrel exports)
 - Routes (file-based, config-based)
 - DI (context, hooks, providers)
@@ -88,10 +89,10 @@ Result: Pattern catalog (category → pattern → example file:line)
 
 **Step 2.2: Match Requirements to Code**
 For each atomic requirement, determine status:
-- ✅ **Exists:** Fully implemented per patterns
-- ⚠️ **Partial:** Implemented but incomplete or not per patterns
-- ❌ **Missing:** Not implemented
-- 🔴 **Conflicts:** Requirement contradicts current pattern
+- **Exists:** Fully implemented per patterns
+- **Partial:** Implemented but incomplete or not per patterns
+- **Missing:** Not implemented
+- **Conflicts:** Requirement contradicts current pattern
 
 Result: Requirement status map (REQ-ID → Status → File:line → Pattern used)
 
@@ -154,7 +155,7 @@ Show requirement count by layer, status distribution, impact metrics (files/pack
 
 ## Starting Workflow
 
-1. Get user flow file path from `$ARGUMENTS` or ask user
+1. Get user flow file path from `$ARGUMENTS` (required)
 2. Execute Phase 1: Parse & Decompose
 3. Execute Phase 2: Analyze & Match
 4. Execute Phase 3: Plan & Output

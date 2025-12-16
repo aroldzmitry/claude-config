@@ -6,13 +6,12 @@ allowed-tools: Write, Edit, Read, Glob, Grep, Bash(yarn:*)
 
 # qa:create-test — Generate Typed Tests from Test Cases
 
-Generate Playwright/Vitest/Storybook tests from documentation with automatic type classification:
+Generate Playwright/Vitest/Storybook tests from documentation with:
 - Full test-to-requirement traceability (TC-ID/CL-ID via annotations and tags)
 - Automatic test type detection (e2e/integration/storybook/unit)
 - Hierarchical data-testid naming (domain.component.element format)
 - Network mocking for error scenarios (500, 409, timeouts)
 - Test data fixtures with setup/teardown
-- Structured document parsing
 
 ## Input Requirements
 
@@ -20,16 +19,16 @@ Generate Playwright/Vitest/Storybook tests from documentation with automatic typ
 - `<checklist-path>` — Path to checklist.md (contains CL-ID, severity, expected result)
 - `<test-cases-path>` — Path to test-cases.md (contains TC-ID, steps, test data, cleanup)
 
-**Document Format:**
+**Expected Document Formats:**
 
-Checklist expects:
+Checklist structure:
 ```markdown
 ## CL-001 | CRITICAL
 Element: Login form submit button
 Expected Result: Button is enabled only when email and password are filled
 ```
 
-Test Cases expects:
+Test Cases structure:
 ```markdown
 ## TC-001: User registration with valid data
 **Preconditions:** User not logged in
@@ -44,7 +43,7 @@ Test Cases expects:
 
 ## Test Type Classification
 
-Tests are automatically classified by analyzing test case characteristics:
+Tests are automatically classified by analyzing test case characteristics.
 
 ### E2E Tests
 **Location:** `tests/e2e/<area>/<testcase-id>.spec.ts`
@@ -53,12 +52,6 @@ Tests are automatically classified by analyzing test case characteristics:
 - Contains real API calls (no mocking)
 - Tests full user flow across multiple pages
 - Includes navigation/redirects (`toHaveURL`, `page.goto`)
-- Verifies end-to-end business scenarios
-
-**Examples:**
-- Happy path registration with redirect to login
-- Complete checkout flow from cart to confirmation
-- User login → dashboard → logout flow
 
 ### Storybook Tests
 **Location:** `src/<mirrored-component-path>/<ComponentName>.stories.tsx`
@@ -70,16 +63,7 @@ Tests are automatically classified by analyzing test case characteristics:
 - User interactions within single component (click, type, blur)
 - Accessibility testing (ARIA, keyboard nav)
 
-**File Structure:**
-- Component: `src/components/auth/RegistrationForm.tsx` → `src/components/auth/RegistrationForm.stories.tsx`
-- Uses CSF3 format with play functions for interactions
-- Imports `@storybook/test` for userEvent and expect
-
-**Examples:**
-- Button disabled until fields filled
-- Empty field validation on blur
-- Loading spinner display during submission
-- Focus/blur states
+**File Structure:** Component: `src/components/auth/RegistrationForm.tsx` → `src/components/auth/RegistrationForm.stories.tsx`. Uses CSF3 format with play functions, imports `@storybook/test`.
 
 ### Integration Tests
 **Location:** `tests/integration/<mirrored-source-path>/<ComponentName>.spec.ts`
@@ -91,51 +75,24 @@ Tests are automatically classified by analyzing test case characteristics:
 - Route transitions within feature
 - Complex mocked responses (409, 500, timeouts)
 
-**Path Mirroring:**
-- Component: `src/components/auth/RegistrationForm.tsx` → `tests/integration/components/auth/RegistrationForm.spec.ts`
-- Page: `src/pages/registration/Registration.tsx` → `tests/integration/pages/registration/Registration.spec.ts`
-
-**Examples:**
-- Multiple submit click prevention
-- Network error handling with mock (TC-REG-008)
-- Server error display with mock (TC-REG-009)
+**Path Mirroring:** Component: `src/components/auth/RegistrationForm.tsx` → `tests/integration/components/auth/RegistrationForm.spec.ts`
 
 ### Unit Tests
 **Location:** `src/<same-directory-as-source>/<fileName>.test.ts`
 
 **Criteria:**
 - Tests pure functions or utilities
-- No UI rendering
-- No API calls (real or mocked)
+- No UI rendering, no API calls (real or mocked)
 - Tests validation logic, formatters, calculators
 
-**File Placement:**
-- Utility: `src/shared/validation/emailValidator.ts` → `src/shared/validation/emailValidator.test.ts`
-- Service: `src/services/auth/passwordStrength.ts` → `src/services/auth/passwordStrength.test.ts`
-- Uses `.test.ts` extension (Vitest convention)
-- Placed in same directory as source file
-
-**Examples:**
-- Email format validation function
-- Password strength calculator
-- Date formatting utilities
-- Business logic calculations
+**File Placement:** Utility: `src/shared/validation/emailValidator.ts` → `src/shared/validation/emailValidator.test.ts` (uses `.test.ts` extension, placed in same directory as source).
 
 ## Output Files
 
-**E2E Tests:**
-- `tests/e2e/<area>/<testcase-id>.spec.ts` — Full flow tests (Playwright)
-
-**Storybook Tests:**
-- `src/<mirrored-path>/<ComponentName>.stories.tsx` — Component isolation tests with play functions
-
-**Integration Tests:**
-- `tests/integration/<mirrored-path>/<ComponentName>.spec.ts` — Component integration tests (Playwright)
-
-**Unit Tests:**
-- `src/<same-path-as-source>/<fileName>.test.ts` — Pure function tests (Vitest)
-
-**Modified Components:**
+- `tests/e2e/<area>/<testcase-id>.spec.ts` — E2E tests (Playwright)
+- `src/<mirrored-path>/<ComponentName>.stories.tsx` — Storybook tests with play functions
+- `tests/integration/<mirrored-path>/<ComponentName>.spec.ts` — Integration tests (Playwright)
+- `src/<same-path-as-source>/<fileName>.test.ts` — Unit tests (Vitest)
 - Updated component files with added `data-testid` attributes
 
 ## Console Output Format
@@ -174,39 +131,17 @@ After completion, output to console (do NOT create REPORT.md file):
 
 For each test case, analyze in order:
 
-1. **Check for E2E criteria:**
-   - Steps mention: "redirect", "navigate to different page", "toHaveURL"
-   - No network mocking mentioned
-   - Covers complete user journey across pages
-   - → Classify as **e2e**
+1. **Check for E2E criteria:** Steps mention "redirect", "navigate to different page", "toHaveURL"; no network mocking; covers complete user journey across pages → Classify as **e2e**
 
-2. **Check for Storybook criteria:**
-   - Single component in isolation (no page.goto or navigation)
-   - Tests field-level validation without API
-   - Tests visual states: loading, error, disabled, focused
-   - User interactions within component: click, type, blur, focus
-   - No network mocking, no multi-component scenarios
-   - → Classify as **storybook**
+2. **Check for Storybook criteria:** Single component in isolation (no page.goto or navigation); tests field-level validation without API; tests visual states (loading, error, disabled, focused); user interactions within component (click, type, blur, focus); no network mocking, no multi-component scenarios → Classify as **storybook**
 
-3. **Check for Integration criteria:**
-   - Steps mention: "page.route", "mock API", "network error", "server error"
-   - Form submission flow with mocked responses
-   - Multi-step component scenarios
-   - Tests component integration with mocked dependencies
-   - → Classify as **integration**
+3. **Check for Integration criteria:** Steps mention "page.route", "mock API", "network error", "server error"; form submission flow with mocked responses; multi-step component scenarios; tests component integration with mocked dependencies → Classify as **integration**
 
-4. **Default to Unit if:**
-   - No UI interactions mentioned
-   - Tests pure function/utility
-   - No API or component rendering
-   - → Classify as **unit**
+4. **Default to Unit if:** No UI interactions mentioned; tests pure function/utility; no API or component rendering → Classify as **unit**
 
 ### Path Mirroring
 
-1. **Extract component/file path from test case:**
-   - Look for data-testid format: `domain.component.element`
-   - Search codebase: `Grep "component" --glob "src/**/*.tsx"`
-   - Identify source file path
+1. **Extract component/file path from test case:** Look for data-testid format (`domain.component.element`), search codebase with Grep, identify source file path.
 
 2. **Place tests based on type:**
    - Source: `src/components/auth/RegistrationForm.tsx`
@@ -397,7 +332,6 @@ test.describe('RegistrationForm - Network Error', {
 ```
 
 ### Unit Test (Vitest)
-File: `src/shared/validation/emailValidator.test.ts` (next to emailValidator.ts)
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { validateEmail } from './emailValidator';

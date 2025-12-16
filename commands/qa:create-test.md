@@ -432,6 +432,7 @@ describe('emailValidator', {
 - Include setup/teardown (fixtures) for test data
 - Run `yarn lint:fix` and `tsc --noEmit` after generation
 - Report validation errors that auto-fix couldn't resolve
+- Stage all generated test files with `git add tests/e2e/**/*.spec.ts src/**/*.stories.tsx src/**/*.test.ts tests/integration/**/*.spec.ts`
 - Report all CRITICAL gaps
 - Include classification reason in console output
 

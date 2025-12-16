@@ -262,8 +262,9 @@ For each test case, analyze in order:
 
 After generating tests, run validation:
 1. `yarn lint:fix` on generated test files (auto-fix eslint issues)
-2. `npx tsc --noEmit` on generated files (type-check without emitting)
-3. Report unfixable errors in `validationErrors` output data
+2. `npx prettier --write` on all generated/modified files (format code)
+3. `npx tsc --noEmit` on generated files (type-check without emitting)
+4. Report unfixable errors in `validationErrors` output data
 
 ## Stage for Git
 
@@ -430,7 +431,7 @@ describe('emailValidator', {
 - Generate one test per test case (strict step order)
 - Mock network errors when TC specifies error scenario
 - Include setup/teardown (fixtures) for test data
-- Run `yarn lint:fix` and `tsc --noEmit` after generation
+- Run `yarn lint:fix`, `npx prettier --write`, and `tsc --noEmit` after generation on generated/modified files
 - Report validation errors that auto-fix couldn't resolve
 - Stage all generated test files with `git add tests/e2e/**/*.spec.ts src/**/*.stories.tsx src/**/*.test.ts tests/integration/**/*.spec.ts`
 - Report all CRITICAL gaps

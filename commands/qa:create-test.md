@@ -101,7 +101,7 @@ Tests are automatically classified by analyzing test case characteristics:
 - Server error display with mock (TC-REG-009)
 
 ### Unit Tests
-**Location:** `tests/unit/<mirrored-source-path>/<functionName>.spec.ts`
+**Location:** `src/<same-directory-as-source>/<fileName>.test.ts`
 
 **Criteria:**
 - Tests pure functions or utilities
@@ -109,9 +109,11 @@ Tests are automatically classified by analyzing test case characteristics:
 - No API calls (real or mocked)
 - Tests validation logic, formatters, calculators
 
-**Path Mirroring:**
-- Utility: `src/shared/validation/emailValidator.ts` → `tests/unit/shared/validation/emailValidator.spec.ts`
-- Service: `src/services/auth/passwordStrength.ts` → `tests/unit/services/auth/passwordStrength.spec.ts`
+**File Placement:**
+- Utility: `src/shared/validation/emailValidator.ts` → `src/shared/validation/emailValidator.test.ts`
+- Service: `src/services/auth/passwordStrength.ts` → `src/services/auth/passwordStrength.test.ts`
+- Uses `.test.ts` extension (Vitest convention)
+- Placed in same directory as source file
 
 **Examples:**
 - Email format validation function
@@ -131,7 +133,7 @@ Tests are automatically classified by analyzing test case characteristics:
 - `tests/integration/<mirrored-path>/<ComponentName>.spec.ts` — Component integration tests (Playwright)
 
 **Unit Tests:**
-- `tests/unit/<mirrored-path>/<functionName>.spec.ts` — Pure function tests (Vitest)
+- `src/<same-path-as-source>/<fileName>.test.ts` — Pure function tests (Vitest)
 
 **Modified Components:**
 - Updated component files with added `data-testid` attributes
@@ -201,20 +203,22 @@ For each test case, analyze in order:
 
 ### Path Mirroring
 
-1. **Extract component path from test case:**
+1. **Extract component/file path from test case:**
    - Look for data-testid format: `domain.component.element`
    - Search codebase: `Grep "component" --glob "src/**/*.tsx"`
    - Identify source file path
 
-2. **Mirror directory structure:**
+2. **Place tests based on type:**
    - Source: `src/components/auth/RegistrationForm.tsx`
-   - Storybook: `src/components/auth/RegistrationForm.stories.tsx`
-   - Integration: `tests/integration/components/auth/RegistrationForm.spec.ts`
-   - Unit: `tests/unit/components/auth/registrationValidation.spec.ts`
+   - Storybook: `src/components/auth/RegistrationForm.stories.tsx` (same directory)
+   - Integration: `tests/integration/components/auth/RegistrationForm.spec.ts` (mirrored structure)
+   - Unit: `src/shared/validation/emailValidator.test.ts` (same directory as source)
 
-3. **Create directories if missing:**
-   - Storybook files go in same directory as component
-   - Integration/Unit tests require directory creation if missing
+3. **File placement rules:**
+   - E2E: `tests/e2e/<area>/` (separate directory)
+   - Storybook: Same directory as component (src/)
+   - Integration: Mirrored structure in `tests/integration/`
+   - Unit: Same directory as source file (src/)
 
 ### Test Traceability
 
@@ -267,8 +271,8 @@ After validation, stage generated test files:
 ```bash
 git add tests/e2e/<area>/*.spec.ts
 git add src/**/*.stories.tsx
+git add src/**/*.test.ts
 git add tests/integration/**/*.spec.ts
-git add tests/unit/**/*.spec.ts
 ```
 
 ## Test Execution
@@ -392,9 +396,10 @@ test.describe('RegistrationForm - Network Error', {
 ```
 
 ### Unit Test (Vitest)
+File: `src/shared/validation/emailValidator.test.ts` (next to emailValidator.ts)
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { validateEmail } from '@client/shared/validation/emailValidator';
+import { validateEmail } from './emailValidator';
 
 describe('emailValidator', {
   annotation: [
@@ -420,7 +425,8 @@ describe('emailValidator', {
 - Wrap tests in test.describe() with tag (TC-ID) and annotations (doc path, CL-IDs, testType)
 - Use CSF3 format for Storybook stories with play functions
 - Place Storybook files next to components in src/
-- Mirror source directory structure for integration/unit tests
+- Place unit tests next to source files in src/ (use .test.ts extension)
+- Mirror source directory structure for integration tests in tests/integration/
 - Generate one test per test case (strict step order)
 - Mock network errors when TC specifies error scenario
 - Include setup/teardown (fixtures) for test data
@@ -433,6 +439,7 @@ describe('emailValidator', {
 - Guess test type — follow classification algorithm strictly
 - Put integration tests in src/ — always use tests/integration/
 - Put Storybook tests in tests/ — always use src/ next to component
+- Put unit tests in tests/ — always use src/ next to source file
 - Add traceability comments (use annotations/tags/parameters instead)
 - Add generic file header comments
 - Comment self-explanatory code (project standard)

@@ -15,15 +15,19 @@ Execute all test types sequentially and output concise failure report to console
 
 ## Execution Flow
 
-1. Run e2e tests: `yarn test:e2e --reporter=json`
-2. Run integration tests: `yarn test --grep "integration" --reporter=json`
-3. Run unit tests: `yarn test --grep "unit" --reporter=json`
-4. Run Storybook tests (if configured): `yarn test:storybook --json`
-5. Parse JSON results from all test runners
-6. Extract failure details (test name, file path, line number, error message)
-7. Output colored console report
+1. Detect available test commands from package.json in current directory and parent (monorepo root)
+2. Determine which test commands to run based on what exists:
+   - E2E: `test:e2e` or `web:test:e2e`
+   - Integration: `test:integration` or `server:test:integration`
+   - Unit: `test:unit`, `test`, `web:test:unit`, `server:test:unit`
+   - Storybook: `test:storybook`
+3. Run detected commands sequentially with JSON reporters where supported
+4. Parse results from all test runners
+5. Extract failure details (test name, file path, line number, error message)
+6. Output colored console report
 
-**Fail-fast behavior:** If `--fail-fast` provided, stop after first suite with failures
+**Detection:** Read package.json scripts, check both current dir and parent (monorepo). Use commands that exist.
+**Fail-fast:** If `--fail-fast` provided, stop after first suite with failures
 
 ## Output Format
 
@@ -81,6 +85,8 @@ Use ANSI escape codes for terminal colors:
 ## Rules
 
 **DO:**
+- Read package.json first (current dir + parent) to detect available test commands
+- Use detected commands instead of hardcoded ones
 - Run tests sequentially (e2e → integration → unit → storybook)
 - Parse JSON output when available
 - Show only failures in detail section
@@ -89,8 +95,10 @@ Use ANSI escape codes for terminal colors:
 - Include file path and line number for each failure
 - Stop on first failure if `--fail-fast` provided
 - Show summary statistics for all test types
+- Skip test types with no matching commands
 
 **DON'T:**
+- Assume specific commands exist without checking
 - Attempt to fix failing tests or code
 - Suggest code changes or solutions
 - Run tests in parallel (mixing output)

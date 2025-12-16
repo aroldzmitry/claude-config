@@ -100,75 +100,31 @@ For each flow element, extract atomic requirements per layer:
 
 Result: Requirement matrix (REQ-ID → Layer → What needed)
 
-### Phase 2: Analyze & Match
+### Phase 2: Analyze & Match (Delegated to Plan Subagent)
 
-**Step 2.1: Scan Project Patterns**
-Read `.claude/proj_index/00-INDEX.md` first to understand project architecture and patterns.
-Then scan code to find how project implements:
-- Module structure (feature folders, barrel exports)
-- Routes (file-based, config-based)
-- DI (context, hooks, providers)
-- API client (fetch wrapper, axios, react-query)
-- Repositories (data access pattern)
-- State management (Redux, Zustand, Context, local)
-- Forms (Formik, React Hook Form, uncontrolled)
-- Modals (portal pattern, library)
-- Notifications (toast library, custom)
-- Error handling (boundaries, global handler)
-- i18n (react-i18next, custom)
-- Styling (CSS modules, styled-components, Tailwind)
+Use Task tool with `subagent_type="Plan"` to delegate phases 2-3 planning work.
 
-Result: Pattern catalog (category → pattern → example file:line)
+**Plan Agent Prompt:**
+- Input: Requirement matrix from Phase 1, user flow file path, test artifacts
+- Task: Analyze codebase patterns, match requirements to code, generate implementation decisions
+- Output: Pattern catalog, requirement status map, implementation decisions, file/module change plan, refactoring plan, dependency plan
 
-**Step 2.2: Match Requirements to Code**
-For each atomic requirement, determine status:
-- **Exists:** Fully implemented per patterns
-- **Partial:** Implemented but incomplete or not per patterns
-- **Missing:** Not implemented
-- **Conflicts:** Requirement contradicts current pattern
+**Plan Agent Instructions:**
+Scan `.claude/proj_index/00-INDEX.md` for architecture. Scan code for patterns: module structure, routes, DI, API client, repositories, state management, forms, modals, notifications, error handling, i18n, styling.
 
-For test ID requirements specifically:
-- Grep codebase for each test ID value from testIds.ts
-- Check if `data-testid="{value}"` exists in relevant component files
-- Mark as **Missing** if test ID defined in testIds.ts but not used in component code
-- Mark as **Partial** if test ID used but on wrong element or conditionally missing
-- Mark as **Exists** if test ID present on correct element in all required states
+Match each requirement to code status: Exists (fully implemented), Partial (incomplete/non-standard), Missing (not implemented), Conflicts (contradicts pattern).
 
-Result: Requirement status map (REQ-ID → Status → File:line → Pattern used)
+For test IDs: grep codebase for testIds.ts values, check data-testid usage in components, mark Missing if defined but unused, Partial if wrong element/conditional, Exists if correct.
+
+Select optimal implementation: prefer existing patterns, minimal architecture changes, module reuse, UX consistency.
+
+Generate file/module change plan: file path, changes (add/modify/remove/move), contracts (API shape, props), state (local/global, shape), UI components, test IDs (element, testIds.ts value, conditional logic), verification.
+
+Generate refactoring plan if needed: what to refactor, why (pattern mismatch, conflict, tech debt), expected result.
+
+Generate dependency plan if needed: package name, purpose, where used, installation command.
 
 ### Phase 3: Plan & Output
-
-**Step 3.1: Select Optimal Implementation**
-For each Partial/Missing/Conflict requirement, choose best path:
-- Prefer existing patterns over new patterns
-- Prefer minimal architecture changes
-- Prefer module reuse over creation
-- Prefer UX consistency with existing flows
-
-Result: Implementation decisions (REQ-ID → Approach → Why)
-
-**Step 3.2: Generate File & Module Change Plan**
-Group requirements by file/module. For each:
-- Where to go (file path)
-- What to change (add/modify/remove/move)
-- What contract needed (API shape, props interface)
-- What state to add (local/global, shape)
-- What UI components to use (existing or new)
-- What test IDs to add (element, attribute value from testIds.ts, conditional logic if needed)
-- Verification (how to test manually, which E2E tests will pass)
-
-**Step 3.3: Generate Refactoring Plan**
-If existing module needs rework to fit flow:
-- What to refactor (function/component/module)
-- Why (pattern mismatch, conflict, tech debt)
-- Expected result (new structure, behavior)
-
-**Step 3.4: Generate Dependency Plan**
-If new packages/configs needed:
-- Package name
-- Purpose (what layer uses it)
-- Where used (file paths)
-- Installation command
 
 **Step 3.5: Print Console Summary**
 Show requirement count by layer, status distribution, impact metrics (files/packages).
@@ -212,6 +168,7 @@ Only if Missing + Partial + Conflicts > 0:
 
 1. Get user flow file path from `$ARGUMENTS` (required)
 2. Execute Phase 1: Parse & Decompose (Steps 1.1-1.3, including test artifact parsing)
-3. Execute Phase 2: Analyze & Match (Steps 2.1-2.2, including test ID verification)
-4. Execute Phase 3: Plan & Output (Steps 3.1-3.7, including conditional file creation)
-5. If file created: git add plan file
+3. Delegate Phase 2-3 Planning: Use Task tool with `subagent_type="Plan"`, provide requirement matrix and instructions from Phase 2 section
+4. Parse Plan agent output: Extract pattern catalog, requirement status map, implementation decisions, change plans
+5. Execute Phase 3: Plan & Output (Steps 3.5-3.7, using Plan agent results for console summary and file generation)
+6. If file created: git add plan file

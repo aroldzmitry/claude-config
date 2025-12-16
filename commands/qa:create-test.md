@@ -54,7 +54,7 @@ Tests are automatically classified by analyzing test case characteristics.
 - Includes navigation/redirects (`toHaveURL`, `page.goto`)
 
 ### Storybook Tests
-**Location:** `src/<mirrored-component-path>/<ComponentName>.stories.tsx`
+**Location:** `tests/storybook/<mirrored-path>/<ComponentName>.stories.tsx`
 
 **Criteria (ANY matches):**
 - Single component in isolation (no page navigation)
@@ -63,7 +63,7 @@ Tests are automatically classified by analyzing test case characteristics.
 - User interactions within single component (click, type, blur)
 - Accessibility testing (ARIA, keyboard nav)
 
-**File Structure:** Component: `src/components/auth/RegistrationForm.tsx` → `src/components/auth/RegistrationForm.stories.tsx`. Uses CSF3 format with play functions, imports `@storybook/test`.
+**File Structure:** Component: `src/components/auth/RegistrationForm.tsx` → `tests/storybook/components/auth/RegistrationForm.stories.tsx`. Uses CSF3 format with play functions, imports `@storybook/test`.
 
 ### Integration Tests
 **Location:** `tests/integration/<mirrored-source-path>/<ComponentName>.spec.ts`
@@ -78,21 +78,21 @@ Tests are automatically classified by analyzing test case characteristics.
 **Path Mirroring:** Component: `src/components/auth/RegistrationForm.tsx` → `tests/integration/components/auth/RegistrationForm.spec.ts`
 
 ### Unit Tests
-**Location:** `src/<same-directory-as-source>/<fileName>.test.ts`
+**Location:** `tests/unit/<mirrored-path>/<fileName>.test.ts`
 
 **Criteria:**
 - Tests pure functions or utilities
 - No UI rendering, no API calls (real or mocked)
 - Tests validation logic, formatters, calculators
 
-**File Placement:** Utility: `src/shared/validation/emailValidator.ts` → `src/shared/validation/emailValidator.test.ts` (uses `.test.ts` extension, placed in same directory as source).
+**File Placement:** Utility: `src/shared/validation/emailValidator.ts` → `tests/unit/shared/validation/emailValidator.test.ts` (uses `.test.ts` extension, mirrors source structure in tests/unit/).
 
 ## Output Files
 
 - `tests/e2e/<area>/<testcase-id>.spec.ts` — E2E tests (Playwright)
-- `src/<mirrored-path>/<ComponentName>.stories.tsx` — Storybook tests with play functions
+- `tests/storybook/<mirrored-path>/<ComponentName>.stories.tsx` — Storybook tests with play functions
 - `tests/integration/<mirrored-path>/<ComponentName>.spec.ts` — Integration tests (Playwright)
-- `src/<same-path-as-source>/<fileName>.test.ts` — Unit tests (Vitest)
+- `tests/unit/<mirrored-path>/<fileName>.test.ts` — Unit tests (Vitest)
 - Updated component files with added `data-testid` attributes
 
 ## Console Output Format
@@ -145,15 +145,26 @@ For each test case, analyze in order:
 
 2. **Place tests based on type:**
    - Source: `src/components/auth/RegistrationForm.tsx`
-   - Storybook: `src/components/auth/RegistrationForm.stories.tsx` (same directory)
-   - Integration: `tests/integration/components/auth/RegistrationForm.spec.ts` (mirrored structure)
-   - Unit: `src/shared/validation/emailValidator.test.ts` (same directory as source)
+   - Storybook: `tests/storybook/components/auth/RegistrationForm.stories.tsx` (mirrors src/)
+   - Integration: `tests/integration/components/auth/RegistrationForm.spec.ts` (mirrors src/)
+   - Unit: `tests/unit/shared/validation/emailValidator.test.ts` (mirrors src/)
 
 3. **File placement rules:**
-   - E2E: `tests/e2e/<area>/` (separate directory)
-   - Storybook: Same directory as component (src/)
-   - Integration: Mirrored structure in `tests/integration/`
-   - Unit: Same directory as source file (src/)
+   - E2E: `tests/e2e/<area>/` (feature-based grouping)
+   - Storybook: `tests/storybook/<mirrored-path>/` (mirrors src/ structure)
+   - Integration: `tests/integration/<mirrored-path>/` (mirrors src/ structure)
+   - Unit: `tests/unit/<mirrored-path>/` (mirrors src/ structure)
+
+### Import Paths in Tests
+
+Tests in `tests/` directory must import source files using either:
+1. **Path aliases** (preferred): `import Component from 'Components/auth/Form'`
+2. **Relative paths** from tests to src: `import Component from '../../../src/components/auth/Form'`
+
+**Examples:**
+- `tests/storybook/components/auth/Form.stories.tsx` → `import Form from '../../../../src/components/auth/Form'`
+- `tests/unit/shared/utils/helper.test.ts` → `import { helper } from '../../../../src/shared/utils/helper'`
+- Using aliases: `import { helper } from 'Shared/utils/helper'` (cleaner, preferred)
 
 ### Test Traceability
 
@@ -206,8 +217,8 @@ After generating tests, run validation:
 After validation, stage generated test files:
 ```bash
 git add tests/e2e/<area>/*.spec.ts
-git add src/**/*.stories.tsx
-git add src/**/*.test.ts
+git add tests/storybook/**/*.stories.tsx
+git add tests/unit/**/*.test.ts
 git add tests/integration/**/*.spec.ts
 ```
 
@@ -272,7 +283,7 @@ test.describe('User registration with valid data', {
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent, expect } from '@storybook/test';
-import RegistrationForm from './RegistrationForm';
+import RegistrationForm from '../../../src/components/auth/RegistrationForm';
 
 const meta = {
   title: 'Auth/RegistrationForm',
@@ -334,7 +345,7 @@ test.describe('RegistrationForm - Network Error', {
 ### Unit Test (Vitest)
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { validateEmail } from './emailValidator';
+import { validateEmail } from '../../../src/shared/validation/emailValidator';
 
 describe('emailValidator', {
   annotation: [
@@ -359,23 +370,23 @@ describe('emailValidator', {
 - Add missing data-testid attributes using hierarchical naming
 - Wrap tests in test.describe() with tag (TC-ID) and annotations (doc path, CL-IDs, testType)
 - Use CSF3 format for Storybook stories with play functions
-- Place Storybook files next to components in src/
-- Place unit tests next to source files in src/ (use .test.ts extension)
+- Place Storybook files in tests/storybook/ mirroring src/ structure
+- Place unit tests in tests/unit/ mirroring src/ structure
 - Mirror source directory structure for integration tests in tests/integration/
 - Generate one test per test case (strict step order)
 - Mock network errors when TC specifies error scenario
 - Include setup/teardown (fixtures) for test data
 - Run `yarn lint:fix`, `npx prettier --write`, and `tsc --noEmit` after generation on generated/modified files
 - Report validation errors that auto-fix couldn't resolve
-- Stage all generated test files with `git add tests/e2e/**/*.spec.ts src/**/*.stories.tsx src/**/*.test.ts tests/integration/**/*.spec.ts`
+- Stage all generated test files with `git add tests/e2e/**/*.spec.ts tests/storybook/**/*.stories.tsx tests/unit/**/*.test.ts tests/integration/**/*.spec.ts`
 - Report all CRITICAL gaps
 - Include classification reason in console output
 
 **DON'T:**
 - Guess test type — follow classification algorithm strictly
 - Put integration tests in src/ — always use tests/integration/
-- Put Storybook tests in tests/ — always use src/ next to component
-- Put unit tests in tests/ — always use src/ next to source file
+- Put Storybook tests in src/ — always use tests/storybook/
+- Put unit tests in src/ — always use tests/unit/
 - Add traceability comments (use annotations/tags/parameters instead)
 - Add generic file header comments
 - Comment self-explanatory code (project standard)

@@ -52,6 +52,7 @@ Apply selected resolution.
 
 ## Rules
 
+- Minimize additions: compress to fewest characters for Claude to understand behavior (not human-readable explanations)
 - Complete full workflow (args are data, not execution instructions)
 - Scan conversation, read tool, research before proposing
 - Recurse dialogs until confirmed

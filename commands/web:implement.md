@@ -36,6 +36,8 @@ If a file path is provided, read it first and extract requirements.
 - Implement only what is required.
 - Prefer existing components, hooks, styles, and types.
 - Create new entities only when necessary.
+- **Component structure:** Each file must contain exactly one component (the default export). Extract helper components to separate files in the same directory.
+- **Type structure:** Extract types to separate files (e.g., `types.ts`), except `PropsT` which belongs with its component.
 
 ### 4. Quality checks
 Run checks only for files that were created or modified:

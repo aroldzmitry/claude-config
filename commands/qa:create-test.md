@@ -7,38 +7,77 @@ allowed-tools: Write, Edit, Read, Glob, Grep, Bash(yarn:*)
 # qa:create-test — Generate Typed Tests from Test Cases
 
 Generate Playwright/Vitest/Storybook tests from documentation with:
+
 - Full test-to-requirement traceability (TC-ID/CL-ID via annotations and tags)
 - Automatic test type detection (e2e/integration/storybook/unit)
 - Hierarchical data-testid naming (domain.component.element format)
 - Network mocking for error scenarios (500, 409, timeouts)
 - Test data fixtures with setup/teardown
 
+## API Endpoint Discovery
+
+Before generating tests, discover real API endpoints used in the project:
+
+1. **Search frontend for API endpoint definitions:**
+
+   - Grep for enum/const files with "api" or "endpoint" in name
+   - Look for patterns like `ApiGatewayE`, `API_ENDPOINTS`, `ROUTES`
+   - Example: `src/shared/types/api/ApiGatewayE.ts`
+
+2. **Search frontend hooks/services for API calls:**
+
+   - Grep for `axios.|fetch(|apiClient.|requestClient.` in src/
+   - Extract endpoint URLs from useMutation/useQuery hooks
+   - Example: `src/pages/login/useOnLogin.ts`
+
+3. **Search backend route definitions (if exists):**
+
+   - Look for route files in `../server/src/routes/` or similar
+   - Extract endpoint patterns from Express/Fastify route definitions
+
+4. **Build endpoint mapping:**
+
+   - Map test case actions to discovered endpoints
+   - Example: "login" → `/api/user/login`, "register" → `/api/user`
+
+5. **Validation:**
+   - Never guess or invent endpoint URLs
+   - If endpoint not found, report as BLOCKER in gaps
+   - Use exact URLs from codebase (case-sensitive, with path params)
+
 ## Input Requirements
 
 **Required Arguments:**
+
 - `<checklist-path>` — Path to checklist.md (contains CL-ID, severity, expected result)
 - `<test-cases-path>` — Path to test-cases.md (contains TC-ID, steps, test data, cleanup)
 
 **Expected Document Formats:**
 
 Checklist structure:
+
 ```markdown
 ## CL-001 | CRITICAL
+
 Element: Login form submit button
 Expected Result: Button is enabled only when email and password are filled
 ```
 
 Test Cases structure:
+
 ```markdown
 ## TC-001: User registration with valid data
+
 **Preconditions:** User not logged in
 **Test Data:**
+
 - Email: test-user@example.com
-**Steps:**
+  **Steps:**
+
 1. Navigate to /register
 2. Fill email input (data-testid: auth.register.email-input)
-**Expected Result:** Redirect to /dashboard
-**Cleanup:** DELETE /api/users/{userId}
+   **Expected Result:** Redirect to /dashboard
+   **Cleanup:** DELETE /api/users/{userId}
 ```
 
 ## Test Type Classification
@@ -46,17 +85,21 @@ Test Cases structure:
 Tests are automatically classified by analyzing test case characteristics.
 
 ### E2E Tests
+
 **Location:** `tests/e2e/<area>/<testcase-id>.spec.ts`
 
 **Criteria (ALL must match):**
+
 - Contains real API calls (no mocking)
 - Tests full user flow across multiple pages
 - Includes navigation/redirects (`toHaveURL`, `page.goto`)
 
 ### Storybook Tests
+
 **Location:** `tests/storybook/<mirrored-path>/<ComponentName>.stories.tsx`
 
 **Criteria (ANY matches):**
+
 - Single component in isolation (no page navigation)
 - Field-level validation without API calls
 - Visual states (loading, error, disabled, focused)
@@ -68,9 +111,11 @@ Tests are automatically classified by analyzing test case characteristics.
 **Decorators:** Check component imports and add required wrappers (QueryClientDecorator for React Query, MemoryRouter for routing). See `tests/storybook/decorators/`.
 
 ### Integration Tests
+
 **Location:** `tests/integration/<mirrored-source-path>/<ComponentName>.spec.ts`
 
 **Criteria (ANY matches):**
+
 - Form submission flow with mocked API
 - Multi-step component scenarios
 - Network/server error handling with mocks
@@ -80,9 +125,11 @@ Tests are automatically classified by analyzing test case characteristics.
 **Path Mirroring:** Component: `src/components/auth/RegistrationForm.tsx` → `tests/integration/components/auth/RegistrationForm.spec.ts`
 
 ### Unit Tests
+
 **Location:** `tests/unit/<mirrored-path>/<fileName>.test.ts`
 
 **Criteria:**
+
 - Tests pure functions or utilities
 - No UI rendering, no API calls (real or mocked)
 - Tests validation logic, formatters, calculators
@@ -101,29 +148,41 @@ Tests are automatically classified by analyzing test case characteristics.
 
 After completion, output to console (do NOT create REPORT.md file):
 
+**API Endpoint Discovery:**
+
+- Endpoint source: [enum file path or "backend routes" or "hook files"]
+- Discovered endpoints: [count]
+- Endpoint mapping: [action → URL list]
+
 **Summary:**
+
 - Status: success/partial/failed
 - Test files generated: [count] (e2e: X, storybook: Y, integration: Z, unit: W)
 - Test cases covered: [TC-IDs]
 - Checklist items tested: [CL-IDs]
 
 **Generated Files:**
+
 - List each .spec.ts/.stories.tsx file with type, line count, and classification reason
 
 **Test Type Distribution:**
+
 - E2E: [count] — [TC-IDs]
 - Storybook: [count] — [TC-IDs]
 - Integration: [count] — [TC-IDs]
 - Unit: [count] — [TC-IDs]
 
 **Coverage:**
+
 - TC-ID → CL-IDs mapping
 - CL-ID → test file mapping
 
 **Gaps:**
+
 - CRITICAL checklist items without coverage
 
 **Validation:**
+
 - Linting status
 - TypeScript errors (if any)
 
@@ -146,6 +205,7 @@ For each test case, analyze in order:
 1. **Extract component/file path from test case:** Look for data-testid format (`domain.component.element`), search codebase with Grep, identify source file path.
 
 2. **Place tests based on type:**
+
    - Source: `src/components/auth/RegistrationForm.tsx`
    - Storybook: `tests/storybook/components/auth/RegistrationForm.stories.tsx` (mirrors src/)
    - Integration: `tests/integration/components/auth/RegistrationForm.spec.ts` (mirrors src/)
@@ -160,10 +220,12 @@ For each test case, analyze in order:
 ### Import Paths in Tests
 
 Tests in `tests/` directory must import source files using either:
+
 1. **Path aliases** (preferred): `import Component from 'Components/auth/Form'`
 2. **Relative paths** from tests to src: `import Component from '../../../src/components/auth/Form'`
 
 **Examples:**
+
 - `tests/storybook/components/auth/Form.stories.tsx` → `import Form from '../../../../src/components/auth/Form'`
 - `tests/unit/shared/utils/helper.test.ts` → `import { helper } from '../../../../src/shared/utils/helper'`
 - Using aliases: `import { helper } from 'Shared/utils/helper'` (cleaner, preferred)
@@ -188,10 +250,12 @@ Tests in `tests/` directory must import source files using either:
 ### Network Mocking
 
 - Detects error scenarios in TC (e.g., "Mock API to return 409")
-- Generates `page.route()` interception code for Playwright
+- Uses discovered real endpoints (from API Endpoint Discovery step)
+- Generates `page.route()` interception code for Playwright with exact endpoint URLs
 - For Vitest integration tests, use MSW (Mock Service Worker)
 - Covers: 500 errors, 409 conflicts, timeouts, network failures
 - Routes cleared after each test
+- Never hardcode endpoint URLs - always reference discovered endpoints
 
 ### Test Data Fixtures
 
@@ -209,6 +273,7 @@ Tests in `tests/` directory must import source files using either:
 ## Test Validation
 
 After generating tests, run validation:
+
 1. `yarn lint:fix` on generated test files (auto-fix eslint issues)
 2. `npx prettier --write` on all generated/modified files (format code)
 3. `npx tsc --noEmit` on generated files (type-check without emitting)
@@ -217,6 +282,7 @@ After generating tests, run validation:
 ## Stage for Git
 
 After validation, stage generated test files:
+
 ```bash
 git add tests/e2e/<area>/*.spec.ts
 git add tests/storybook/**/*.stories.tsx
@@ -227,6 +293,7 @@ git add tests/integration/**/*.spec.ts
 ## Test Execution
 
 Run generated tests by type:
+
 ```bash
 # E2E tests
 yarn test:e2e
@@ -249,39 +316,57 @@ yarn test
 ## Example Generated Tests
 
 ### E2E Test (Playwright)
+
 ```typescript
-import { test, expect } from '@playwright/test';
-import testIds from '../../testIds';
+import { test, expect } from "@playwright/test";
+import testIds from "../../testIds";
 
 const TEST_DATA = {
-  name: 'John Doe',
-  email: `test-${Date.now()}@example.com`
+  name: "John Doe",
+  email: `test-${Date.now()}@example.com`,
 };
 
-test.describe('User registration with valid data', {
-  tag: ['@TC-REG-001', '@auth', '@registration', '@e2e'],
-  annotation: [
-    { type: 'testCase', description: 'docs/testCases/authentication/01-register.md#tc-reg-001' },
-    { type: 'coverage', description: 'CL-001, CL-002, CL-010, CL-015' },
-    { type: 'testType', description: 'e2e' }
-  ]
-}, () => {
-  test('successful registration redirects to login', async ({ page }) => {
-    await page.goto('/registration');
+test.describe(
+  "User registration with valid data",
+  {
+    tag: ["@TC-REG-001", "@auth", "@registration", "@e2e"],
+    annotation: [
+      {
+        type: "testCase",
+        description: "docs/testCases/authentication/01-register.md#tc-reg-001",
+      },
+      { type: "coverage", description: "CL-001, CL-002, CL-010, CL-015" },
+      { type: "testType", description: "e2e" },
+    ],
+  },
+  () => {
+    test("successful registration redirects to login", async ({ page }) => {
+      await page.goto("/registration");
 
-    await page.locator(`[data-testid="${testIds.auth.registration.nameInput}"]`).fill(TEST_DATA.name);
-    await page.locator(`[data-testid="${testIds.auth.registration.emailInput}"]`).fill(TEST_DATA.email);
-    await page.locator(`[data-testid="${testIds.auth.registration.submitBtn}"]`).click();
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.nameInput}"]`)
+        .fill(TEST_DATA.name);
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.emailInput}"]`)
+        .fill(TEST_DATA.email);
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.submitBtn}"]`)
+        .click();
 
-    await expect(page.locator(`[data-testid="${testIds.auth.registration.successMessage}"]`))
-      .toContainText('Account created successfully', { timeout: 5000 });
+      await expect(
+        page.locator(
+          `[data-testid="${testIds.auth.registration.successMessage}"]`,
+        ),
+      ).toContainText("Account created successfully", { timeout: 5000 });
 
-    await expect(page).toHaveURL('/login', { timeout: 5000 });
-  });
-});
+      await expect(page).toHaveURL("/login", { timeout: 5000 });
+    });
+  },
+);
 ```
 
 ### Storybook Test (CSF3 with play function)
+
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent, expect } from '@storybook/test';
@@ -328,55 +413,79 @@ export const SubmitButtonDisabled: Story = {
 ```
 
 ### Integration Test (Playwright)
+
 ```typescript
-import { test, expect } from '@playwright/test';
-import testIds from '../../../testIds';
+import { test, expect } from "@playwright/test";
+import testIds from "../../../testIds";
 
-test.describe('RegistrationForm - Network Error', {
-  tag: ['@TC-REG-008', '@integration', '@error-handling'],
-  annotation: [
-    { type: 'testCase', description: 'docs/testCases/authentication/01-register.md#tc-reg-008' },
-    { type: 'coverage', description: 'CL-020, CL-022' },
-    { type: 'testType', description: 'integration' }
-  ]
-}, () => {
-  test('network error displays message and retry', async ({ page }) => {
-    await page.route('**/api/users/register', route => route.abort('failed'));
-    await page.goto('/registration');
+test.describe(
+  "RegistrationForm - Network Error",
+  {
+    tag: ["@TC-REG-008", "@integration", "@error-handling"],
+    annotation: [
+      {
+        type: "testCase",
+        description: "docs/testCases/authentication/01-register.md#tc-reg-008",
+      },
+      { type: "coverage", description: "CL-020, CL-022" },
+      { type: "testType", description: "integration" },
+    ],
+  },
+  () => {
+    test("network error displays message and retry", async ({ page }) => {
+      await page.route("**/api/users/register", (route) =>
+        route.abort("failed"),
+      );
+      await page.goto("/registration");
 
-    await page.locator(`[data-testid="${testIds.auth.registration.nameInput}"]`).fill('John Doe');
-    await page.locator(`[data-testid="${testIds.auth.registration.emailInput}"]`).fill('test@example.com');
-    await page.locator(`[data-testid="${testIds.auth.registration.submitBtn}"]`).click();
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.nameInput}"]`)
+        .fill("John Doe");
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.emailInput}"]`)
+        .fill("test@example.com");
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.submitBtn}"]`)
+        .click();
 
-    await expect(page.getByText(/Network error/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: /retry/i })).toBeVisible();
-  });
-});
+      await expect(page.getByText(/Network error/i)).toBeVisible();
+      await expect(page.getByRole("button", { name: /retry/i })).toBeVisible();
+    });
+  },
+);
 ```
 
 ### Unit Test (Vitest)
+
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { validateEmail } from '../../../src/shared/validation/emailValidator';
+import { describe, it, expect } from "vitest";
+import { validateEmail } from "../../../src/shared/validation/emailValidator";
 
-describe('emailValidator', {
-  annotation: [
-    { type: 'testType', description: 'unit' }
-  ]
-}, () => {
-  it('returns true for valid email', () => {
-    expect(validateEmail('test@example.com')).toBe(true);
-  });
+describe(
+  "emailValidator",
+  {
+    annotation: [{ type: "testType", description: "unit" }],
+  },
+  () => {
+    it("returns true for valid email", () => {
+      expect(validateEmail("test@example.com")).toBe(true);
+    });
 
-  it('returns false for invalid email', () => {
-    expect(validateEmail('invalid-email')).toBe(false);
-  });
-});
+    it("returns false for invalid email", () => {
+      expect(validateEmail("invalid-email")).toBe(false);
+    });
+  },
+);
 ```
 
 ## Rules
 
 **DO:**
+
+- **Discover real API endpoints first** using API Endpoint Discovery workflow
+- Use discovered endpoint URLs in all page.route() mocks
+- Map test case actions (login, register, etc.) to discovered endpoints
+- Report missing endpoints as BLOCKER in gaps
 - Automatically classify tests based on documented criteria (check Storybook before Integration)
 - Extract data-testid from test case documents (preferred) or component code
 - Add missing data-testid attributes using hierarchical naming
@@ -394,8 +503,13 @@ describe('emailValidator', {
 - Stage all generated test files with `git add tests/e2e/**/*.spec.ts tests/storybook/**/*.stories.tsx tests/unit/**/*.test.ts tests/integration/**/*.spec.ts`
 - Report all CRITICAL gaps
 - Include classification reason in console output
+- Include endpoint discovery results in console output
 
 **DON'T:**
+
+- **Hardcode or guess API endpoint URLs** — always discover from codebase
+- Invent endpoint patterns — only use exact URLs from discovered sources
+- Skip API endpoint discovery — it's mandatory before generating tests
 - Guess test type — follow classification algorithm strictly
 - Skip decorators for Storybook stories (check component imports for React Query/Router)
 - Put integration tests in src/ — always use tests/integration/

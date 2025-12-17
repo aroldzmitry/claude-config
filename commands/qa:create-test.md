@@ -26,7 +26,7 @@ Generate Playwright/Vitest/Storybook tests from checklist + test-cases docs.
 | Type | Location | Criteria |
 |------|----------|----------|
 | e2e | `tests/e2e/<area>/<tc-id>.spec.ts` | Real API, multi-page flow, navigation/redirects |
-| storybook | `tests/storybook/<mirror-src>/Component.stories.tsx` | Single component isolation, field validation, visual states |
+| storybook | `tests/storybook/<mirror-src>/Component.stories.tsx` | Single component isolation, field validation, visual states, accessibility (ARIA, keyboard) |
 | integration | `tests/integration/<mirror-src>/Component.spec.ts` | Mocked API, form submission, error handling (500/409/timeout) |
 | unit | `tests/unit/<mirror-src>/file.test.ts` | Pure functions, no UI/API |
 
@@ -50,9 +50,9 @@ Detection order: e2e → storybook → integration → unit (first match wins)
 
 **Storybook:** CSF3 + play functions; check component imports, add decorators from `tests/storybook/decorators/` (QueryClientDecorator, MemoryRouter)
 
-**Network mocking:** Use discovered endpoints in `page.route()`, MSW for Vitest
+**Network mocking:** Use discovered endpoints in `page.route()`, MSW for Vitest; clear routes after each test
 
-**Test data:** Extract from TC "Test Data" section, deterministic values, fixtures with setup/teardown
+**Test data:** Extract from TC "Test Data" section, deterministic values, fixtures with setup/teardown, scoped per-test
 
 **data-testid:** Format `domain.component.element`, extract from TC or add to components, centralize in testIds.ts
 
@@ -71,3 +71,4 @@ Report unfixable errors in output. Stage: `git add tests/**/*.spec.ts tests/**/*
 - No traceability comments (use annotations/tags)
 - No header comments, no self-explanatory code comments
 - Don't invent requirements or change expected results from docs
+- Don't test backend directly unless TC explicitly requires it

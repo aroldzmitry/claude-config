@@ -26,7 +26,6 @@
     "ask": [],
     "defaultMode": "default"
   },
-  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {

@@ -245,12 +245,11 @@ File: `docs/checkLists/{flow-name}.md`
 - [Browser support, timing expectations, test data requirements]
 ```
 
-### 14. Stage for Git
+### 14. Format and Stage for Git
 
-After creating file, run:
-```bash
-git add docs/checkLists/{flow-name}.md
-```
+After creating file:
+1. Format with Prettier: `npx prettier --write docs/checkLists/{flow-name}.md`
+2. Stage: `git add docs/checkLists/{flow-name}.md`
 
 ### 15. Report
 

@@ -145,12 +145,11 @@ Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
 - Coverage Report section (flow section coverage, gaps, backend items)
 - Out of scope reminders
 
-### Step 7: Stage for Git
+### Step 7: Format and Stage for Git
 
-After creating file, run:
-```bash
-git add docs/testCases/<area>/[user-flow-file-name].md
-```
+After creating file:
+1. Format with Prettier: `npx prettier --write docs/testCases/<area>/[user-flow-file-name].md`
+2. Stage: `git add docs/testCases/<area>/[user-flow-file-name].md`
 
 ### Step 8: Report
 

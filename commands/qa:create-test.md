@@ -36,15 +36,19 @@ Detection order: e2e → storybook → integration → unit (first match wins)
 
 - Test files at locations per classification table
 - Components updated with `data-testid` if missing
-- Console report: endpoint discovery, summary, files, coverage, gaps, validation
+- Console report: endpoint discovery, summary, files (with classification reason), coverage, gaps, validation
 
 ## Generation Rules
+
+**Document parsing:** Validate TC structure first; expect sections: Preconditions, Test Data, Steps, Expected Result, [Cleanup], [Error Scenario]. Missing/malformed = BLOCKER.
+
+**Imports:** Use path aliases (`Components/auth/Form`, `Shared/utils/helper`) or relative paths from tests to src
 
 **Traceability:** `test.describe()` with `tag: ['@TC-XXX']`, `annotation: [{type: 'testCase'}, {type: 'coverage', description: 'CL-XXX'}, {type: 'testType'}]`
 
 **Path mirroring:** `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{spec.ts|stories.tsx|test.ts}`
 
-**Storybook:** CSF3 + play functions, add decorators (QueryClientDecorator, MemoryRouter) based on component imports
+**Storybook:** CSF3 + play functions; check component imports, add decorators from `tests/storybook/decorators/` (QueryClientDecorator, MemoryRouter)
 
 **Network mocking:** Use discovered endpoints in `page.route()`, MSW for Vitest
 
@@ -56,7 +60,7 @@ Detection order: e2e → storybook → integration → unit (first match wins)
 
 Run on generated files: `yarn lint:fix` → `npx prettier --write` → `npx tsc --noEmit`
 
-Stage: `git add tests/**/*.spec.ts tests/**/*.stories.tsx tests/**/*.test.ts`
+Report unfixable errors in output. Stage: `git add tests/**/*.spec.ts tests/**/*.stories.tsx tests/**/*.test.ts`
 
 ## Rules
 

@@ -18,8 +18,9 @@ If a file path is provided, read it first and extract requirements.
 ## Flow
 
 ### 1. Understand task
-- If requirements are unclear or risky, ask questions.
-- Create a short internal plan (3–5 steps), then implement.
+- If requirements unclear or risky, ask questions.
+- If input lacks clear plan or task is complex, use Task tool with subagent_type=Plan to generate implementation strategy.
+- Otherwise proceed directly to implementation.
 
 ### 2. Project context
 - If `.claude/proj_index/00-INDEX.md` exists, read and follow it.

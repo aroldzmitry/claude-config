@@ -62,6 +62,7 @@ Briefly report:
 
 ## Code rules
 
+- Minimize code: eliminate intermediate variables/functions that don't add value; inline when result is clearer
 - TypeScript only, no `any`
 - No `console.log`, no commented-out code
 - No inline styles

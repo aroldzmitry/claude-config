@@ -57,4 +57,4 @@ All agents, commands, skills must be written in **minimalist format**:
 
 ## Code Style
 
-- Never add comments to code — code should be self-explanatory
+- Never add comments to any files — code and documents should be self-explanatory

@@ -2,36 +2,27 @@
 description: Run all tests and generate concise failure report (no fixes)
 argument-hint: "[--fail-fast]"
 allowed-tools: Bash(yarn:*), Bash(npm:*), Read
-model: claude-3-5-haiku-20241022
+model: sonnet
 ---
 
-# qa:run-test — Run All Tests with Failure Report
+# Algorithm
 
-Execute all test types sequentially and output concise failure report to console.
+MUST follow these steps in exact order:
 
-## Arguments
-
-- `--fail-fast` (optional) — Stop execution on first test suite failure
-
-## Execution Flow
-
-1. Detect available test commands from package.json in current directory and parent (monorepo root)
-2. Determine which test commands to run based on what exists:
-   - E2E: `test:e2e` or `web:test:e2e`
-   - Integration: `test:integration` or `server:test:integration`
+1. Read `package.json` in current directory
+2. Read `package.json` in parent directory (monorepo root)
+3. Extract available test commands from both files' "scripts" sections
+4. Map commands to test types:
+   - E2E: `test:e2e`, `web:test:e2e`
+   - Integration: `test:integration`, `server:test:integration`
    - Unit: `test:unit`, `test`, `web:test:unit`, `server:test:unit`
    - Storybook: `test:storybook`
-3. Run detected commands sequentially with JSON reporters where supported
-4. Parse results from all test runners
-5. Extract failure details (test name, file path, line number, error message)
-6. Output colored console report
+5. Run each detected command with `yarn <command>` sequentially
+6. If `$ARGUMENTS` contains `--fail-fast`, stop after first failure
+7. Parse output for failures
+8. Output colored report showing only failures
 
-**Detection:** Read package.json scripts, check both current dir and parent (monorepo). Use commands that exist.
-**Fail-fast:** If `--fail-fast` provided, stop after first suite with failures
-
-## Output Format
-
-Console output with colored text (red for failures, green for passes):
+# Output Format
 
 ```
 Test Results
@@ -57,52 +48,23 @@ Integration Tests (2 failures):
   ✗ RegistrationForm - Server Error
     File: tests/integration/pages/registration/tc-reg-009.spec.ts:23
     Error: Timeout waiting for element
-
-Storybook Tests (1 failure):
-  ✗ Auth/RegistrationForm: SubmitButtonDisabled
-    File: src/components/auth/RegistrationForm.stories.tsx:351
-    Error: Expected button to be disabled
 ```
 
-## Parsing Strategy
+Colors: `\x1b[31m` (red/failures), `\x1b[32m` (green/passes), `\x1b[0m` (reset)
 
-1. Check if test runner outputs JSON (Playwright `--reporter=json`, Vitest `--reporter=json`)
-2. If JSON available: parse structured output
-3. If JSON unavailable: parse text output with regex patterns
-4. Extract for each failure:
-   - Test name/description
-   - File path with line number
-   - Error message (first line only)
-   - Test type (e2e/integration/unit/storybook)
+# Rules
 
-## Color Codes
+DO:
+- Read both package.json files before running any tests
+- Extract actual script names from "scripts" section
+- Run only commands that exist
+- Run sequentially: e2e → integration → unit → storybook
+- Show only failures (summary count for passes)
+- Use colored ANSI output
+- Parse test output for file:line and error messages
 
-Use ANSI escape codes for terminal colors:
-- Red: `\x1b[31m` (failures, error counts)
-- Green: `\x1b[32m` (passes, success counts)
-- Reset: `\x1b[0m`
-
-## Rules
-
-**DO:**
-- Read package.json first (current dir + parent) to detect available test commands
-- Use detected commands instead of hardcoded ones
-- Run tests sequentially (e2e → integration → unit → storybook)
-- Parse JSON output when available
-- Show only failures in detail section
-- Keep error messages to one line
-- Use colored output for readability
-- Include file path and line number for each failure
-- Stop on first failure if `--fail-fast` provided
-- Show summary statistics for all test types
-- Skip test types with no matching commands
-
-**DON'T:**
-- Assume specific commands exist without checking
-- Attempt to fix failing tests or code
-- Suggest code changes or solutions
-- Run tests in parallel (mixing output)
-- Include passing test details (only summary count)
-- Show full stack traces (only first error line)
-- Modify any test files
-- Create report files (console output only)
+DON'T:
+- Fix tests or suggest code changes
+- Run tests in parallel
+- Show full stack traces
+- Create report files

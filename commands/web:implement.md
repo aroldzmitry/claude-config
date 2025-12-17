@@ -26,6 +26,11 @@ If a file path is provided, read it first and extract requirements.
 - If `.claude/proj_index/00-INDEX.md` exists, read and follow it.
 - Find similar implementations in the codebase.
 - When modifying existing code, read the target file and 1–2 usage examples.
+- Before implementing common patterns (throttle, debounce, validation, formatting, etc.):
+  - Search `src/shared/utils/**/*.ts` and `src/shared/hooks/**/*.ts` for existing utilities
+  - Grep for function/pattern name (e.g., `throttle`, `debounce`, `validate`)
+  - If found, use existing utility instead of reimplementing
+  - If not found and pattern is reusable, extract to `src/shared/utils/` or `src/shared/hooks/`
 
 ### 3. Implementation
 - Implement only what is required.

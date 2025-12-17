@@ -141,7 +141,8 @@ Only if Missing + Partial + Conflicts > 0:
 - Each instruction: 1-2 lines, actionable, with file path and REQ-ID reference
 - Omit all sections describing already Implemented requirements
 - Hide empty sections (Dependency Changes, Pattern Conflicts)
-- Git add created file
+- Format created file: `npx prettier --write {file-path}`
+- Git add formatted file
 
 ## Rules
 

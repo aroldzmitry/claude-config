@@ -65,6 +65,13 @@ Tests are automatically classified by analyzing test case characteristics.
 
 **File Structure:** Component: `src/components/auth/RegistrationForm.tsx` → `tests/storybook/components/auth/RegistrationForm.stories.tsx`. Uses CSF3 format with play functions, imports `@storybook/test`.
 
+**Required Decorators:** Analyze component dependencies and add decorators:
+- **QueryClientDecorator** — For components using React Query hooks (useMutation, useQuery)
+- **MemoryRouter** — For components using react-router-dom (useNavigate, Link, useParams)
+- **FormDecorator** — For components using react-hook-form context outside AuForm wrapper
+
+Check `tests/storybook/decorators/` for available decorators. Import and add to decorators array in story meta.
+
 ### Integration Tests
 **Location:** `tests/integration/<mirrored-source-path>/<ComponentName>.spec.ts`
 
@@ -204,6 +211,89 @@ Tests in `tests/` directory must import source files using either:
 - Validates document structure before generation
 - Reports missing sections or malformed data as BLOCKER in gaps
 
+## Storybook Decorators Guide
+
+Decorators wrap stories with necessary providers and context. Analyze component imports and hooks to determine required decorators.
+
+### Available Decorators
+
+Check `tests/storybook/decorators/` directory for project-specific decorators:
+- **QueryClientDecorator** — Wraps with QueryClientProvider for React Query
+- **FormDecorator** — Wraps with FormProvider for react-hook-form context
+- Custom decorators for other providers
+
+### When to Use Decorators
+
+**QueryClientDecorator Required:**
+- Component imports from `@tanstack/react-query` (useMutation, useQuery, useQueryClient)
+- Component calls hooks like `useOnRegistration()` that internally use React Query
+- Error: "No QueryClient set, use QueryClientProvider to set one"
+
+**MemoryRouter Required:**
+- Component imports from `react-router-dom` (useNavigate, Link, useParams, useLocation)
+- Component uses routing hooks or components
+- Error: "useNavigate() may be used only in the context of a <Router> component"
+
+**FormDecorator Required:**
+- Component imports `useFormContext` from `react-hook-form`
+- Component expects form context from parent but story renders in isolation
+- Error: "useFormContext: context is undefined"
+
+### Decorator Pattern
+
+```typescript
+import { QueryClientDecorator } from '../../decorators/QueryClientDecorator';
+import { MemoryRouter } from 'react-router-dom';
+
+const meta = {
+  component: MyComponent,
+  decorators: [
+    QueryClientDecorator,           // First: React Query context
+    Story => (                       // Then: Router context
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
+} satisfies Meta<typeof MyComponent>;
+```
+
+### Detection Strategy
+
+1. Read component source file with Grep
+2. Search for imports: `@tanstack/react-query`, `react-router-dom`, `react-hook-form`
+3. Search for custom hooks that wrap React Query (check hooks/ directory)
+4. Add corresponding decorators to story meta
+5. Order decorators: QueryClient → Router → Form → Custom
+
+### Common Decorator Combinations
+
+**Page Component (Full Stack):**
+```typescript
+decorators: [
+  QueryClientDecorator,
+  Story => (
+    <MemoryRouter initialEntries={['/registration']}>
+      <Routes>
+        <Route path="/registration" element={<Story />} />
+      </Routes>
+    </MemoryRouter>
+  ),
+]
+```
+
+**Form Component:**
+```typescript
+decorators: [QueryClientDecorator]
+// No Router needed if component doesn't use navigation
+```
+
+**Pure UI Component:**
+```typescript
+decorators: []
+// No decorators if component has no external dependencies
+```
+
 ## Test Validation
 
 After generating tests, run validation:
@@ -283,11 +373,21 @@ test.describe('User registration with valid data', {
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent, expect } from '@storybook/test';
+import { MemoryRouter } from 'react-router-dom';
 import RegistrationForm from '../../../src/components/auth/RegistrationForm';
+import { QueryClientDecorator } from '../../decorators/QueryClientDecorator';
 
 const meta = {
   title: 'Auth/RegistrationForm',
   component: RegistrationForm,
+  decorators: [
+    QueryClientDecorator,
+    Story => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   parameters: {
     testCase: 'docs/testCases/authentication/01-register.md#tc-reg-002',
     coverage: 'CL-002, CL-005',
@@ -370,6 +470,11 @@ describe('emailValidator', {
 - Add missing data-testid attributes using hierarchical naming
 - Wrap tests in test.describe() with tag (TC-ID) and annotations (doc path, CL-IDs, testType)
 - Use CSF3 format for Storybook stories with play functions
+- Analyze component dependencies and add required decorators (QueryClient, Router, Form)
+- Check component source with Grep for React Query/Router/Form imports before generating stories
+- Add QueryClientDecorator when component uses React Query hooks or custom hooks that wrap them
+- Add MemoryRouter when component uses react-router-dom hooks or components
+- Follow decorator order: QueryClient → Router → Form → Custom
 - Place Storybook files in tests/storybook/ mirroring src/ structure
 - Place unit tests in tests/unit/ mirroring src/ structure
 - Mirror source directory structure for integration tests in tests/integration/
@@ -384,6 +489,8 @@ describe('emailValidator', {
 
 **DON'T:**
 - Guess test type — follow classification algorithm strictly
+- Generate Storybook stories without checking for required decorators
+- Forget to import decorators when component has dependencies
 - Put integration tests in src/ — always use tests/integration/
 - Put Storybook tests in src/ — always use tests/storybook/
 - Put unit tests in src/ — always use tests/unit/

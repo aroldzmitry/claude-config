@@ -61,6 +61,8 @@ Confirm with user:
 
 ### Auto-Generation (All Modes)
 
+Single-Form Consolidation: When multiple goals share same page, form, and submit button → merge into one Goal section. List all goals in "## Goals" but create single "## Goal: [Primary Action]" section combining all field interactions.
+
 For each goal, generate:
 
 Happy Path: Observable user experience only - what user sees, does, and observes. NO backend operations, NO Contract statements, NO file paths.
@@ -171,6 +173,9 @@ External Systems: [third-party integrations — omit line if none]
 
 ## Goal: {Goal Name}
 
+[For multi-step or multi-page flows: one Goal section per distinct page/action]
+[For single-form flows: one Goal section combining all field interactions]
+
 ### Happy Path
 
 Entry point: [URL/button/location]
@@ -181,12 +186,18 @@ Entry point: [URL/button/location]
 
 Sequence:
 
+[For single-form: list all field interactions in one sequence]
+1. [Field 1 interaction] → [response]
+2. [Field 2 interaction] → [response]
+3. [Submit action] → [loading] → [success] → [all changes visible]
+
+[For multi-step: separate sequences per page/action]
 1. [User action] → [System response] → [UI state change]
 2. [User observes result]
 
 Success Criteria:
 
-- [Observable outcome]
+- [Observable outcomes for all fields/actions]
 - [Visible confirmation]
 
 ### Form Fields
@@ -446,3 +457,4 @@ For other uncertainties, convert to Observable or generalize.
 23. Component Mapping: use generic UI element names (form, button, field), NOT implementation class names
 24. UX Validation Checklist: all 5 must pass before marking flow complete
 25. Test each generated flow becomes actual Playwright test to verify happy path accuracy
+26. Single-form consolidation: Multiple goals sharing same page/form/button → merge into one Goal section combining all interactions

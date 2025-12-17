@@ -54,3 +54,7 @@ All agents, commands, skills must be written in **minimalist format**:
 - No redundant examples — one per concept max
 - Each instruction in 1-2 lines
 - Remove anything that doesn't change Claude's behavior
+
+## Code Style
+
+- Never add comments to code — code should be self-explanatory

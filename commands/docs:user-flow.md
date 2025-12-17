@@ -333,15 +333,9 @@ Applies to: [all flows | specific context]
    - Add/update section "## Standard Categories" grouping by type (Error Handling, Loading, Auth, etc.)
 
 4. **Format and Stage Files**
-   - Collect all created/modified files: flow markdown, field validations, standards markdown, index files
-   - Run `npx prettier --write` on all files before staging
-   - Example: `npx prettier --write docs/userFlows/{flow-name}.md docs/userFlows/USER_FLOWS.md`
-   - If field validations updated: `npx prettier --write docs/standards/FIELD-VALIDATIONS.md`
-   - If standards created: `npx prettier --write docs/standards/{ID}-{name}.md docs/standards/STANDARDS.md`
-   - Run `git add` for each formatted file
-   - Example: `git add docs/userFlows/{flow-name}.md docs/userFlows/USER_FLOWS.md`
-   - If field validations updated: `git add docs/standards/FIELD-VALIDATIONS.md`
-   - If standards created: `git add docs/standards/{ID}-{name}.md docs/standards/STANDARDS.md`
+   - Collect created/modified files: flow, indexes, field validations (if updated), standards (if created)
+   - Format: `npx prettier --write [all collected files]`
+   - Stage: `git add [all formatted files]`
 
 5. **Output Summary**
    - Path: `docs/userFlows/{flow-name}.md`

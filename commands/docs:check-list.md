@@ -247,9 +247,7 @@ File: `docs/checkLists/{flow-name}.md`
 
 ### 14. Format and Stage for Git
 
-After creating file:
-1. Format with Prettier: `npx prettier --write docs/checkLists/{flow-name}.md`
-2. Stage: `git add docs/checkLists/{flow-name}.md`
+Format with Prettier, then stage: `npx prettier --write docs/checkLists/{flow-name}.md && git add docs/checkLists/{flow-name}.md`
 
 ### 15. Report
 

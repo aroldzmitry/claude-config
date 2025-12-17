@@ -147,9 +147,7 @@ Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
 
 ### Step 7: Format and Stage for Git
 
-After creating file:
-1. Format with Prettier: `npx prettier --write docs/testCases/<area>/[user-flow-file-name].md`
-2. Stage: `git add docs/testCases/<area>/[user-flow-file-name].md`
+Format with Prettier, then stage: `npx prettier --write docs/testCases/<area>/[user-flow-file-name].md && git add docs/testCases/<area>/[user-flow-file-name].md`
 
 ### Step 8: Report
 

@@ -20,37 +20,50 @@ MUST follow these steps in exact order:
 5. Run each detected command with `yarn <command>` sequentially
 6. If `$ARGUMENTS` contains `--fail-fast`, stop after first failure
 7. Parse output for failures
-8. Output colored report showing only failures
+8. Output plain text report
 
 # Output Format
+
+Plain text only, no colors or formatting codes:
 
 ```
 Test Results
 ============
 
-Summary
--------
-✓ E2E: 15/15 passed
-✗ Integration: 8/10 passed (2 failed)
-✓ Unit: 42/42 passed
-✗ Storybook: 5/6 passed (1 failed)
+E2E: 28/28 passed
+Integration: 12/12 passed
+Unit: 170/170 passed
+Storybook: 66/66 passed
 
-Total: 70/73 passed (3 failed)
-
-Failures
---------
-
-Integration Tests (2 failures):
-  ✗ RegistrationForm - Network Error
-    File: tests/integration/pages/registration/tc-reg-008.spec.ts:23
-    Error: Expected element to be visible, but it was not
-
-  ✗ RegistrationForm - Server Error
-    File: tests/integration/pages/registration/tc-reg-009.spec.ts:23
-    Error: Timeout waiting for element
+Total: 276/276 passed
 ```
 
-Colors: `\x1b[31m` (red/failures), `\x1b[32m` (green/passes), `\x1b[0m` (reset)
+If failures exist:
+
+```
+Test Results
+============
+
+E2E: 15/15 passed
+Integration: 8/10 passed (2 FAILED)
+Unit: 42/42 passed
+Storybook: 5/6 passed (1 FAILED)
+
+Total: 70/73 passed (3 FAILED)
+
+FAILURES:
+
+Integration:
+- tests/integration/pages/registration/tc-reg-008.spec.ts:23
+  RegistrationForm - Network Error: Expected element to be visible, but it was not
+
+- tests/integration/pages/registration/tc-reg-009.spec.ts:23
+  RegistrationForm - Server Error: Timeout waiting for element
+
+Storybook:
+- tests/storybook/Button.spec.ts:15
+  Button - Click Handler: Click event not fired
+```
 
 # Rules
 
@@ -59,8 +72,8 @@ DO:
 - Extract actual script names from "scripts" section
 - Run only commands that exist
 - Run sequentially: e2e → integration → unit → storybook
-- Show only failures (summary count for passes)
-- Use colored ANSI output
+- Output plain text only (no ANSI codes, no formatting)
+- Show test counts and failures only
 - Parse test output for file:line and error messages
 
 DON'T:

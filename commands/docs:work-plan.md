@@ -102,7 +102,7 @@ Result: Requirement matrix (REQ-ID → Layer → What needed)
 
 ### Phase 2: Analyze & Match (Delegated to Plan Subagent)
 
-Use Task tool with `subagent_type="Plan"` to delegate phases 2-3 planning work.
+Use Task tool with `subagent_type="Plan"` and `model="opus"` to delegate phases 2-3 planning work.
 
 **Plan Agent Prompt:**
 - Input: Requirement matrix from Phase 1, user flow file path, test artifacts
@@ -169,7 +169,7 @@ Only if Missing + Partial + Conflicts > 0:
 
 1. Get user flow file path from `$ARGUMENTS` (required)
 2. Execute Phase 1: Parse & Decompose (Steps 1.1-1.3, including test artifact parsing)
-3. Delegate Phase 2-3 Planning: Use Task tool with `subagent_type="Plan"`, provide requirement matrix and instructions from Phase 2 section
+3. Delegate Phase 2-3 Planning: Use Task tool with `subagent_type="Plan"` and `model="opus"`, provide requirement matrix and instructions from Phase 2 section
 4. Parse Plan agent output: Extract pattern catalog, requirement status map, implementation decisions, change plans
 5. Execute Phase 3: Plan & Output (Steps 3.5-3.7, using Plan agent results for console summary and file generation)
 6. If file created: git add plan file

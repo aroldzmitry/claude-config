@@ -38,6 +38,7 @@ If a file path is provided, read it first and extract requirements.
 - Create new entities only when necessary.
 - **Component structure:** Each file must contain exactly one component (the default export). Extract helper components to separate files in the same directory.
 - **Type structure:** Extract types to separate files (e.g., `types.ts`), except `PropsT` which belongs with its component.
+- **No index files:** Never create `index.ts` or `index.tsx` files. Use explicit file names (e.g., `MyComponent.tsx` not `MyComponent/index.tsx`).
 
 ### 4. Quality checks
 Run checks only for files that were created or modified:

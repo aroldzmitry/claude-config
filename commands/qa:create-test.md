@@ -64,7 +64,7 @@ Missing dependencies → warnings with file:line refs, generate tests with `// T
 
 **Path mirroring:** `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{spec.ts|stories.tsx|test.ts}`
 
-**Storybook:** CSF3 + play functions; check component imports, always add QueryClientDecorator for components using React Query hooks; add MemoryRouter for routing; add MSW handlers via parameters.msw.handlers for API calls
+**Storybook:** CSF3 + play functions; detect React Query usage (read component, grep `from ['"]Repositories/`, recursively check imported components for same pattern), add QueryClientDecorator when detected; add MemoryRouter for routing; add MSW handlers via parameters.msw.handlers for API calls
 
 **Network mocking:** Use discovered endpoints in `page.route()`, MSW for Vitest; clear routes after each test
 
@@ -146,7 +146,7 @@ Generate tests with TODOs where dependencies missing, skip steps requiring missi
 - Don't invent requirements or change expected results from docs
 - Don't test backend directly unless TC explicitly requires it
 - Never create implementation code (hooks, components, DTOs, services)
-- Always wrap Storybook stories using React Query with QueryClientDecorator
+- Detect React Query usage: read component file + all imported component files recursively, grep for `from ['"]Repositories/`; add QueryClientDecorator if found
 - Always configure MSW handlers for Storybook stories making API calls
 - Generate auth setup files when authenticated tests detected
 - Update playwright.config.ts with setup project when auth infrastructure created

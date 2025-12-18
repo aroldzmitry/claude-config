@@ -66,6 +66,10 @@ Briefly report:
 ## Code rules
 
 - Minimize code: eliminate intermediate variables/functions that don't add value; inline when result is clearer
+- Extract cohesive functionality: if a logical block can be separated, extract it to a separate function/file
+- Single responsibility: each function/component does one thing; if multiple reasons to change, split it
+- Abstraction levels: each function works at one level; don't mix high-level logic with low-level details
+- Self-documenting: code should be clear without comments; use descriptive names, small focused functions
 - TypeScript only, no `any`
 - No `console.log`, no commented-out code
 - No inline styles

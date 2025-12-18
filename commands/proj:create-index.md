@@ -1,6 +1,5 @@
 ---
 description: "Generate/update project index optimized for Claude"
-argument-hint: "[--force]"
 model: haiku
 allowed-tools: "Read, Write, Edit, Glob, Grep, Bash"
 ---
@@ -11,34 +10,29 @@ Generate/update `.claude/proj_index/` docs optimized for LLM consumption (c7scor
 
 ## Process
 
-1. Check `.claude/proj_index/`, read `last_commit` from frontmatter
-2. If `last_commit` exists → `git diff {last_commit}..HEAD`, if none or `--force` → full regeneration
-3. **Discover project structure**: Glob all code files, detect languages/extensions, group by export patterns
+1. **Discover project structure**: Glob all code files, detect languages/extensions, group by export patterns
    - Scan: `**/*.{ts,tsx,js,jsx,py,go,rs,java,rb,php}` etc.
    - Group by pattern: exported functions → API.md, exported classes → MODULES.md, types → TYPES.md
    - Detect config files: package.json, go.mod, Cargo.toml, pyproject.toml, etc.
    - Build path maps: `{symbol → file:line}` for references
-4. **Decide what to document**: Keep ONLY what Claude needs for code generation/understanding
+2. **Decide what to document**: Keep ONLY what Claude needs for code generation/understanding
    - ALWAYS: ARCHITECTURE.md (stack, commands, structure), PATTERNS.md (how to X?)
    - IF found: API.md (exported functions), MODULES.md (classes/modules), TYPES.md (interfaces/types)
    - SKIP: implementation details, private code, tests (unless test patterns are critical)
-5. Generate/update files using path maps from step 3
-6. Validate file references (check existence, auto-fix where possible)
-7. Optimize existing docs (remove duplicates, file paths over code snippets)
-8. Create 00-INDEX.md with generated doc list
-9. Report (langs detected, docs created, broken refs)
+3. Generate/update files using path maps from step 1
+4. Validate file references (check existence, auto-fix where possible)
+5. Optimize existing docs (remove duplicates, file paths over code snippets)
+6. Create 00-INDEX.md with generated doc list
+7. Report (langs detected, docs created, broken refs)
 
-## Versioning
+## Frontmatter
 
-Frontmatter in each file:
+Each generated file includes:
 ```yaml
 ---
-last_commit: abc1234
 generated: 2024-12-08
 ---
 ```
-
-On update: modify only sections affected by changed files.
 
 ## Generated Files (Dynamic)
 
@@ -147,22 +141,14 @@ File path format: `src/path/file.ts` or `src/path/file.ts:25-40`
 - Tables over lists
 - Project-relative paths: `src/path/file.ts:line-range`
 
-## Incremental Update
+## Full Scan
 
-1. `git diff --name-only {last_commit}..HEAD`
-2. Map changed files to docs (based on what was generated, not hardcoded):
-   - Config files → ARCHITECTURE.md
-   - Code files → affected API.md/MODULES.md/TYPES.md/PATTERNS.md
-3. Regenerate affected sections only
-4. Preserve unchanged sections
-5. Update `last_commit`
-
-If git unavailable → full regeneration.
+Always scans entire project and regenerates all docs. No git tracking, no incremental updates.
 
 ## Output
 
 ```
-proj:create-index complete (commit: abc1234)
+proj:create-index complete
 
 Languages: TypeScript 60%, JavaScript 25%, Python 15%
 Structure: 145 code files, 23 exports detected
@@ -175,14 +161,13 @@ Validated: 32 file references
 Broken references:
 - API.md:14 → utils/deprecated.ts (not found)
 
-Total: 5 docs, -180 tokens vs previous
+Total: 5 docs
 ```
 
 ## Error Handling
 
-- No git → full regeneration, note in output
 - No code files found → error, stop
-- Docs without frontmatter → add frontmatter, update
+- Docs without frontmatter → add frontmatter
 
 ## Rules
 

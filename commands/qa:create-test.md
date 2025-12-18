@@ -30,7 +30,17 @@ Generate Playwright/Vitest/Storybook tests from checklist + test-cases docs.
 | integration | `tests/integration/<mirror-src>/Component.spec.ts`   | Mocked API, form submission, error handling (500/409/timeout)                               |
 | unit        | `tests/unit/<mirror-src>/file.test.ts`               | Pure functions, no UI/API                                                                   |
 
-Detection order: e2e → storybook → integration → unit (first match wins)
+### Detection Algorithm
+
+Analyze each test case in order, first match wins:
+
+1. **Check E2E criteria:** Steps mention "redirect", "navigate to different page", "toHaveURL"; no network mocking; covers complete user journey across pages → Classify as **e2e**
+
+2. **Check Storybook criteria:** Single component in isolation (no page.goto or navigation); tests field-level validation without API; tests visual states (loading, error, disabled, focused); user interactions within component (click, type, blur, focus); no network mocking, no multi-component scenarios → Classify as **storybook**
+
+3. **Check Integration criteria:** Steps mention "page.route", "mock API", "network error", "server error"; form submission flow with mocked responses; multi-step component scenarios; tests component integration with mocked dependencies → Classify as **integration**
+
+4. **Default to Unit:** No UI interactions mentioned; tests pure function/utility; no API or component rendering → Classify as **unit**
 
 ## Output
 

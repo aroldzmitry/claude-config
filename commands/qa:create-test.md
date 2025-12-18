@@ -34,15 +34,15 @@ Generate Playwright/Vitest/Storybook tests from checklist + test-cases docs.
 
 Analyze each test case in order, first match wins:
 
-1. **Check Client-Side Validation (Integration):** Steps test field validation (blur → error), file validation (size/type check), format patterns WITHOUT form submission or API calls; validation logic exists in component code (Read component, check for validation in event handlers/onChange/file checks); single page, no navigation → Classify as **integration**
+1. **Check Integration - Mocked API:** Steps mention "page.route", "mock API", "network error", "server error", "HTTP 500", "HTTP 409"; ANY network mocking present → Classify as **integration**
 
-2. **Check E2E criteria:** Steps mention "redirect", "navigate to different page", "toHaveURL"; multi-page flow; form submission with real API (no mocking); covers complete user journey → Classify as **e2e**
+2. **Check Integration - Client Validation:** Steps test field validation (blur → error), file validation (size/type check), format patterns WITHOUT form submission; validation in component code (onChange/file checks); single page, no navigation → Classify as **integration**
 
-3. **Check Storybook criteria:** Single component in isolation (no page.goto or navigation); tests visual states (loading, error, disabled, focused); user interactions within component (click, type, blur, focus); no network mocking, no multi-component scenarios → Classify as **storybook**
+3. **Check E2E:** Steps mention "redirect", "navigate to different page", "toHaveURL"; multi-page flow OR form submission with real API (no mocking in TC); complete user journey across pages → Classify as **e2e**
 
-4. **Check Integration criteria:** Steps mention "page.route", "mock API", "network error", "server error"; form submission flow with mocked responses; multi-step component scenarios; tests component integration with mocked dependencies → Classify as **integration**
+4. **Check Storybook:** Single component isolation (no page.goto); visual states (loading/error/disabled/focused); user interactions within component; no network mocking, no multi-component scenarios → Classify as **storybook**
 
-5. **Default to Unit:** No UI interactions mentioned; tests pure function/utility; no API or component rendering → Classify as **unit**
+5. **Default to Unit:** No UI interactions; pure function/utility; no API or component rendering → Classify as **unit**
 
 ## Output
 

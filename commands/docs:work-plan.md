@@ -62,6 +62,10 @@ Source: {user-flow-file-path}
 3. **Check Codebase** — For each requirement, determine: Done | Partial | Missing
 4. **Output** — Console summary + file if work needed
 
+## Post-Output
+
+After creating work plan file, run `git add` on the created file to stage it for commit.
+
 ## Rules
 
 **Output describes WHAT:**

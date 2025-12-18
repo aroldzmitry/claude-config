@@ -4,161 +4,524 @@ argument-hint: "<checklist-path> <test-cases-path>"
 allowed-tools: Write, Edit, Read, Glob, Grep, Bash(yarn:*)
 ---
 
-# qa:create-test
+# qa:create-test — Generate Typed Tests from Test Cases
 
-Generate Playwright/Vitest/Storybook tests from checklist + test-cases docs.
+Generate Playwright/Vitest/Storybook tests from documentation with:
 
-## API Endpoint Discovery (mandatory first step)
+- Full test-to-requirement traceability (TC-ID/CL-ID via annotations and tags)
+- Automatic test type detection (e2e/integration/storybook/unit)
+- Hierarchical data-testid naming (domain.component.element format)
+- Network mocking for error scenarios (500, 409, timeouts)
+- Test data fixtures with setup/teardown
 
-1. Grep frontend for API enums/constants (`ApiGatewayE`, `API_ENDPOINTS`, `ROUTES`)
-2. Grep hooks/services for `axios.|fetch(|apiClient.|requestClient.`
-3. Check backend routes if exists (`../server/src/routes/`)
-4. Map actions → endpoints (login → `/api/user/login`)
-5. Never guess URLs; missing endpoint → warning in report
+## API Endpoint Discovery
 
-## Input
+Before generating tests, discover real API endpoints used in the project:
 
-- `<checklist-path>`: CL-ID, severity, expected result
-- `<test-cases-path>`: TC-ID, preconditions, test data, steps, expected result, cleanup
+1. **Search frontend for API endpoint definitions:**
+
+   - Grep for enum/const files with "api" or "endpoint" in name
+   - Look for patterns like `ApiGatewayE`, `API_ENDPOINTS`, `ROUTES`
+   - Example: `src/shared/types/api/ApiGatewayE.ts`
+
+2. **Search frontend hooks/services for API calls:**
+
+   - Grep for `axios.|fetch(|apiClient.|requestClient.` in src/
+   - Extract endpoint URLs from useMutation/useQuery hooks
+   - Example: `src/pages/login/useOnLogin.ts`
+
+3. **Search backend route definitions (if exists):**
+
+   - Look for route files in `../server/src/routes/` or similar
+   - Extract endpoint patterns from Express/Fastify route definitions
+
+4. **Build endpoint mapping:**
+
+   - Map test case actions to discovered endpoints
+   - Example: "login" → `/api/user/login`, "register" → `/api/user`
+
+5. **Validation:**
+   - Never guess or invent endpoint URLs
+   - If endpoint not found, report as BLOCKER in gaps
+   - Use exact URLs from codebase (case-sensitive, with path params)
+
+## Input Requirements
+
+**Required Arguments:**
+
+- `<checklist-path>` — Path to checklist.md (contains CL-ID, severity, expected result)
+- `<test-cases-path>` — Path to test-cases.md (contains TC-ID, steps, test data, cleanup)
+
+**Expected Document Formats:**
+
+Checklist structure:
+
+```markdown
+## CL-001 | CRITICAL
+
+Element: Login form submit button
+Expected Result: Button is enabled only when email and password are filled
+```
+
+Test Cases structure:
+
+```markdown
+## TC-001: User registration with valid data
+
+**Preconditions:** User not logged in
+**Test Data:**
+
+- Email: test-user@example.com
+  **Steps:**
+
+1. Navigate to /register
+2. Fill email input (data-testid: auth.register.email-input)
+   **Expected Result:** Redirect to /dashboard
+   **Cleanup:** DELETE /api/users/{userId}
+```
 
 ## Test Type Classification
 
-| Type        | Location                                             | Criteria                                                                                    |
-| ----------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| e2e         | `tests/e2e/<area>/<tc-id>.spec.ts`                   | Real API, multi-page flow, navigation/redirects                                             |
-| storybook   | `tests/storybook/<mirror-src>/Component.stories.tsx` | Single component isolation, field validation, visual states, accessibility (ARIA, keyboard) |
-| integration | `tests/integration/<mirror-src>/Component.spec.ts`   | Mocked API, form submission, error handling (500/409/timeout)                               |
-| unit        | `tests/unit/<mirror-src>/file.test.ts`               | Pure functions, no UI/API                                                                   |
+Tests are automatically classified by analyzing test case characteristics.
 
-### Detection Algorithm
+### E2E Tests
 
-Analyze each test case in order, first match wins:
+**Location:** `tests/e2e/<area>/<testcase-id>.spec.ts`
 
-1. **Check Integration - Mocked API:** Steps mention "page.route", "mock API", "network error", "server error", "HTTP 500", "HTTP 409"; ANY network mocking present → Classify as **integration**
+**Criteria (ALL must match):**
 
-2. **Check Integration - Client Validation:** Steps test field validation (blur → error), file validation (size/type check), format patterns WITHOUT form submission; validation in component code (onChange/file checks); single page, no navigation → Classify as **integration**
+- Contains real API calls (no mocking)
+- Tests full user flow across multiple pages
+- Includes navigation/redirects (`toHaveURL`, `page.goto`)
 
-3. **Check E2E:** Steps mention "redirect", "navigate to different page", "toHaveURL"; multi-page flow OR form submission with real API (no mocking in TC); complete user journey across pages → Classify as **e2e**
+### Storybook Tests
 
-4. **Check Storybook:** Single component isolation (no page.goto); visual states (loading/error/disabled/focused); user interactions within component; no network mocking, no multi-component scenarios → Classify as **storybook**
+**Location:** `tests/storybook/<mirrored-path>/<ComponentName>.stories.tsx`
 
-5. **Default to Unit:** No UI interactions; pure function/utility; no API or component rendering → Classify as **unit**
+**Criteria (ANY matches):**
 
-## Output
+- Single component in isolation (no page navigation)
+- Field-level validation without API calls
+- Visual states (loading, error, disabled, focused)
+- User interactions within single component (click, type, blur)
+- Accessibility testing (ARIA, keyboard nav)
 
-- Test files at locations per classification table
-- Console report: endpoint discovery, summary, files (with classification reason), coverage, gaps, missing dependencies, validation
+**File Structure:** Component: `src/components/auth/RegistrationForm.tsx` → `tests/storybook/components/auth/RegistrationForm.stories.tsx`. Uses CSF3 format with play functions, imports `@storybook/test`.
 
-## Boundaries
+**Decorators:** Check component imports and add required wrappers (QueryClientDecorator for React Query, MemoryRouter for routing). See `tests/storybook/decorators/`.
 
-NEVER create/modify:
+### Integration Tests
 
-- Components, pages, hooks, services, DTOs
-- API endpoints in ApiGatewayE (report if missing)
-- Implementation code in `src/` (except testIds.ts)
+**Location:** `tests/integration/<mirrored-source-path>/<ComponentName>.spec.ts`
 
-ONLY create/modify:
+**Criteria (ANY matches):**
 
-- Test files in `tests/**`
-- `tests/testIds.ts` (add IDs, never remove)
-- `tests/.auth/auth.setup.ts` (if authenticated tests detected)
-- `playwright.config.ts` (add setup project if auth tests detected and setup project missing)
+- Form submission flow with mocked API
+- Multi-step component scenarios
+- Network/server error handling with mocks
+- Route transitions within feature
+- Complex mocked responses (409, 500, timeouts)
 
-Missing dependencies → warnings with file:line refs, generate tests with `// TODO: Add data-testid` comments
+**Path Mirroring:** Component: `src/components/auth/RegistrationForm.tsx` → `tests/integration/components/auth/RegistrationForm.spec.ts`
 
-## Generation Rules
+### Unit Tests
 
-**Document parsing:** Validate TC structure first; expect sections: Preconditions, Test Data, Steps, Expected Result, [Cleanup], [Error Scenario]. Missing/malformed = BLOCKER.
+**Location:** `tests/unit/<mirrored-path>/<fileName>.test.ts`
 
-**Imports:** Use path aliases (`Components/auth/Form`, `Shared/utils/helper`) or relative paths from tests to src
+**Criteria:**
 
-**Traceability:** `test.describe()` with `tag: ['@TC-XXX']`, `annotation: [{type: 'testCase'}, {type: 'coverage', description: 'CL-XXX'}, {type: 'testType'}]`
+- Tests pure functions or utilities
+- No UI rendering, no API calls (real or mocked)
+- Tests validation logic, formatters, calculators
 
-**Path mirroring:** `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{spec.ts|stories.tsx|test.ts}`
+**File Placement:** Utility: `src/shared/validation/emailValidator.ts` → `tests/unit/shared/validation/emailValidator.test.ts` (uses `.test.ts` extension, mirrors source structure in tests/unit/).
 
-**Storybook:** CSF3 + play functions; detect React Query usage (read component, grep `from ['"]Repositories/`, recursively check imported components for same pattern), add QueryClientDecorator when detected; add MemoryRouter for routing; add MSW handlers via parameters.msw.handlers for API calls
+## Output Files
 
-**Network mocking:** Use discovered endpoints in `page.route()`, MSW for Vitest; clear routes after each test
+- `tests/e2e/<area>/<testcase-id>.spec.ts` — E2E tests (Playwright)
+- `tests/storybook/<mirrored-path>/<ComponentName>.stories.tsx` — Storybook tests with play functions
+- `tests/integration/<mirrored-path>/<ComponentName>.spec.ts` — Integration tests (Playwright)
+- `tests/unit/<mirrored-path>/<fileName>.test.ts` — Unit tests (Vitest)
+- Updated component files with added `data-testid` attributes
 
-**Test data:** Extract from TC "Test Data" section, deterministic values, fixtures with setup/teardown, scoped per-test
+## Console Output Format
 
-**data-testid:** Format `domain.component.element`, add to testIds.ts; if missing in component → warning + `// TODO: Add data-testid="..." to ComponentName.tsx:line`
+After completion, output to console (do NOT create REPORT.md file):
 
-## Authentication Setup (for e2e/integration with auth)
+**API Endpoint Discovery:**
 
-**Detection:** Scan TC preconditions/steps for "logged in", "authenticated", "user session", profile access, or protected routes
+- Endpoint source: [enum file path or "backend routes" or "hook files"]
+- Discovered endpoints: [count]
+- Endpoint mapping: [action → URL list]
 
-**Setup generation (if auth detected and tests/.auth/ missing):**
+**Summary:**
 
-1. Create `tests/.auth/` directory
-2. Generate `tests/.auth/auth.setup.ts` with login flow (discover login endpoint, use test credentials from env: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`)
-3. Generate `tests/.auth/auth-no-image.setup.ts` for user without profile image (if profile tests detected)
-4. Add `.auth/*.json` to `.gitignore`
-5. Check `playwright.config.ts` for setup project; if missing, add:
-   ```ts
-   projects: [
-     { name: 'setup', testMatch: /\.setup\.ts$/ },
-     { name: 'desktop', use: { storageState: 'tests/.auth/user.json' }, dependencies: ['setup'] },
-     ...
-   ]
-   ```
-6. Update existing projects to add `dependencies: ['setup']` and `storageState: 'tests/.auth/user.json'`
+- Status: success/partial/failed
+- Test files generated: [count] (e2e: X, storybook: Y, integration: Z, unit: W)
+- Test cases covered: [TC-IDs]
+- Checklist items tested: [CL-IDs]
 
-**Auth file structure:**
+**Generated Files:**
 
-```ts
-// tests/.auth/auth.setup.ts
-import { test as setup } from "@playwright/test";
+- List each .spec.ts/.stories.tsx file with type, line count, and classification reason
 
-setup("authenticate", async ({ page, request }) => {
-  await page.goto("/login");
-  // Discover login endpoint via Grep ApiGatewayE
-  await page.fill('[data-testid="login.email"]', process.env.TEST_USER_EMAIL!);
-  await page.fill(
-    '[data-testid="login.password"]',
-    process.env.TEST_USER_PASSWORD!,
-  );
-  await page.click('[data-testid="login.submit"]');
-  await page.waitForURL("/dashboard");
-  await page.context().storageState({ path: "tests/.auth/user.json" });
-});
+**Test Type Distribution:**
+
+- E2E: [count] — [TC-IDs]
+- Storybook: [count] — [TC-IDs]
+- Integration: [count] — [TC-IDs]
+- Unit: [count] — [TC-IDs]
+
+**Coverage:**
+
+- TC-ID → CL-IDs mapping
+- CL-ID → test file mapping
+
+**Gaps:**
+
+- CRITICAL checklist items without coverage
+
+**Validation:**
+
+- Linting status
+- TypeScript errors (if any)
+
+## Test Generation Rules
+
+### Test Type Detection Algorithm
+
+For each test case, analyze in order:
+
+1. **Check for E2E criteria:** Steps mention "redirect", "navigate to different page", "toHaveURL"; no network mocking; covers complete user journey across pages → Classify as **e2e**
+
+2. **Check for Storybook criteria:** Single component in isolation (no page.goto or navigation); tests field-level validation without API; tests visual states (loading, error, disabled, focused); user interactions within component (click, type, blur, focus); no network mocking, no multi-component scenarios → Classify as **storybook**
+
+3. **Check for Integration criteria:** Steps mention "page.route", "mock API", "network error", "server error"; form submission flow with mocked responses; multi-step component scenarios; tests component integration with mocked dependencies → Classify as **integration**
+
+4. **Default to Unit if:** No UI interactions mentioned; tests pure function/utility; no API or component rendering → Classify as **unit**
+
+### Path Mirroring
+
+1. **Extract component/file path from test case:** Look for data-testid format (`domain.component.element`), search codebase with Grep, identify source file path.
+
+2. **Place tests based on type:**
+
+   - Source: `src/components/auth/RegistrationForm.tsx`
+   - Storybook: `tests/storybook/components/auth/RegistrationForm.stories.tsx` (mirrors src/)
+   - Integration: `tests/integration/components/auth/RegistrationForm.spec.ts` (mirrors src/)
+   - Unit: `tests/unit/shared/validation/emailValidator.test.ts` (mirrors src/)
+
+3. **File placement rules:**
+   - E2E: `tests/e2e/<area>/` (feature-based grouping)
+   - Storybook: `tests/storybook/<mirrored-path>/` (mirrors src/ structure)
+   - Integration: `tests/integration/<mirrored-path>/` (mirrors src/ structure)
+   - Unit: `tests/unit/<mirrored-path>/` (mirrors src/ structure)
+
+### Import Paths in Tests
+
+Tests in `tests/` directory must import source files using either:
+
+1. **Path aliases** (preferred): `import Component from 'Components/auth/Form'`
+2. **Relative paths** from tests to src: `import Component from '../../../src/components/auth/Form'`
+
+**Examples:**
+
+- `tests/storybook/components/auth/Form.stories.tsx` → `import Form from '../../../../src/components/auth/Form'`
+- `tests/unit/shared/utils/helper.test.ts` → `import { helper } from '../../../../src/shared/utils/helper'`
+- Using aliases: `import { helper } from 'Shared/utils/helper'` (cleaner, preferred)
+
+### Test Traceability
+
+- Each test uses tags (e.g., `@TC-001`) and annotations for metadata
+- TC-ID in test.describe/story tag enables `--grep @TC-001` filtering
+- CL-ID coverage tracked via annotations (type: 'coverage')
+- Document paths stored in annotations (type: 'testCase')
+- Test type stored in annotations (type: 'testType', description: 'e2e'/'storybook'/'integration'/'unit')
+- Storybook stories use CSF3 tags and parameters for traceability
+- No traceability comments in generated code
+
+### data-testid Naming
+
+- Hierarchical format: `domain.component.element` (e.g., `auth.login-form.submit-btn`)
+- Extracted from test case documents
+- Added to components if missing
+- Centralized in testIds.ts for reuse
+
+### Network Mocking
+
+- Detects error scenarios in TC (e.g., "Mock API to return 409")
+- Uses discovered real endpoints (from API Endpoint Discovery step)
+- Generates `page.route()` interception code for Playwright with exact endpoint URLs
+- For Vitest integration tests, use MSW (Mock Service Worker)
+- Covers: 500 errors, 409 conflicts, timeouts, network failures
+- Routes cleared after each test
+- Never hardcode endpoint URLs - always reference discovered endpoints
+
+### Test Data Fixtures
+
+- Extracts test data from "Test Data" section in TC
+- Generates fixtures with setup (create) / teardown (delete via cleanup API)
+- Uses deterministic data, not random
+- Fixtures scoped per-test for isolation
+
+### Document Parsing
+
+- Expects: Preconditions, Test Data, Steps, Expected Result, [Cleanup], [Error Scenario]
+- Validates document structure before generation
+- Reports missing sections or malformed data as BLOCKER in gaps
+
+## Test Validation
+
+After generating tests, run validation:
+
+1. `yarn lint:fix` on generated test files (auto-fix eslint issues)
+2. `npx prettier --write` on all generated/modified files (format code)
+3. `npx tsc --noEmit` on generated files (type-check without emitting)
+4. Report unfixable errors in `validationErrors` output data
+
+## Stage for Git
+
+After validation, stage generated test files:
+
+```bash
+git add tests/e2e/<area>/*.spec.ts
+git add tests/storybook/**/*.stories.tsx
+git add tests/unit/**/*.test.ts
+git add tests/integration/**/*.spec.ts
 ```
 
-**Test usage:** Tests requiring auth use `test.use({ storageState: 'tests/.auth/user.json' })` at describe/file level
+## Test Execution
 
-**Environment vars:** Add to report: "Required env vars: TEST_USER_EMAIL, TEST_USER_PASSWORD (set in .env or CI)"
+Run generated tests by type:
 
-## Validation
+```bash
+# E2E tests
+yarn test:e2e
+yarn test:e2e --grep "@TC-001"
 
-Run on generated files: `yarn lint:fix` → `npx prettier --write` → `npx tsc --noEmit`
+# Storybook tests
+yarn storybook  # View stories
+yarn test:storybook  # Run test-runner (if configured)
 
-Report unfixable errors in output. Stage: `git add tests/**/*.spec.ts tests/**/*.stories.tsx tests/**/*.test.ts`
+# Integration tests
+yarn test --grep "integration"
 
-## Dependency Discovery
+# Unit tests
+yarn test --grep "unit"
 
-Scan for missing:
+# All tests
+yarn test
+```
 
-- API endpoints: Grep ApiGatewayE, report if action endpoint not found
-- Hooks: Grep `src/repositories/`, `src/hooks/` for `use[Feature]`
-- Components: Read component file, check data-testid presence
-- testIds: Read testIds.ts, check if ID exists
+## Example Generated Tests
 
-Report format: `⚠️ Missing: [type] [name] (referenced in TC-XXX Step N) → create in [file]:[line]`
+### E2E Test (Playwright)
 
-Generate tests with TODOs where dependencies missing, skip steps requiring missing deps
+```typescript
+import { test, expect } from "@playwright/test";
+import testIds from "../../testIds";
+
+const TEST_DATA = {
+  name: "John Doe",
+  email: `test-${Date.now()}@example.com`,
+};
+
+test.describe(
+  "User registration with valid data",
+  {
+    tag: ["@TC-REG-001", "@auth", "@registration", "@e2e"],
+    annotation: [
+      {
+        type: "testCase",
+        description: "docs/testCases/authentication/01-register.md#tc-reg-001",
+      },
+      { type: "coverage", description: "CL-001, CL-002, CL-010, CL-015" },
+      { type: "testType", description: "e2e" },
+    ],
+  },
+  () => {
+    test("successful registration redirects to login", async ({ page }) => {
+      await page.goto("/registration");
+
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.nameInput}"]`)
+        .fill(TEST_DATA.name);
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.emailInput}"]`)
+        .fill(TEST_DATA.email);
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.submitBtn}"]`)
+        .click();
+
+      await expect(
+        page.locator(
+          `[data-testid="${testIds.auth.registration.successMessage}"]`,
+        ),
+      ).toContainText("Account created successfully", { timeout: 5000 });
+
+      await expect(page).toHaveURL("/login", { timeout: 5000 });
+    });
+  },
+);
+```
+
+### Storybook Test (CSF3 with play function)
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react';
+import { within, userEvent, expect } from '@storybook/test';
+import { MemoryRouter } from 'react-router-dom';
+import RegistrationForm from '../../../src/components/auth/RegistrationForm';
+import { QueryClientDecorator } from '../../decorators/QueryClientDecorator';
+
+const meta = {
+  title: 'Auth/RegistrationForm',
+  component: RegistrationForm,
+  decorators: [
+    QueryClientDecorator,
+    Story => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
+  parameters: {
+    testCase: 'docs/testCases/authentication/01-register.md#tc-reg-002',
+    coverage: 'CL-002, CL-005',
+    testType: 'storybook',
+  },
+  tags: ['@TC-REG-002', '@storybook', '@form-validation'],
+} satisfies Meta<typeof RegistrationForm>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const SubmitButtonDisabled: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const submitBtn = canvas.getByTestId('auth.registration.submit-btn');
+
+    await expect(submitBtn).toBeDisabled();
+
+    await userEvent.type(canvas.getByTestId('auth.registration.name-input'), 'John Doe');
+    await expect(submitBtn).toBeDisabled();
+
+    await userEvent.type(canvas.getByTestId('auth.registration.email-input'), 'test@example.com');
+    await expect(submitBtn).toBeEnabled();
+  },
+};
+```
+
+### Integration Test (Playwright)
+
+```typescript
+import { test, expect } from "@playwright/test";
+import testIds from "../../../testIds";
+
+test.describe(
+  "RegistrationForm - Network Error",
+  {
+    tag: ["@TC-REG-008", "@integration", "@error-handling"],
+    annotation: [
+      {
+        type: "testCase",
+        description: "docs/testCases/authentication/01-register.md#tc-reg-008",
+      },
+      { type: "coverage", description: "CL-020, CL-022" },
+      { type: "testType", description: "integration" },
+    ],
+  },
+  () => {
+    test("network error displays message and retry", async ({ page }) => {
+      await page.route("**/api/users/register", (route) =>
+        route.abort("failed"),
+      );
+      await page.goto("/registration");
+
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.nameInput}"]`)
+        .fill("John Doe");
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.emailInput}"]`)
+        .fill("test@example.com");
+      await page
+        .locator(`[data-testid="${testIds.auth.registration.submitBtn}"]`)
+        .click();
+
+      await expect(page.getByText(/Network error/i)).toBeVisible();
+      await expect(page.getByRole("button", { name: /retry/i })).toBeVisible();
+    });
+  },
+);
+```
+
+### Unit Test (Vitest)
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { validateEmail } from "../../../src/shared/validation/emailValidator";
+
+describe(
+  "emailValidator",
+  {
+    annotation: [{ type: "testType", description: "unit" }],
+  },
+  () => {
+    it("returns true for valid email", () => {
+      expect(validateEmail("test@example.com")).toBe(true);
+    });
+
+    it("returns false for invalid email", () => {
+      expect(validateEmail("invalid-email")).toBe(false);
+    });
+  },
+);
+```
 
 ## Rules
 
-- Discover real endpoints first, use in all mocks
-- One test per TC, strict step order
-- Use data-testid only (no CSS selectors)
-- Report missing dependencies as warnings (not blockers)
-- No traceability comments (use annotations/tags)
-- No header comments, no self-explanatory code comments
-- Don't invent requirements or change expected results from docs
-- Don't test backend directly unless TC explicitly requires it
-- Never create implementation code (hooks, components, DTOs, services)
-- Detect React Query usage: read component file + all imported component files recursively, grep for `from ['"]Repositories/`; add QueryClientDecorator if found
-- Always configure MSW handlers for Storybook stories making API calls
-- Generate auth setup files when authenticated tests detected
-- Update playwright.config.ts with setup project when auth infrastructure created
+**DO:**
+
+- **Discover real API endpoints first** using API Endpoint Discovery workflow
+- Use discovered endpoint URLs in all page.route() mocks
+- Map test case actions (login, register, etc.) to discovered endpoints
+- Report missing endpoints as BLOCKER in gaps
+- Automatically classify tests based on documented criteria (check Storybook before Integration)
+- Extract data-testid from test case documents (preferred) or component code
+- Add missing data-testid attributes using hierarchical naming
+- Wrap tests in test.describe() with tag (TC-ID) and annotations (doc path, CL-IDs, testType)
+- Use CSF3 format for Storybook stories with play functions
+- Check component for React Query/Router usage and add decorators (see tests/storybook/decorators/)
+- Place Storybook files in tests/storybook/ mirroring src/ structure
+- Place unit tests in tests/unit/ mirroring src/ structure
+- Mirror source directory structure for integration tests in tests/integration/
+- Generate one test per test case (strict step order)
+- Mock network errors when TC specifies error scenario
+- Include setup/teardown (fixtures) for test data
+- Run `yarn lint:fix`, `npx prettier --write`, and `tsc --noEmit` after generation on generated/modified files
+- Report validation errors that auto-fix couldn't resolve
+- Stage all generated test files with `git add tests/e2e/**/*.spec.ts tests/storybook/**/*.stories.tsx tests/unit/**/*.test.ts tests/integration/**/*.spec.ts`
+- Report all CRITICAL gaps
+- Include classification reason in console output
+- Include endpoint discovery results in console output
+
+**DON'T:**
+
+- **Hardcode or guess API endpoint URLs** — always discover from codebase
+- Invent endpoint patterns — only use exact URLs from discovered sources
+- Skip API endpoint discovery — it's mandatory before generating tests
+- Guess test type — follow classification algorithm strictly
+- Skip decorators for Storybook stories (check component imports for React Query/Router)
+- Put integration tests in src/ — always use tests/integration/
+- Put Storybook tests in src/ — always use tests/storybook/
+- Put unit tests in src/ — always use tests/unit/
+- Add traceability comments (use annotations/tags/parameters instead)
+- Add generic file header comments
+- Comment self-explanatory code (project standard)
+- Invent new requirements not in checklist/test cases
+- Change expected results from documentation
+- Mix multiple test cases in single test/story
+- Use CSS selectors or nth-child (always use data-testid)
+- Hardcode test data in test steps (extract from "Test Data" section)
+- Ignore document formatting errors (report them in gaps)
+- Test backend directly unless TC explicitly requires it

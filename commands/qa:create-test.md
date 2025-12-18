@@ -14,7 +14,7 @@ Generate Playwright/Vitest/Storybook tests from checklist + test-cases docs.
 2. Grep hooks/services for `axios.|fetch(|apiClient.|requestClient.`
 3. Check backend routes if exists (`../server/src/routes/`)
 4. Map actions → endpoints (login → `/api/user/login`)
-5. Never guess URLs; missing endpoint = BLOCKER
+5. Never guess URLs; missing endpoint → warning in report
 
 ## Input
 
@@ -35,8 +35,20 @@ Detection order: e2e → storybook → integration → unit (first match wins)
 ## Output
 
 - Test files at locations per classification table
-- Components updated with `data-testid` if missing
-- Console report: endpoint discovery, summary, files (with classification reason), coverage, gaps, validation
+- Console report: endpoint discovery, summary, files (with classification reason), coverage, gaps, missing dependencies, validation
+
+## Boundaries
+
+NEVER create/modify:
+- Components, pages, hooks, services, DTOs
+- API endpoints in ApiGatewayE (report if missing)
+- Implementation code in `src/` (except testIds.ts)
+
+ONLY create/modify:
+- Test files in `tests/**`
+- `tests/testIds.ts` (add IDs, never remove)
+
+Missing dependencies → warnings with file:line refs, generate tests with `// TODO: Add data-testid` comments
 
 ## Generation Rules
 
@@ -54,7 +66,7 @@ Detection order: e2e → storybook → integration → unit (first match wins)
 
 **Test data:** Extract from TC "Test Data" section, deterministic values, fixtures with setup/teardown, scoped per-test
 
-**data-testid:** Format `domain.component.element`, extract from TC or add to components, centralize in testIds.ts
+**data-testid:** Format `domain.component.element`, add to testIds.ts; if missing in component → warning + `// TODO: Add data-testid="..." to ComponentName.tsx:line`
 
 ## Validation
 
@@ -62,13 +74,26 @@ Run on generated files: `yarn lint:fix` → `npx prettier --write` → `npx tsc 
 
 Report unfixable errors in output. Stage: `git add tests/**/*.spec.ts tests/**/*.stories.tsx tests/**/*.test.ts`
 
+## Dependency Discovery
+
+Scan for missing:
+- API endpoints: Grep ApiGatewayE, report if action endpoint not found
+- Hooks: Grep `src/repositories/`, `src/hooks/` for `use[Feature]`
+- Components: Read component file, check data-testid presence
+- testIds: Read testIds.ts, check if ID exists
+
+Report format: `⚠️ Missing: [type] [name] (referenced in TC-XXX Step N) → create in [file]:[line]`
+
+Generate tests with TODOs where dependencies missing, skip steps requiring missing deps
+
 ## Rules
 
 - Discover real endpoints first, use in all mocks
 - One test per TC, strict step order
 - Use data-testid only (no CSS selectors)
-- Report CRITICAL gaps and missing endpoints as BLOCKER
+- Report missing dependencies as warnings (not blockers)
 - No traceability comments (use annotations/tags)
 - No header comments, no self-explanatory code comments
 - Don't invent requirements or change expected results from docs
 - Don't test backend directly unless TC explicitly requires it
+- Never create implementation code (hooks, components, DTOs, services)

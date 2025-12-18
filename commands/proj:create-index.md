@@ -15,9 +15,10 @@ Generate/update `.claude/proj_index/` docs optimized for LLM consumption (c7scor
 2. If `last_commit` exists → `git diff {last_commit}..HEAD`, if none or `--force` → full regeneration
 3. Analyze codebase
 4. Generate/update files
-5. Optimize existing docs (remove duplicates, file paths over code snippets)
-6. Create 00-INDEX.md
-7. Report
+5. Validate file references (check existence, auto-fix where possible)
+6. Optimize existing docs (remove duplicates, file paths over code snippets)
+7. Create 00-INDEX.md
+8. Report (include broken reference count)
 
 ## Versioning
 
@@ -139,6 +140,18 @@ Main navigation with "when to use" guidance:
 
 **NOT auto-generated** — empty template if missing, user fills manually.
 
+## File Reference Validation
+
+After generating/updating docs (step 5), validate all file path references:
+
+1. Scan docs for file paths: `src/path/file.ext` or `src/path/file.ext:line-range`
+2. Check each path exists using Glob
+3. Auto-fix broken paths:
+   - Search for similar filenames with Glob
+   - Update if single match found
+   - Flag for manual review if multiple/no matches
+4. Report validation results
+
 ## Optimization Pass
 
 Before generating 00-INDEX.md, optimize existing `.claude/proj_index/` docs:
@@ -179,12 +192,19 @@ If git unavailable → full regeneration.
 ## Output
 
 ```
-proj:create_index complete (commit: abc1234)
+proj:create-index complete (commit: abc1234)
 
 Created: 00-INDEX.md, ARCHITECTURE.md, PATTERNS.md
 Updated: COMPONENTS.md (-120 tokens), SERVICES.md (-45 tokens)
 Optimized: DESIGN_TOKENS.md (-80 tokens)
+Validated: 45 file references
+  - Fixed: 3 auto-corrected paths
+  - Broken: 2 (see report below)
 Skipped: BUSINESS_RULES.md (manual)
+
+Broken references:
+- PATTERNS.md:14 → src/pages/TransactionDetailSidebar.tsx (not found)
+- COMPONENTS.md:31 → src/components/form/radio/AuRadioGroup.tsx (not found)
 
 Total reduction: -245 tokens
 ```

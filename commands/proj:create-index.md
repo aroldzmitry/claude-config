@@ -13,12 +13,19 @@ Generate/update `.claude/proj_index/` docs optimized for LLM consumption (c7scor
 
 1. Check `.claude/proj_index/`, read `last_commit` from frontmatter
 2. If `last_commit` exists → `git diff {last_commit}..HEAD`, if none or `--force` → full regeneration
-3. Analyze codebase
-4. Generate/update files
-5. Validate file references (check existence, auto-fix where possible)
-6. Optimize existing docs (remove duplicates, file paths over code snippets)
-7. Create 00-INDEX.md
-8. Report (include broken reference count)
+3. **Pre-scan structure**: Build actual path maps via Glob
+   - Components: `src/components/**/*.tsx` → record all paths
+   - Services: `src/services/**/*.ts` → record all paths
+   - Stories: `**/stories/**/*.tsx` → record actual location
+   - Repositories: `src/repositories/**/*.ts` → record all paths
+   - Store hooks: `**/store/**/*.ts`, `**/hooks/**/*.ts` → record location
+   - Build lookup maps: `{ComponentName → actualPath}` for reference during generation
+4. Analyze codebase using path maps from step 3
+5. Generate/update files (use path maps to write correct references)
+6. Validate file references (check existence, auto-fix where possible)
+7. Optimize existing docs (remove duplicates, file paths over code snippets)
+8. Create 00-INDEX.md
+9. Report (include broken reference count)
 
 ## Versioning
 
@@ -100,6 +107,7 @@ Main navigation with "when to use" guidance:
 - No duplicates
 - 1-2 sentences max
 - Project-relative paths
+- **Use path maps from step 3** — never guess folder structure
 
 ### COMPONENTS.md
 
@@ -112,6 +120,7 @@ Main navigation with "when to use" guidance:
 - Props as TypeScript interface
 - NO code snippets — usage file path
 - Link to source (`PropsT: src/components/Button/Button.tsx:5-12`)
+- **Use path maps from step 3** — components may be in flat or nested structure
 
 ### SERVICES.md
 
@@ -124,6 +133,7 @@ Main navigation with "when to use" guidance:
 - Signatures only
 - NO code snippets — usage file path
 - Link to source (`authService.login(): src/services/auth.ts:15-30`)
+- **Use path maps from step 3** — services/repositories may have nested structure
 
 ### DESIGN_TOKENS.md
 
@@ -194,6 +204,7 @@ If git unavailable → full regeneration.
 ```
 proj:create-index complete (commit: abc1234)
 
+Structure scan: 87 components, 15 services, 23 repositories, stories at tests/storybook/
 Created: 00-INDEX.md, ARCHITECTURE.md, PATTERNS.md
 Updated: COMPONENTS.md (-120 tokens), SERVICES.md (-45 tokens)
 Optimized: DESIGN_TOKENS.md (-80 tokens)
@@ -217,6 +228,7 @@ Total reduction: -245 tokens
 
 ## Rules
 
+- **Structure-first**: Step 3 pre-scan is MANDATORY — builds path maps to prevent wrong references
 - Optimize for tokens, not readability
 - No dialogs — auto-detect
 - Preserve manual edits in BUSINESS_RULES.md only
@@ -225,3 +237,4 @@ Total reduction: -245 tokens
 - Always run optimization pass
 - Generate 00-INDEX.md (NOT llms.txt)
 - NEVER embed code snippets — project-relative paths with optional lines
+- NEVER guess paths — use lookup maps from structure scan

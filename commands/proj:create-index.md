@@ -13,19 +13,20 @@ Generate/update `.claude/proj_index/` docs optimized for LLM consumption (c7scor
 
 1. Check `.claude/proj_index/`, read `last_commit` from frontmatter
 2. If `last_commit` exists → `git diff {last_commit}..HEAD`, if none or `--force` → full regeneration
-3. **Pre-scan structure**: Build actual path maps via Glob
-   - Components: `src/components/**/*.tsx` → record all paths
-   - Services: `src/services/**/*.ts` → record all paths
-   - Stories: `**/stories/**/*.tsx` → record actual location
-   - Repositories: `src/repositories/**/*.ts` → record all paths
-   - Store hooks: `**/store/**/*.ts`, `**/hooks/**/*.ts` → record location
-   - Build lookup maps: `{ComponentName → actualPath}` for reference during generation
-4. Analyze codebase using path maps from step 3
-5. Generate/update files (use path maps to write correct references)
+3. **Discover project structure**: Glob all code files, detect languages/extensions, group by export patterns
+   - Scan: `**/*.{ts,tsx,js,jsx,py,go,rs,java,rb,php}` etc.
+   - Group by pattern: exported functions → API.md, exported classes → MODULES.md, types → TYPES.md
+   - Detect config files: package.json, go.mod, Cargo.toml, pyproject.toml, etc.
+   - Build path maps: `{symbol → file:line}` for references
+4. **Decide what to document**: Keep ONLY what Claude needs for code generation/understanding
+   - ALWAYS: ARCHITECTURE.md (stack, commands, structure), PATTERNS.md (how to X?)
+   - IF found: API.md (exported functions), MODULES.md (classes/modules), TYPES.md (interfaces/types)
+   - SKIP: implementation details, private code, tests (unless test patterns are critical)
+5. Generate/update files using path maps from step 3
 6. Validate file references (check existence, auto-fix where possible)
 7. Optimize existing docs (remove duplicates, file paths over code snippets)
-8. Create 00-INDEX.md
-9. Report (include broken reference count)
+8. Create 00-INDEX.md with generated doc list
+9. Report (langs detected, docs created, broken refs)
 
 ## Versioning
 
@@ -39,116 +40,77 @@ generated: 2024-12-08
 
 On update: modify only sections affected by changed files.
 
-## Generated Files
+## Generated Files (Dynamic)
+
+Generated docs vary by project. Always create:
 
 ### 00-INDEX.md
 
-Main navigation with "when to use" guidance:
+Main navigation listing ONLY created docs:
 ```markdown
 # {Project}
 
-{One sentence}
+{One sentence from README or inferred}
 
 ## Read Order
 
-1. **[ARCHITECTURE](./ARCHITECTURE.md)** — Stack, structure, paths, decisions
-   - When: Tech overview, commands, path aliases
-2. **[PATTERNS](./PATTERNS.md)** — Component, form, API, state patterns
-   - When: Creating components, APIs, forms, state
-3. **[COMPONENTS](./COMPONENTS.md)** — UI component API
-   - When: Using components, checking props
-4. **[SERVICES](./SERVICES.md)** — Service/repository API
-   - When: Business logic, data access
-5. **[DESIGN_TOKENS](./DESIGN_TOKENS.md)** — Colors, typography, spacing
-   - When: Styling, design values
+1. **[ARCHITECTURE](./ARCHITECTURE.md)** — Stack, structure, commands
+2. **[PATTERNS](./PATTERNS.md)** — How to create/modify code
+{3-N. Generated docs based on discovery}
 
-## Quick Reference
+## Languages
 
-| Area      | Stack      |
-| --------- | ---------- |
-| Framework | {detected} |
-| State     | {detected} |
-| Styling   | {detected} |
-| Testing   | {detected} |
+{Detected: TypeScript 45%, Python 30%, Go 25%}
 
 ## Key Directories
 
-| Path     | Purpose    |
-| -------- | ---------- |
-| {paths}  | {purpose}  |
+{Top 5-10 dirs by file count}
 
 ## Commands
 
-```bash
-{dev}    # Dev server
-{test}   # Tests
-{build}  # Build
-```
+{From package.json scripts, Makefile, etc.}
 ```
 
-### ARCHITECTURE.md
+### ARCHITECTURE.md (ALWAYS)
 
-**Sources**: package.json, tsconfig.json, folders
+**Auto-detect from**:
+- Config files: package.json, go.mod, Cargo.toml, pyproject.toml, etc.
+- Folders: src/, cmd/, pkg/, app/, lib/, etc.
+- Build tools: vite.config, webpack, tsconfig, etc.
 
-**Contains**: Stack, structure, commands, path aliases
+**Contains**: Languages, frameworks, build tools, project structure, commands, aliases
 
-### PATTERNS.md
+### PATTERNS.md (ALWAYS)
 
-**Sources**: src/ patterns
+**Auto-detect from**: Code analysis (exported functions, common patterns, file naming)
 
 **c7score Q&A format**:
-- Q: How to create component? → 1-2 sentence pattern + file ref (`src/components/Button/Button.tsx`)
-- Q: How to call API? → pattern + file ref (`src/services/apiClient.ts:25-40`)
-- Q: How to handle forms? → pattern + file ref
-- Q: How to manage state? → pattern + file ref
+- Q: How to add new {detected pattern}? → file ref
+- Q: How to {common task}? → file ref
 
-**Rules**:
-- NO code snippets — file paths with optional lines (path:start-end)
-- No duplicates
-- 1-2 sentences max
-- Project-relative paths
-- **Use path maps from step 3** — never guess folder structure
+**Rules**: 1-2 sentences max, file paths only, no code
 
-### COMPONENTS.md
+### API.md (IF public exports found)
 
-**Sources**: src/components/\*\*/\*.tsx, PropsT
+**Trigger**: Exported functions in `**/*.{ts,js,py,go,rs}`
 
-**Contains**: Component groups, Props API, usage refs
+**Contains**: Function signatures, grouped by file/module, file refs
 
-**Rules**:
-- Skip private components
-- Props as TypeScript interface
-- NO code snippets — usage file path
-- Link to source (`PropsT: src/components/Button/Button.tsx:5-12`)
-- **Use path maps from step 3** — components may be in flat or nested structure
+### MODULES.md (IF classes/modules found)
 
-### SERVICES.md
+**Trigger**: `export class`, `class`, `module`, `package` in code
 
-**Sources**: src/services/\*\*/\*.ts, exports
+**Contains**: Class/module list, public methods, file refs
 
-**Contains**: Service groups, method signatures, return types, usage refs
+### TYPES.md (IF types/interfaces found)
 
-**Rules**:
-- Skip private functions
-- Signatures only
-- NO code snippets — usage file path
-- Link to source (`authService.login(): src/services/auth.ts:15-30`)
-- **Use path maps from step 3** — services/repositories may have nested structure
+**Trigger**: `interface`, `type`, `struct`, `dataclass` in TypeScript/Go/Rust/Python
 
-### DESIGN_TOKENS.md
+**Contains**: Type definitions table, file refs
 
-**Sources**: styles/, tokens/, theme
+### BUSINESS_RULES.md (NEVER auto-generated)
 
-**Contains**: Colors, typography, spacing, breakpoints (tables)
-
-**Rules**:
-- Tables only
-- Skip unused/deprecated
-- Group semantically
-
-### BUSINESS_RULES.md
-
-**NOT auto-generated** — empty template if missing, user fills manually.
+Empty template if missing, user fills manually.
 
 ## File Reference Validation
 
@@ -188,11 +150,9 @@ File path format: `src/path/file.ts` or `src/path/file.ts:25-40`
 ## Incremental Update
 
 1. `git diff --name-only {last_commit}..HEAD`
-2. Map to sections:
-   - src/components/\* → COMPONENTS.md
-   - src/services/\* → SERVICES.md
-   - package.json → ARCHITECTURE.md
-   - styles/\* → DESIGN_TOKENS.md
+2. Map changed files to docs (based on what was generated, not hardcoded):
+   - Config files → ARCHITECTURE.md
+   - Code files → affected API.md/MODULES.md/TYPES.md/PATTERNS.md
 3. Regenerate affected sections only
 4. Preserve unchanged sections
 5. Update `last_commit`
@@ -204,33 +164,34 @@ If git unavailable → full regeneration.
 ```
 proj:create-index complete (commit: abc1234)
 
-Structure scan: 87 components, 15 services, 23 repositories, stories at tests/storybook/
-Created: 00-INDEX.md, ARCHITECTURE.md, PATTERNS.md
-Updated: COMPONENTS.md (-120 tokens), SERVICES.md (-45 tokens)
-Optimized: DESIGN_TOKENS.md (-80 tokens)
-Validated: 45 file references
-  - Fixed: 3 auto-corrected paths
-  - Broken: 2 (see report below)
-Skipped: BUSINESS_RULES.md (manual)
+Languages: TypeScript 60%, JavaScript 25%, Python 15%
+Structure: 145 code files, 23 exports detected
+Created: 00-INDEX.md, ARCHITECTURE.md, PATTERNS.md, API.md, TYPES.md
+Skipped: MODULES.md (no classes found), BUSINESS_RULES.md (manual)
+Validated: 32 file references
+  - Fixed: 2 auto-corrected paths
+  - Broken: 1 (see below)
 
 Broken references:
-- PATTERNS.md:14 → src/pages/TransactionDetailSidebar.tsx (not found)
-- COMPONENTS.md:31 → src/components/form/radio/AuRadioGroup.tsx (not found)
+- API.md:14 → utils/deprecated.ts (not found)
 
-Total reduction: -245 tokens
+Total: 5 docs, -180 tokens vs previous
 ```
 
 ## Error Handling
 
 - No git → full regeneration, note in output
-- No src/ → error, stop
+- No code files found → error, stop
 - Docs without frontmatter → add frontmatter, update
 
 ## Rules
 
-- **Structure-first**: Step 3 pre-scan is MANDATORY — builds path maps to prevent wrong references
-- Optimize for tokens, not readability
-- No dialogs — auto-detect
+- **Universal**: Works for ANY language/framework — no hardcoded assumptions
+- **Structure-first**: Step 3 discovery is MANDATORY — scan before generating
+- **Claude-focused**: Document ONLY what helps Claude generate/understand code — skip implementation details
+- **Dynamic docs**: Generate only relevant docs (skip MODULES.md if no classes, etc.)
+- Optimize for tokens, not human readability
+- No dialogs — auto-detect everything
 - Preserve manual edits in BUSINESS_RULES.md only
 - File paths over code, tables over prose, no duplicates
 - c7score: question-driven, file-reference-first, minimal

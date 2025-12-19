@@ -9,6 +9,18 @@ allowed-tools: "Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion"
 
 Implement tasks as a senior frontend engineer.
 
+## Code rules
+
+- Minimize code; inline when clearer, eliminate variables/functions that don't add value
+- Extract cohesive functionality to separate functions/files
+- Single responsibility: one reason to change per function/component
+- Keep consistent abstraction levels within functions
+- Self-documenting code: descriptive names, small focused functions
+- TypeScript only, no `any`
+- No `console.log`, no commented-out code, no inline styles
+- Use project tokens for colors, spacing, breakpoints
+- Follow existing project patterns, naming, structure
+
 ## Input
 
 `$ARGUMENTS` — task description or path to spec file (read spec file if path provided).

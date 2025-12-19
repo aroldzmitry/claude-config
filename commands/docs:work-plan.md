@@ -5,30 +5,62 @@ argument-hint: [user-flow-file-path]
 
 # Work Plan Generator
 
-Analyzes user flow against codebase and outputs WHAT needs to be done (requirements), not HOW to implement.
+Analyzes user flow against codebase → outputs WHAT needs to be done (requirements), not HOW.
+
+## WHAT vs HOW
+
+**WHAT (correct):** "User can upload avatar image", "Error message shown when save fails"
+
+**NOT HOW:** ~~"Add ImageUploader to ProfilePage.tsx"~~, ~~"Use zod for validation"~~
 
 ## Input
 
 Path to user flow markdown file via `$ARGUMENTS`.
 
-## Output
+## Process
 
-### Console Summary
+### Step 1: Validate Flow
 
+Check file exists and contains: Goals, Happy Path, Alternative Paths, Negative Scenarios, Success Criteria.
+
+If missing sections → output error → stop.
+
+### Step 2: Extract Requirements
+
+From flow, extract WHAT system must do:
+- **UI** — what user sees/interacts with
+- **Behavior** — what happens on actions
+- **Validation** — what rules apply
+- **Errors** — what feedback on failures
+- **State** — what data persists/changes
+
+Assign REQ-ID to each (REQ-001, REQ-002...).
+
+### Step 3: Check Codebase
+
+For each requirement, search codebase to determine status:
+
+1. **Extract keywords** from requirement (nouns, verbs: "upload", "avatar", "validate", "email")
+2. **Grep** for keywords in likely locations (components, services, hooks, utils)
+3. **Read** matching files to verify functionality exists
+4. **Classify**:
+   - **Done** — functionality fully matches requirement
+   - **Partial** — some aspects exist, others missing
+   - **Missing** — no matching code found
+
+### Step 4: Output
+
+**Console summary:**
 ```
 Requirements: N total (UI: X | API: Y | State: Z | Domain: W)
 Status: Done: A | Partial: B | Missing: C
 ```
 
-If all done: "✅ All requirements implemented." — exit without file.
+If all done → "✅ All requirements implemented." → exit without file.
 
-### Work Plan File (Only When Work Needed)
+### Step 5: Create Work Plan File
 
 File: `./docs/workPlans/{flow-name}-work-plan.md`
-
-**Format:** List of requirements to fulfill. No file paths, no code patterns, no implementation details.
-
-**Structure:**
 
 ```markdown
 # Work Plan: {Flow Name}
@@ -38,7 +70,6 @@ Source: {user-flow-file-path}
 ## Missing Requirements
 
 - [REQ-001] {What is needed} — {Why, from which flow step}
-- [REQ-002] ...
 
 ## Partial Requirements
 
@@ -47,43 +78,18 @@ Source: {user-flow-file-path}
 ## Acceptance Criteria
 
 - [ ] {Criterion from flow success criteria}
-- [ ] ...
 ```
 
-## Process
+### Step 6: Format and Stage
 
-1. **Parse Flow** — Extract steps, alternatives, error scenarios, success criteria
-2. **Extract Requirements** — What the system must do (not how):
-   - UI: what user sees/interacts with
-   - Behavior: what happens on actions
-   - Validation: what rules apply
-   - Errors: what feedback on failures
-   - State: what data persists/changes
-3. **Check Codebase** — For each requirement, determine: Done | Partial | Missing
-4. **Output** — Console summary + file if work needed
+```bash
+npx prettier --write ./docs/workPlans/{flow-name}-work-plan.md && git add ./docs/workPlans/{flow-name}-work-plan.md
+```
 
-## Post-Output
+## Final Checklist
 
-After creating work plan file, run `git add` on the created file to stage it for commit.
-
-## Rules
-
-**Output describes WHAT:**
-- "User can upload avatar image"
-- "System validates email format"
-- "Error message shown when save fails"
-
-**NOT HOW:**
-- ~~"Add ImageUploader component to ProfilePage.tsx"~~
-- ~~"Use zod schema for validation"~~
-- ~~"Call notificationService.error()"~~
-
-**DO:**
-- Focus on functional requirements
-- Include acceptance criteria from flow
-- Reference flow steps (e.g., "from Step 3")
-
-**DON'T:**
-- Mention files, components, patterns
-- Suggest technical solutions
-- Include implementation hints
+- [ ] All requirements are WHAT, not HOW (no files, components, patterns)
+- [ ] Each requirement has REQ-ID
+- [ ] Each requirement linked to flow step
+- [ ] Codebase checked for each requirement
+- [ ] Acceptance criteria from flow included

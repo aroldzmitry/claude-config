@@ -23,7 +23,7 @@ Generate Playwright/Vitest/Storybook tests from documentation with traceability 
 Before generating tests, discover real API endpoints:
 
 1. Search frontend for endpoint enums/consts (`ApiGatewayE`, `API_ENDPOINTS`, `ROUTES`)
-2. Search hooks/services for API calls (`axios.|fetch(|apiClient.`)
+2. Search hooks/services for API calls (`axios.|fetch(|apiClient.|requestClient.`)
 3. Search backend routes if exists (`../server/src/routes/`)
 4. Build action→endpoint mapping (e.g., "login" → `/api/user/login`)
 5. **Never guess endpoints** — if not found, report as BLOCKER in gaps

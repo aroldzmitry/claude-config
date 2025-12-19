@@ -186,7 +186,7 @@ If violations → fix → re-run all 8 → confirm pass → proceed.
 
 ### 12. Output Format
 
-File: `docs/checkLists/{flow-name}.md`
+File: `docs/checklists/<area>/[flow-name].md`
 
 ```markdown
 # Checklist: {Flow Name}
@@ -236,13 +236,13 @@ File: `docs/checkLists/{flow-name}.md`
 
 ### 13. Format and Stage for Git
 
-Format with Prettier, then stage: `npx prettier --write docs/checkLists/{flow-name}.md && git add docs/checkLists/{flow-name}.md`
+Format with Prettier, then stage: `npx prettier --write docs/checklists/<area>/[flow-name].md && git add docs/checklists/<area>/[flow-name].md`
 
 ### 14. Report
 
 Output:
 ```
-Checklist: docs/checkLists/{flow-name}.md
+Checklist: docs/checklists/<area>/[flow-name].md
 Items: X (Y critical, Z important, W optional)
 Coverage: Goals (X), Alternatives (Y), Errors (Z), States (W)
 Validation: All 8 checks passed

@@ -6,7 +6,9 @@ allowed-tools: "Read, Write, Edit, Glob, Grep, Bash"
 
 # Project Index
 
-Generate/update `.claude/proj_index/` docs using c7score format (question-based headers, file paths over code, tables over lists, 5x token reduction).
+Generate/update `.claude/proj_index/` docs using c7score format (question-based headers, file paths over code, tables over lists, clear hierarchy H1→H2→H3, 5x token reduction).
+
+**Full scan**: Always regenerate all docs from scratch. No git tracking, no incremental updates.
 
 ## Process
 

@@ -49,12 +49,12 @@ Before generating tests, discover real API endpoints:
 
 ## Pre-Implementation Planning
 
-Before writing tests, use `EnterPlanMode` to plan implementation:
+Before writing tests, launch `Plan` agent (Task tool with subagent_type="Plan") to design implementation:
 1. Analyze input documents (checklist + test cases)
 2. Classify each TC by test type
 3. Identify components needing data-testid additions
 4. Map TC steps to Playwright/Storybook actions
-5. Get user approval before generating code
+5. Present plan to user, proceed after confirmation
 
 ## Test Generation Rules
 

@@ -11,67 +11,34 @@ Implement tasks as a senior frontend engineer.
 
 ## Input
 
-`$ARGUMENTS` is either a task description or a path to a spec file.
-
-If a file path is provided, read it first and extract requirements.
+`$ARGUMENTS` — task description or path to spec file (read spec file if path provided).
 
 ## Flow
 
 ### 1. Understand task
 - If requirements unclear or risky, ask questions.
-- If input lacks clear plan or task is complex, use Task tool with subagent_type=Plan to generate implementation strategy.
-- Otherwise proceed directly to implementation.
+- Use Task tool with subagent_type=Plan if task affects >3 files or requires architectural decisions.
+- Otherwise proceed directly.
 
-### 2. Project context
+### 2. Context & Implementation
 - If `.claude/proj_index/00-INDEX.md` exists, read and follow it.
-- Find similar implementations in the codebase.
-- When modifying existing code, read the target file and 1–2 usage examples.
-- Before implementing common patterns (throttle, debounce, validation, formatting, etc.):
-  - Search `src/shared/utils/**/*.ts` and `src/shared/hooks/**/*.ts` for existing utilities
-  - Grep for function/pattern name (e.g., `throttle`, `debounce`, `validate`)
-  - If found, use existing utility instead of reimplementing
-  - If not found and pattern is reusable, extract to `src/shared/utils/` or `src/shared/hooks/`
+- Find similar implementations; when modifying code, read target file and 1–2 usage examples.
+- Search `src/shared/{utils,hooks}/**/*.ts` for existing utilities before implementing common patterns.
+- Implement only what is required; prefer existing components, hooks, styles, types.
+- Prefer one component per file (default export); extract helpers to separate files.
+- Extract types to `types.ts`, except `PropsT` which stays with its component.
+- Never create `index.ts` or `index.tsx` — use explicit file names.
 
-### 3. Implementation
-- Implement only what is required.
-- Prefer existing components, hooks, styles, and types.
-- Create new entities only when necessary.
-- **Component structure:** Each file must contain exactly one component (the default export). Extract helper components to separate files in the same directory.
-- **Type structure:** Extract types to separate files (e.g., `types.ts`), except `PropsT` which belongs with its component.
-- **No index files:** Never create `index.ts` or `index.tsx` files. Use explicit file names (e.g., `MyComponent.tsx` not `MyComponent/index.tsx`).
+### 3. Quality checks
+Run for created/modified files: Prettier, ESLint, TypeScript, Build.
 
-### 4. Quality checks
-Run checks only for files that were created or modified:
+Up to 2 fix attempts per error. If still failing, log to `.claude/tasks/<task>-errors.md` and continue.
 
-- Prettier
-- ESLint
-- TypeScript
-- Build
+### 4. Git
+Stage all created and modified files.
 
-Error handling:
-- Up to 2 fix attempts per error.
-- If still failing, write details to `.claude/tasks/<task>-errors.md` and continue.
-
-### 5. Git tracking
-- Add all newly created files to git tracking.
-- Stage all modified and newly created files.
-
-### 6. Report
-Briefly report:
+### 5. Report
 - What was implemented
-- Which files were changed or created
-- Which checks passed or failed
-- Any manual follow-up required
-
-## Code rules
-
-- Minimize code: eliminate intermediate variables/functions that don't add value; inline when result is clearer
-- Extract cohesive functionality: if a logical block can be separated, extract it to a separate function/file
-- Single responsibility: each function/component does one thing; if multiple reasons to change, split it
-- Abstraction levels: each function works at one level; don't mix high-level logic with low-level details
-- Self-documenting: code should be clear without comments; use descriptive names, small focused functions
-- TypeScript only, no `any`
-- No `console.log`, no commented-out code
-- No inline styles
-- Do not hardcode colors, spacing, or breakpoints if project tokens exist
-- Follow existing project patterns, naming, and structure
+- Files changed/created
+- Checks passed/failed
+- Manual follow-up required

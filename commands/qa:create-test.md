@@ -64,13 +64,17 @@ Before writing tests, launch `Plan` agent (Task tool with subagent_type="Plan") 
 - Storybook: use CSF3 `tags`, `parameters.testCase`, `parameters.coverage`, `parameters.testType`
 - No traceability comments — annotations/tags only
 
-### data-testid
+### data-testid & testIds.ts
 - Format: `domain.component.element` (e.g., `auth.login-form.submit-btn`)
 - Extract from test case docs, add to components if missing
-- Centralize in `testIds.ts`, use as: `page.locator(\`[data-testid="${testIds.auth.form.submit}"]\`)`
+- **testIds.ts workflow:**
+  1. Check if `tests/testIds.ts` exists; if not, create with nested object structure
+  2. Add new IDs extracted from TC docs: `export const testIds = { auth: { form: { submit: "auth.form.submit" } } }`
+  3. Import in tests: `import { testIds } from "../testIds"`
+  4. Use as: `page.locator(\`[data-testid="${testIds.auth.form.submit}"]\`)`
 
 ### Playwright (E2E/Integration)
-- **Before writing:** lookup Playwright docs via Context7 MCP for current API
+- **Context7 lookup:** Before first test generation, fetch Playwright docs via `mcp__context7__resolve-library-id` → `mcp__context7__get-library-docs` for: locators, assertions, route mocking
 - Use `page.locator()` with data-testid selectors
 - Assertions: `expect(locator).toBeVisible()`, `expect(page).toHaveURL()`
 
@@ -87,9 +91,9 @@ Before writing tests, launch `Plan` agent (Task tool with subagent_type="Plan") 
 - Setup/teardown per-test for isolation
 
 ### Storybook Specifics
-- **Before writing:** lookup Storybook docs via Context7 MCP for current API
+- **Context7 lookup:** Before first story generation, fetch Storybook docs via Context7 for: CSF3 format, play functions, `@storybook/test` assertions
 - CSF3 format with play functions
-- Import `@storybook/test` for assertions
+- Import `@storybook/test` for assertions (`within`, `userEvent`, `expect`)
 - Add decorators from `tests/storybook/decorators/` (QueryClientDecorator, MemoryRouter) based on component imports
 
 ### Import Paths
@@ -102,6 +106,7 @@ Before writing tests, launch `Plan` agent (Task tool with subagent_type="Plan") 
 - `tests/storybook/<mirror-path>/<Component>.stories.tsx`
 - `tests/integration/<mirror-path>/<Component>.spec.ts`
 - `tests/unit/<mirror-path>/<file>.test.ts`
+- `tests/testIds.ts` — centralized test ID constants (created/updated)
 - Updated components with `data-testid` attributes
 
 ## Console Output Format

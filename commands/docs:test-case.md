@@ -11,15 +11,14 @@ Generate test cases from user flow document with traceability and coverage valid
 
 ## Terminology
 
-Observable — user-visible UI behavior (no backend operations, no API details).
-E2E (End-to-End) — test covering full user journey from entry to exit.
-Integration — test verifying backend/API interaction without UI.
-Contract — test validating API request/response structure.
-Flow-Based Traceability — every flow section has test, every test links to flow sections.
+- **Observable** — user-visible UI behavior (no backend/API)
+- **Flow-Based Traceability** — every flow section ↔ test (bidirectional link via Covers field)
 
 ## Instructions
 
 Parse command args as: `user-flow-file-path [test-data-catalog-path] [environment-profile-path]`
+
+- `environment-profile-path` — if provided, read to extract target environment name, base URLs, auth method for Preconditions
 
 ### Input Requirements
 
@@ -38,7 +37,7 @@ Read flow, verify:
 
 If validation fails → output violations list → stop → ask user to fix flow.
 
-If all pass → derive FLOWCODE from flow file name (e.g., `user-registration.md` → `REG`) → proceed to Step 1.
+If all pass → derive FLOWCODE from flow file name (e.g., `user-registration.md` → `REG`) and AREA from flow file path (e.g., `docs/flows/auth/login.md` → `auth`) → proceed to Step 1.
 
 ### Step 1: Extract Flow Data & Build Section Map
 
@@ -99,26 +98,13 @@ Each test case format:
 Example:
 ```
 TC-REG-001: Register happy path
-Priority: P0
-Type: E2E
-Preconditions: User not authenticated, /registration reachable
+Priority: P0 | Type: E2E | Covers: Happy Path Steps 1-4
+Preconditions: User not authenticated
 Test Data: Name=TD-NAME-VALID, Email=TD-EMAIL-VALID-UNIQUE
-Cleanup: See test infrastructure docs
-Covers: Happy Path Steps 1-4
 
-Steps:
-1. Navigate to /registration
-   Expected: Registration form displays with name and email fields, both fields empty, submit button disabled
-   Source: Flow line 29
-2. Enter full name in name field
-   Expected: Field accepts input
-   Source: Flow line 30
-3. Enter email address in email field
-   Expected: Field accepts input, submit button becomes enabled
-   Source: Flow line 31
-4. Click "Register" button
-   Expected: Button shows loading state, success notification displays "Account created successfully", user redirected to login page /login
-   Source: Flow line 32, Success Criteria lines 35-37
+1. Navigate /registration → Form displays | Flow:29
+2. Enter name, email → Submit enabled | Flow:30-31
+3. Click Register → Loading state, success message, redirect /login | Flow:32, Success:35-37
 ```
 
 ### Step 5: Pre-Output Validation (Mandatory, Blocking)
@@ -173,18 +159,12 @@ Use `AskUserQuestion` ONLY if test cases become unexecutable without answer. Use
 
 Do NOT ask: Test priorities (use Section Mapping), test types (use flow section), coverage targets (flow sections mandatory).
 
-## Rules
+## Final Checklist
 
-- Extract ONLY from flow and standards — never invent requirements, UI details, error messages, or behaviors
-- Every Expected Result must cite source (flow line number, standard section, field validation reference)
-- Read infrastructure standard files (NET-001, SRV-001, etc.) to extract exact error messages, UI requirements, retry behaviors
-- NO UI implementation details unless quoted in source (no "border turns red", "spinner animation", exact colors unless documented)
-- NO backend assertions in E2E/E2E+Mock tests (API status, database states) — use Integration/Contract type
-- Use test data IDs (TD-*), not literal strings; validate TD-ID names match field usage
-- Keep test count lean (few high-value cases covering all flow sections)
-- Flow-based traceability: every flow section covered, every test traces to flow sections via Covers field
-- Pre-Output Validation MANDATORY — 6 checks must pass before creating file
-- Section Mapping Table determines test type/priority
-- Test types: E2E (UI-only), E2E+Mock (UI with infrastructure mocking), Integration (API-only), Contract (API structure)
-- Target: 1 Happy Path E2E, 1 E2E per CRITICAL alternative/error, E2E+Mock for infra standard refs
-- Output single markdown file to `docs/testCases/<area>/[user-flow-file-name].md`
+Before output, verify all pass:
+- [ ] All Expected Results are observable (no backend/API/DB)
+- [ ] All Expected Results have Source citation
+- [ ] Every flow section has ≥1 test (Covers field)
+- [ ] TD-IDs used (no literal strings), names match fields
+- [ ] Test types correct (E2E=UI only, Integration=API only)
+- [ ] 6 validation checks from Step 5 passed

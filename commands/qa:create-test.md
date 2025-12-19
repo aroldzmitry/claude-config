@@ -16,6 +16,8 @@ Generate Playwright/Vitest/Storybook tests from documentation with traceability 
 
 **Test Cases format:** `## TC-001: Title` with Preconditions, Test Data, Steps (with data-testid), Expected Result, Cleanup.
 
+**Document Validation:** Before generation, validate structure. Report missing/malformed sections as BLOCKER in gaps.
+
 ## API Endpoint Discovery (Mandatory First Step)
 
 Before generating tests, discover real API endpoints:
@@ -31,7 +33,7 @@ Before generating tests, discover real API endpoints:
 | Type | Location | Criteria | Extension |
 |------|----------|----------|-----------|
 | E2E | `tests/e2e/<area>/` | Real API calls, multi-page flow, navigation/redirects | `.spec.ts` |
-| Storybook | `tests/storybook/<mirror-src>/` | Single component isolation, field validation without API, visual states, interactions within component | `.stories.tsx` |
+| Storybook | `tests/storybook/<mirror-src>/` | Single component isolation, field validation without API, visual states, interactions within component, accessibility (ARIA, keyboard) | `.stories.tsx` |
 | Integration | `tests/integration/<mirror-src>/` | Form submission with mocked API, multi-step scenarios, error handling with mocks (409, 500, timeout) | `.spec.ts` |
 | Unit | `tests/unit/<mirror-src>/` | Pure functions/utilities, no UI/API | `.test.ts` |
 
@@ -49,7 +51,7 @@ Before generating tests, discover real API endpoints:
 ### data-testid
 - Format: `domain.component.element` (e.g., `auth.login-form.submit-btn`)
 - Extract from test case docs, add to components if missing
-- Centralize in `testIds.ts`
+- Centralize in `testIds.ts`, use as: `page.locator(\`[data-testid="${testIds.auth.form.submit}"]\`)`
 
 ### Network Mocking
 - Use discovered endpoints only (from API Endpoint Discovery)
@@ -105,7 +107,7 @@ After generation:
 1. `yarn lint:fix` on generated files
 2. `npx prettier --write` on generated/modified files
 3. `npx tsc --noEmit` on generated files
-4. Report unfixable errors in output
+4. Report unfixable validation errors in output (don't silently skip)
 5. Stage: `git add tests/**/*.spec.ts tests/**/*.stories.tsx tests/**/*.test.ts`
 
 ## Test Patterns (Brief)
@@ -141,3 +143,6 @@ After generation:
 - Use CSS selectors (use data-testid)
 - Hardcode test data (extract from TC)
 - Invent requirements not in docs
+- Change expected results from documentation
+- Mix multiple TCs in single test/story
+- Ignore document formatting errors — report as BLOCKER

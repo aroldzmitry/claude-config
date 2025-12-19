@@ -20,3 +20,6 @@ history.jsonl
 stats-cache.json
 plugins/
 investigations/
+.idea/
+session-env/
+telemetry/

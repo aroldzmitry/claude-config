@@ -89,13 +89,6 @@ Happy Path sequences contain ONLY what user sees and does:
 2. Visible system response (page displays, button shows loading, message appears)
 3. Observable state change (redirected to page, notification visible, field changes color)
 
-Prohibited in sequences:
-
-- Backend operations (validates, checks database, creates record, sends request)
-- File paths or code references
-- Component class names or implementation details
-- Technical processes invisible to user
-
 ### Flow Normalization (Mandatory Before Writing)
 
 1. **Identify shared behaviors**: behaviors identical across multiple flows, infrastructure concerns, system reactions (not user intentions)
@@ -130,9 +123,6 @@ Output checklist BEFORE using Write tool:
 Observable-Only:
 
 - Happy Path contains ONLY user-visible actions and responses
-- NO backend operations in sequences
-- NO file paths or code references in sequences
-- NO technical implementation details anywhere in document
 
 Field Validation (for form flows):
 
@@ -285,22 +275,6 @@ Examples:
 - Invalid: invalidemail, test@, user@domain
 
 Flows using this field: 01-register, 02-login, 03-edit-profile
-
-## Name
-
-Validation Rules:
-
-- Format: Text, any characters
-- Required: Yes
-- Length: No min/max enforced
-- Client-side: Required check only
-- Server-side: `notEmpty()`
-
-Error Messages:
-
-- Empty: "Name is required"
-
-Flows using this field: 01-register, 03-edit-profile
 ```
 
 Shared Standard file: `docs/standards/{ID}-{name}.md`
@@ -477,101 +451,6 @@ TBD items requiring implementation:
    - Shared standards used: `[list of standard IDs referenced]`
    - Shared standards created: `[list of new standard IDs with names]`
    - Files staged: `[list of git-added files]`
-
-## Shared Standard Criteria
-
-Behavior qualifies as Shared Standard if ALL apply:
-
-- Identical across multiple flows
-- Independent of user goal or domain context
-- Independent of page/URL
-- Describes system reaction (not user intention)
-- Testable with same pattern across flows
-
-Typical candidates: network/auth/server errors, loading states, empty states, permission denied, offline mode.
-
-## Statement Types for Happy Path Sequences
-
-Observable — ONLY type allowed in Happy Path sequences. User-visible UI behavior (messages, buttons, redirects, loading states).
-
-- Good: "Validation error displays below email field"
-- Good: "Submit button shows loading indicator"
-- Good: "User redirected to login page"
-- Bad: "Backend validates email format" (invisible to user)
-- Bad: "System checks database for duplicate email" (backend operation)
-- Bad: "POST request sent to /api/user" (technical implementation)
-
-### Observable-Only Enforcement
-
-Happy Path must be convertible to Playwright test steps:
-
-1. Can tester see this on screen? → Observable, include it
-2. Is this backend processing? → Remove from document
-3. Is this technical detail? → Remove from document
-4. Does this have file path? → Remove from document
-
-## Flow Sanity Checks - 7 Mandatory Checks
-
-After generating content, BEFORE writing file, run checklist and fix violations:
-
-1. Preconditions: Only include conditions without which flow cannot start.
-
-- Fix: Remove preconditions belonging to other flows.
-- Example violation: "Email service operational" in registration → belongs to login flow
-- Test: Does this precondition prevent THIS flow's entry point from loading?
-
-2. External Systems: Only third-party integrations (OAuth, SMTP, payment gateways, Plaid). Exclude internal backend API, database, infrastructure.
-
-- Fix: Remove internal systems (PostgreSQL, Redis, backend API). If no real external systems exist, remove "External Systems" line from output.
-- Example violation: "Backend REST API" or "PostgreSQL" in registration → internal implementation, not external
-- Test: Is this a third-party service with its own authentication/API, or internal infrastructure?
-
-3. User Types: Only types who can START this flow based on preconditions.
-
-- Fix: Remove user types blocked by preconditions.
-- Example violation: "Authenticated User" in registration → contradicts "not authenticated" precondition
-- Test: Can this user type satisfy all preconditions?
-
-4. Negative Scenarios: Only domain errors OR standard references.
-
-- Fix: Replace technical details with standard refs (NET-001, SRV-001, AUTH-001).
-- Example violation: "Session cookie not set" or "JavaScript disabled" → too granular, use standard
-- Test: Is this a business rule violation OR covered by existing standard?
-
-5. Cross-Flow Ownership: Scenarios belong to different flow? Move them.
-
-- Fix: Keep only brief mention in Cross-Goal Notes.
-- Example violation: "SMTP configuration details" in registration → belongs to email flow
-- Test: Is this scenario's primary goal different from this flow's goal?
-
-6. Timing Promises: No time values unless sourced from requirements.
-
-- Fix: Remove unsourced timing; use "shows confirmation before redirect".
-- Example violation: "within 2 seconds" without documented SLA or measurement
-- Test: Is this timing value documented in project requirements or measured?
-
-7. Infrastructure Errors: ONLY standard references with scope.
-
-- Fix: Replace inline descriptions with "Applies: Standard NET-001 (scope: form submission)".
-- Example violation: "Retry logic with exponential backoff" inline → reference standard with scope
-- Test: Is this error about infrastructure/platform rather than business domain?
-
-8. Pattern Consolidation: No redundant variations of same behavior.
-
-- Fix: Consolidate A1/A2/A3 describing same pattern into single alternative.
-- Example violation: A1: name empty, A2: email empty, A3: both empty → consolidate to "Required fields not filled"
-- Test: Do multiple alternatives describe variations of same validation/UI pattern?
-
-## Selective User Questions
-
-Use `AskUserQuestion` ONLY for Assumption-class statements found in:
-
-- Preconditions (uncertain prerequisite)
-- External Systems (unverified integration)
-- Negative Scenarios (unclear business rule)
-- Success Criteria timing (no SLA source)
-
-For other uncertainties, convert to Observable or generalize.
 
 ## Rules (Priority Order)
 

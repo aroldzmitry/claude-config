@@ -43,24 +43,35 @@ Implement tasks as a senior frontend engineer.
 
 - SCSS with CSS Variables (not CSS modules, not styled-components)
 - BEM-like classes (`.au-component`, `.au-component--modifier`)
-- Use design tokens from `src/app/styles/` for colors, spacing, breakpoints
+- Design tokens from `src/app/styles/tokens/` — colors, spacing, typography, breakpoints
+- `classNames` library: `classNames('base', { 'conditional': bool }, prop)`
+- CSS Variables theming with `:root` + dark mode media query
 
 ## Project structure
 
 - `src/pages/` — page-level components
 - `src/components/` — reusable components
 - `src/repositories/{domain}/` — API hooks (React Query)
-- `src/services/` — business logic (auth, notification, modal, sidebar, localStorage)
-- `Shared/constants/` — `appPaths.ts` (routes), `breakpoints.ts`, `validationPatterns.ts`
+- `src/services/` — singleton objects (auth, notification, modal, sidebar, localStorage, cookies)
+- `Shared/constants/` — `appPaths.ts`, `breakpoints.ts`, `validationPatterns.ts`, `replacePatterns.ts`
 - `src/app/` — app root, routes, ConfigProviders (QueryClientProvider wrapper)
+
+## Routing
+
+- Routes: `AppPath` class — `new AppPath('/path/:param?')` with `.getPath()`
+- Lazy loading: `React.lazy()` + `LazyRoute` wrapper
+- Route guards: `OnlyPrivate`, `OnlyPublic` components
 
 ## Data & State
 
 - React Query for data fetching
 - Repository pattern: API hooks in `src/repositories/{domain}/`
-- Request client abstraction: `Shared/requestClient`
-- Global state: `useGlobalValue` + `createGlobalValueSetter` pattern
-- Custom hooks for shared state in `Shared/hooks/`
+  - Naming: `useLoad*`, `useCreate*`, `useEdit*`, `useDelete*`
+- Request client: `Shared/requestClient` with `ApiGatewayE` endpoints enum
+  - Path templates: `/api/budget/:budgetId` → `buildResourcePath()`
+- Global state: Preact Signals (`@preact/signals-react`)
+  - `useGlobalValue(GlobalStoreFieldE.*)` + `createGlobalValueSetter()` + `useSyncExternalStore`
+- DTOs extend `BaseDTO` (`id`, `createdAt`, `updatedAt`)
 
 ## Forms
 
@@ -71,7 +82,7 @@ Implement tasks as a senior frontend engineer.
 
 - Custom error classes: `ValidationError`, `AuthorizationError`
 - Error boundaries: `SentryErrorBoundary`, `GlobalErrorBoundary`
-- Sentry for error reporting via `errorReporter`
+- `errorReporter.report()` for errors, `errorReporter.warn()` for warnings
 
 ## Testing
 

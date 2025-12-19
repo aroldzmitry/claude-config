@@ -60,6 +60,11 @@ Before generating tests, discover real API endpoints:
 - Extract from test case docs, add to components if missing
 - Centralize in `testIds.ts`, use as: `page.locator(\`[data-testid="${testIds.auth.form.submit}"]\`)`
 
+### Playwright (E2E/Integration)
+- **Before writing:** lookup Playwright docs via Context7 MCP for current API
+- Use `page.locator()` with data-testid selectors
+- Assertions: `expect(locator).toBeVisible()`, `expect(page).toHaveURL()`
+
 ### Network Mocking
 - Detect error scenarios in TC (e.g., "Mock API to return 409", "network error") → add mocking
 - Use discovered endpoints only (from API Endpoint Discovery)
@@ -73,6 +78,7 @@ Before generating tests, discover real API endpoints:
 - Setup/teardown per-test for isolation
 
 ### Storybook Specifics
+- **Before writing:** lookup Storybook docs via Context7 MCP for current API
 - CSF3 format with play functions
 - Import `@storybook/test` for assertions
 - Add decorators from `tests/storybook/decorators/` (QueryClientDecorator, MemoryRouter) based on component imports

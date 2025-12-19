@@ -39,13 +39,20 @@ Before generating tests, discover real API endpoints:
 
 **Detection order:** E2E → Storybook → Integration → Unit (first match wins).
 
+**Detection keywords in TC steps:**
+- E2E: "redirect", "navigate to", "toHaveURL", multi-page journey
+- Storybook: NO "page.goto", single component, "blur", "focus", "type"
+- Integration: "page.route", "mock API", "network error", "server error", "409", "500"
+- Unit: no UI interactions, pure function/utility
+
 **Path mirroring:** `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{ext}`
 
 ## Test Generation Rules
 
 ### Traceability
-- Wrap in `test.describe()` with `tag: ["@TC-001"]` and `annotation: [{type: "coverage", description: "CL-001, CL-002"}, {type: "testType", description: "e2e"}]`
-- Storybook: use CSF3 `tags`, `parameters.coverage`, `parameters.testType`
+- Wrap in `test.describe()` with `tag: ["@TC-001"]` and `annotation: [{type: "testCase", description: "docs/testCases/area/file.md#tc-001"}, {type: "coverage", description: "CL-001, CL-002"}, {type: "testType", description: "e2e"}]`
+- TC-ID in tag enables `--grep @TC-001` filtering for running specific tests
+- Storybook: use CSF3 `tags`, `parameters.testCase`, `parameters.coverage`, `parameters.testType`
 - No traceability comments — annotations/tags only
 
 ### data-testid
@@ -54,6 +61,7 @@ Before generating tests, discover real API endpoints:
 - Centralize in `testIds.ts`, use as: `page.locator(\`[data-testid="${testIds.auth.form.submit}"]\`)`
 
 ### Network Mocking
+- Detect error scenarios in TC (e.g., "Mock API to return 409", "network error") → add mocking
 - Use discovered endpoints only (from API Endpoint Discovery)
 - Playwright: `page.route()` interception
 - Vitest integration: MSW
@@ -126,10 +134,11 @@ After generation:
 - Discover real API endpoints first — mandatory
 - Use exact discovered URLs in mocks
 - Classify by documented criteria (check Storybook before Integration)
-- Extract data-testid from TC docs
+- Extract data-testid from TC docs, add missing attributes to components
 - Add decorators for React Query/Router in Storybook
 - Mirror src/ structure for test placement
 - One test per TC, strict step order
+- Mock network errors when TC specifies error scenario
 - Run lint/prettier/tsc after generation
 - Report CRITICAL gaps and classification reasons
 
@@ -146,3 +155,4 @@ After generation:
 - Change expected results from documentation
 - Mix multiple TCs in single test/story
 - Ignore document formatting errors — report as BLOCKER
+- Test backend directly unless TC explicitly requires it

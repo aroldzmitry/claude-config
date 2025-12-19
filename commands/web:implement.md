@@ -45,11 +45,21 @@ Implement tasks as a senior frontend engineer.
 - BEM-like classes (`.au-component`, `.au-component--modifier`)
 - Use design tokens from `src/app/styles/` for colors, spacing, breakpoints
 
+## Project structure
+
+- `src/pages/` — page-level components
+- `src/components/` — reusable components
+- `src/repositories/{domain}/` — API hooks (React Query)
+- `src/services/` — business logic (auth, notification, modal, sidebar, localStorage)
+- `Shared/constants/` — `appPaths.ts` (routes), `breakpoints.ts`, `validationPatterns.ts`
+- `src/app/` — app root, routes, ConfigProviders (QueryClientProvider wrapper)
+
 ## Data & State
 
 - React Query for data fetching
 - Repository pattern: API hooks in `src/repositories/{domain}/`
 - Request client abstraction: `Shared/requestClient`
+- Global state: `useGlobalValue` + `createGlobalValueSetter` pattern
 - Custom hooks for shared state in `Shared/hooks/`
 
 ## Forms
@@ -60,6 +70,7 @@ Implement tasks as a senior frontend engineer.
 ## Error handling
 
 - Custom error classes: `ValidationError`, `AuthorizationError`
+- Error boundaries: `SentryErrorBoundary`, `GlobalErrorBoundary`
 - Sentry for error reporting via `errorReporter`
 
 ## Testing

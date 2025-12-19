@@ -47,6 +47,15 @@ Before generating tests, discover real API endpoints:
 
 **Path mirroring:** Extract component path from data-testid (e.g., `auth.form` → Grep for component), then mirror: `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{ext}`
 
+## Pre-Implementation Planning
+
+Before writing tests, use `EnterPlanMode` to plan implementation:
+1. Analyze input documents (checklist + test cases)
+2. Classify each TC by test type
+3. Identify components needing data-testid additions
+4. Map TC steps to Playwright/Storybook actions
+5. Get user approval before generating code
+
 ## Test Generation Rules
 
 ### Traceability

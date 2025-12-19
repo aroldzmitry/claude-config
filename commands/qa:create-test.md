@@ -16,7 +16,7 @@ Generate Playwright/Vitest/Storybook tests from documentation with traceability 
 
 **Test Cases format:** `## TC-001: Title` with Preconditions, Test Data, Steps (with data-testid), Expected Result, Cleanup.
 
-**Document Validation:** Before generation, validate structure. Report missing/malformed sections as BLOCKER in gaps.
+**Expected TC sections:** Preconditions, Test Data, Steps, Expected Result, [Cleanup], [Error Scenario]. Validate before generation — report missing/malformed as BLOCKER.
 
 ## API Endpoint Discovery (Mandatory First Step)
 
@@ -45,7 +45,7 @@ Before generating tests, discover real API endpoints:
 - Integration: "page.route", "mock API", "network error", "server error", "409", "500"
 - Unit: no UI interactions, pure function/utility
 
-**Path mirroring:** `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{ext}`
+**Path mirroring:** Extract component path from data-testid (e.g., `auth.form` → Grep for component), then mirror: `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{ext}`
 
 ## Test Generation Rules
 

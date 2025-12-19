@@ -102,7 +102,9 @@ Implement tasks as a senior frontend engineer.
 ### 2. Context & Implementation
 - If `.claude/proj_index/00-INDEX.md` exists, read and follow it.
 - Find similar implementations; when modifying code, read target file and 1–2 usage examples.
-- Search `Shared/{utils,hooks}/**/*.ts` for existing utilities before implementing common patterns.
+- Before implementing common patterns (throttle, debounce, validation, formatting):
+  - Search `Shared/{utils,hooks}/**/*.ts` for existing utilities
+  - If not found and pattern is reusable, extract to `Shared/utils/` or `Shared/hooks/`
 - Implement only what is required; prefer existing components, hooks, styles, types.
 - Never create `index.ts` or `index.tsx` — use explicit file names.
 

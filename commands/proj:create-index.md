@@ -29,8 +29,6 @@ Generate/update `.claude/proj_index/` docs using c7score format (question-based 
 
 ## Generated Files
 
-Each file includes frontmatter with `generated: YYYY-MM-DD`.
-
 | File | When | Contains |
 |------|------|----------|
 | **00-INDEX.md** | Always | Navigation with read order, detected languages %, key directories, commands from package.json/Makefile |

@@ -27,6 +27,10 @@ For Claude Code questions: use Task tool with `subagent_type="claude-code-guide"
 
 When user asks to run a slash command, use SlashCommand tool to invoke it. Do NOT implement the command's logic manually.
 
+## Frontend Implementation Rule
+
+For any frontend/client code changes, always use `/web:implement` command.
+
 ## Agent Commands Usage
 
 | User Request | Command | Notes |

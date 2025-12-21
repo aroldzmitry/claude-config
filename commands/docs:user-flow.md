@@ -39,8 +39,9 @@ Example: "What validation rules exist for email field?" → `Task(subagent_type=
 7. Normalize and deduplicate (extract shared behaviors to standards)
 8. Consolidate patterns (merge redundant alternative path variations)
 9. Run pre-write validation (output checklist, fix violations, confirm all pass)
-10. Save flow and update indexes
-11. Run post-generation completeness loop (see Completeness Validation Loop)
+10. Evaluate UX checklist, extract improvements, show multi-select, capture selections (see UX Improvement Selection)
+11. Save flow and update indexes
+12. Run post-generation completeness loop (see Completeness Validation Loop)
 
 ## Modes
 
@@ -118,6 +119,38 @@ Before writing flow, scan Alternative Paths and Negative Scenarios:
 2. Consolidate into single alternative describing pattern ("Required fields not filled")
 3. Replace enumerated examples with pattern-based description
 4. Keep only domain-specific variations that differ meaningfully
+
+### UX Improvement Selection (Mandatory Before Writing)
+
+After completeness validation, evaluate UX criteria and capture user selection:
+
+1. Evaluate 5 UX criteria against gathered implementation details:
+   - Next action clear? (buttons visible, labels descriptive, CTAs obvious)
+   - System state visible? (loading spinners, success states, error messages)
+   - Safely cancellable? (close button, ESC key, unsaved changes warning)
+   - Result confirmed? (toast notification, list update, redirect, visible confirmation)
+   - No dead ends? (always next action available, no blocking states)
+
+2. Classify each criterion: Yes (fully met), Partial (works but incomplete), No (missing/broken)
+
+3. Extract improvements for Partial/No items:
+   - Loading state missing → "Add loading spinner/disabled button during form submission"
+   - Unsaved changes warning missing → "Add confirmation dialog when closing sidebar with unsaved data"
+   - Success feedback missing → "Add toast notification after successful create/update/delete"
+   - Error visibility missing → "Show inline error messages for validation failures"
+   - Cancellation unclear → "Add cancel button with ESC keyboard shortcut"
+   - Next action unclear → "Add visible CTA button or next step indicator"
+
+4. Use AskUserQuestion with multiSelect=true:
+   - Header: "UX Improvements"
+   - Question: "Which UX improvements should be included as requirements in this flow?"
+   - Options: List of improvements extracted in step 3
+   - Each option: label (brief improvement), description (what will be implemented)
+
+5. Capture selected improvements and integrate into flow generation:
+   - Happy Path: Weave selected improvements into normal sequence ("Submit → Loading spinner → Success toast → Redirect")
+   - Alternative Paths: Add paths for selected improvements ("A3. User closes with unsaved changes → Confirmation dialog → User confirms/cancels")
+   - UI State Behaviors: Document selected states (loading, disabled, etc.)
 
 ### Pre-Write Validation Checklist (Mandatory, Blocking)
 
@@ -234,14 +267,6 @@ N1. [Business rule violation] → [recovery]
 
 Infrastructure
 Applies: Standard NET-001 (scope: form submission)
-
-### UX Validation Checklist
-
-- [x] Next action clear? [Yes/Explanation]
-- [x] System state visible? [Yes/Explanation]
-- [x] Safely cancellable? [Yes/Explanation]
-- [x] Result confirmed? [Yes/Explanation]
-- [x] No dead ends? [Yes/Explanation]
 
 ### Component Mapping
 
@@ -412,9 +437,6 @@ Essential gaps resolved: X
 Non-essential items (not added to document):
 - [item 1]: [reason - implementation detail / edge case / <1% users]
 - [item 2]: [reason]
-
-TBD items requiring implementation:
-- [TBD 1]: [what needs to be decided/implemented]
 ```
 
 ## Final Steps
@@ -451,6 +473,7 @@ TBD items requiring implementation:
    - Path: `docs/userFlows/{flow-name}.md`
    - Goals documented: `[list]`
    - Field validations: `[list of fields added/updated in FIELD-VALIDATIONS.md]`
+   - UX improvements integrated: `[list of selected improvements woven into flow]`
    - Shared standards used: `[list of standard IDs referenced]`
    - Shared standards created: `[list of new standard IDs with names]`
    - Files staged: `[list of git-added files]`
@@ -480,6 +503,6 @@ TBD items requiring implementation:
 21. Negative Scenarios in flow: only domain/business errors (infrastructure → standards)
 22. Cross-Goal Notes: interactions between goals, shared state, dependencies
 23. Component Mapping: use generic UI element names (form, button, field), NOT implementation class names
-24. UX Validation Checklist: all 5 must pass before marking flow complete
+24. UX Validation: evaluate 5 criteria internally, extract improvements for Partial/No items, show multi-select to user, integrate selected improvements into flow description (Happy Path, Alternative Paths, UI State Behaviors) — checklist never appears in document
 25. Test each generated flow becomes actual Playwright test to verify happy path accuracy
 26. Single-form consolidation: Multiple goals sharing same page/form/button → merge into one Goal section combining all interactions

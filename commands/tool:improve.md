@@ -25,6 +25,7 @@ Improve tools (agents, commands, skills) by analyzing conversation for issues/co
 
 - Iterate all confirmation dialogs until user approves
 - Compress to minimal text Claude needs (not human-readable explanations)
+- Negative instructions only when overriding default behavior
 - Scan conversation + read tool + research before proposing fixes
 - Ask if unclear, never guess
 - Only modify selected tool

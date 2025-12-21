@@ -449,3 +449,4 @@ Applies to: [all flows | specific context]
 26. Single-form consolidation: Multiple goals sharing same page/form/button → merge into one Goal section combining all interactions
 27. Output document contains ONLY sections from Output Format template. No TBD Items, no custom sections.
 28. Unselected improvements/gaps = current implementation acceptable. Do not document as missing.
+29. No decorative markdown formatting (bold, italic, emoji) — output must match template format exactly

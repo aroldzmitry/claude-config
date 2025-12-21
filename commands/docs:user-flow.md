@@ -39,9 +39,9 @@ Example: "What validation rules exist for email field?" → `Task(subagent_type=
 7. Normalize and deduplicate (extract shared behaviors to standards)
 8. Consolidate patterns (merge redundant alternative path variations)
 9. Run pre-write validation (output checklist, fix violations, confirm all pass)
-10. Evaluate UX checklist, extract improvements, show multi-select, capture selections (see UX Improvement Selection)
-11. Save flow and update indexes
-12. Run post-generation completeness loop (see Completeness Validation Loop)
+10. Evaluate UX checklist, show multi-select for UX improvements (see UX Improvement Selection)
+11. Run completeness validation, show multi-select for implementation gaps (see Implementation Gaps Selection)
+12. Save flow and update indexes (ONLY template sections, no TBD Items)
 
 ## Modes
 
@@ -151,6 +151,33 @@ After completeness validation, evaluate UX criteria and capture user selection:
    - Happy Path: Weave selected improvements into normal sequence ("Submit → Loading spinner → Success toast → Redirect")
    - Alternative Paths: Add paths for selected improvements ("A3. User closes with unsaved changes → Confirmation dialog → User confirms/cancels")
    - UI State Behaviors: Document selected states (loading, disabled, etc.)
+
+6. Unselected items: Do NOT document. Current UX is acceptable.
+
+### Implementation Gaps Selection (Mandatory Before Writing)
+
+After UX improvements, run completeness check and capture user selection:
+
+1. Query codebase via proj:ask-about for 4 categories:
+   - Constraints: field limits, file size limits, list maximums
+   - UI States: button disabled conditions, loading states, validation timing
+   - Confirmations: unsaved changes warnings, destructive action dialogs
+   - Security: re-auth requirements, session handling
+
+2. Classify findings: implemented vs not-implemented
+
+3. For not-implemented items, use AskUserQuestion with multiSelect=true:
+   - Header: "Implementation Gaps"
+   - Question: "Which missing behaviors should be documented as requirements?"
+   - Options: List of not-implemented behaviors
+   - Each option: label (brief gap), description (what would be implemented)
+
+4. Integrate selected gaps into flow:
+   - Alternative Paths: Add paths for selected behaviors
+   - UI State Behaviors: Document selected states
+   - Negative Scenarios: Add domain-specific error handling
+
+5. Unselected items: Do NOT document. Current implementation is acceptable.
 
 ### Pre-Write Validation Checklist (Mandatory, Blocking)
 
@@ -353,98 +380,6 @@ Applies to: [all flows | specific context]
 - [Related standard ID]
 ```
 
-## Completeness Validation Loop
-
-After saving flow document, run automated completeness check. Iterate until all essential gaps resolved.
-
-### Validation Categories
-
-Check document against 4 categories. For each, identify gaps where user-facing behavior is unspecified.
-
-**1. Constraints** — limits, formats, sizes
-
-- File uploads: max size, allowed formats (JPEG, PNG, etc.), resolution limits
-- Text fields: max length, character restrictions
-- Numeric fields: min/max values, precision
-- Lists: max items, pagination thresholds
-
-**2. UI State Behaviors** — interactive element states
-
-- Buttons: disabled/enabled conditions, loading states, multi-click prevention
-- Forms: dirty state detection, validation timing (blur/submit/realtime)
-- Inputs: focus behavior, placeholder vs label, clear buttons
-
-**3. Confirmation Dialogs** — user decision points
-
-- Unsaved changes: navigate away warning, discard confirmation
-- Destructive actions: delete confirmation, irreversibility warnings
-- Critical changes: email/password change confirmations
-
-**4. Security Implications** — sensitive operations
-
-- Credential changes: re-authentication requirements, verification emails
-- Session handling: logout after sensitive changes, token refresh
-- Data exposure: masking rules, visibility toggles
-
-### Gap Classification
-
-Essential (must resolve) — user directly sees/interacts with this:
-
-- Error messages users will see
-- Buttons users will click
-- Constraints that block user actions
-- Confirmations users must acknowledge
-
-Non-essential (output at end) — implementation details or <1% edge cases:
-
-- Backend retry logic
-- Exact pixel dimensions
-- Rare race conditions
-- Browser-specific quirks
-
-### Iteration Process
-
-```
-LOOP (max 5 iterations):
-  1. Parse document, extract all UI elements, actions, fields
-  2. For each category, generate gap questions:
-     - Constraints: "What are the limits for [element]?"
-     - UI States: "What are the states for [element]?"
-     - Confirmations: "What confirmations exist for [action]?"
-     - Security: "What security measures apply to [operation]?"
-  3. Delegate questions to proj:ask-about subagent
-  4. Classify responses: essential vs non-essential
-  5. Update document with essential gaps resolved
-  6. IF no essential gaps remain → EXIT LOOP
-  7. ELSE → continue iteration
-```
-
-### Gap Resolution
-
-For each essential gap:
-
-1. Query codebase via proj:ask-about: "Find [constraint/state/confirmation] for [element] in [flow context]"
-2. If found in code → add to document with specifics
-3. If not implemented → add with placeholder: "TBD: [description]"
-4. If ambiguous → add Alternative Path describing both possibilities
-
-### Output
-
-After loop completes, output to console:
-
-```
-## Completeness Validation Complete
-
-Iterations: N
-Essential gaps resolved: X
-- [gap 1]: [resolution]
-- [gap 2]: [resolution]
-
-Non-essential items (not added to document):
-- [item 1]: [reason - implementation detail / edge case / <1% users]
-- [item 2]: [reason]
-```
-
 ## Final Steps
 
 1. **Update docs/userFlows/USER_FLOWS.md**
@@ -479,7 +414,7 @@ Non-essential items (not added to document):
    - Path: `docs/userFlows/{flow-name}.md`
    - Goals documented: `[list]`
    - Field validations: `[list of fields added/updated in FIELD-VALIDATIONS.md]`
-   - UX improvements integrated: `[list of selected improvements woven into flow]`
+   - UX improvements + implementation gaps integrated: `[list of selected items woven into flow]`
    - Shared standards used: `[list of standard IDs referenced]`
    - Shared standards created: `[list of new standard IDs with names]`
    - Files staged: `[list of git-added files]`
@@ -512,3 +447,5 @@ Non-essential items (not added to document):
 24. UX Validation: evaluate 5 criteria internally, extract improvements for Partial/No items, show multi-select to user, integrate selected improvements into flow description (Happy Path, Alternative Paths, UI State Behaviors)
 25. Test each generated flow becomes actual Playwright test to verify happy path accuracy
 26. Single-form consolidation: Multiple goals sharing same page/form/button → merge into one Goal section combining all interactions
+27. Output document contains ONLY sections from Output Format template. No TBD Items, no custom sections.
+28. Unselected improvements/gaps = current implementation acceptable. Do not document as missing.

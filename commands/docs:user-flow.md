@@ -274,6 +274,12 @@ Applies: Standard NET-001 (scope: form submission)
 | ---- | ------ | ----------------- | ------ | ---------------------- |
 | 1    | /login | Login form        | idle   | auth.login.form        |
 | 2    | /login | Email input field | input  | auth.login.email-input |
+
+### UI State Behaviors
+
+Element Name:
+- State: [condition when state applies]
+- Behavior: [what user observes]
 ```
 
 Field Validation Registry: `docs/standards/FIELD-VALIDATIONS.md`
@@ -503,6 +509,6 @@ Non-essential items (not added to document):
 21. Negative Scenarios in flow: only domain/business errors (infrastructure → standards)
 22. Cross-Goal Notes: interactions between goals, shared state, dependencies
 23. Component Mapping: use generic UI element names (form, button, field), NOT implementation class names
-24. UX Validation: evaluate 5 criteria internally, extract improvements for Partial/No items, show multi-select to user, integrate selected improvements into flow description (Happy Path, Alternative Paths, UI State Behaviors) — checklist never appears in document
+24. UX Validation: evaluate 5 criteria internally, extract improvements for Partial/No items, show multi-select to user, integrate selected improvements into flow description (Happy Path, Alternative Paths, UI State Behaviors)
 25. Test each generated flow becomes actual Playwright test to verify happy path accuracy
 26. Single-form consolidation: Multiple goals sharing same page/form/button → merge into one Goal section combining all interactions

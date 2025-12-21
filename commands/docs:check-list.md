@@ -12,11 +12,7 @@ Transform user flow into binary assertions (Pass/Fail) with requirements traceab
 
 `$ARGUMENTS` contains path to user flow file: `docs/userFlows/{flow-name}.md`. If empty → ask user.
 
-Flow MUST contain these sections:
-- System Context (Product, User Task, Boundaries, External Systems)
-- Goals (verb-based)
-- User Types
-- Goal sections with: Happy Path, Form Fields (for form flows), Exit Paths, Alternative Paths, Negative Scenarios, UX Validation Checklist, Component Mapping
+Flow MUST contain: System Context, Goals, User Types, Happy Path, Alternative Paths, Negative Scenarios, Component Mapping.
 
 ## Terminology
 
@@ -35,11 +31,28 @@ Flow MUST contain these sections:
 
 ## Process
 
+### 0. Pre-Validation (Blocking)
+
+Check flow file exists and readable. If not → output error "File not found: <path>" and exit.
+
+Read flow, verify:
+
+**Flow Structure Valid**
+
+- All required sections present (System Context, Goals, User Types, Happy Path, Alternative Paths, Negative Scenarios, Component Mapping)
+- Goals are verb-based
+- Happy Path contains ONLY observable statements (user actions, visible responses)
+
+If validation fails → output violations list → stop → ask user to fix flow.
+
+If all pass → derive AREA from flow file path (e.g., `docs/userFlows/auth/login.md` → `auth`) → proceed to Step 1.
+
 ### 1. Extract Boundaries
 
 Read flow's System Context, Goals, Preconditions sections.
 
 Identify:
+
 - Entry/exit points
 - External systems (inform scope, not items)
 - Explicit exclusions ("not included", "out of scope")
@@ -61,6 +74,7 @@ Do NOT ask: UX Metrics/timing, External Systems, Field validations, Error standa
 ### 3. Build Coverage Matrix
 
 Extract testable entities from flow sections:
+
 - Goals → expected outcomes
 - Preconditions → initial states
 - Happy Path → sequence results
@@ -74,21 +88,22 @@ Each entity becomes one or more checklist items.
 
 ### 4. Section Mapping Reference
 
-| User Flow Section | Checklist Section | Items Generated |
-|---|---|---|
-| Preconditions | Page Load & Entry | Entry state checks |
-| Happy Path | Form & Validation + Submit & State Transitions | User action + system response (3-part pattern) |
-| Form Fields | Form & Validation | Input validation + error display + FIELD-VALIDATIONS references |
-| Alternative Paths | Alternative Conditions | If-then assertions |
-| Negative Scenarios (domain) | Errors & Recovery | Error-specific checks |
-| Negative Scenarios (infra refs) | Errors & Recovery | Standard references (e.g., "follows Standard NET-001") |
-| Component Mapping | Submit & Success + states | UI state transitions (idle/loading/success/error) |
-| UX Validation Checklist (if present) | Accessibility | Accessibility checks from flow ONLY |
-| Component Mapping (analytics) | Analytics Events | Analytics tracking (if explicitly in flow) |
+| User Flow Section                    | Checklist Section                              | Items Generated                                                 |
+| ------------------------------------ | ---------------------------------------------- | --------------------------------------------------------------- |
+| Preconditions                        | Page Load & Entry                              | Entry state checks                                              |
+| Happy Path                           | Form & Validation + Submit & State Transitions | User action + system response (3-part pattern)                  |
+| Form Fields                          | Form & Validation                              | Input validation + error display + FIELD-VALIDATIONS references |
+| Alternative Paths                    | Alternative Conditions                         | If-then assertions                                              |
+| Negative Scenarios (domain)          | Errors & Recovery                              | Error-specific checks                                           |
+| Negative Scenarios (infra refs)      | Errors & Recovery                              | Standard references (e.g., "follows Standard NET-001")          |
+| Component Mapping                    | Submit & Success + states                      | UI state transitions (idle/loading/success/error)               |
+| UX Validation Checklist (if present) | Accessibility                                  | Accessibility checks from flow ONLY                             |
+| Component Mapping (analytics)        | Analytics Events                               | Analytics tracking (if explicitly in flow)                      |
 
 ### 5. Group by Theme
 
 Organize items into sections:
+
 - **Page Load & Entry** — initial state, preconditions met
 - **Form & Validation** — input checks, inline errors, disabled states
 - **Submit & State Transitions** — loading, success, error states
@@ -103,6 +118,7 @@ Organize items into sections:
 Convert Happy Path steps to user-visible outcomes only.
 
 **Forbidden:**
+
 - Backend ops ("validates", "checks database", "API returns 200")
 - Implementation details (file paths, class names, hook names)
 - Intermediate states ("focused", "validating") unless critical
@@ -122,6 +138,7 @@ Example:
 Happy Path: "User enters email → System validates → Error displays if invalid"
 
 Checklist items:
+
 - CL-001: Email input field accepts user input
 - CL-002: Validation error displays below field on invalid email
 - CL-003: Error message text matches [FIELD-VALIDATIONS#email](../standards/FIELD-VALIDATIONS.md#email)
@@ -129,6 +146,7 @@ Checklist items:
 ### 7. Extract Form Field Validations
 
 For flows with Form Fields section:
+
 1. For each field: extract required/optional status
 2. Link to `docs/standards/FIELD-VALIDATIONS.md` anchor
 3. Create CL items for: required validation, format validation, error message display
@@ -137,12 +155,14 @@ Example:
 Flow specifies: "Name field: required, validation: [FIELD-VALIDATIONS#name](../standards/FIELD-VALIDATIONS.md#name)"
 
 Creates:
+
 - CL-008: Name field is required (error on submit if empty)
 - CL-009: Error message matches FIELD-VALIDATIONS#name contract
 
 ### 8. Add Conditional Checks
 
 From Alternative Paths, create `if-then` items:
+
 - `A1: Email exists → err_409 displayed + link to login visible`
 - `A2: Cancel clicked → form data cleared + returns to previous page`
 
@@ -160,6 +180,7 @@ Checklist item: "CL-xxx: Error handling follows Standard {ID} contract"
 ### 10. Map to Component States (Critical Only)
 
 From Component Mapping section, create checks for:
+
 - Initial/idle state (page load)
 - Loading state (during async operations)
 - Success state (completion confirmation)
@@ -197,20 +218,20 @@ File: `docs/checklists/<area>/[flow-name].md`
 ## Coverage Summary
 
 | Flow Section | Items |
-|--------------|-------|
-| Goals | X |
-| **Total** | **X** |
+| ------------ | ----- |
+| Goals        | X     |
+| **Total**    | **X** |
 
 ## Page Load & Entry
 
-| ID | Severity | Check | Expected Result | Source |
-|----|----------|-------|-----------------|--------|
+| ID     | Severity   | Check                     | Expected Result                    | Source        |
+| ------ | ---------- | ------------------------- | ---------------------------------- | ------------- |
 | CL-001 | [CRITICAL] | Page loads without errors | No console errors; all assets load | Preconditions |
 
 ## Form & Validation
 
-| ID | Severity | Check | Expected Result | Source |
-|----|----------|-------|-----------------|--------|
+| ID     | Severity   | Check                    | Expected Result                                     | Source            |
+| ------ | ---------- | ------------------------ | --------------------------------------------------- | ----------------- |
 | CL-003 | [CRITICAL] | Email validation on blur | Invalid email → inline error "Invalid email format" | Happy Path Step 2 |
 
 ## Submit & Success, Alternative Conditions, Error Handling
@@ -241,6 +262,7 @@ Format with Prettier, then stage: `npx prettier --write docs/checklists/<area>/[
 ### 14. Report
 
 Output:
+
 ```
 Checklist: docs/checklists/<area>/[flow-name].md
 Items: X (Y critical, Z important, W optional)

@@ -130,12 +130,10 @@ If violations → fix → re-run all 6 → confirm pass → proceed.
 Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
 
 **Format rules (minimalist for Claude):**
-- No bold, italics, or decorative formatting
 - Plain text, bullet lists only where needed
-- Metadata: Flow name, source file, date (plain text)
-- Test Data section (table or list, no formatting)
-- Test Cases section (grouped by priority, plain structure)
-- No "Out of Scope" or "Coverage Summary" sections in file
+- Metadata: Flow name, source file, date
+- Test Data section
+- Test Cases section (grouped by priority)
 
 ### Step 7: Format and Stage for Git
 

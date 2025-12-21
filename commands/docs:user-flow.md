@@ -32,7 +32,7 @@ Example: "What validation rules exist for email field?" → `Task(subagent_type=
 
 1. Analyze project context (`.claude/CLAUDE.md`, existing flows/standards via Read, project structure via proj:ask-about)
 2. Determine mode: simple descriptions → auto mode, complex → controlled mode
-3. Gather system boundaries (4 questions: product, user tasks, boundaries, external systems)
+3. Gather system boundaries (check docs first, ask only if unclear)
 4. Controlled mode only: ask user to select goals + user types
 5. Auto-generate content using evidence-first approach (delegate codebase questions to proj:ask-about)
 6. Extract field validation rules (delegate to proj:ask-about for validation code analysis, update `docs/standards/FIELD-VALIDATIONS.md`)
@@ -54,11 +54,14 @@ Controlled Mode (complex flows): Agent asks user to select:
 
 ## Generation Rules
 
-### System Boundaries (Always Interactive)
+### System Boundaries
 
-Confirm with user:
+Check project documentation (README.md, CLAUDE.md) first. Only ask questions when information is unclear.
 
+Product Context (ask only if unclear from docs):
 1. Product and target users
+
+Flow-Specific (always confirm):
 2. User tasks to solve (not pages)
 3. System responsibility boundaries
 4. External systems involved (third-party integrations only: OAuth providers, SMTP, payment gateways, Plaid, etc. — NOT internal backend API, database, or infrastructure)
@@ -454,7 +457,7 @@ TBD items requiring implementation:
 
 ## Rules (Priority Order)
 
-1. Never guess system boundaries → confirm with user
+1. Check docs for product context first, ask only if unclear; always confirm flow-specific boundaries (tasks, boundaries, external systems)
 2. Recommend mode based on complexity: simple → auto, complex → controlled
 3. Each goal must be verb-based (register, login, find, compare, etc.)
 4. Every scenario must return user to goal or safe state
@@ -471,7 +474,7 @@ TBD items requiring implementation:
 15. NO technical implementation details anywhere in document
 16. Infrastructure standard references must include scope: "Applies: Standard NET-001 (scope: form submission)"
 17. Minimize verbosity: no parenthetical explanations, no technical details in sequences
-18. System Boundaries questions are mandatory, non-negotiable
+18. Flow-specific system boundaries (tasks, boundaries, external systems) are mandatory; product context only asked if docs unclear
 19. User Types section: only list types who can START this flow (not all users in system)
 20. Alternative Paths: domain-specific edge cases, cancellations, user recoveries
 21. Negative Scenarios in flow: only domain/business errors (infrastructure → standards)

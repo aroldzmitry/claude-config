@@ -1,5 +1,5 @@
 ---
-description: Generate test cases from user flow document. Outputs markdown file with TC-IDs, steps, test data, and coverage report.
+description: Generate test cases from user flow document. Outputs markdown file with TC-IDs, steps, and test data.
 allowed-tools: Read, Write, Bash
 argument-hint: <flow-file> [test-data-catalog] [env-profile]
 model: sonnet
@@ -128,7 +128,6 @@ Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
 - Metadata block (Flow name, source flow file, generated date)
 - Test Data section
 - Test Cases section (grouped by priority or type)
-- Coverage Report section (flow section coverage, gaps, backend items)
 - Out of scope reminders
 
 ### Step 7: Format and Stage for Git

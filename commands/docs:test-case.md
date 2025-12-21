@@ -95,13 +95,16 @@ Each test case format:
 - **Integration**: API-level tests, no UI steps
 - **Contract**: API request/response validation
 
-Example:
+Example (plain format for file):
 ```
 TC-REG-001: Register happy path
-Priority: P0 | Type: E2E | Covers: Happy Path Steps 1-4
+Priority: P0
+Type: E2E
+Covers: Happy Path Steps 1-4
 Preconditions: User not authenticated
 Test Data: Name=TD-NAME-VALID, Email=TD-EMAIL-VALID-UNIQUE
 
+Steps:
 1. Navigate /registration → Form displays | Flow:29
 2. Enter name, email → Submit enabled | Flow:30-31
 3. Click Register → Loading state, success message, redirect /login | Flow:32, Success:35-37
@@ -125,25 +128,29 @@ If violations → fix → re-run all 6 → confirm pass → proceed.
 ### Step 6: Output Test Cases File
 
 Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
-- Metadata block (Flow name, source flow file, generated date)
-- Test Data section
-- Test Cases section (grouped by priority or type)
-- Out of scope reminders
+
+**Format rules (minimalist for Claude):**
+- No bold, italics, or decorative formatting
+- Plain text, bullet lists only where needed
+- Metadata: Flow name, source file, date (plain text)
+- Test Data section (table or list, no formatting)
+- Test Cases section (grouped by priority, plain structure)
+- No "Out of Scope" or "Coverage Summary" sections in file
 
 ### Step 7: Format and Stage for Git
 
 Format with Prettier, then stage: `npx prettier --write docs/testCases/<area>/[user-flow-file-name].md && git add docs/testCases/<area>/[user-flow-file-name].md`
 
-### Step 8: Report
+### Step 8: Console Report
 
-Output:
+Output to console (not in file):
 ```
-Test Cases: docs/testCases/<area>/[flow-name].md
-Generated: X test cases (Y P0, Z P1, W P2)
-Coverage: X flow sections tested
-Validation: All 6 checks passed
-Gaps: [list if any]
-Standards read: [list standard files consulted]
+File: docs/testCases/<area>/[flow-name].md
+Test cases: X (Y P0, Z P1, W P2)
+Coverage: X/Y flow sections
+Validation: passed
+Gaps: [list or "none"]
+Standards: [list files or "none"]
 ```
 
 ## Dialogs (Compact Format with Defaults)

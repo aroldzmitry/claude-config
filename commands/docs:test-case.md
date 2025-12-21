@@ -130,6 +130,7 @@ If violations → fix → re-run all 6 → confirm pass → proceed.
 Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
 
 **Format rules (minimalist for Claude):**
+- No bold, italics, or decorative formatting
 - Plain text, bullet lists only where needed
 - Metadata: Flow name, source file, date
 - Test Data section

@@ -1,7 +1,7 @@
 ---
 description: Validate user flow documentation against related artifacts for consistency and completeness
 argument-hint: <user-flow-file-path>
-allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion
+allowed-tools: Read, Glob, Grep, AskUserQuestion, SlashCommand
 model: sonnet
 ---
 
@@ -175,22 +175,24 @@ If issues found (missing files, gaps, traceability issues, consistency issues):
 2. Use AskUserQuestion with multiSelect=true to let user select which issues to fix
 
 3. For each selected issue, in sequence:
-   - Determine standard fix approach:
-     - Missing file → create using appropriate template (checklist/test case/work plan)
-     - Coverage gap → add test case or checklist item referencing flow section
-     - Consistency issue → update test case/checklist to match flow
-     - Traceability issue → add missing cross-reference
-   - Show standard approach to user
-   - Ask via AskUserQuestion if user wants to customize approach (yes/no)
+   - Determine fix delegation strategy and standard approach:
+     - Missing test cases file → delegate to `/docs:test-case {flow-file-path}`
+     - Missing checklist file → delegate to `/docs:check-list {flow-file-path}`
+     - Missing work plan → no delegation (work plans created manually)
+     - Coverage gap (test case) → delegate to `/docs:test-case` with instructions "Add test case for {flow-section-reference}"
+     - Coverage gap (checklist) → delegate to `/docs:check-list` with instructions "Add checklist item for {flow-section-reference}"
+     - Consistency issue → delegate to appropriate command based on file type (test-case or check-list) with instructions "Update to match flow: {specific-contradiction}"
+     - Traceability issue → delegate to appropriate command with instructions "Add cross-reference to {target-id}"
+   - Show standard approach to user (which command will be called and what it will do)
+   - Ask via AskUserQuestion if user wants to customize instructions (yes/no)
    - If yes → ask for custom instructions via text input
-   - Apply fix using Edit/Write tools with standard or custom approach
+   - Execute fix by calling appropriate SlashCommand with standard or custom instructions appended to args
 
-4. After all fixes applied, output summary:
+4. After all fixes delegated, output summary:
    ```
-   Fixed {count} issues:
-   - [Created] {file-path}
-   - [Updated] {file-path} (+N lines)
-   - [Added] Test case TC-XXX-YYY covering {flow-section}
+   Delegated {count} fixes:
+   - /docs:test-case {flow-file} [custom instructions]
+   - /docs:check-list {flow-file} [custom instructions]
    ```
 
 ## Rules
@@ -200,7 +202,6 @@ If issues found (missing files, gaps, traceability issues, consistency issues):
 - Use exact string matching for consistency checks (no semantic inference)
 - ID patterns: CL-### for checklist, TC-XXX-### for test cases, REQ-### for work plan
 - Skip sections explicitly marked as out-of-scope
-- When creating missing files, follow existing templates and conventions from sibling documents
-- When adding test cases, use next available TC-{AREA}-{NNN} ID
-- When adding checklist items, use next available CL-{NNN} ID
-- Maintain consistent formatting with existing documents
+- Never directly modify test cases, checklists, or work plans — always delegate to specialized commands
+- Pass custom user instructions as additional args to delegated commands
+- Let specialized commands handle ID assignment, formatting, and template consistency

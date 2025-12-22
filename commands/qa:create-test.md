@@ -52,29 +52,33 @@ Before generating tests, discover real API endpoints:
 **STOP. For each TC, ask these questions IN ORDER:**
 
 1. **Unit?** → Pure function/utility, no UI, no API → `tests/unit/`
-2. **Storybook?** → Single component, client-side validation, default states, NO real API needed → `tests/storybook/`
-3. **Integration?** → Needs mocked API (error scenarios, 409, 500, network) → `tests/integration/`
-4. **E2E?** → Requires REAL API response, multi-page flow, creates/modifies data → `tests/e2e/`
+2. **Storybook?** → Visual state or component interaction, NO API at all → `tests/storybook/`
+3. **E2E?** → Critical happy path (1-2 per feature max), real API → `tests/e2e/`
+4. **Integration?** → Everything else with API (mocked) → `tests/integration/`
 
 | Type | Location | Criteria | Extension |
 |------|----------|----------|-----------|
 | Unit | `tests/unit/<mirror-src>/` | Pure functions/utilities, no UI/API | `.test.ts` |
-| Storybook | `tests/storybook/<mirror-src>/` | Single component isolation, field validation without API, visual states, interactions within component, accessibility (ARIA, keyboard) | `.stories.tsx` |
-| Integration | `tests/integration/<mirror-src>/` | Form submission with mocked API, multi-step scenarios, error handling with mocks (409, 500, timeout) | `.spec.ts` |
-| E2E | `tests/e2e/<area>/` | Real API calls, multi-page flow, navigation/redirects | `.spec.ts` |
+| Storybook | `tests/storybook/<mirror-src>/` | Visual states catalog (error, loading, disabled, empty). Component interactions (blur→error). NO API. Answer: "How does it look?" | `.stories.tsx` |
+| Integration | `tests/integration/<mirror-src>/` | Playwright + mocked API. Validation flows, form submission logic, API error handling (409, 500, timeout), non-critical paths. Answer: "Does it work correctly?" | `.spec.ts` |
+| E2E | `tests/e2e/<area>/` | Playwright + real API. ONLY critical happy path (1-2 per feature). Answer: "Critical business flow?" | `.spec.ts` |
 
-**Detection order:** Unit → Storybook → Integration → E2E (specific → general, first match wins).
+**Detection order:** Unit → Storybook → E2E → Integration (Integration is default for API-related tests).
 
-**Key question:** Does this TC REQUIRE a real API call to verify the expected result?
-- NO (validation error, default state, UI interaction only) → Storybook
-- NO but needs mock response → Integration
-- YES (creates data, gets real response, redirects) → E2E
+**Key questions:**
+- "How does this STATE look?" → Storybook (visual catalog)
+- "Does this WORK correctly?" → Integration (mocked API)
+- "Is this the CRITICAL business path?" → E2E (real API, max 1-2 per feature)
 
-**Detection keywords in TC steps:**
-- Unit: no UI interactions, pure function/utility
-- Storybook: "validation error", "field error", "default", "pre-selected", "blur", "focus", NO API call needed
-- Integration: "mock API", "network error", "server error", "409", "500", "timeout"
-- E2E: "created", "appears in list", "redirect", "toHaveURL", requires real data
+**Classification rules:**
+- Validation tests → Integration (functional verification), Storybook (visual state only)
+- API error handling (409, 500, timeout) → Integration (mocked)
+- Form submission logic → Integration (mocked)
+- Success notification appearance → Storybook
+- Success flow creates real data → E2E (if critical path)
+- Loading states, disabled states, error appearances → Storybook
+
+**Most tests should be Integration.** E2E is expensive — reserve for critical paths only.
 
 **Path mirroring:** Extract component path from data-testid (e.g., `auth.form` → Grep for component), then mirror: `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{ext}`
 

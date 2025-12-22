@@ -28,33 +28,58 @@ Before generating tests, discover real API endpoints:
 4. Build action→endpoint mapping (e.g., "login" → `/api/user/login`)
 5. **Never guess endpoints** — if not found, report as BLOCKER in gaps
 
-## Test Type Classification
+## Test Type Classification (CRITICAL — Read Carefully)
+
+**STOP. For each TC, ask these questions IN ORDER:**
+
+1. **Unit?** → Pure function/utility, no UI, no API → `tests/unit/`
+2. **Storybook?** → Single component, client-side validation, default states, NO real API needed → `tests/storybook/`
+3. **Integration?** → Needs mocked API (error scenarios, 409, 500, network) → `tests/integration/`
+4. **E2E?** → Requires REAL API response, multi-page flow, creates/modifies data → `tests/e2e/`
 
 | Type | Location | Criteria | Extension |
 |------|----------|----------|-----------|
-| E2E | `tests/e2e/<area>/` | Real API calls, multi-page flow, navigation/redirects | `.spec.ts` |
+| Unit | `tests/unit/<mirror-src>/` | Pure functions/utilities, no UI/API | `.test.ts` |
 | Storybook | `tests/storybook/<mirror-src>/` | Single component isolation, field validation without API, visual states, interactions within component, accessibility (ARIA, keyboard) | `.stories.tsx` |
 | Integration | `tests/integration/<mirror-src>/` | Form submission with mocked API, multi-step scenarios, error handling with mocks (409, 500, timeout) | `.spec.ts` |
-| Unit | `tests/unit/<mirror-src>/` | Pure functions/utilities, no UI/API | `.test.ts` |
+| E2E | `tests/e2e/<area>/` | Real API calls, multi-page flow, navigation/redirects | `.spec.ts` |
 
-**Detection order:** E2E → Storybook → Integration → Unit (first match wins).
+**Detection order:** Unit → Storybook → Integration → E2E (specific → general, first match wins).
+
+**Key question:** Does this TC REQUIRE a real API call to verify the expected result?
+- NO (validation error, default state, UI interaction only) → Storybook
+- NO but needs mock response → Integration
+- YES (creates data, gets real response, redirects) → E2E
 
 **Detection keywords in TC steps:**
-- E2E: "redirect", "navigate to", "toHaveURL", multi-page journey
-- Storybook: NO "page.goto", single component, "blur", "focus", "type"
-- Integration: "page.route", "mock API", "network error", "server error", "409", "500"
 - Unit: no UI interactions, pure function/utility
+- Storybook: "validation error", "field error", "default", "pre-selected", "blur", "focus", NO API call needed
+- Integration: "mock API", "network error", "server error", "409", "500", "timeout"
+- E2E: "created", "appears in list", "redirect", "toHaveURL", requires real data
 
 **Path mirroring:** Extract component path from data-testid (e.g., `auth.form` → Grep for component), then mirror: `src/components/auth/Form.tsx` → `tests/{type}/components/auth/Form.{ext}`
 
-## Pre-Implementation Planning
+## Pre-Implementation Planning (MANDATORY — DO NOT SKIP)
 
-Before writing tests, launch `Plan` agent (Task tool with subagent_type="Plan") to design implementation:
-1. Analyze input documents (checklist + test cases)
-2. Classify each TC by test type
-3. Identify components needing data-testid additions
-4. Map TC steps to Playwright/Storybook actions
-5. Present plan to user, proceed after confirmation
+**STOP. Do NOT write any test code until this section is complete.**
+
+Before writing tests:
+
+1. Read ALL test cases completely
+2. For EACH TC, apply classification checklist (Unit → Storybook → Integration → E2E)
+3. Create classification table and show to user:
+
+```
+| TC-ID | Type | Reason (1 sentence) |
+|-------|------|---------------------|
+| TC-001 | E2E | Creates category via real API |
+| TC-002 | Storybook | Client-side validation, no API |
+```
+
+4. **ASK USER:** "Classification complete. Proceed with generation?"
+5. Only after user confirms → start writing tests
+
+**If unsure about any TC classification → ask user before proceeding.**
 
 ## Test Generation Rules
 

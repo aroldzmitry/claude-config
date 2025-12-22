@@ -1,6 +1,7 @@
 ---
 description: Generate work plan (what to do) from user flow by analyzing codebase status
 argument-hint: [user-flow-file-path]
+model: sonnet
 ---
 
 # Work Plan Generator

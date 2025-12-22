@@ -2,6 +2,7 @@
 description: Convert checklist and test cases into typed tests (e2e/integration/storybook/unit) with full traceability
 argument-hint: "<task-folder-or-file>"
 allowed-tools: Write, Edit, Read, Glob, Grep, Bash(yarn:*)
+model: opus
 ---
 
 # qa:create-test — Generate Typed Tests from Test Cases

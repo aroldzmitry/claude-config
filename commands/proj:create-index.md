@@ -1,6 +1,6 @@
 ---
 description: "Generate/update project index optimized for Claude"
-model: haiku
+model: sonnet
 allowed-tools: "Read, Write, Edit, Glob, Grep, Bash"
 ---
 

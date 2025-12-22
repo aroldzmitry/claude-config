@@ -1,7 +1,7 @@
 ---
 description: Validate user flow documentation against related artifacts for consistency and completeness
 argument-hint: <user-flow-file-path>
-allowed-tools: Read, Glob, Grep, AskUserQuestion
+allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion
 model: sonnet
 ---
 
@@ -164,11 +164,43 @@ Status rules:
 - WARN (score 5-7): Minor issues, orphaned IDs, optional sections missing
 - FAIL (score <5): Missing files, coverage gaps, or contradictions
 
+### Step 11: Interactive Fix Selection
+
+If issues found (missing files, gaps, traceability issues, consistency issues):
+
+1. Build fix options list from all issues:
+   - Format: "{issue-type}: {description}" (e.g., "Missing file: docs/testCases/auth/login.md", "Coverage gap: Happy Path step 3 has no test case")
+   - Each issue = one selectable option
+
+2. Use AskUserQuestion with multiSelect=true to let user select which issues to fix
+
+3. For each selected issue, in sequence:
+   - Determine standard fix approach:
+     - Missing file → create using appropriate template (checklist/test case/work plan)
+     - Coverage gap → add test case or checklist item referencing flow section
+     - Consistency issue → update test case/checklist to match flow
+     - Traceability issue → add missing cross-reference
+   - Show standard approach to user
+   - Ask via AskUserQuestion if user wants to customize approach (yes/no)
+   - If yes → ask for custom instructions via text input
+   - Apply fix using Edit/Write tools with standard or custom approach
+
+4. After all fixes applied, output summary:
+   ```
+   Fixed {count} issues:
+   - [Created] {file-path}
+   - [Updated] {file-path} (+N lines)
+   - [Added] Test case TC-XXX-YYY covering {flow-section}
+   ```
+
 ## Rules
 
-- Read-only: never modify files
 - Continue validation even if some files missing or malformed
 - Report all issues found, not just first
 - Use exact string matching for consistency checks (no semantic inference)
 - ID patterns: CL-### for checklist, TC-XXX-### for test cases, REQ-### for work plan
 - Skip sections explicitly marked as out-of-scope
+- When creating missing files, follow existing templates and conventions from sibling documents
+- When adding test cases, use next available TC-{AREA}-{NNN} ID
+- When adding checklist items, use next available CL-{NNN} ID
+- Maintain consistent formatting with existing documents

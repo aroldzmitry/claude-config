@@ -15,6 +15,8 @@ Validate user flow file against related artifacts: test cases, checklists, work 
 
 ## Process
 
+Initialize iteration counter: `iteration = 1, max_iterations = 3, target_score = 9`
+
 ### Step 1: Validate Flow File
 
 Read user flow file. If file not found or unreadable, report error and exit.
@@ -195,6 +197,24 @@ If issues found (missing files, gaps, traceability issues, consistency issues):
    - /docs:check-list {flow-file} [custom instructions]
    ```
 
+### Step 12: Re-validation Loop
+
+After Step 11 completes:
+
+1. Wait for all delegated commands to finish
+2. Increment iteration counter: `iteration++`
+3. Re-run Steps 1-10 (validation and scoring)
+4. If `score >= target_score` → exit with success message
+5. If `iteration >= max_iterations` → exit with message "Max iterations reached. Final score: {score}/10"
+6. If `score < target_score` and `iteration < max_iterations` → return to Step 11 with remaining issues
+
+Output iteration status:
+```
+Iteration {iteration}/{max_iterations} complete
+Current score: {score}/10
+{CONTINUE | SUCCESS | MAX_ITERATIONS_REACHED}
+```
+
 ## Rules
 
 - Continue validation even if some files missing or malformed
@@ -205,3 +225,5 @@ If issues found (missing files, gaps, traceability issues, consistency issues):
 - Never directly modify test cases, checklists, or work plans — always delegate to specialized commands
 - Pass custom user instructions as additional args to delegated commands
 - Let specialized commands handle ID assignment, formatting, and template consistency
+- Max 3 validation-fix iterations, stop if score ≥9 or iterations exhausted
+- Each iteration runs full validation (Steps 1-10) before checking continuation criteria

@@ -10,6 +10,10 @@ Orchestrate parallel sub-agent reviews for uncommitted changes. Aggregate result
 
 ## Workflow
 
+### Step 0: Start Timer
+
+Record current timestamp before starting. You will calculate elapsed time at the end.
+
 ### Step 1: Gather Changed Files
 
 ```bash
@@ -71,7 +75,13 @@ If category skipped: redistribute its weight proportionally to remaining categor
 
 Formula: `overall = sum(score_i * weight_i) / sum(weight_i for successful categories)`
 
-### Step 6: Output Report
+### Step 6: Collect Stats
+
+After all agents complete:
+- Calculate elapsed time: `end_time - start_time`
+- Sum token usage from all agent results (input + output tokens)
+
+### Step 7: Output Report
 
 Plain text format:
 
@@ -92,9 +102,12 @@ Summary:
   Performance: {X.X}
 
 {warnings if any agents failed}
+
+---
+Stats: {elapsed_time}s | ~{total_tokens} tokens
 ```
 
-If no issues: "No issues found. Score: 10.0/10.0"
+If no issues: "No issues found. Score: 10.0/10.0" (still include stats line)
 
 ## Rules
 

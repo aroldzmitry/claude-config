@@ -1,117 +1,86 @@
 ---
 description: "Deep code review of uncommitted changes with quality scoring"
 model: opus
-allowed-tools: Read, Glob, Grep, Bash(git diff:*), Bash(git status:*)
+allowed-tools: Read, Glob, Grep, Bash(git diff:*), Bash(git status:*), Task
 ---
 
-# Code Review
+# Code Review Orchestrator
 
-Analyze uncommitted changes for quality issues. Output console report with 0.0-10.0 score.
+Orchestrate parallel sub-agent reviews for uncommitted changes. Aggregate results into unified report.
 
 ## Workflow
 
-1. Run `git diff --name-only HEAD` to get changed files
-2. If no files: output "No uncommitted changes found." and stop
-3. Filter to code/style files: ts, tsx, js, jsx, css, scss, html, json
-4. Read `.claude/proj_index/00-INDEX.md`, then PATTERNS.md and ARCHITECTURE.md
-5. If proj_index missing: output "Project index not found at .claude/proj_index/" and stop
-6. Read each changed file fully
-7. For EACH file, go through checks 1-14 in order. Record issues found.
-8. After all files: run cross-file checks 15-16
-9. Aggregate issues, calculate scores, output report
+### Step 1: Gather Changed Files
 
-## Categories (Priority Order)
+```bash
+git diff --name-only HEAD
+```
 
-Analyze each category separately with targeted focus:
+If no output: respond "No uncommitted changes found." and STOP.
 
-| Priority | Category | Weight | Focus |
-|----------|----------|--------|-------|
-| 1 | Readability | 18% | naming clarity, structure, organization, self-documenting code |
-| 2 | Patterns | 18% | compliance with proj_index patterns, architecture rules |
-| 3 | Modularity | 18% | single abstraction level, extract hooks/helpers, single responsibility |
-| 4 | Complexity | 13% | nesting depth (max 3), function length, cyclomatic complexity |
-| 5 | Security | 13% | injections, XSS, data leaks, unsanitized input |
-| 6 | DRY | 10% | code duplication across files, similar blocks (>80% match) |
-| 7 | Performance | 10% | hook deps, memoization, re-renders, expensive operations |
+Filter to code files only: `ts, tsx, js, jsx, css, scss, html, json`
+Skip: node_modules, dist, build, .min.js, .generated.
 
-### Modularity Rules
+### Step 2: Check proj_index
 
-- Component >80 lines before return → extract logic to hooks
-- Mixed abstraction levels (low-level DOM + high-level business logic) → extract to separate functions
-- Hook/helper with multiple responsibilities → split into focused units
-- Inline complex logic in useEffect/useCallback → extract to named functions
+Read `.claude/proj_index/00-INDEX.md`
 
-## Checklist (MANDATORY)
+If missing: respond "Project index not found at .claude/proj_index/" and STOP.
 
-For EACH changed file, verify ALL items below. Record issues found.
+### Step 3: Launch Review Agents
 
-### Per-File Checks
+Launch ALL 7 agents IN PARALLEL using Task tool in a SINGLE message:
 
-| # | Category | Check | What to verify |
-|---|----------|-------|----------------|
-| 1 | Readability | Naming | Variables, functions, types are clear and descriptive |
-| 2 | Readability | Structure | Logical organization, related code grouped |
-| 3 | Patterns | Conventions | Follows proj_index naming and file patterns |
-| 4 | Patterns | Reuse | Uses existing utilities, not reinventing |
-| 5 | Modularity | SRP | Single responsibility, one reason to change |
-| 6 | Modularity | Abstraction | Consistent abstraction level, no mixing |
-| 7 | Complexity | Nesting | Max depth ≤3, early returns used |
-| 8 | Complexity | Length | Functions <50 lines, components <80 before return |
-| 9 | Security | Injection | No SQL/XSS/command injection risks |
-| 10 | Security | Validation | Input validated at system boundaries |
-| 11 | Performance | Hook Deps | useEffect/useCallback/useMemo have correct dependencies |
-| 12 | Performance | Memoization | Expensive calculations wrapped in useMemo, callbacks in useCallback |
-| 13 | Performance | Re-renders | No inline objects/functions in JSX causing unnecessary re-renders |
-| 14 | Performance | Operations | No expensive operations in render path (filters, sorts, maps without memo) |
+```
+Task(subagent_type="review:readability", prompt="Review these files for readability: {file_list}. Working directory: {cwd}")
+Task(subagent_type="review:patterns", prompt="Review these files for patterns compliance: {file_list}. Working directory: {cwd}")
+Task(subagent_type="review:modularity", prompt="Review these files for modularity: {file_list}. Working directory: {cwd}")
+Task(subagent_type="review:complexity", prompt="Review these files for complexity: {file_list}. Working directory: {cwd}")
+Task(subagent_type="review:security", prompt="Review these files for security: {file_list}. Working directory: {cwd}")
+Task(subagent_type="review:dry", prompt="Review these files for DRY violations: {file_list}. Working directory: {cwd}")
+Task(subagent_type="review:performance", prompt="Review these files for performance: {file_list}. Working directory: {cwd}")
+```
 
-### Cross-File Checks (after all files)
+Replace `{file_list}` with actual file paths, one per line.
+Replace `{cwd}` with current working directory.
 
-| # | Category | Check | What to verify |
-|---|----------|-------|----------------|
-| 15 | DRY | Duplication | No >80% similar blocks across files |
-| 16 | DRY | Patterns | Similar logic extracted to shared utils |
+### Step 4: Parse Results
 
-## Severity Classification (Impact × Likelihood)
+For each agent result, extract:
+- Score (regex: `Score: (\d+\.\d+)/10.0`)
+- Issues (all lines starting with `[Critical]` or `[Major]`)
 
-Determine severity using this matrix:
+If agent failed or score not found:
+- Log: `[WARN] {agent_name} failed, skipping category`
+- Exclude from weighted calculation
 
-|                    | Low Likelihood | High Likelihood |
-|--------------------|----------------|-----------------|
-| **High Impact**    | Major (-1.0)   | Critical (-2.0) |
-| **Low Impact**     | Minor (-0.5)   | Major (-1.0)    |
+### Step 5: Calculate Overall Score
 
-### Impact Assessment
+Weights:
+| Category | Weight |
+|----------|--------|
+| Readability | 18% |
+| Patterns | 18% |
+| Modularity | 18% |
+| Complexity | 13% |
+| Security | 13% |
+| DRY | 10% |
+| Performance | 10% |
 
-| Category | High Impact | Low Impact |
-|----------|-------------|------------|
-| Security | Data leak, injection, auth bypass | Info disclosure of non-sensitive data |
-| Bugs | Crash, data corruption, wrong behavior | Edge case, rare condition |
-| Performance | Noticeable UX degradation, memory leak | Micro-optimization |
-| Patterns | Breaks architecture, causes maintenance hell | Slight deviation, still works |
-| Readability | Name causes misunderstanding → bug likely | Suboptimal but clear enough |
-| Modularity | God object, impossible to test/extend | Could be cleaner |
-| DRY | Copy-paste of complex logic | Repeated simple pattern |
+If category skipped: redistribute its weight proportionally to remaining categories.
 
-### Likelihood Assessment
+Formula: `overall = sum(score_i * weight_i) / sum(weight_i for successful categories)`
 
-- **High**: Common code path, frequently touched, multiple developers work here
-- **Low**: Rare edge case, isolated code, single owner
+### Step 6: Output Report
 
-## Scoring
-
-Per-category: 10.0 = perfect. Deduct per severity: Critical -2.0, Major -1.0, Minor -0.5.
-Overall = weighted sum of category scores.
-
-## Output Format
-
-Plain text, no markdown:
+Plain text format:
 
 ```
 Code Review: {N} files analyzed
 
 Score: {X.X}/10.0
 
-Issues ({N}):
+Issues ({total_count}):
 
 [{Severity}][{Category}] {file}:{line}
   {Description}
@@ -121,18 +90,16 @@ Summary:
   Readability: {X.X}  |  Patterns: {X.X}     |  Modularity: {X.X}
   Complexity: {X.X}   |  Security: {X.X}     |  DRY: {X.X}
   Performance: {X.X}
+
+{warnings if any agents failed}
 ```
 
-If no issues found: "No issues found. Score: 10.0/10.0"
+If no issues: "No issues found. Score: 10.0/10.0"
 
 ## Rules
 
-- BLOCKING: Must complete ALL 14 per-file checks for EACH file before moving to next
-- Do NOT skip checks even if file seems simple
-- Performance checks (11-14) apply to .tsx/.jsx files only
-- Report file:line for every issue
-- Every issue must have actionable recommendation
-- DRY: show both file locations for duplicates
-- Skip minified/generated files
-- No false positives: only report clear violations
-- OUTPUT FILTER: Do NOT report Minor severity issues. Only Critical and Major.
+- MUST launch all 7 agents in SINGLE message (parallel execution)
+- Wait for ALL agents to complete before aggregating
+- Deduplicate issues if same file:line reported by multiple agents
+- Sort issues by severity (Critical first, then Major)
+- Do NOT report Minor issues (agents already filter them out)

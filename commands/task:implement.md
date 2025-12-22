@@ -13,6 +13,19 @@ Execute documentation workflow: user-flow → parallel artifacts → work-plan �
 
 `$ARGUMENTS` contains task instructions (user flow description or reference to docs/USER_FLOWS.md item). If empty → ask user.
 
+## Metrics Tracking
+
+Track for each main phase (user-flow, check-list, test-case, work-plan, validate):
+- Start/end timestamps (ISO 8601)
+- Duration in seconds
+- Token usage (parse from system warnings or output)
+- Command name
+- Status (success/failed)
+
+Store in array: `metrics = [{phase, command, startTime, endTime, duration, tokens, status}]`
+
+Calculate totals: sum of all durations, sum of all tokens.
+
 ## Workflow
 
 ### Phase 1: Generate User Flow
@@ -77,6 +90,7 @@ Status format per phase:
 [Phase X] {phase-name}
   Status: {running | complete | skipped}
   Output: {file-path or result}
+  Duration: {X.X}s | Tokens: {N}
 ```
 
 After validation:
@@ -92,6 +106,17 @@ Files created/updated:
 - {path}
 Final Score: {X.X}/10
 Status: {COMPLETE | NEEDS_ATTENTION}
+
+Performance Metrics:
+Command                  Duration    Tokens
+-------------------------------------------------
+/docs:user-flow          {X.X}s      {N}
+/docs:check-list         {X.X}s      {N}
+/docs:test-case          {X.X}s      {N}
+/docs:work-plan          {X.X}s      {N}
+/docs:validate           {X.X}s      {N}
+-------------------------------------------------
+TOTAL                    {X.X}s      {N}
 ```
 
 ## Dialog
@@ -114,3 +139,9 @@ Use AskUserQuestion:
 - Sequential execution for all other phases (dependencies)
 - Pass full issue context when calling fix commands
 - Track iteration count, stop at 3 if score < 9
+- Capture start timestamp before each SlashCommand call
+- Capture end timestamp after each SlashCommand completes
+- Parse token usage from system warnings or command output
+- Calculate duration as (endTime - startTime) in seconds
+- Store metrics for all 5 main phase commands
+- Include per-command and total metrics in final report

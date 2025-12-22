@@ -166,30 +166,24 @@ Status rules:
 - WARN (score 5-7): Minor issues, orphaned IDs, optional sections missing
 - FAIL (score <5): Missing files, coverage gaps, or contradictions
 
-### Step 11: Interactive Fix Selection
+### Step 11: Autonomous Fix Application
 
 If issues found (missing files, gaps, traceability issues, consistency issues):
 
-1. Build fix options list from all issues:
-   - Format: "{issue-type}: {description}" (e.g., "Missing file: docs/testCases/auth/login.md", "Coverage gap: Happy Path step 3 has no test case")
-   - Each issue = one selectable option
+1. For each issue, determine fix delegation:
+   - Missing test cases file → `/docs:test-case {flow-file-path}`
+   - Missing checklist file → `/docs:check-list {flow-file-path}`
+   - Missing work plan → skip (created manually)
+   - Coverage gap (test case) → `/docs:test-case {flow-file-path} Add test case for {flow-section-reference}`
+   - Coverage gap (checklist) → `/docs:check-list {flow-file-path} Add checklist item for {flow-section-reference}`
+   - Consistency issue → `/docs:test-case` or `/docs:check-list` with "Update to match flow: {specific-contradiction}"
+   - Traceability issue → `/docs:check-list {flow-file-path} Add cross-reference to {target-id}`
 
-2. Use AskUserQuestion with multiSelect=true to let user select which issues to fix
+2. Execute all fixes via SlashCommand in sequence
 
-3. For each selected issue, in sequence:
-   - Determine fix delegation:
-     - Missing test cases file → `/docs:test-case {flow-file-path}`
-     - Missing checklist file → `/docs:check-list {flow-file-path}`
-     - Missing work plan → skip (created manually)
-     - Coverage gap (test case) → `/docs:test-case {flow-file-path} Add test case for {flow-section-reference}`
-     - Coverage gap (checklist) → `/docs:check-list {flow-file-path} Add checklist item for {flow-section-reference}`
-     - Consistency issue → `/docs:test-case` or `/docs:check-list` with "Update to match flow: {specific-contradiction}"
-     - Traceability issue → `/docs:check-list {flow-file-path} Add cross-reference to {target-id}`
-   - Execute fix via SlashCommand
-
-4. After all fixes delegated, output summary and proceed to Step 12:
+3. Output summary:
    ```
-   Delegated {count} fixes:
+   Applied {count} fixes:
    - /docs:test-case {flow-file} [instructions]
    - /docs:check-list {flow-file} [instructions]
    ```

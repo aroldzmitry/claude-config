@@ -71,13 +71,35 @@ For EACH changed file, verify ALL items below. Record issues found.
 | 15 | DRY | Duplication | No >80% similar blocks across files |
 | 16 | DRY | Patterns | Similar logic extracted to shared utils |
 
+## Severity Classification (Impact × Likelihood)
+
+Determine severity using this matrix:
+
+|                    | Low Likelihood | High Likelihood |
+|--------------------|----------------|-----------------|
+| **High Impact**    | Major (-1.0)   | Critical (-2.0) |
+| **Low Impact**     | Minor (-0.5)   | Major (-1.0)    |
+
+### Impact Assessment
+
+| Category | High Impact | Low Impact |
+|----------|-------------|------------|
+| Security | Data leak, injection, auth bypass | Info disclosure of non-sensitive data |
+| Bugs | Crash, data corruption, wrong behavior | Edge case, rare condition |
+| Performance | Noticeable UX degradation, memory leak | Micro-optimization |
+| Patterns | Breaks architecture, causes maintenance hell | Slight deviation, still works |
+| Readability | Name causes misunderstanding → bug likely | Suboptimal but clear enough |
+| Modularity | God object, impossible to test/extend | Could be cleaner |
+| DRY | Copy-paste of complex logic | Repeated simple pattern |
+
+### Likelihood Assessment
+
+- **High**: Common code path, frequently touched, multiple developers work here
+- **Low**: Rare edge case, isolated code, single owner
+
 ## Scoring
 
-Per-category: 10.0 = perfect, 0.0 = critical issues. Deduct points per issue severity:
-- Critical: -2.0
-- Major: -1.0
-- Minor: -0.5
-
+Per-category: 10.0 = perfect. Deduct per severity: Critical -2.0, Major -1.0, Minor -0.5.
 Overall = weighted sum of category scores.
 
 ## Output Format
@@ -91,7 +113,7 @@ Score: {X.X}/10.0
 
 Issues ({N}):
 
-[{Category}] {file}:{line}
+[{Severity}][{Category}] {file}:{line}
   {Description}
   → {Recommendation}
 
@@ -113,3 +135,4 @@ If no issues found: "No issues found. Score: 10.0/10.0"
 - DRY: show both file locations for duplicates
 - Skip minified/generated files
 - No false positives: only report clear violations
+- OUTPUT FILTER: Do NOT report Minor severity issues. Only Critical and Major.

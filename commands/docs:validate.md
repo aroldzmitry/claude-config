@@ -177,43 +177,37 @@ If issues found (missing files, gaps, traceability issues, consistency issues):
 2. Use AskUserQuestion with multiSelect=true to let user select which issues to fix
 
 3. For each selected issue, in sequence:
-   - Determine fix delegation strategy and standard approach:
-     - Missing test cases file → delegate to `/docs:test-case {flow-file-path}`
-     - Missing checklist file → delegate to `/docs:check-list {flow-file-path}`
-     - Missing work plan → no delegation (work plans created manually)
-     - Coverage gap (test case) → delegate to `/docs:test-case` with instructions "Add test case for {flow-section-reference}"
-     - Coverage gap (checklist) → delegate to `/docs:check-list` with instructions "Add checklist item for {flow-section-reference}"
-     - Consistency issue → delegate to appropriate command based on file type (test-case or check-list) with instructions "Update to match flow: {specific-contradiction}"
-     - Traceability issue → delegate to appropriate command with instructions "Add cross-reference to {target-id}"
-   - Show standard approach to user (which command will be called and what it will do)
-   - Ask via AskUserQuestion if user wants to customize instructions (yes/no)
-   - If yes → ask for custom instructions via text input
-   - Execute fix by calling appropriate SlashCommand with standard or custom instructions appended to args
+   - Determine fix delegation:
+     - Missing test cases file → `/docs:test-case {flow-file-path}`
+     - Missing checklist file → `/docs:check-list {flow-file-path}`
+     - Missing work plan → skip (created manually)
+     - Coverage gap (test case) → `/docs:test-case {flow-file-path} Add test case for {flow-section-reference}`
+     - Coverage gap (checklist) → `/docs:check-list {flow-file-path} Add checklist item for {flow-section-reference}`
+     - Consistency issue → `/docs:test-case` or `/docs:check-list` with "Update to match flow: {specific-contradiction}"
+     - Traceability issue → `/docs:check-list {flow-file-path} Add cross-reference to {target-id}`
+   - Execute fix via SlashCommand
 
-4. After all fixes delegated, output summary:
+4. After all fixes delegated, output summary and proceed to Step 12:
    ```
    Delegated {count} fixes:
-   - /docs:test-case {flow-file} [custom instructions]
-   - /docs:check-list {flow-file} [custom instructions]
+   - /docs:test-case {flow-file} [instructions]
+   - /docs:check-list {flow-file} [instructions]
    ```
 
 ### Step 12: Re-validation Loop
 
-After Step 11 completes:
+MANDATORY after Step 11:
 
-1. Wait for all delegated commands to finish
-2. Increment iteration counter: `iteration++`
-3. Re-run Steps 1-10 (validation and scoring)
-4. If `score >= target_score` → exit with success message
-5. If `iteration >= max_iterations` → exit with message "Max iterations reached. Final score: {score}/10"
+1. Increment iteration counter: `iteration++`
+2. Re-run Steps 1-10 (validation and scoring)
+3. Output iteration status:
+   ```
+   Iteration {iteration}/{max_iterations} complete
+   Current score: {score}/10
+   ```
+4. If `score >= target_score` → exit with "SUCCESS: Documentation quality meets target ({score}/10)"
+5. If `iteration >= max_iterations` → exit with "Max iterations reached. Final score: {score}/10"
 6. If `score < target_score` and `iteration < max_iterations` → return to Step 11 with remaining issues
-
-Output iteration status:
-```
-Iteration {iteration}/{max_iterations} complete
-Current score: {score}/10
-{CONTINUE | SUCCESS | MAX_ITERATIONS_REACHED}
-```
 
 ## Rules
 

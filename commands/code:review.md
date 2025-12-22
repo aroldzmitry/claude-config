@@ -26,11 +26,19 @@ Analyze each category separately with targeted focus:
 
 | Priority | Category | Weight | Focus |
 |----------|----------|--------|-------|
-| 1 | Readability | 25% | naming clarity, structure, organization, self-documenting code |
-| 2 | Patterns | 25% | compliance with proj_index patterns, architecture rules |
-| 3 | Complexity | 20% | nesting depth (max 3), function length, cyclomatic complexity |
-| 4 | Security | 15% | injections, XSS, data leaks, unsanitized input |
-| 5 | DRY | 15% | code duplication across files, similar blocks (>80% match) |
+| 1 | Readability | 20% | naming clarity, structure, organization, self-documenting code |
+| 2 | Patterns | 20% | compliance with proj_index patterns, architecture rules |
+| 3 | Modularity | 20% | single abstraction level, extract hooks/helpers, single responsibility |
+| 4 | Complexity | 15% | nesting depth (max 3), function length, cyclomatic complexity |
+| 5 | Security | 15% | injections, XSS, data leaks, unsanitized input |
+| 6 | DRY | 10% | code duplication across files, similar blocks (>80% match) |
+
+### Modularity Rules
+
+- Component >80 lines before return → extract logic to hooks
+- Mixed abstraction levels (low-level DOM + high-level business logic) → extract to separate functions
+- Hook/helper with multiple responsibilities → split into focused units
+- Inline complex logic in useEffect/useCallback → extract to named functions
 
 ## Scoring
 
@@ -57,8 +65,8 @@ Issues ({N}):
   → {Recommendation}
 
 Summary:
-  Readability: {X.X}  |  Patterns: {X.X}  |  Complexity: {X.X}
-  Security: {X.X}     |  DRY: {X.X}
+  Readability: {X.X}  |  Patterns: {X.X}   |  Modularity: {X.X}
+  Complexity: {X.X}   |  Security: {X.X}   |  DRY: {X.X}
 ```
 
 If no issues found: "No issues found. Score: 10.0/10.0"

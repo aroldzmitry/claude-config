@@ -19,6 +19,14 @@ Implement tasks as a senior frontend engineer.
 - TypeScript only, no `any`
 - No `console.log`, no commented-out code, no inline styles
 
+## Modularity rules
+
+- Component body >80 lines before return → extract logic to custom hooks
+- Keep one abstraction level per function/component
+- Each hook/helper = single responsibility (one reason to change)
+- Complex useEffect/useCallback body → extract to named function or hook
+- Place extracted hooks in `hooks/` folder next to component, or `Shared/hooks/` if reusable
+
 ## Naming conventions
 
 - Types: `T` suffix (`PropsT`, `DataT`, `ConfigT`)

@@ -1,7 +1,7 @@
 ---
 description: Validate user flow documentation against related artifacts for consistency and completeness
 argument-hint: <user-flow-file-path>
-allowed-tools: Read, Glob, Grep, AskUserQuestion, SlashCommand
+allowed-tools: Read, Glob, Grep, AskUserQuestion
 model: sonnet
 ---
 
@@ -14,8 +14,6 @@ Validate user flow file against related artifacts: test cases, checklists, work 
 `$ARGUMENTS` contains path to user flow file. If empty, use AskUserQuestion to request path.
 
 ## Process
-
-Initialize iteration counter: `iteration = 1, max_iterations = 3, target_score = 9`
 
 ### Step 1: Validate Flow File
 
@@ -166,43 +164,6 @@ Status rules:
 - WARN (score 5-7): Minor issues, orphaned IDs, optional sections missing
 - FAIL (score <5): Missing files, coverage gaps, or contradictions
 
-### Step 11: Autonomous Fix Application
-
-If issues found (missing files, gaps, traceability issues, consistency issues):
-
-1. For each issue, determine fix delegation:
-   - Missing test cases file → `/docs:test-case {flow-file-path}`
-   - Missing checklist file → `/docs:check-list {flow-file-path}`
-   - Missing work plan → skip (created manually)
-   - Coverage gap (test case) → `/docs:test-case {flow-file-path} Add test case for {flow-section-reference}`
-   - Coverage gap (checklist) → `/docs:check-list {flow-file-path} Add checklist item for {flow-section-reference}`
-   - Consistency issue → `/docs:test-case` or `/docs:check-list` with "Update to match flow: {specific-contradiction}"
-   - Traceability issue → `/docs:check-list {flow-file-path} Add cross-reference to {target-id}`
-
-2. Execute all fixes via SlashCommand in sequence
-
-3. Output summary:
-   ```
-   Applied {count} fixes:
-   - /docs:test-case {flow-file} [instructions]
-   - /docs:check-list {flow-file} [instructions]
-   ```
-
-### Step 12: Re-validation Loop
-
-MANDATORY after Step 11:
-
-1. Increment iteration counter: `iteration++`
-2. Re-run Steps 1-10 (validation and scoring)
-3. Output iteration status:
-   ```
-   Iteration {iteration}/{max_iterations} complete
-   Current score: {score}/10
-   ```
-4. If `score >= target_score` → exit with "SUCCESS: Documentation quality meets target ({score}/10)"
-5. If `iteration >= max_iterations` → exit with "Max iterations reached. Final score: {score}/10"
-6. If `score < target_score` and `iteration < max_iterations` → return to Step 11 with remaining issues
-
 ## Rules
 
 - Continue validation even if some files missing or malformed
@@ -210,8 +171,4 @@ MANDATORY after Step 11:
 - Use exact string matching for consistency checks (no semantic inference)
 - ID patterns: CL-### for checklist, TC-XXX-### for test cases, REQ-### for work plan
 - Skip sections explicitly marked as out-of-scope
-- Never directly modify test cases, checklists, or work plans — always delegate to specialized commands
-- Pass custom user instructions as additional args to delegated commands
-- Let specialized commands handle ID assignment, formatting, and template consistency
-- Max 3 validation-fix iterations, stop if score ≥9 or iterations exhausted
-- Each iteration runs full validation (Steps 1-10) before checking continuation criteria
+- Only validate and report, never modify files

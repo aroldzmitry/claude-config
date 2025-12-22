@@ -84,7 +84,7 @@ Before writing tests:
 ## Test Generation Rules
 
 ### Traceability
-- Wrap in `test.describe()` with `tag: ["@TC-001"]` and `annotation: [{type: "testCase", description: "docs/testCases/area/file.md#tc-001"}, {type: "coverage", description: "CL-001, CL-002"}, {type: "testType", description: "e2e"}]`
+- Wrap in `test.describe()` with `tag: ["@TC-001"]` and `annotation: [{type: "testCase", description: "docs/{task-name}/testCases.md#tc-001"}, {type: "coverage", description: "CL-001, CL-002"}, {type: "testType", description: "e2e"}]`
 - TC-ID in tag enables `--grep @TC-001` filtering for running specific tests
 - Storybook: use CSF3 `tags`, `parameters.testCase`, `parameters.coverage`, `parameters.testType`
 - No traceability comments — annotations/tags only

@@ -1,6 +1,6 @@
 ---
 description: Convert checklist and test cases into typed tests (e2e/integration/storybook/unit) with full traceability
-argument-hint: "<checklist-path> <test-cases-path>"
+argument-hint: "<task-folder-or-file>"
 allowed-tools: Write, Edit, Read, Glob, Grep, Bash(yarn:*)
 ---
 
@@ -10,7 +10,25 @@ Generate Playwright/Vitest/Storybook tests from documentation with traceability 
 
 ## Input
 
-**Required:** `<checklist-path>` (CL-ID, severity, expected result), `<test-cases-path>` (TC-ID, steps, test data, cleanup)
+`$ARGUMENTS` contains either:
+- Task folder path: `docs/34-create-category/`
+- Any file from task folder: `docs/34-create-category/testCases.md`
+
+### File Discovery
+
+From input path, derive task folder and auto-discover files:
+1. If path is directory → use as task folder
+2. If path is file → extract parent directory as task folder
+
+Required files (in task folder):
+- `checkList.md` — CL-IDs, severity, expected results
+- `testCases.md` — TC-IDs, steps, test data
+
+Optional files:
+- `userFlows.md` — context for understanding flow
+- `workPlan.md` — implementation status
+
+If required files missing → report as BLOCKER and exit.
 
 **Checklist format:** `## CL-001 | CRITICAL` with Element, Expected Result fields.
 

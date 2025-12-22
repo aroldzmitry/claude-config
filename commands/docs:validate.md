@@ -27,13 +27,12 @@ Check flow structure:
 ### Step 2: Locate Related Files
 
 From user flow path, derive:
-- Area: parent directory name (e.g., `docs/userFlows/auth/login.md` → `auth`)
-- Flow name: file name without extension
+- Flow name: parent directory name (e.g., `docs/01-register/userFlows.md` → `01-register`)
 
-Search for related files:
-- Checklist: `docs/checklists/{area}/{flow-name}.md`
-- Test cases: `docs/testCases/{area}/{flow-name}.md`
-- Work plan: `docs/workPlans/{flow-name}-work-plan.md`
+Search for related files in same directory:
+- Checklist: `docs/{flow-name}/checkList.md`
+- Test cases: `docs/{flow-name}/testCases.md`
+- Work plan: `docs/{flow-name}/workPlan.md`
 
 ### Step 3: Missing Document Detection
 

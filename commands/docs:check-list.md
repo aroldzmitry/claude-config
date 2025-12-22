@@ -10,7 +10,7 @@ Transform user flow into binary assertions (Pass/Fail) with requirements traceab
 
 ## Input
 
-`$ARGUMENTS` contains path to user flow file: `docs/userFlows/{flow-name}.md`. If empty → ask user.
+`$ARGUMENTS` contains path to user flow file: `docs/{flow-name}/userFlows.md`. If empty → ask user.
 
 Flow MUST contain: System Context, Goals, User Types, Happy Path, Alternative Paths, Negative Scenarios, Component Mapping.
 
@@ -45,7 +45,7 @@ Read flow, verify:
 
 If validation fails → output violations list → stop → ask user to fix flow.
 
-If all pass → derive AREA from flow file path (e.g., `docs/userFlows/auth/login.md` → `auth`) → proceed to Step 1.
+If all pass → derive FLOWNAME from flow file path (e.g., `docs/01-register/userFlows.md` → `01-register`) → proceed to Step 1.
 
 ### 1. Extract Boundaries
 
@@ -207,12 +207,12 @@ If violations → fix → re-run all 8 → confirm pass → proceed.
 
 ### 12. Output Format
 
-File: `docs/checklists/<area>/[flow-name].md`
+File: `docs/{flow-name}/checkList.md`
 
 ```markdown
 # Checklist: {Flow Name}
 
-**Source Flow:** `docs/userFlows/{flow-name}.md`
+**Source Flow:** `docs/{flow-name}/userFlows.md`
 **Generated:** {YYYY-MM-DD}
 
 ## Coverage Summary
@@ -257,14 +257,14 @@ File: `docs/checklists/<area>/[flow-name].md`
 
 ### 13. Format and Stage for Git
 
-Format with Prettier, then stage: `npx prettier --write docs/checklists/<area>/[flow-name].md && git add docs/checklists/<area>/[flow-name].md`
+Format with Prettier, then stage: `npx prettier --write docs/{flow-name}/checkList.md && git add docs/{flow-name}/checkList.md`
 
 ### 14. Report
 
 Output:
 
 ```
-Checklist: docs/checklists/<area>/[flow-name].md
+Checklist: docs/{flow-name}/checkList.md
 Items: X (Y critical, Z important, W optional)
 Coverage: Goals (X), Alternatives (Y), Errors (Z), States (W)
 Validation: All 8 checks passed

@@ -217,7 +217,7 @@ If violations found → fix → re-run checklist → confirm all pass → then W
 
 ## Output Format
 
-File: `docs/userFlows/{flow-name}.md`
+File: `docs/{flow-name}/userFlows.md`
 
 ```markdown
 # User Flow: {Goal Name}
@@ -382,10 +382,10 @@ Applies to: [all flows | specific context]
 
 ## Final Steps
 
-1. **Update docs/userFlows/USER_FLOWS.md**
+1. **Update docs/USER_FLOWS.md**
 
    - Create file if missing (with header: "# User Flows")
-   - Add entry: `[Goal Name](./flow-name.md) — one-line summary`
+   - Add entry: `[Goal Name](./{flow-name}/userFlows.md) — one-line summary`
    - If category section doesn't exist, create it
 
 2. **Update docs/standards/FIELD-VALIDATIONS.md**
@@ -411,7 +411,7 @@ Applies to: [all flows | specific context]
    - Stage: `git add [all formatted files]`
 
 5. **Output Summary**
-   - Path: `docs/userFlows/{flow-name}.md`
+   - Path: `docs/{flow-name}/userFlows.md`
    - Goals documented: `[list]`
    - Field validations: `[list of fields added/updated in FIELD-VALIDATIONS.md]`
    - UX improvements + implementation gaps integrated: `[list of selected items woven into flow]`

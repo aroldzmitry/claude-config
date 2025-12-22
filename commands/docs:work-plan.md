@@ -60,7 +60,7 @@ If all done → "✅ All requirements implemented." → exit without file.
 
 ### Step 5: Create Work Plan File
 
-File: `./docs/workPlans/{flow-name}-work-plan.md`
+File: `docs/{flow-name}/workPlan.md`
 
 ```markdown
 # Work Plan: {Flow Name}
@@ -83,7 +83,7 @@ Source: {user-flow-file-path}
 ### Step 6: Format and Stage
 
 ```bash
-npx prettier --write ./docs/workPlans/{flow-name}-work-plan.md && git add ./docs/workPlans/{flow-name}-work-plan.md
+npx prettier --write docs/{flow-name}/workPlan.md && git add docs/{flow-name}/workPlan.md
 ```
 
 ## Final Checklist

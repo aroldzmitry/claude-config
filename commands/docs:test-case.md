@@ -37,7 +37,7 @@ Read flow, verify:
 
 If validation fails → output violations list → stop → ask user to fix flow.
 
-If all pass → derive FLOWCODE from flow file name (e.g., `user-registration.md` → `REG`) and AREA from flow file path (e.g., `docs/flows/auth/login.md` → `auth`) → proceed to Step 1.
+If all pass → derive FLOWCODE from flow file name (e.g., `user-registration` → `REG`) and FLOWNAME from flow file path (e.g., `docs/01-register/userFlows.md` → `01-register`) → proceed to Step 1.
 
 ### Step 1: Extract Flow Data & Build Section Map
 
@@ -127,7 +127,7 @@ If violations → fix → re-run all 6 → confirm pass → proceed.
 
 ### Step 6: Output Test Cases File
 
-Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
+Create single markdown file at `docs/{flow-name}/testCases.md`:
 
 **Format rules (minimalist for Claude):**
 - No bold, italics, or decorative formatting
@@ -138,13 +138,13 @@ Create single markdown file at `docs/testCases/<area>/[user-flow-file-name].md`:
 
 ### Step 7: Format and Stage for Git
 
-Format with Prettier, then stage: `npx prettier --write docs/testCases/<area>/[user-flow-file-name].md && git add docs/testCases/<area>/[user-flow-file-name].md`
+Format with Prettier, then stage: `npx prettier --write docs/{flow-name}/testCases.md && git add docs/{flow-name}/testCases.md`
 
 ### Step 8: Console Report
 
 Output to console (not in file):
 ```
-File: docs/testCases/<area>/[flow-name].md
+File: docs/{flow-name}/testCases.md
 Test cases: X (Y P0, Z P1, W P2)
 Coverage: X/Y flow sections
 Validation: passed

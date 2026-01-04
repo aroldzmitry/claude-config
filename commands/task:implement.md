@@ -133,7 +133,9 @@ Use AskUserQuestion:
 
 ## Rules
 
+- **Execute all phases without stopping for confirmation** — proceed automatically from Phase 1 through Phase 5
 - Run iterations automatically without asking (until 3 reached)
+- Never ask user confirmation between phases — only Dialog section triggers user interaction
 - Parse validation output to categorize issues accurately
 - Parallel execution for check-list and test-case only
 - Sequential execution for all other phases (dependencies)

@@ -27,14 +27,6 @@ For Claude Code questions: use Task tool with `subagent_type="claude-code-guide"
 
 When user asks to run a slash command, use SlashCommand tool to invoke it. Do NOT implement the command's logic manually.
 
-## Task Execution Rule
-
-When executing multi-step tasks, orchestrated commands, or workflows:
-- NEVER pause or wait for user confirmation between steps
-- Execute all steps continuously until completion or explicit user stop
-- Do not output intermediate status updates that break execution flow
-- Chain tool calls immediately without stopping for acknowledgment
-
 ## Frontend Implementation Rule
 
 For any frontend/client code changes, always use `/web:implement` command.

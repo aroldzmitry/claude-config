@@ -2,7 +2,7 @@
 description: Orchestrate documentation workflow to implement task from specifications through validation
 argument-hint: <task-instructions>
 model: sonnet
-allowed-tools: "Read, SlashCommand, AskUserQuestion"
+allowed-tools: "Read, SlashCommand, Task, TaskOutput, AskUserQuestion"
 ---
 
 # Task Implementation Orchestrator
@@ -30,29 +30,25 @@ Calculate totals: sum of all durations, sum of all tokens.
 
 ### Phase 1: Generate User Flow
 
-Call `/docs:user-flow $ARGUMENTS`
-
-Wait for completion. Extract output file path: `docs/{flow-name}/userFlows.md`
+Call `/docs:user-flow $ARGUMENTS` via SlashCommand → execute expanded prompt inline → extract output file path: `docs/{flow-name}/userFlows.md`
 
 Store `FLOW_PATH` for subsequent phases.
 
 ### Phase 2: Generate Artifacts (Parallel)
 
-Execute concurrently:
-- `/docs:check-list {FLOW_PATH}`
-- `/docs:test-case {FLOW_PATH}`
+Launch two Task subagents with `run_in_background=true`:
+- Task 1: subagent_type="general-purpose", prompt="Execute /docs:check-list {FLOW_PATH}"
+- Task 2: subagent_type="general-purpose", prompt="Execute /docs:test-case {FLOW_PATH}"
 
-Wait for both to complete.
+Use TaskOutput with `block=true` to wait for both results. Do NOT stop or return control to user while waiting.
 
 ### Phase 3: Generate Work Plan
 
-Call `/docs:work-plan {FLOW_PATH}`
-
-Wait for completion.
+Call `/docs:work-plan {FLOW_PATH}` via SlashCommand → execute expanded prompt inline.
 
 ### Phase 4: Validate
 
-Call `/docs:validate {FLOW_PATH}`
+Call `/docs:validate {FLOW_PATH}` via SlashCommand → execute expanded prompt inline.
 
 Parse output for:
 - Quality Score (X.X/10)
@@ -133,17 +129,14 @@ Use AskUserQuestion:
 
 ## Rules
 
-- **Execute all phases without stopping for confirmation** — proceed automatically from Phase 1 through Phase 5
-- Run iterations automatically without asking (until 3 reached)
-- Never ask user confirmation between phases — only Dialog section triggers user interaction
+- **NEVER stop or pause** — execute all phases continuously without returning control to user
+- **SlashCommand behavior**: after call returns, immediately execute expanded prompt in same turn
+- **Task subagents**: launch with run_in_background=true, use TaskOutput(block=true) to wait, continue after results received
+- **No user prompts between phases** — only Dialog section (after 3 failed iterations) triggers user interaction
+- Run fix iterations automatically without asking (until 3 reached)
 - Parse validation output to categorize issues accurately
-- Parallel execution for check-list and test-case only
-- Sequential execution for all other phases (dependencies)
+- Sequential execution for phases 1, 3, 4, 5; parallel for phase 2 via Task subagents
 - Pass full issue context when calling fix commands
 - Track iteration count, stop at 3 if score < 9
-- Capture start timestamp before each SlashCommand call
-- Capture end timestamp after each SlashCommand completes
-- Parse token usage from system warnings or command output
-- Calculate duration as (endTime - startTime) in seconds
-- Store metrics for all 5 main phase commands
+- Capture timestamps before/after each phase
 - Include per-command and total metrics in final report

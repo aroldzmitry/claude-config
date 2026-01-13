@@ -188,9 +188,9 @@ From Component Mapping section, create checks for:
 
 Skip: focused, filled, validating, disabled, empty (unless explicitly critical in flow).
 
-### 11. Pre-Output Validation (Mandatory, Blocking)
+### 11. Pre-Output Validation (Internal Self-Check)
 
-Output validation checklist BEFORE creating file. If violations → fix → re-run → confirm pass → proceed.
+Run validation internally. If violations → fix internally → re-run all 8 → once all pass → proceed to file creation.
 
 **8 Validation Checks:**
 
@@ -203,7 +203,7 @@ Output validation checklist BEFORE creating file. If violations → fix → re-r
 7. **Severity Assigned** — Every item has [CRITICAL]/[IMPORTANT]/[OPTIONAL]
 8. **Scope Respected** — External systems inform boundaries only; no backend integration checks
 
-If violations → fix → re-run all 8 → confirm pass → proceed.
+If violations → fix internally → re-run all 8 → once all pass → proceed.
 
 ### 12. Output Format
 

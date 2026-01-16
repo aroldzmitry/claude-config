@@ -26,9 +26,7 @@
     "ask": [],
     "defaultMode": "default"
   },
-  "enabledMcpjsonServers": [
-    "context7"
-  ],
+  "enabledMcpjsonServers": [],
   "hooks": {
     "PreToolUse": [
       {

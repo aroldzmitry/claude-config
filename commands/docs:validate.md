@@ -20,6 +20,7 @@ Validate user flow file against related artifacts: test cases, checklists, work 
 Read user flow file. If file not found or unreadable, report error and exit.
 
 Check flow structure:
+
 - Required sections: System Context, Goals, Happy Path, Alternative Paths, Negative Scenarios
 - If malformed (missing sections, broken markdown), add to issues list with specific errors
 - Continue validation with parseable sections
@@ -27,9 +28,11 @@ Check flow structure:
 ### Step 2: Locate Related Files
 
 From user flow path, derive:
+
 - Flow name: parent directory name (e.g., `docs/01-register/userFlows.md` → `01-register`)
 
 Search for related files in same directory:
+
 - Checklist: `docs/{flow-name}/checkList.md`
 - Test cases: `docs/{flow-name}/testCases.md`
 - Work plan: `docs/{flow-name}/workPlan.md`
@@ -37,6 +40,7 @@ Search for related files in same directory:
 ### Step 3: Missing Document Detection
 
 For each expected file:
+
 - If not found → add to `missing_files` list with expected path
 - If found but unreadable/malformed → add to `malformed_files` list
 - If found and valid → add to `found_files` list for validation
@@ -44,6 +48,7 @@ For each expected file:
 ### Step 4: Parse Documents
 
 For each found file, extract:
+
 - **User flow**: Goals, Happy Path steps, Alternative Paths (A1, A2...), Negative Scenarios (N1, N2...), Success Criteria, Component Mapping
 - **Checklist**: CL-IDs with Source references, Coverage Summary
 - **Test cases**: TC-IDs with Covers references, Priority levels
@@ -63,6 +68,7 @@ Report orphaned IDs (IDs in artifacts that don't trace to flow).
 ### Step 6: Bidirectional Traceability Check
 
 Verify links work both directions:
+
 - Forward: Flow section → finds CL-ID → finds TC-ID
 - Backward: TC-ID → references CL-ID or flow section → exists in flow
 
@@ -71,6 +77,7 @@ Report broken links.
 ### Step 7: Coverage Gap Detection
 
 Identify flow sections without coverage:
+
 - Happy Path steps without test cases
 - Alternative Paths without test cases
 - Negative Scenarios without test cases
@@ -81,21 +88,25 @@ Identify flow sections without coverage:
 Use string matching only (no semantic analysis). Check for contradictions:
 
 **Navigation/Redirect checks:**
+
 - Extract URLs/routes from flow Success Criteria and Exit Paths
 - Compare with Expected Results in test cases
 - Contradiction example: Flow says "redirect to /home" but test expects "/dashboard"
 
 **Error message checks:**
+
 - Extract error messages from flow Negative Scenarios
 - Compare with test case Expected Results (exact string match)
 - Contradiction example: Flow specifies "Email already exists" but test expects "User already registered"
 
 **State/behavior checks:**
+
 - Extract UI states from flow Component Mapping
 - Compare with test case assertions
 - Contradiction example: Flow says "button disabled during loading" but test expects "button shows spinner"
 
 **Success criteria checks:**
+
 - Extract observable outcomes from flow Success Criteria
 - Compare with checklist Expected Results
 - Contradiction example: Flow says "toast notification appears" but checklist says "redirect immediately"
@@ -104,16 +115,17 @@ Use string matching only (no semantic analysis). Check for contradictions:
 
 Score 0-10 based on weighted criteria:
 
-| Criterion | Weight | Scoring |
-|-----------|--------|---------|
-| Files present | 25% | 0=none, 5=some, 10=all |
-| Coverage completeness | 25% | 10 - (gaps / total_sections * 10) |
-| Traceability | 25% | 10 - (broken_links / total_links * 10) |
-| Consistency | 25% | 10 - (contradictions * 2), min 0 |
+| Criterion             | Weight | Scoring                                 |
+| --------------------- | ------ | --------------------------------------- |
+| Files present         | 25%    | 0=none, 5=some, 10=all                  |
+| Coverage completeness | 25%    | 10 - (gaps / total_sections \* 10)      |
+| Traceability          | 25%    | 10 - (broken_links / total_links \* 10) |
+| Consistency           | 25%    | 10 - (contradictions \* 2), min 0       |
 
 Final score = weighted average, rounded to 1 decimal.
 
 Score interpretation:
+
 - 9-10: Excellent, documentation fully aligned
 - 7-8: Good, minor gaps or issues
 - 5-6: Fair, needs attention
@@ -159,6 +171,7 @@ Status: {PASS | FAIL | WARN}
 ```
 
 Status rules:
+
 - PASS (score ≥8): All files present, no critical gaps
 - WARN (score 5-7): Minor issues, orphaned IDs, optional sections missing
 - FAIL (score <5): Missing files, coverage gaps, or contradictions

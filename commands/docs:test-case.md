@@ -31,6 +31,7 @@ Check flow file exists and readable. If not → output error "File not found: <p
 Read flow, verify:
 
 **Flow Structure Valid**
+
 - All required sections present (System Context, Goals, Happy Path, Alternative Paths, Negative Scenarios, Component Mapping)
 - Goals are verb-based
 - Happy Path contains ONLY observable statements (user actions, visible responses)
@@ -49,39 +50,30 @@ Map flow sections to test requirements using Section Mapping Table below.
 
 **Section Mapping Table:**
 
-| Flow Section | Test Type | Priority Guidance | Coverage Strategy |
-|---|---|---|---|
-| Happy Path | E2E | P0 (CRITICAL) | One comprehensive test covering core flow |
-| Alternative Paths | E2E | P0-P1 | One test per CRITICAL alternative that changes outcome |
-| Negative Scenarios (domain) | E2E | P0-P1 | One test per CRITICAL error type |
-| Negative Scenarios (infra refs) | Integration/Contract | P2 | Backend validation, not UI |
-| Component Mapping (UI states) | E2E | P0-P1 | Verify idle/loading/success/error states |
-| Success Criteria | E2E | P0 | Include in Happy Path test |
-| UX Validation | E2E | P1-P2 | Accessibility checks if IMPORTANT |
+| Flow Section                    | Test Type            | Priority Guidance | Coverage Strategy                                      |
+| ------------------------------- | -------------------- | ----------------- | ------------------------------------------------------ |
+| Happy Path                      | E2E                  | P0 (CRITICAL)     | One comprehensive test covering core flow              |
+| Alternative Paths               | E2E                  | P0-P1             | One test per CRITICAL alternative that changes outcome |
+| Negative Scenarios (domain)     | E2E                  | P0-P1             | One test per CRITICAL error type                       |
+| Negative Scenarios (infra refs) | Integration/Contract | P2                | Backend validation, not UI                             |
+| Component Mapping (UI states)   | E2E                  | P0-P1             | Verify idle/loading/success/error states               |
+| Success Criteria                | E2E                  | P0                | Include in Happy Path test                             |
+| UX Validation                   | E2E                  | P1-P2             | Accessibility checks if IMPORTANT                      |
 
 For Infrastructure Behaviors (standard refs like "Standard NET-001"): create Integration/Contract tests, NOT E2E.
 
 ### Step 2: Decide Test Cases
 
-Use coverage strategy from Section Mapping Table.
-- One Happy Path E2E (P0)
-- One E2E per Alternative that changes outcome (P0-P1 based on criticality)
-- One E2E per domain-specific error type (P0-P1)
-- Integration/Contract tests for Infrastructure Behaviors (standard refs) (P2)
+Use coverage strategy from Section Mapping Table: Happy Path E2E (P0), Alternatives E2E (P0-P1), domain errors E2E (P0-P1), Infrastructure Integration/Contract (P2)
 
 ### Step 3: Define Test Data
 
-If test-data-catalog provided → use IDs (e.g., TD-EMAIL-VALID-UNIQUE).
-If not → create inline Test Data section with reusable IDs.
-- Use unique emails for create flows
-- Use seeded records for duplicate scenarios
-- Cleanup strategy: use only if explicitly documented in flow or standards; otherwise state "Cleanup: See test infrastructure docs"
-
-**Validation**: Verify Test Data IDs match their usage in test cases (e.g., TD-NAME-VALID used for Name field, not Email field).
+Use catalog IDs if provided, else create inline Test Data section. Unique emails for create, seeded for duplicates. Cleanup only if documented. Validate TD-IDs match field usage.
 
 ### Step 4: Write Test Cases
 
 Each test case format:
+
 - TC ID: TC-<FLOWCODE>-###
 - Fields: Title, Priority (P0/P1/P2), Type (E2E/E2E+Mock/Integration/Contract), Preconditions, Test Data, Cleanup, Covers (flow section references)
 - Steps: Action / Expected / Source (no combined steps)
@@ -89,26 +81,9 @@ Each test case format:
   - **Source**: Citation showing origin (e.g., "Flow line 29", "Standard NET-001 UI Requirements", "Field Validations#email")
 - Covers field examples: "Happy Path Steps 1-5", "Alternative A1", "Negative Scenario N2"
 
-**Test Types**:
-- **E2E**: UI steps from flow only, no mocking
-- **E2E+Mock**: UI steps with infrastructure mocking (network/server errors from standards)
-- **Integration**: API-level tests, no UI steps
-- **Contract**: API request/response validation
+**Test Types**: E2E (UI only), E2E+Mock (UI+infra mocking), Integration (API only), Contract (API validation)
 
-Example (plain format for file):
-```
-TC-REG-001: Register happy path
-Priority: P0
-Type: E2E
-Covers: Happy Path Steps 1-4
-Preconditions: User not authenticated
-Test Data: Name=TD-NAME-VALID, Email=TD-EMAIL-VALID-UNIQUE
-
-Steps:
-1. Navigate /registration → Form displays | Flow:29
-2. Enter name, email → Submit enabled | Flow:30-31
-3. Click Register → Loading state, success message, redirect /login | Flow:32, Success:35-37
-```
+Example: TC-REG-001: P0 E2E covering Happy Path 1-4, steps with Action → Expected | Source citations
 
 ### Step 5: Pre-Output Validation (Mandatory, Blocking)
 
@@ -120,7 +95,7 @@ Output validation checklist BEFORE creating test file. If violations → fix →
 2. **Flow-Based Traceability** — Every flow section covered by ≥1 test; every test links to flow sections via Covers field
 3. **Test Type Accuracy** — E2E tests have UI steps only; E2E+Mock tests have UI steps with mocked infrastructure; Integration/Contract tests for backend/API validation with no UI steps
 4. **Coverage Completeness** — Happy Path has P0 test; every Alternative/Error from flow has test
-5. **Test Data References** — All test data uses TD-IDs (not literal strings); TD-ID names match usage (TD-NAME-* for name fields, TD-EMAIL-* for email fields)
+5. **Test Data References** — All test data uses TD-IDs (not literal strings); TD-ID names match usage (TD-NAME-_ for name fields, TD-EMAIL-_ for email fields)
 6. **Source Citation** — Every Expected Result has Source field citing exact document location (flow line number, standard section, field validation reference)
 
 If violations → fix → re-run all 6 → confirm pass → proceed.
@@ -130,6 +105,7 @@ If violations → fix → re-run all 6 → confirm pass → proceed.
 Create single markdown file at `docs/{flow-name}/testCases.md`:
 
 **Format rules (minimalist for Claude):**
+
 - No bold, italics, or decorative formatting
 - Plain text, bullet lists only where needed
 - Metadata: Flow name, source file, date
@@ -143,6 +119,7 @@ Format with Prettier, then stage: `npx prettier --write docs/{flow-name}/testCas
 ### Step 8: Console Report
 
 Output to console (not in file):
+
 ```
 File: docs/{flow-name}/testCases.md
 Test cases: X (Y P0, Z P1, W P2)
@@ -167,6 +144,7 @@ Do NOT ask: Test priorities (use Section Mapping), test types (use flow section)
 ## Final Checklist
 
 Before output, verify all pass:
+
 - [ ] All Expected Results are observable (no backend/API/DB)
 - [ ] All Expected Results have Source citation
 - [ ] Every flow section has ≥1 test (Covers field)

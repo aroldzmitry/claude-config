@@ -16,6 +16,7 @@ Execute documentation workflow: user-flow → parallel artifacts → work-plan �
 ## Metrics Tracking
 
 Track for each main phase (user-flow, check-list, test-case, work-plan, validate):
+
 - Start/end timestamps (ISO 8601)
 - Duration in seconds
 - Token usage (parse from system warnings or output)
@@ -48,6 +49,7 @@ Call `/docs:work-plan {FLOW_PATH}` via SlashCommand → execute expanded prompt 
 Call `/docs:validate {FLOW_PATH}` via SlashCommand → execute expanded prompt inline.
 
 Parse output for:
+
 - Quality Score (X.X/10)
 - Missing Files list
 - Coverage Gaps list
@@ -59,6 +61,7 @@ Parse output for:
 If score ≥ 9 → complete (go to Output)
 
 If score < 9 and iterations < 3:
+
 1. Categorize issues by source command
 2. Call fix commands with issue context
 3. Re-validate
@@ -66,6 +69,7 @@ If score < 9 and iterations < 3:
 5. Repeat evaluation
 
 Issue categorization rules:
+
 - Missing Files → call corresponding command (check-list, test-case, work-plan)
 - Coverage Gaps in checklist → `/docs:check-list {FLOW_PATH}` with instruction to add missing items
 - Coverage Gaps in test cases → `/docs:test-case {FLOW_PATH}` with instruction to add missing coverage
@@ -79,6 +83,7 @@ If score < 9 after 3 iterations → go to Dialog.
 ## Output
 
 Status format per phase:
+
 ```
 [Phase X] {phase-name}
   Status: {running | complete | skipped}
@@ -87,6 +92,7 @@ Status format per phase:
 ```
 
 After validation:
+
 ```
 Validation Score: {X.X}/10
 Issues: {count by category}
@@ -94,6 +100,7 @@ Iteration: {N}/3
 ```
 
 Final summary:
+
 ```
 Files created/updated:
 - {path}
@@ -117,6 +124,7 @@ TOTAL                    {X.X}s      {N}
 After 3 failed iterations (score still < 9):
 
 Use AskUserQuestion:
+
 - Header: "Next Steps"
 - Question: "Validation score is {X.X}/10 after 3 fix attempts. How to proceed?"
 - Options:

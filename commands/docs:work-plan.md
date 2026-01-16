@@ -2,6 +2,7 @@
 description: Generate work plan (what to do) from user flow by analyzing codebase status
 argument-hint: [user-flow-file-path]
 model: sonnet
+allowed-tools: "Read, Grep, Glob, Write, Bash"
 ---
 
 # Work Plan Generator
@@ -29,6 +30,7 @@ If missing sections → output error → stop.
 ### Step 2: Extract Requirements
 
 From flow, extract WHAT system must do:
+
 - **UI** — what user sees/interacts with
 - **Behavior** — what happens on actions
 - **Validation** — what rules apply
@@ -52,6 +54,7 @@ For each requirement, search codebase to determine status:
 ### Step 4: Output
 
 **Console summary:**
+
 ```
 Requirements: N total (UI: X | API: Y | State: Z | Domain: W)
 Status: Done: A | Partial: B | Missing: C

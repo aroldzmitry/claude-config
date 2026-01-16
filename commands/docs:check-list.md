@@ -2,6 +2,7 @@
 description: "Convert user flow documentation into verifiable Pass/Fail checklist with traceability"
 argument-hint: "<user-flow-path>: path to user flow document"
 model: sonnet
+allowed-tools: "Read, Write, Bash, AskUserQuestion"
 ---
 
 # User Flow Checklist Generator
@@ -102,16 +103,7 @@ Each entity becomes one or more checklist items.
 
 ### 5. Group by Theme
 
-Organize items into sections:
-
-- **Page Load & Entry** — initial state, preconditions met
-- **Form & Validation** — input checks, inline errors, disabled states
-- **Submit & State Transitions** — loading, success, error states
-- **Success & Navigation** — confirmation, redirect, data persistence
-- **Alternative Conditions** — conditional logic from Alternative Paths
-- **Errors & Recovery** — negative scenarios, retry, standard references
-- **Accessibility** — ONLY if flow has UX Validation Checklist section with accessibility requirements
-- **Analytics Events** — ONLY if Component Mapping includes analytics tracking
+Sections: Page Load & Entry, Form & Validation, Submit & State Transitions, Success & Navigation, Alternative Conditions, Errors & Recovery, Accessibility (if in flow), Analytics (if tracked)
 
 ### 6. Normalize to User-Observable Assertions
 
@@ -123,70 +115,32 @@ Convert Happy Path steps to user-visible outcomes only.
 - Implementation details (file paths, class names, hook names)
 - Intermediate states ("focused", "validating") unless critical
 
-**3-part Happy Path transformation pattern:**
+**3-part Happy Path transformation:**
 
-Part 1: User Action (CL-xxx: Action is possible)
-→ Interaction element visible/enabled (button, field, link)
+Part 1: User Action (element visible/enabled)
+Part 2: System Response (UI change occurs)
+Part 3: Observable State (final state matches expectation)
 
-Part 2: System Response (CL-xxx+1: Response visible)
-→ Expected UI change occurs (page loads, message displays, spinner shows)
-
-Part 3: Observable State (CL-xxx+2: State reflects outcome)
-→ Final state matches expectation (redirected, field updated, notification visible)
-
-Example:
-Happy Path: "User enters email → System validates → Error displays if invalid"
-
-Checklist items:
-
-- CL-001: Email input field accepts user input
-- CL-002: Validation error displays below field on invalid email
-- CL-003: Error message text matches [FIELD-VALIDATIONS#email](../standards/FIELD-VALIDATIONS.md#email)
+Example: "User enters email → validates → error displays" becomes CL-001 (field accepts input), CL-002 (error displays), CL-003 (message matches FIELD-VALIDATIONS)
 
 ### 7. Extract Form Field Validations
 
-For flows with Form Fields section:
+For each field: extract required/optional, link to FIELD-VALIDATIONS.md, create CL items for required/format/error message.
 
-1. For each field: extract required/optional status
-2. Link to `docs/standards/FIELD-VALIDATIONS.md` anchor
-3. Create CL items for: required validation, format validation, error message display
-
-Example:
-Flow specifies: "Name field: required, validation: [FIELD-VALIDATIONS#name](../standards/FIELD-VALIDATIONS.md#name)"
-
-Creates:
-
-- CL-008: Name field is required (error on submit if empty)
-- CL-009: Error message matches FIELD-VALIDATIONS#name contract
+Example: "Name: required, FIELD-VALIDATIONS#name" → CL-008 (required check), CL-009 (message matches contract)
 
 ### 8. Add Conditional Checks
 
-From Alternative Paths, create `if-then` items:
-
-- `A1: Email exists → err_409 displayed + link to login visible`
-- `A2: Cancel clicked → form data cleared + returns to previous page`
+From Alternative Paths, create if-then items (e.g., A1: Email exists → err_409 + login link; A2: Cancel → clear + return)
 
 ### 9. Add Error Contract
 
-From Negative Scenarios section, create **consolidated error checks**:
-
-**Domain-Specific Errors** (from Negative Scenarios domain-specific subsection):
-Create specific checks for each unique error type with different behavior.
-
-**Infrastructure Errors** (from Negative Scenarios inline standard references):
-Flow uses format: "Applies: Standard {ID} (scope: context)"
-Checklist item: "CL-xxx: Error handling follows Standard {ID} contract"
+Domain-Specific: specific checks per unique error type
+Infrastructure: "CL-xxx: Error handling follows Standard {ID} contract" from flow standard refs
 
 ### 10. Map to Component States (Critical Only)
 
-From Component Mapping section, create checks for:
-
-- Initial/idle state (page load)
-- Loading state (during async operations)
-- Success state (completion confirmation)
-- Error state (error display)
-
-Skip: focused, filled, validating, disabled, empty (unless explicitly critical in flow).
+Create checks for: idle (load), loading (async), success (confirm), error (display). Skip: focused, filled, validating, disabled, empty (unless critical).
 
 ### 11. Pre-Output Validation (Internal Self-Check)
 

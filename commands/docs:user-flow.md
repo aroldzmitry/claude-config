@@ -58,12 +58,10 @@ Controlled Mode (complex flows): Agent asks user to select:
 Check project documentation (README.md, CLAUDE.md) first. Only ask questions when information is unclear.
 
 Product Context (ask only if unclear from docs):
+
 1. Product and target users
 
-Flow-Specific (always confirm):
-2. User tasks to solve (not pages)
-3. System responsibility boundaries
-4. External systems involved (third-party integrations only: OAuth providers, SMTP, payment gateways, Plaid, etc. — NOT internal backend API, database, or infrastructure)
+Flow-Specific (always confirm): 2. User tasks to solve (not pages) 3. System responsibility boundaries 4. External systems involved (third-party integrations only: OAuth providers, SMTP, payment gateways, Plaid, etc. — NOT internal backend API, database, or infrastructure)
 
 ### Auto-Generation (All Modes)
 
@@ -131,13 +129,7 @@ After completeness validation, evaluate UX criteria and capture user selection:
 
 2. Classify each criterion: Yes (fully met), Partial (works but incomplete), No (missing/broken)
 
-3. Extract improvements for Partial/No items:
-   - Loading state missing → "Add loading spinner/disabled button during form submission"
-   - Unsaved changes warning missing → "Add confirmation dialog when closing sidebar with unsaved data"
-   - Success feedback missing → "Add toast notification after successful create/update/delete"
-   - Error visibility missing → "Show inline error messages for validation failures"
-   - Cancellation unclear → "Add cancel button with ESC keyboard shortcut"
-   - Next action unclear → "Add visible CTA button or next step indicator"
+3. Extract improvements for Partial/No items (examples: loading spinner during submit, confirmation dialog on close, toast on success, inline errors, cancel button, visible CTA)
 
 4. Use AskUserQuestion with multiSelect=true:
    - Header: "UX Improvements"
@@ -156,11 +148,7 @@ After completeness validation, evaluate UX criteria and capture user selection:
 
 After UX improvements, run completeness check and capture user selection:
 
-1. Query codebase via Grep/Read for 4 categories:
-   - Constraints: field limits, file size limits, list maximums
-   - UI States: button disabled conditions, loading states, validation timing
-   - Confirmations: unsaved changes warnings, destructive action dialogs
-   - Security: re-auth requirements, session handling
+1. Query codebase via Grep/Read for: Constraints, UI States, Confirmations, Security
 
 2. Classify findings: implemented vs not-implemented
 
@@ -238,9 +226,6 @@ External Systems: [third-party integrations — omit line if none]
 
 ## Goal: {Goal Name}
 
-[For multi-step or multi-page flows: one Goal section per distinct page/action]
-[For single-form flows: one Goal section combining all field interactions]
-
 ### Happy Path
 
 Entry point: [URL/button/location]
@@ -251,20 +236,12 @@ Entry point: [URL/button/location]
 
 Sequence:
 
-[For single-form: list all field interactions in one sequence]
-
-1. [Field 1 interaction] → [response]
-2. [Field 2 interaction] → [response]
-3. [Submit action] → [loading] → [success] → [all changes visible]
-
-[For multi-step: separate sequences per page/action]
-
 1. [User action] → [System response] → [UI state change]
 2. [User observes result]
 
 Success Criteria:
 
-- [Observable outcomes for all fields/actions]
+- [Observable outcomes]
 - [Visible confirmation]
 
 ### Form Fields
@@ -303,6 +280,7 @@ Applies: Standard NET-001 (scope: form submission)
 ### UI State Behaviors
 
 Element Name:
+
 - State: [condition when state applies]
 - Behavior: [what user observes]
 ```
@@ -312,28 +290,12 @@ Field Validation Registry: `docs/standards/FIELD-VALIDATIONS.md`
 ```markdown
 # Field Validation Rules
 
-Central registry for all form field validation rules. Referenced by user flows to avoid duplication.
+## {Field Name}
 
-## Email
-
-Validation Rules:
-
-- Format: Valid email format (RFC 5322)
-- Required: Context-dependent (see flow)
-- Client-side: None (submit button disabled when empty)
-- Server-side: express-validator `isEmail()`
-
-Error Messages:
-
-- Empty: "Email is required"
-- Invalid format: Default express-validator message
-
-Examples:
-
-- Valid: user@example.com
-- Invalid: invalidemail, test@, user@domain
-
-Flows using this field: 01-register, 02-login, 03-edit-profile
+Validation Rules: [format, required, client/server-side validators]
+Error Messages: [list]
+Examples: [valid/invalid]
+Flows using: [flow-ids]
 ```
 
 Shared Standard file: `docs/standards/{ID}-{name}.md`
@@ -341,110 +303,34 @@ Shared Standard file: `docs/standards/{ID}-{name}.md`
 ```markdown
 # Standard {ID}: {Name}
 
-## Scope
-
-Applies to: [all flows | specific context]
-
-## Behavior Definition
-
-### Trigger Conditions
-
-- [When applies]
-
-### System Response
-
-1. [Step 1]
-2. [Step 2]
-
-### UI Requirements
-
-- [Visual element]
-- [Interaction]
-
-### Exit Conditions
-
-- [How resolved]
-
-## Test Criteria
-
-- [Observable behavior]
-
-## Examples
-
-- Flow X: [applies how]
-
-## Related Standards
-
-- [Related standard ID]
+Scope: [all flows | specific context]
+Trigger: [conditions]
+Response: [steps]
+UI Requirements: [elements, interactions]
+Exit: [resolution]
+Test Criteria: [observable behavior]
 ```
 
 ## Final Steps
 
-1. **Update docs/USER_FLOWS.md**
+1. Update `docs/USER_FLOWS.md` (create if missing): add entry with link and summary
+2. Update `docs/standards/FIELD-VALIDATIONS.md` (create if missing): add/update field sections, flows list
+3. Update `docs/standards/STANDARDS.md` (create if missing): list new/used standards, categories
+4. Format and stage: `npx prettier --write [files] && git add [files]`
+5. Output: path, goals, field validations, UX/gaps integrated, standards used/created, files staged
 
-   - Create file if missing (with header: "# User Flows")
-   - Add entry: `[Goal Name](./{flow-name}/userFlows.md) — one-line summary`
-   - If category section doesn't exist, create it
+## Rules
 
-2. **Update docs/standards/FIELD-VALIDATIONS.md**
-
-   - Create file if missing (use template above)
-   - For each field in flow: check if field section exists
-   - Add new field sections or update existing with discovered validation rules
-   - Update "Flows using this field" list with current flow number
-
-3. **Update docs/standards/STANDARDS.md**
-
-   - Create file if missing (with header: "# Shared Standards")
-   - Add section "## Available Standards" if missing
-   - Ensure FIELD-VALIDATIONS.md is listed: `- [Field Validation Rules](./FIELD-VALIDATIONS.md) — Central registry for form field validation`
-   - For each new standard created: `- {ID} [{Name}](./{ID}-{name}.md) — one-line description`
-   - For reused standards: verify entry exists
-   - Add/update section "## Standard Categories" grouping by type (Error Handling, Loading, Auth, etc.)
-
-4. **Format and Stage Files**
-
-   - Collect created/modified files: flow, indexes, field validations (if updated), standards (if created)
-   - Format: `npx prettier --write [all collected files]`
-   - Stage: `git add [all formatted files]`
-
-5. **Output Summary**
-   - Path: `docs/{flow-name}/userFlows.md`
-   - Goals documented: `[list]`
-   - Field validations: `[list of fields added/updated in FIELD-VALIDATIONS.md]`
-   - UX improvements + implementation gaps integrated: `[list of selected items woven into flow]`
-   - Shared standards used: `[list of standard IDs referenced]`
-   - Shared standards created: `[list of new standard IDs with names]`
-   - Files staged: `[list of git-added files]`
-
-## Rules (Priority Order)
-
-1. Check docs for product context first, ask only if unclear; always confirm flow-specific boundaries (tasks, boundaries, external systems)
-2. Recommend mode based on complexity: simple → auto, complex → controlled
-3. Each goal must be verb-based (register, login, find, compare, etc.)
-4. Every scenario must return user to goal or safe state
-5. Happy path must be testable (→ can become Playwright test)
-6. Normalization step is MANDATORY, never skip
-7. Pre-Write Validation is BLOCKING — output checklist, fix violations, confirm all pass before Write
-8. Check existing flows AND standards to avoid duplicates
-9. User Flow MUST NOT contain full definitions of shared behaviors
-10. User Flow MAY ONLY reference standards by ID and name with scope
-11. Before creating new standard, check `docs/standards/STANDARDS.md` for existing match
-12. Negative Scenarios contain ONLY domain errors, business violations, flow-specific edge cases
-13. Infrastructure errors (network, auth, server) ALWAYS reference standards with scope, never inline
-14. Happy Path sequences contain ONLY Observable statements — NO backend operations, NO file paths
-15. NO technical implementation details anywhere in document
-16. Infrastructure standard references must include scope: "Applies: Standard NET-001 (scope: form submission)"
-17. Minimize verbosity: no parenthetical explanations, no technical details in sequences
-18. Flow-specific system boundaries (tasks, boundaries, external systems) are mandatory; product context only asked if docs unclear
-19. User Types section: only list types who can START this flow (not all users in system)
-20. Alternative Paths: domain-specific edge cases, cancellations, user recoveries
-21. Negative Scenarios in flow: only domain/business errors (infrastructure → standards)
-22. Cross-Goal Notes: interactions between goals, shared state, dependencies
-23. Component Mapping: use generic UI element names (form, button, field), NOT implementation class names
-24. UX Validation: evaluate 5 criteria internally, extract improvements for Partial/No items, show multi-select to user, integrate selected improvements into flow description (Happy Path, Alternative Paths, UI State Behaviors)
-25. Test each generated flow becomes actual Playwright test to verify happy path accuracy
-26. Single-form consolidation: Multiple goals sharing same page/form/button → merge into one Goal section combining all interactions
-27. Output document contains ONLY sections from Output Format template. No TBD Items, no custom sections.
-28. Unselected improvements/gaps = current implementation acceptable. Do not document as missing.
-29. No decorative markdown formatting (bold, italic, emoji) — output must match template format exactly
+1. Check docs first, ask only if unclear; always confirm flow boundaries (tasks, start/end, external systems)
+2. Mode: simple → auto, complex → controlled
+3. Goals: verb-based, testable, return to safe state
+4. Normalization + Pre-Write Validation: MANDATORY, BLOCKING — output checklist, fix all, then Write
+5. Check existing flows/standards to avoid duplicates before creating
+6. Standards: reference by ID+scope only, never inline definitions
+7. Happy Path: Observable only — NO backend ops, file paths, technical details
+8. Negative Scenarios: domain errors OR standard refs with scope (never inline infrastructure)
+9. User Types: only who can START flow
+10. Component Mapping: generic UI names (form, button, field), NOT class names
+11. UX/Gaps: evaluate, show multi-select, integrate selected only
+12. Output: template sections only, no TBD/custom sections, no decorative formatting
+13. Single-form: merge multiple goals sharing same form into one Goal section

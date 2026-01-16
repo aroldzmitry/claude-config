@@ -1,5 +1,4 @@
 {
-  "enabledMcpjsonServers": ["context7"],
   "permissions": {
     "allow": [
       "Read(/Users/dmitry/WebstormProjects/**)",
@@ -27,6 +26,9 @@
     "ask": [],
     "defaultMode": "default"
   },
+  "enabledMcpjsonServers": [
+    "context7"
+  ],
   "hooks": {
     "PreToolUse": [
       {
@@ -39,5 +41,6 @@
         ]
       }
     ]
-  }
+  },
+  "model": "sonnet"
 }

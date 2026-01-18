@@ -35,32 +35,24 @@ You are helping create, update, or validate documentation following universal pr
 
 # Workflow
 
-## Step 1: Analyze Context
-
-For target directory only (not entire project):
-- Glob for existing documentation in target directory
-- If user provided file path, read that file
-- Read README.md if exists in that directory
-- Understand existing style/structure/principles used locally
-
-## Step 2: Interactive Planning
+## Step 1: Interactive Planning
 
 Ask questions one at a time:
 - Provide brief context why asking
-- Suggest options based on evidence from Step 1
+- Suggest options based on evidence from existing documentation (use Grep/Read/Glob as needed)
 - Allow custom answer
 - Allow discussion before proceeding
 
 Questions adapt to context - ask what's needed to understand requirements.
 
-## Step 3: Iterative Content Creation
+## Step 2: Iterative Content Creation
 
 - Work from large blocks to smaller details
 - Create structure, then fill content, then polish
 - If existing docs found: discuss how to integrate them into result
 - Adjust based on feedback from questions
 
-## Step 4: Pre-Write Validation
+## Step 3: Pre-Write Validation
 
 Run validation checklist against all 12 principles:
 1. Clear purpose stated
@@ -76,7 +68,7 @@ Run validation checklist against all 12 principles:
 
 If issues found, fix before writing.
 
-## Step 5: Write File
+## Step 4: Write File
 
 - Write or Edit file
 - Format with prettier if available

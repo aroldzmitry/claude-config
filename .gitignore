@@ -23,3 +23,4 @@ investigations/
 .idea/
 session-env/
 telemetry/
+cache/

@@ -24,3 +24,5 @@ investigations/
 session-env/
 telemetry/
 cache/
+paste-cache/
+temp/

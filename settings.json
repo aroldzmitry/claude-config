@@ -1,4 +1,7 @@
 {
+  "env": {
+    "ENABLE_TOOL_SEARCH": "true"
+  },
   "permissions": {
     "allow": [
       "Read(/Users/dmitry/WebstormProjects/**)",
@@ -26,7 +29,10 @@
     "ask": [],
     "defaultMode": "default"
   },
-  "enabledMcpjsonServers": [],
+  "model": "opus",
+  "enabledMcpjsonServers": [
+    "trello"
+  ],
   "hooks": {
     "PreToolUse": [
       {
@@ -40,8 +46,6 @@
       }
     ]
   },
-  "model": "sonnet",
-  "env": {
-    "ENABLE_TOOL_SEARCH": "true"
-  }
+  "autoUpdatesChannel": "stable",
+  "skipDangerousModePermissionPrompt": true
 }

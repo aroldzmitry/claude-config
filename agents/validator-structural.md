@@ -1,7 +1,7 @@
 ---
 name: validator-structural
 description: "Validates code structure: duplicates, unextracted logic, naming, file placement, architecture pattern violations."
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep
 model: sonnet
 permissionMode: plan
 background: true

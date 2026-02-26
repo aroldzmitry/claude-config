@@ -1,7 +1,7 @@
 ---
 name: validator-file
 description: "File-level validator: logic errors, edge cases, readability, naming, dead code, project pattern compliance."
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep
 model: sonnet
 permissionMode: plan
 background: true

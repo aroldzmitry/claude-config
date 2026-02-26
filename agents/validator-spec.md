@@ -1,7 +1,7 @@
 ---
 name: validator-spec
 description: "Spec compliance validator: all requirements implemented, nothing extra, test cases covered."
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep
 model: sonnet
 permissionMode: plan
 background: true

@@ -3,6 +3,7 @@ name: improvement-analyzer
 description: "Analyzes implementation process errors and patterns. Produces improvement suggestions for system instructions, not project-specific fixes."
 tools: Read, Glob, Grep, Write
 model: inherit
+permissionMode: acceptEdits
 memory: project
 ---
 

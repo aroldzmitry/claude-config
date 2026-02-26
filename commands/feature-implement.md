@@ -42,7 +42,10 @@ After: verify file created. Extract (a) implementation steps, (b) test decision 
 
 Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 3.
 
-Otherwise spawn `test-writer`. Prompt: write red (failing) test files per specs + plan.
+Otherwise spawn `test-writer` with prompt:
+
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
 
 ## Phase 3: Implementation
 

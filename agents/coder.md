@@ -69,10 +69,13 @@ For each step in order:
 1. Read files listed in the step's **Files** field
 2. Scan for similar existing code as structural reference
 3. Implement the described changes
-4. Run every non-empty CLI command (`cli_lint`, `cli_typecheck`, `cli_test`)
-5. All pass → next step
-6. Any fail → analyze root cause, fix, re-run all CLI commands
-7. After 3 failed attempts → record `[unresolved] Step N: <error>`, continue
+4. Run `cli_lint`, `cli_typecheck` (skip empty)
+5. Find test file(s) matching this step's source files → run `cli_test` for matched files only (e.g., `jest path/to/file.test.ts`, `pytest path/to/test_file.py`). No matching test file → skip.
+6. All pass → next step
+7. Any fail → analyze root cause, fix, re-run failed commands
+8. After 3 failed attempts → record `[unresolved] Step N: <error>`, continue
+
+After all steps complete → run full `cli_test` to verify the entire test suite passes.
 
 ### fix-cli
 

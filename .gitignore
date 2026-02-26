@@ -1,28 +1,29 @@
 # Temporary files
-debug/
-file-history/
-plans/
-downloads/
-ide/
+/debug/
+/file-history/
+/plans/
+/downloads/
+/ide/
 *.log
 
 # Runtime data
-.backups/
-.improvements/
-projects/
-shell-snapshots/
-statsig/
-todos/
-tasks/
+/.backups/
+/.improvements/
+/projects/
+/shell-snapshots/
+/statsig/
+/todos/
+/tasks/
 history.jsonl
 
 # Cache and runtime directories
 stats-cache.json
-plugins/
-investigations/
-.idea/
-session-env/
-telemetry/
-cache/
-paste-cache/
-temp/
+/plugins/
+/investigations/
+/.idea/
+/session-env/
+/telemetry/
+/cache/
+/paste-cache/
+/temp/
+/image-cache/

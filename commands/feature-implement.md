@@ -46,7 +46,14 @@ Otherwise spawn `test-writer`. Prompt: write red (failing) test files per specs 
 
 ## Phase 3: Implementation
 
-Spawn `coder`. Prompt: implement per plan step by step. Include CLI commands — run after each step, fix before proceeding.
+Spawn `coder` with prompt:
+
+    mode: implement
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+    cli_lint: CLI_LINT
+    cli_typecheck: CLI_TYPECHECK
+    cli_test: CLI_TEST
 
 ## Phase 4: Validation Cycle
 
@@ -58,7 +65,17 @@ Run CLI_LINT, CLI_TYPECHECK, CLI_TEST via Bash (skip empty).
 
 All pass → 4b.
 Fail + `cli_iter > 3` → record unresolved, Phase 5.
-Fail + `cli_iter ≤ 3` → spawn new `coder` with CLI errors → re-run 4a.
+Fail + `cli_iter ≤ 3` → spawn new `coder` with prompt:
+
+    mode: fix-cli
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+    cli_lint: CLI_LINT
+    cli_typecheck: CLI_TYPECHECK
+    cli_test: CLI_TEST
+    cli_errors: <full error output>
+
+Re-run 4a.
 
 ### 4b: AI Loop (max 2)
 
@@ -71,7 +88,17 @@ Otherwise spawn `aggregator` with all 4 reports → deduplicated unified report.
 
 No issues → Phase 5.
 Issues + `ai_iter > 2` → record unresolved, Phase 5.
-Issues + `ai_iter ≤ 2` → spawn new `coder` with aggregator report + CLI commands → re-run from 4a.
+Issues + `ai_iter ≤ 2` → spawn new `coder` with prompt:
+
+    mode: fix-ai
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+    cli_lint: CLI_LINT
+    cli_typecheck: CLI_TYPECHECK
+    cli_test: CLI_TEST
+    report: <aggregator unified report>
+
+Re-run from 4a.
 
 ## Phase 5: Improvement Analysis
 

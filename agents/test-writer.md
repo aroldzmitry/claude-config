@@ -78,11 +78,11 @@ For each testable unit:
 
 # Output
 
-    TESTS_CREATED:
+    DONE: {N} test files created
     - path/to/test-file-1.test.ts
     - path/to/test-file-2.test.ts
 
     WARNINGS:
     - test-cases.md missing — tests derived from spec
 
-Omit WARNINGS if none.
+Omit WARNINGS if none. Orchestrator does not parse this output — coder discovers test files via Glob.

@@ -13,7 +13,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 - Fully autonomous — no user questions. Ambiguities → decide, note in report.
 - Fail fast — missing files or critical agent failure → stop, report what was completed.
-- Before each phase: `[Phase N/6: description]`
+- Before each phase: `[Phase N: description]` (phases 1-6; phase 0 is silent precondition check)
 - Match user's language.
 
 # Conventions
@@ -21,6 +21,12 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - `SPEC_DIR` = `temp/$ARGUMENTS/`
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
+- Issue counters for improvement-analyzer prompt:
+  - `issues_found` — total verified findings from all aggregator runs (excludes false positives, excludes CLI errors).
+  - `issues_fixed` — `issues_found - issues_remaining`.
+  - `issues_remaining` — count of items in `unresolved_summary`.
+  - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
+  - `ai_iterations` — number of AI fix cycles (coder fix-ai spawns). Initial validator run = 0.
 
 # Workflow
 
@@ -115,6 +121,8 @@ Parse aggregator output: split at `## False Positives`.
 - **Before** the header = verified findings (or `NO_ISSUES`). Store as `VERIFIED_REPORT`.
 - **After** the header = false positive log. Store as `FALSE_POSITIVES` (empty if no such section).
 
+Collect each iteration's `VERIFIED_REPORT` into `ALL_VERIFIED_REPORTS` (labeled `## AI Iteration N`).
+
 `VERIFIED_REPORT` is `NO_ISSUES` → Phase 5.
 `VERIFIED_REPORT` has issues + `ai_iter > 2` → record unresolved, Phase 5.
 `VERIFIED_REPORT` has issues + `ai_iter ≤ 2` → spawn new `coder` with prompt:
@@ -142,6 +150,7 @@ Spawn `improvement-analyzer` with prompt:
     issues_remaining: <count>
     unresolved_summary: <list of unresolved issues, or "none">
     false_positives: <FALSE_POSITIVES from all aggregator runs, or "none">
+    verified_reports: <ALL_VERIFIED_REPORTS, or "none">
 
 ## Phase 6: Finalize
 

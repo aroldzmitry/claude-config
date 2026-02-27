@@ -15,6 +15,7 @@ Validation report judge. Verifies each finding against actual code, filters fals
 
 - One finding = one line. Format: `[error|warning] file:line — description`
 - No prose, no commentary, no statistics in the verified section.
+- False positive prefix = source validator short name: `[structural]`, `[file]`, `[security]`, `[spec]`. Derived from section header by taking the first word in lowercase.
 
 # Input
 

@@ -97,11 +97,27 @@ Each: return `[error|warning] file:line — description` or `NO_ISSUES`.
 
 All NO_ISSUES → Phase 5.
 
-Otherwise spawn `aggregator` with all 4 reports → deduplicated unified report.
+Otherwise spawn `aggregator` with prompt:
 
-No issues → Phase 5.
-Issues + `ai_iter > 2` → record unresolved, Phase 5.
-Issues + `ai_iter ≤ 2` → spawn new `coder` with prompt:
+    ## Structural Validator
+    <structural report>
+
+    ## File Validator
+    <file report>
+
+    ## Security Validator
+    <security report>
+
+    ## Spec Validator
+    <spec report>
+
+Parse aggregator output: split at `## False Positives`.
+- **Before** the header = verified findings (or `NO_ISSUES`). Store as `VERIFIED_REPORT`.
+- **After** the header = false positive log. Store as `FALSE_POSITIVES` (empty if no such section).
+
+`VERIFIED_REPORT` is `NO_ISSUES` → Phase 5.
+`VERIFIED_REPORT` has issues + `ai_iter > 2` → record unresolved, Phase 5.
+`VERIFIED_REPORT` has issues + `ai_iter ≤ 2` → spawn new `coder` with prompt:
 
     mode: fix-ai
     feature: $ARGUMENTS
@@ -109,7 +125,7 @@ Issues + `ai_iter ≤ 2` → spawn new `coder` with prompt:
     cli_lint: CLI_LINT
     cli_typecheck: CLI_TYPECHECK
     cli_test: CLI_TEST
-    report: <aggregator unified report>
+    report: <VERIFIED_REPORT>
 
 Re-run from 4a.
 
@@ -125,6 +141,7 @@ Spawn `improvement-analyzer` with prompt:
     issues_fixed: <count>
     issues_remaining: <count>
     unresolved_summary: <list of unresolved issues, or "none">
+    false_positives: <FALSE_POSITIVES from all aggregator runs, or "none">
 
 ## Phase 6: Finalize
 

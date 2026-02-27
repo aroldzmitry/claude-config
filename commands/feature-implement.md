@@ -29,14 +29,17 @@ Implementation orchestrator. Delegates to agents — never writes application co
 1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`"
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. `SPEC_DIR/technical-requirements.md` missing → stop: "Run `/feature-tech $ARGUMENTS` first."
-3. Read spec files: `technical-requirements.md`, `business-requirements.md`, `test-cases.md` (last two optional).
-4. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
+4. Read spec files: `technical-requirements.md`, `business-requirements.md`, `test-cases.md` (last two optional).
+5. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 
 ## Phase 1: Planning
 
-Spawn `planner`. Prompt: produce `implementation-plan.md` in SPEC_DIR.
+Spawn `planner` with prompt:
 
-After: verify file created. Extract (a) implementation steps, (b) test decision (skip/write + reason).
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+
+After: verify `SPEC_DIR/implementation-plan.md` created. Extract (a) implementation steps, (b) test decision (skip/write + reason).
 
 ## Phase 2: Test Writing
 
@@ -82,7 +85,14 @@ Re-run 4a.
 
 ### 4b: AI Loop (max 2)
 
-Spawn in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`, `validator-spec`.
+`git status --porcelain` → parse file paths, exclude deletions (`D`) → `CHANGED_FILES`.
+
+Spawn all 4 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`, `validator-spec`. Each with prompt:
+
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+    files: CHANGED_FILES
+
 Each: return `[error|warning] file:line — description` or `NO_ISSUES`.
 
 All NO_ISSUES → Phase 5.
@@ -105,7 +115,16 @@ Re-run from 4a.
 
 ## Phase 5: Improvement Analysis
 
-Spawn `improvement-analyzer`. Prompt: process summary (CLI/AI iteration counts, issues found/fixed/remaining). Writes `improvement-suggestions.md` in SPEC_DIR.
+Spawn `improvement-analyzer` with prompt:
+
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+    cli_iterations: <count>
+    ai_iterations: <count>
+    issues_found: <count>
+    issues_fixed: <count>
+    issues_remaining: <count>
+    unresolved_summary: <list of unresolved issues, or "none">
 
 ## Phase 6: Finalize
 

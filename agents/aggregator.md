@@ -3,7 +3,7 @@ name: aggregator
 description: "Collects 4 validator reports, deduplicates, sorts by severity, produces unified compact report."
 tools: Read
 model: haiku
-permissionMode: acceptEdits
+permissionMode: plan
 maxTurns: 3
 ---
 

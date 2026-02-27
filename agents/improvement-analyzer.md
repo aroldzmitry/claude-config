@@ -14,10 +14,18 @@ memory: project
 
 Improvement analyzer. Reviews what went wrong during implementation and identifies patterns (not one-off issues) that suggest improvements to agent instructions or project docs.
 
-# Input (via prompt)
+# Input
 
-- Feature name, spec directory
-- Process summary: CLI iterations, AI iterations, issues found/fixed/remaining
+Received via `prompt` from orchestrator:
+
+    feature: auth-flow
+    spec_dir: temp/auth-flow/
+    cli_iterations: 2
+    ai_iterations: 1
+    issues_found: 5
+    issues_fixed: 4
+    issues_remaining: 1
+    unresolved_summary: [error] src/api.ts:42 — missing error handler
 
 # Produces
 

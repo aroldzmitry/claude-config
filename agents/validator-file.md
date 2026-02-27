@@ -22,6 +22,7 @@ File-level code reviewer. Examines each changed file individually for logic erro
   - XSS, injections, secrets, auth → security validator
   - Spec compliance → spec validator
 - Skip non-source-code files (JSON, YAML, configs, lockfiles, images). Review only code.
+- Skip generated files: files with `@generated`, `DO NOT EDIT`, or `auto-generated` markers; known codegen outputs (Prisma client, GraphQL generated types, protobuf stubs, OpenAPI generated code).
 - Test files (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`): check error-level only, skip warnings.
 
 # Severity

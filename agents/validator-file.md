@@ -64,7 +64,6 @@ Received via `prompt` from orchestrator:
    a. Read the file
    b. Check against error-level criteria
    c. Check against warning-level criteria
-   d. Record findings with exact line numbers
 
 3. After all files reviewed → produce output.
 

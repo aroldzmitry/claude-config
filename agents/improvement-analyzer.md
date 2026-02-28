@@ -151,6 +151,7 @@ Read files based on what the input data indicates:
 - **AI iterations > 0**: read validator agent files relevant to the findings.
 - **False positives present**: read the validator(s) that produced them — prefix in brackets identifies the source: `[security]` → `validator-security.md`, `[file]` → `validator-file.md`, `[structural]` → `validator-structural.md`, `[spec]` → `validator-spec.md`.
 - Glob `docs/*.md` — read project docs to check for gaps.
+- Glob agents (`*.md`) — read Role + Rules of all agents not yet loaded. This enables cross-component root cause tracing (e.g. validator catches repeated issue → root cause may be in planner or test-writer, not coder).
 
 Agent files location: `.claude/agents/` (project-level, higher priority). Fallback: `~/.claude/agents/` (user-level).
 

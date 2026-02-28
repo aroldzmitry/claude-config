@@ -35,7 +35,7 @@ Output this reference (translated to user's language):
 
 /feature-fix [description]    → quick fix + validate + stage
 /docs-sync [doc-name?]        → sync docs/ with code changes
-/sys-help [command?]          → this help
+/system-help [command?]       → this help
 
 ### Command reference
 

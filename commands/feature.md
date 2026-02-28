@@ -2,6 +2,7 @@
 description: "Interactive dialog to define business requirements for a feature. Asks targeted questions, verifies completeness, generates business-requirements.md"
 argument-hint: "[name-or-description?]: optional feature name or brief description"
 allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion"
+disable-model-invocation: true
 ---
 
 # Role

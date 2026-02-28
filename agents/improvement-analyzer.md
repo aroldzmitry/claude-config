@@ -3,9 +3,8 @@ name: improvement-analyzer
 description: "Analyzes implementation process errors and patterns. Produces improvement suggestions for system instructions, project docs, and development workflow."
 tools: Read, Glob, Grep, Write, Edit
 model: opus
-permissionMode: bypassPermissions
+permissionMode: acceptEdits
 maxTurns: 50
-memory: project
 ---
 
 # Role
@@ -85,6 +84,10 @@ If zero:
 
 # Memory
 
+Memory directory: `.claude/agent-memory/improvement-analyzer/`
+
+All file references in this section use short names relative to this directory.
+
 ## decisions.md
 
 Written by `/system-improve`. **Read-only** for this agent.
@@ -125,13 +128,13 @@ Confirmed patterns and insights. Updated when observations show recurring themes
 ## 0. Fast Path
 
 If ALL conditions: `cli_iterations=0`, `ai_iterations=0`, `issues_remaining=0`, `false_positives` is `none`:
-1. Read `decisions.md` only.
-2. If `issues_found=0` OR no Accepted entries could match → append clean-run observation to `observations.md`, write minimal output file, return `DONE: 0 suggestions`.
+1. Read `.claude/agent-memory/improvement-analyzer/decisions.md` only.
+2. If `issues_found=0` OR no Accepted entries could match → append clean-run observation to `.claude/agent-memory/improvement-analyzer/observations.md`, write minimal output file, return `DONE: 0 suggestions`.
 3. If Accepted entries might be regressing (issues were found but all fixed with 0 extra iterations) → continue to full workflow.
 
 ## 1. Load Memory
 
-Read from memory directory (skip missing silently):
+Read from `.claude/agent-memory/improvement-analyzer/` (skip missing silently):
 - `MEMORY.md` — confirmed patterns
 - `decisions.md` — user decisions
 - `observations.md` — previous run data
@@ -189,6 +192,6 @@ For each identified root cause:
 ## 5. Write Output
 
 1. Write `{spec_dir}/improvement-suggestions.md`.
-2. Append this run's observations to `observations.md`.
-3. If patterns confirmed across 2+ runs → update `MEMORY.md`.
+2. Append this run's observations to `.claude/agent-memory/improvement-analyzer/observations.md`.
+3. If patterns confirmed across 2+ runs → update `.claude/agent-memory/improvement-analyzer/MEMORY.md`.
 4. Return summary to orchestrator.

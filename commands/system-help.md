@@ -33,6 +33,7 @@ Output this reference (translated to user's language):
 
 ### Additional commands
 
+/feature-split [name]         → split large feature into independent sub-features
 /feature-fix [description]    → quick fix + validate + stage
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /system-help [command?]       → this help
@@ -41,11 +42,12 @@ Output this reference (translated to user's language):
 
 | Command | Produces | Prerequisites |
 |---------|----------|---------------|
-| `/docs-init` | `docs/*.md` | Source code in project |
+| `/docs-init` | `docs/*.md` | — |
 | `/feature` | `temp/<name>/business-requirements.md` | — |
+| `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md` |
 | `/feature-implement` | Staged git diff + `improvement-suggestions.md` | `technical-requirements.md`, clean git |
-| `/feature-fix` | Staged git diff | Clean git |
+| `/feature-fix` | Staged git diff + `improvement-suggestions.md` | Clean git |
 | `/system-improve` | Updated system files | `improvement-suggestions.md` |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
 
@@ -54,6 +56,8 @@ Output this reference (translated to user's language):
 **New project:** `/docs-init`
 
 **New feature:** `/feature` → `/feature-tech` → `/feature-implement`
+
+**Large feature:** `/feature` → `/feature-split` → `/feature-tech` (per part) → `/feature-implement` (per part)
 
 **Quick fix:** `/feature-fix fix the login button`
 
@@ -64,7 +68,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: planner → test-writer → coder → 4 validators → aggregator → fix loop (max 2) → improvement analysis
+- Implementation is fully autonomous: planner → test-writer → coder → CLI loop (max 3) → 4 validators → aggregator → AI fix loop (max 2) → improvement analysis
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

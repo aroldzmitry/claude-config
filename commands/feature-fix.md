@@ -1,7 +1,7 @@
 ---
 description: "Quick fix orchestrator. Takes a description, plans and implements the fix, validates, produces staged git diff."
 argument-hint: "[description?]: what needs to be fixed"
-allowed-tools: "Task, Read, Glob, Grep, Bash, Write, AskUserQuestion"
+allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
 ---
 
@@ -28,6 +28,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
   - `issues_remaining` — count of items in `unresolved_summary`.
   - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
   - `ai_iterations` — number of AI fix cycles (coder fix-ai spawns). Initial validator run = 0.
+  - `cli_error_log` — accumulated one-line summaries of CLI errors from each fix-cli cycle (e.g. "iter 1: TS2345 type mismatch in src/api.ts:42; iter 2: missing import in src/utils.ts:5"). Empty string if no CLI errors.
 
 # Workflow
 
@@ -35,14 +36,15 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 1. If `$ARGUMENTS` empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
-3. Create `temp/_fix/` directory (overwrite if exists).
-4. Write description to `temp/_fix/technical-requirements.md`:
+3. If `temp/_fix/implementation-plan.md` exists → ask user: "Previous fix artifacts found. Overwrite / Abort?" If abort → stop.
+4. Create `temp/_fix/` directory (overwrite if exists).
+5. Write description to `temp/_fix/technical-requirements.md`:
    ```
    # Fix Description
 
    <user's description>
    ```
-5. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
+6. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 
 ## Phase 1: Planning
 
@@ -73,8 +75,8 @@ Two loops, independent counters.
 Run CLI_LINT, CLI_TYPECHECK, CLI_TEST via Bash (skip empty).
 
 All pass → 3b.
-Fail + `cli_iter > 3` → record unresolved, Phase 4.
-Fail + `cli_iter ≤ 3` → spawn new `coder` with prompt:
+Fail + `cli_iter >= 3` → record unresolved, Phase 4.
+Fail + `cli_iter < 3` → append one-line error summary to `cli_error_log` (e.g. "iter 1: TS2345 type mismatch in src/api.ts:42, ESLint no-unused-vars in src/utils.ts:5"). Then spawn new `coder` with prompt:
 
     mode: fix-cli
     feature: _fix
@@ -88,9 +90,9 @@ Re-run 3a.
 
 ### 3b: AI Loop (max 2)
 
-`git status --porcelain` → parse file paths, exclude deletions (`D`) → `CHANGED_FILES`.
+`git status --porcelain` → parse file paths, exclude deletions (`D`), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`) → `CHANGED_FILES`.
 
-Spawn all 4 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`, `validator-spec`. Each with prompt:
+Spawn 3 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
 
     feature: _fix
     spec_dir: temp/_fix/
@@ -111,9 +113,6 @@ Otherwise spawn `aggregator` with prompt:
     ## Security Validator
     <security report>
 
-    ## Spec Validator
-    <spec report>
-
 Parse aggregator output: split at `## False Positives`.
 - **Before** the header = verified findings (or `NO_ISSUES`). Store as `VERIFIED_REPORT`.
 - **After** the header = false positive log. Store as `FALSE_POSITIVES` (empty if no such section).
@@ -121,8 +120,8 @@ Parse aggregator output: split at `## False Positives`.
 Collect each iteration's `VERIFIED_REPORT` into `ALL_VERIFIED_REPORTS` (labeled `## AI Iteration N`).
 
 `VERIFIED_REPORT` is `NO_ISSUES` → Phase 4.
-`VERIFIED_REPORT` has issues + `ai_iter > 2` → record unresolved, Phase 4.
-`VERIFIED_REPORT` has issues + `ai_iter ≤ 2` → spawn new `coder` with prompt:
+`VERIFIED_REPORT` has issues + `ai_iter >= 2` → record unresolved, Phase 4.
+`VERIFIED_REPORT` has issues + `ai_iter < 2` → spawn new `coder` with prompt:
 
     mode: fix-ai
     feature: _fix
@@ -146,8 +145,17 @@ Spawn `improvement-analyzer` with prompt:
     issues_fixed: <count>
     issues_remaining: <count>
     unresolved_summary: <list of unresolved issues, or "none">
-    false_positives: <FALSE_POSITIVES from all aggregator runs, or "none">
+    cli_errors: <cli_error_log, or "none">
+    false_positives: <FALSE_POSITIVES from last aggregator run, or "none">
     verified_reports: <ALL_VERIFIED_REPORTS, or "none">
+
+## Phase 4a: Auto-Apply Regressions
+
+1. Read `temp/_fix/improvement-suggestions.md`.
+2. If `## Regressions` section exists with items:
+   a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
+   b. Count auto-applied regressions.
+3. Remaining suggestions (non-regression) → left for manual `/system-improve`.
 
 ## Phase 5: Finalize
 
@@ -169,10 +177,13 @@ Spawn `improvement-analyzer` with prompt:
 ### Unresolved Issues
 - [error|warning] file:line — description
 
+### Improvements
+- Regressions auto-fixed: N
+- New suggestions: N (high: X, medium: Y, low: Z) → `/system-improve temp/_fix/`
+
 ### Next Steps
 - Review: `git diff --cached`
 - Commit: `git commit -m "fix: <description>"`
-- Improvements: N suggestions → `/system-improve temp/_fix/`
 ```
 
-Omit **Unresolved Issues** if none. Omit **Improvements** line if no suggestions.
+Omit **Unresolved Issues** if none. Omit **Improvements** section if no suggestions and no regressions.

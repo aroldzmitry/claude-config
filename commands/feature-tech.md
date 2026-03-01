@@ -1,7 +1,7 @@
 ---
 description: "Interactive dialog to define technical specification and test cases for a feature. Asks targeted questions, verifies completeness, generates technical-requirements.md and test-cases.md"
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
-allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion"
+allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
 ---
 
@@ -53,11 +53,13 @@ Go through categories in order.
 
 5. **Error Handling** — Failure modes specific to this feature. What can go wrong, how to detect, how to recover. Only non-obvious cases — skip if all errors are covered by standard project patterns.
 
-6. **Performance / Constraints** — Load expectations, latency requirements, size limits. Only if performance is a real concern for this feature.
+6. **Security** — Authentication, authorization, data validation boundaries, sensitive data handling. Only if feature touches auth, user input, or sensitive data. Skip if feature is purely internal with no trust boundaries.
 
-7. **Test Strategy** — What needs testing? Unit / integration / e2e? What's hard to test and how to handle it? What to explicitly NOT test?
+7. **Performance / Constraints** — Load expectations, latency requirements, size limits. Only if performance is a real concern for this feature.
 
-8. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases one at a time with severity (`[error]` — must handle, `[warning]` — should handle). Examples: race conditions, data migration, backwards compatibility, concurrent access, partial failures. Ask user to confirm or reject, then propose the next one. After exhausting your proposals, ask if user wants to add any.
+8. **Test Strategy** — What needs testing? Unit / integration / e2e? What's hard to test and how to handle it? What to explicitly NOT test?
+
+9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases one at a time with severity (`[error]` — must handle, `[warning]` — should handle). Examples: race conditions, data migration, backwards compatibility, concurrent access, partial failures. Ask user to confirm or reject, then propose the next one. After exhausting your proposals, ask if user wants to add any.
 
 ### Conditional (only when relevant)
 
@@ -119,6 +121,8 @@ If any item fails — go back to Step 2. If all pass and user hasn't confirmed �
 
 ### Step 2: Write technical-requirements.md
 
+If `temp/<feature-name>/technical-requirements.md` already exists → ask user: "Previous tech spec found. Overwrite / Edit existing?" If edit — read and use as starting point for generation.
+
 Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
 
 ```markdown
@@ -143,6 +147,10 @@ Create `temp/<feature-name>/technical-requirements.md` using the template below.
 ## Error Handling
 
 <failure modes and recovery strategies>
+
+## Security
+
+<auth, authz, validation boundaries, sensitive data>
 
 ## Performance Constraints
 
@@ -175,6 +183,7 @@ Create `temp/<feature-name>/technical-requirements.md` using the template below.
 - **API / Interfaces** — only if multi-component
 - **Dependencies** — only if new external deps
 - **Error Handling** — only if non-standard error scenarios
+- **Security** — only if feature touches auth, user input, or sensitive data
 - **Performance Constraints** — only if relevant
 - **Business Clarifications** — only if business gaps were found
 - **Key Decisions** — only if non-obvious choices were made
@@ -206,6 +215,16 @@ Test cases are derived from:
 - Interface contracts (happy path + error responses)
 
 Each test case must be specific enough for a test-writer agent to implement without guessing.
+
+### Step 3a: Spec Self-Check
+
+Before showing to user, verify generated documents:
+1. Each API contract in `technical-requirements.md`: has request format, response format, and error responses.
+2. Each test case in `test-cases.md`: has concrete input → concrete expected output. "Can test-writer implement this without guessing?"
+3. Each tech edge case: has expected behavior, not just situation description.
+4. Cross-check: each tech edge case and each acceptance criterion (from `business-requirements.md`) has a corresponding test case in `test-cases.md`. Missing → add test case.
+
+Fill gaps found. 2-3 turns max.
 
 ### Step 4: Present and confirm
 

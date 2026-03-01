@@ -52,14 +52,24 @@ Check two conditions:
 
 **Testable logic exists?** Pure UI/CSS/layout with no business logic → not testable.
 
-Decision:
-- Framework AND testable logic → `skip: false`
-- Missing either → `skip: true`
-- `test-cases.md` exists with content AND framework exists → `skip: false` regardless of logic type
+Decision (first match wins):
+- If `test-cases.md` exists with content AND framework exists → `skip: false` (tests explicitly requested)
+- Else if framework exists AND testable logic exists → `skip: false`
+- Else → `skip: true`
 
 ## 4. Write Plan
 
 Write `{spec_dir}/implementation-plan.md`.
+
+## 5. Validate Plan
+
+Read the written plan and cross-check against `technical-requirements.md`:
+1. **Coverage** — each functional requirement and acceptance criterion is addressed by at least one step. Missing → add step or include in existing.
+2. **No extras** — each step traces back to a requirement. Steps that don't correspond to any requirement → remove or merge.
+3. **File paths** — for each file with action `modify` or `delete`, Glob to verify it exists. Not found → fix path or change action to `create`.
+4. **Step ordering** — no step uses/imports something created in a later step. If found → reorder.
+
+Fix issues in-place (edit `implementation-plan.md`). 2-3 turns max.
 
 # Output Format
 

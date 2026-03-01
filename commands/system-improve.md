@@ -19,7 +19,7 @@ System improvement advisor. Reviews suggestions from the improvement-analyzer, h
 # Conventions
 
 - `SUGGESTIONS_FILE` = `$ARGUMENTS/improvement-suggestions.md`
-- `DECISIONS_FILE` = `.claude/agent-memory/improvement-analyzer/decisions.md`
+- `DECISIONS_FILE` = `~/.claude/agent-memory/improvement-analyzer/decisions.md`
 - Date format: `YYYY-MM-DD` (current date).
 - Item order: regressions first, then suggestions high → medium → low.
 
@@ -69,7 +69,7 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
 
 ## Phase 3: Record
 
-1. Read `DECISIONS_FILE`. Missing → create directory `.claude/agent-memory/improvement-analyzer/` and file with `## Accepted` and `## Rejected` headers.
+1. Read `DECISIONS_FILE`. Missing → create directory `~/.claude/agent-memory/improvement-analyzer/` and file with `## Accepted` and `## Rejected` headers.
 2. Append accepted items to `## Accepted`:
    `- [YYYY-MM-DD] {target}: {action description}`
 3. Append rejected items to `## Rejected`:

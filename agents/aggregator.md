@@ -4,7 +4,7 @@ description: "Collects 4 validator reports, verifies findings against code, filt
 tools: Read, Glob, Grep
 model: sonnet
 permissionMode: plan
-maxTurns: 40
+maxTurns: 60
 ---
 
 # Role

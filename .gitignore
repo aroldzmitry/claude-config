@@ -6,6 +6,9 @@
 /ide/
 *.log
 
+# Agent memory
+/agent-memory/
+
 # Runtime data
 /.backups/
 /.improvements/

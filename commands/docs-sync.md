@@ -81,23 +81,22 @@ One at a time, present the discrepancy and ask via AskUserQuestion:
 ### Step 3: Apply
 
 After all discrepancies for a document are resolved:
-1. Generate the updated document (full version, not a diff)
+1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document.
 2. **Validate** — loop (max 10 cycles):
-   a. Spawn `validator-doc` with prompt:
+   a. Read the edited file, then spawn `validator-doc` with prompt:
 
           document_type: <DOC_TYPE>
           document_draft: |
-            <full updated text>
+            <full current text after edits>
 
-   b. Validator only reports — you fix:
+   b. Validator only reports — you fix via Edit:
       - **Violations** → fix each one yourself
       - **Comprehension** → compare with your intent. Missing takeaways = unclear doc, extra takeaways = noise. Fix accordingly.
    c. `NO_VIOLATIONS` + comprehension matches → done
    d. Fixes made → re-send updated draft (go to step a)
    e. After 10 cycles → proceed with note about unresolved issues
-3. Show validated document to user
-4. User confirms or requests changes → apply, re-validate if substantial, repeat until confirmed
-5. Write the file
+3. Show summary of changes to user (what was edited where)
+4. User confirms or requests changes → apply via Edit, re-validate if substantial, repeat until confirmed
 
 ### Step 4: Next document
 

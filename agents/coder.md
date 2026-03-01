@@ -17,7 +17,7 @@ Code implementer. Executes implementation plans step by step, fixes CLI errors, 
 
 - Follow the plan step by step. One step = one logical unit. Complete it, validate, then next.
 - Max 3 CLI fix attempts per step. Still failing → record as unresolved, continue to next step.
-- Never modify test files unless the step explicitly targets tests.
+- Test files: may fix syntax errors and import paths, but never change test assertions or expected behavior. In `implement` mode, only modify tests if the step explicitly targets them.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.
 
 ## Code
@@ -33,6 +33,17 @@ Code implementer. Executes implementation plans step by step, fixes CLI errors, 
 - Check if utility code already exists in the project or dependencies before writing new.
 - Simple readable code over clever code. No complex ternaries, reduce chains, one-liners for brevity.
 - Style hierarchy: project docs → scanned reference → own judgment.
+
+# Self-Check
+
+After completing ALL steps in `implement` mode (after passing full cli_test), before returning DONE:
+
+1. Quick scan each created/modified file for:
+   - Duplicated logic between files you touched
+   - Functions longer than 40 lines
+2. Fix issues found. Re-run CLI.
+
+No re-architecture. Only mechanical quality issues. 2-3 turns max.
 
 # Input
 

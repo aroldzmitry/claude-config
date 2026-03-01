@@ -1,7 +1,7 @@
 ---
 description: "Interactive dialog to define business requirements for a feature. Asks targeted questions, verifies completeness, generates business-requirements.md"
 argument-hint: "[name-or-description?]: optional feature name or brief description"
-allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion"
+allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
 ---
 
@@ -80,7 +80,12 @@ Typical business-level gaps to watch for:
 - "Action succeeds but user sees no feedback → confirmation not specified"
 - "List grows beyond one screen → pagination/scroll not discussed"
 
-End the message with ONE question: ask about the first gap found, or ask to confirm everything and proceed to document generation (if no gaps).
+5. **Scope estimate** — count distinct user flows, new entities, `[must]` acceptance criteria, and `[error]` edge cases. Formula: `user_flows × 3 + new_entities × 2 + must_criteria + error_edges`. If estimate > 12 → warn that the feature is likely too large for a single implementation cycle (agents may exceed context window):
+   - Show the estimate and the threshold.
+   - Note: after generating the document, recommend running `/feature-split <feature-name>` to break down into independent sub-features.
+   - If user declines → proceed as single feature (their call).
+
+End the message with ONE question: ask about the first gap found, or about splitting if scope is large, or ask to confirm everything and proceed to document generation (if no gaps and scope is fine).
 
 ### Step 2: Clarify
 
@@ -106,7 +111,9 @@ If any item fails — go back to Step 2 and ask. If all pass and user hasn't con
 3. Write `temp/<feature-name>/business-requirements.md` using the format below
 4. Show the full document to the user
 5. If user requests changes → apply, show updated version, repeat until confirmed
-6. After final confirmation, suggest the next step: `/feature-tech <feature-name>` to create technical specification.
+6. After final confirmation, suggest the next step:
+   - If scope estimate exceeded threshold and user agreed to split → `/feature-split <feature-name>`
+   - Otherwise → `/feature-tech <feature-name>` to create technical specification
 
 ### Document Format
 
@@ -186,6 +193,12 @@ The template below shows the structure. Sections marked CONDITIONAL should be in
 
 # Start
 
-If `$ARGUMENTS` is provided — use it as context, ask the first relevant question from Phase 1 directly (skip what's already clear from the description). Do not repeat or rephrase the argument back to the user.
+If `$ARGUMENTS` is provided:
+1. Check if `temp/$ARGUMENTS/business-requirements.md` exists (try kebab-case normalization of `$ARGUMENTS`).
+2. If exists — read it silently, then ask the user via AskUserQuestion:
+   - **Edit existing** — load the document as starting point, go to Phase 1 asking only about gaps or changes
+   - **Redo from scratch** — ignore existing document, proceed with full Phase 1
+   - **Skip to /feature-tech** — requirements are done, suggest running `/feature-tech <feature-name>`
+3. If not exists — use `$ARGUMENTS` as context, ask the first relevant question from Phase 1 directly (skip what's already clear from the description). Do not repeat or rephrase the argument back to the user.
 
 If no arguments — ask what the user wants to build.

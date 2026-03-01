@@ -1,7 +1,7 @@
 ---
 description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → test-writer → coder → validators → fix loop → improvement analyzer), produces staged git diff."
 argument-hint: "[feature-name]: folder name in temp/"
-allowed-tools: "Task, Read, Glob, Grep, Bash"
+allowed-tools: "Task, Read, Glob, Grep, Bash, Edit"
 disable-model-invocation: true
 ---
 
@@ -27,6 +27,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
   - `issues_remaining` — count of items in `unresolved_summary`.
   - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
   - `ai_iterations` — number of AI fix cycles (coder fix-ai spawns). Initial validator run = 0.
+  - `cli_error_log` — accumulated one-line summaries of CLI errors from each fix-cli cycle (e.g. "iter 1: TS2345 type mismatch in src/api.ts:42; iter 2: missing import in src/utils.ts:5"). Empty string if no CLI errors.
 
 # Workflow
 
@@ -76,8 +77,8 @@ Two loops, independent counters.
 Run CLI_LINT, CLI_TYPECHECK, CLI_TEST via Bash (skip empty).
 
 All pass → 4b.
-Fail + `cli_iter > 3` → record unresolved, Phase 5.
-Fail + `cli_iter ≤ 3` → spawn new `coder` with prompt:
+Fail + `cli_iter >= 3` → record unresolved, Phase 5.
+Fail + `cli_iter < 3` → append one-line error summary to `cli_error_log` (e.g. "iter 1: TS2345 type mismatch in src/api.ts:42, ESLint no-unused-vars in src/utils.ts:5"). Then spawn new `coder` with prompt:
 
     mode: fix-cli
     feature: $ARGUMENTS
@@ -91,7 +92,7 @@ Re-run 4a.
 
 ### 4b: AI Loop (max 2)
 
-`git status --porcelain` → parse file paths, exclude deletions (`D`) → `CHANGED_FILES`.
+`git status --porcelain` → parse file paths, exclude deletions (`D`), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`) → `CHANGED_FILES`.
 
 Spawn all 4 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`, `validator-spec`. Each with prompt:
 
@@ -124,8 +125,8 @@ Parse aggregator output: split at `## False Positives`.
 Collect each iteration's `VERIFIED_REPORT` into `ALL_VERIFIED_REPORTS` (labeled `## AI Iteration N`).
 
 `VERIFIED_REPORT` is `NO_ISSUES` → Phase 5.
-`VERIFIED_REPORT` has issues + `ai_iter > 2` → record unresolved, Phase 5.
-`VERIFIED_REPORT` has issues + `ai_iter ≤ 2` → spawn new `coder` with prompt:
+`VERIFIED_REPORT` has issues + `ai_iter >= 2` → record unresolved, Phase 5.
+`VERIFIED_REPORT` has issues + `ai_iter < 2` → spawn new `coder` with prompt:
 
     mode: fix-ai
     feature: $ARGUMENTS
@@ -149,8 +150,17 @@ Spawn `improvement-analyzer` with prompt:
     issues_fixed: <count>
     issues_remaining: <count>
     unresolved_summary: <list of unresolved issues, or "none">
-    false_positives: <FALSE_POSITIVES from all aggregator runs, or "none">
+    cli_errors: <cli_error_log, or "none">
+    false_positives: <FALSE_POSITIVES from last aggregator run, or "none">
     verified_reports: <ALL_VERIFIED_REPORTS, or "none">
+
+## Phase 5a: Auto-Apply Regressions
+
+1. Read `{SPEC_DIR}/improvement-suggestions.md`.
+2. If `## Regressions` section exists with items:
+   a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
+   b. Count auto-applied regressions.
+3. Remaining suggestions (non-regression) → left for manual `/system-improve`.
 
 ## Phase 6: Finalize
 
@@ -172,10 +182,13 @@ Spawn `improvement-analyzer` with prompt:
 ### Unresolved Issues
 - [error|warning] file:line — description
 
+### Improvements
+- Regressions auto-fixed: N
+- New suggestions: N (high: X, medium: Y, low: Z) → `/system-improve temp/<feature-name>/`
+
 ### Next Steps
 - Review: `git diff --cached`
 - Commit: `git commit -m "feat: <feature-name>"`
-- Improvements: N suggestions → `/system-improve temp/<feature-name>/`
 ```
 
-Omit **Unresolved Issues** if none. Omit **Improvements** line if no suggestions.
+Omit **Unresolved Issues** if none. Omit **Improvements** section if no suggestions and no regressions.

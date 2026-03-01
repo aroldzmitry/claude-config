@@ -190,7 +190,7 @@ For each identified root cause:
 - Check decisions.md Rejected → if similar pattern, skip.
 - Check observations.md → if seen in previous runs, higher confidence.
 
-### 4d. Trend Analysis
+### 4c. Trend Analysis
 
 If `metrics.md` has 10+ data rows:
 - Compare averages of last 5 runs vs previous 5 runs.
@@ -199,7 +199,7 @@ If `metrics.md` has 10+ data rows:
 - Stagnation (no improvement across 10+ runs) → flag as `[medium]`.
 - Include trend data as evidence in suggestions.
 
-### 4c. Prioritize
+### 4d. Prioritize
 
 - Regressions → always include (top section).
 - Root causes with clear target + action → sort by priority.

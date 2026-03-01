@@ -34,7 +34,7 @@ Before any user interaction, silently:
    b. Read config files
    c. Scan representative source files
    d. Identify: languages, frameworks, libraries, structure, build/test commands, submodules
-4. Check git history: `git log --oneline --diff-filter=ACDMR --name-only` since last `docs/` commit — what changed in code recently
+4. Check git history since last `docs/` commit: `git log $(git log -1 --format=%H -- docs/)..HEAD --oneline --diff-filter=ACDMR --name-only -- . ':!docs/'` — what changed in code. If no docs/ commits exist — use last 50 commits.
 5. Compare each doc against actual code. For each doc, check:
    - **Outdated** — doc says X, code shows Y (e.g., library version, directory name, pattern)
    - **Missing** — code has something the doc should cover but doesn't (new module, new pattern)

@@ -22,7 +22,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
 - Issue counters for improvement-analyzer prompt:
-  - `issues_found` — total verified findings from all aggregator runs (excludes false positives, excludes CLI errors).
+  - `issues_found` — unique verified findings across all aggregator runs, deduplicated by file:line + description (excludes false positives, excludes CLI errors).
   - `issues_fixed` — `issues_found - issues_remaining`.
   - `issues_remaining` — count of items in `unresolved_summary`.
   - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.

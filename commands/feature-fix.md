@@ -19,11 +19,11 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Conventions
 
-- `SPEC_DIR` = `temp/_fix/`
-- Every agent prompt includes: `feature: _fix`, `spec_dir: temp/_fix/`.
+- `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}/` — timestamp set once at Phase 0 start.
+- Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
 - Issue counters for improvement-analyzer prompt:
-  - `issues_found` — total verified findings from all aggregator runs (excludes false positives, excludes CLI errors).
+  - `issues_found` — unique verified findings across all aggregator runs, deduplicated by file:line + description (excludes false positives, excludes CLI errors).
   - `issues_fixed` — `issues_found - issues_remaining`.
   - `issues_remaining` — count of items in `unresolved_summary`.
   - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
@@ -36,24 +36,23 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 1. If `$ARGUMENTS` empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
-3. If `temp/_fix/implementation-plan.md` exists → ask user: "Previous fix artifacts found. Overwrite / Abort?" If abort → stop.
-4. Create `temp/_fix/` directory (overwrite if exists).
-5. Write description to `temp/_fix/technical-requirements.md`:
+3. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory.
+4. Write description to `SPEC_DIR/technical-requirements.md`:
    ```
    # Fix Description
 
    <user's description>
    ```
-6. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
+5. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 
 ## Phase 1: Planning
 
 Spawn `planner` with prompt:
 
     feature: _fix
-    spec_dir: temp/_fix/
+    spec_dir: SPEC_DIR
 
-After: verify `temp/_fix/implementation-plan.md` created. Extract implementation steps. Ignore test strategy (no test-writer in this flow).
+After: verify `SPEC_DIR/implementation-plan.md` created. Extract implementation steps. Ignore test strategy (no test-writer in this flow).
 
 ## Phase 2: Implementation
 
@@ -61,7 +60,7 @@ Spawn `coder` with prompt:
 
     mode: implement
     feature: _fix
-    spec_dir: temp/_fix/
+    spec_dir: SPEC_DIR
     cli_lint: CLI_LINT
     cli_typecheck: CLI_TYPECHECK
     cli_test: CLI_TEST
@@ -80,7 +79,7 @@ Fail + `cli_iter < 3` → append one-line error summary to `cli_error_log` (e.g.
 
     mode: fix-cli
     feature: _fix
-    spec_dir: temp/_fix/
+    spec_dir: SPEC_DIR
     cli_lint: CLI_LINT
     cli_typecheck: CLI_TYPECHECK
     cli_test: CLI_TEST
@@ -95,7 +94,7 @@ Re-run 3a.
 Spawn 3 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
 
     feature: _fix
-    spec_dir: temp/_fix/
+    spec_dir: SPEC_DIR
     files: CHANGED_FILES
 
 Each: return `[error|warning] file:line — description` or `NO_ISSUES`.
@@ -125,7 +124,7 @@ Collect each iteration's `VERIFIED_REPORT` into `ALL_VERIFIED_REPORTS` (labeled 
 
     mode: fix-ai
     feature: _fix
-    spec_dir: temp/_fix/
+    spec_dir: SPEC_DIR
     cli_lint: CLI_LINT
     cli_typecheck: CLI_TYPECHECK
     cli_test: CLI_TEST
@@ -138,7 +137,7 @@ Re-run from 3a.
 Spawn `improvement-analyzer` with prompt:
 
     feature: _fix
-    spec_dir: temp/_fix/
+    spec_dir: SPEC_DIR
     cli_iterations: <count>
     ai_iterations: <count>
     issues_found: <count>
@@ -151,7 +150,7 @@ Spawn `improvement-analyzer` with prompt:
 
 ## Phase 4a: Auto-Apply Regressions
 
-1. Read `temp/_fix/improvement-suggestions.md`.
+1. Read `SPEC_DIR/improvement-suggestions.md`.
 2. If `## Regressions` section exists with items:
    a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
    b. Count auto-applied regressions.
@@ -179,7 +178,7 @@ Spawn `improvement-analyzer` with prompt:
 
 ### Improvements
 - Regressions auto-fixed: N
-- New suggestions: N (high: X, medium: Y, low: Z) → `/system-improve temp/_fix/`
+- New suggestions: N (high: X, medium: Y, low: Z) → `/system-improve SPEC_DIR`
 
 ### Next Steps
 - Review: `git diff --cached`

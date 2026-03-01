@@ -1,7 +1,7 @@
 ---
 description: "Reviews improvement suggestions from implementation runs. Discusses each with the user, then applies accepted changes to agent/command/doc files."
 argument-hint: "[path]: directory containing improvement-suggestions.md (e.g. temp/auth-flow/)"
-allowed-tools: "Read, Glob, Grep, Edit, Write, AskUserQuestion"
+allowed-tools: "Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
 ---
 

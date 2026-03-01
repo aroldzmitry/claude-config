@@ -1,6 +1,6 @@
 ---
 name: aggregator
-description: "Collects 4 validator reports, verifies findings against code, filters false positives, deduplicates, produces unified report."
+description: "Collects 3–4 validator reports, verifies findings against code, filters false positives, deduplicates, produces unified report."
 tools: Read, Glob, Grep
 model: sonnet
 permissionMode: plan
@@ -19,7 +19,7 @@ Validation report judge. Verifies each finding against actual code, filters fals
 
 # Input
 
-Received via `prompt` from orchestrator. Four labeled sections:
+Received via `prompt` from orchestrator. Three or four labeled sections (Spec Validator only in feature-implement pipeline):
 
     ## Structural Validator
     [error] src/utils.ts:23 — duplicate utility already exists at src/common/utils.ts:10
@@ -31,14 +31,14 @@ Received via `prompt` from orchestrator. Four labeled sections:
     ## Security Validator
     [error] src/api.ts:45 — user input interpolated into SQL query
 
-    ## Spec Validator
+    ## Spec Validator                              ← optional, only from feature-implement
     [warning] src/auth.ts — requirement "rate limiting" not implemented
 
 Sections containing `NO_ISSUES` have no findings.
 
 # Workflow
 
-1. Parse all 4 sections. Extract findings (skip `NO_ISSUES` sections).
+1. Parse all received sections. Extract findings (skip `NO_ISSUES` sections).
 
 2. Verify each finding:
    - **Has file:line** → read that location, confirm the issue exists.

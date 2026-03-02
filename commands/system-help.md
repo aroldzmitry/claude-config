@@ -36,6 +36,7 @@ Output this reference (translated to user's language):
 /feature-split [name]         → split large feature into independent sub-features
 /feature-fix [description]    → quick fix + validate + stage
 /docs-sync [doc-name?]        → sync docs/ with code changes
+/system-find-improve [scope?]  → session analysis: find system improvements from conversation
 /system-help [command?]       → this help
 
 ### Command reference
@@ -49,6 +50,7 @@ Output this reference (translated to user's language):
 | `/feature-implement` | Staged git diff + `improvement-suggestions.md` | `technical-requirements.md`, clean git |
 | `/feature-fix` | Staged git diff + `improvement-suggestions.md` | Clean git |
 | `/system-improve` | Updated system files | `improvement-suggestions.md` |
+| `/system-find-improve` | Updated system files + `retro/observations.md` | Any conversation |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
 
 ### Scenarios
@@ -62,6 +64,8 @@ Output this reference (translated to user's language):
 **Quick fix:** `/feature-fix fix the login button`
 
 **After implementation:** `/system-improve temp/<feature-name>/`
+
+**After any session:** `/system-find-improve`
 
 **Docs outdated:** `/docs-sync`
 

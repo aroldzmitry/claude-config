@@ -29,7 +29,6 @@
     "ask": [],
     "defaultMode": "default"
   },
-  "model": "opus",
   "enabledMcpjsonServers": [
     "trello"
   ],

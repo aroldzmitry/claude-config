@@ -68,6 +68,7 @@ Read the written plan and cross-check against `technical-requirements.md`:
 2. **No extras** — each step traces back to a requirement. Steps that don't correspond to any requirement → remove or merge.
 3. **File paths** — for each file with action `modify` or `delete`, Glob to verify it exists. Not found → fix path or change action to `create`.
 4. **Step ordering** — no step uses/imports something created in a later step. If found → reorder.
+5. **Spec deviations** — if a plan step must deviate from the spec due to a technical constraint, add a `[spec-deviation]` note in the step description explaining the contradiction and why the deviation is necessary.
 
 Fix issues in-place (edit `implementation-plan.md`). 2-3 turns max.
 

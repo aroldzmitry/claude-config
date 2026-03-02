@@ -32,7 +32,7 @@ Received via `prompt` from orchestrator:
 ## 1. Load Context
 
 Read in parallel:
-- `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/ARCHITECTURE*.md` — skip if missing
+- `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/ARCHITECTURE*.md`, `docs/WORKFLOW.md` — skip if missing
 - `{spec_dir}/technical-requirements.md` — **required**
 - `{spec_dir}/business-requirements.md` — skip if missing
 - `{spec_dir}/test-cases.md` — primary test source, fallback if missing

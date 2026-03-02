@@ -149,9 +149,7 @@ Maximum 2 rounds of refinement per part. Unresolved details → note in that par
 - **Related Features** — only if there's a real dependency on another sub-feature or existing feature
 - **Open Questions** — only if there are genuinely unresolved questions
 
-2. Delete the original folder: `rm -rf temp/$ARGUMENTS/`
-
-3. Output summary:
+2. Output summary:
 
 ```
 ## Split Complete
@@ -165,6 +163,7 @@ Maximum 2 rounds of refinement per part. Unresolved details → note in that par
 | 2 | <name>  | ~N steps | <name>     |
 
 ### Next Steps
+- Verify generated specs, then delete original: `rm -rf temp/<feature-name>/`
 - `/feature-tech <first-part-name>`
 ```
 

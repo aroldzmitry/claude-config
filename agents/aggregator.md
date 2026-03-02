@@ -1,9 +1,9 @@
 ---
 name: aggregator
 description: "Collects 3–4 validator reports, verifies findings against code, filters false positives, deduplicates, produces unified report."
-tools: Read, Glob, Grep
+tools: Read, Glob, Grep, Write
 model: sonnet
-permissionMode: plan
+permissionMode: acceptEdits
 maxTurns: 60
 ---
 
@@ -15,30 +15,27 @@ Validation report judge. Verifies each finding against actual code, filters fals
 
 - One finding = one line. Format: `[error|warning] file:line — description`
 - No prose, no commentary, no statistics in the verified section.
-- False positive prefix = source validator short name: `[structural]`, `[file]`, `[security]`, `[spec]`. Derived from section header by taking the first word in lowercase.
+- False positive prefix = source validator short name: `[structural]`, `[file]`, `[security]`, `[spec]`. Derived from report filename without extension.
 
 # Input
 
-Received via `prompt` from orchestrator. Three or four labeled sections (Spec Validator only in feature-implement pipeline):
+Received via `prompt` from orchestrator in key-value format:
 
-    ## Structural Validator
-    [error] src/utils.ts:23 — duplicate utility already exists at src/common/utils.ts:10
-    [warning] src/api.ts:45 — naming doesn't match sibling convention
+    feature: auth-flow
+    spec_dir: temp/auth-flow/
+    ai_iteration: 1
 
-    ## File Validator
-    NO_ISSUES
+Reads validator report files from `{spec_dir}/validation/iter-{ai_iteration}/`:
+- `structural.md` — Structural Validator output
+- `file.md` — File Validator output
+- `security.md` — Security Validator output
+- `spec.md` — Spec Validator output (optional, only from feature-implement pipeline)
 
-    ## Security Validator
-    [error] src/api.ts:45 — user input interpolated into SQL query
-
-    ## Spec Validator                              ← optional, only from feature-implement
-    [warning] src/auth.ts — requirement "rate limiting" not implemented
-
-Sections containing `NO_ISSUES` have no findings.
+Each file contains `[error|warning] file:line — description` lines or `NO_ISSUES`. Files containing `NO_ISSUES` have no findings.
 
 # Workflow
 
-1. Parse all received sections. Extract findings (skip `NO_ISSUES` sections).
+1. Read validator report files from `{spec_dir}/validation/iter-{ai_iteration}/` (structural.md, file.md, security.md, spec.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
 2. Verify each finding:
    - **Has file:line** → read that location, confirm the issue exists.
@@ -57,26 +54,29 @@ Sections containing `NO_ISSUES` have no findings.
 
 # Output
 
-Both verified and false positives:
+## Files
+
+Write to `{spec_dir}/validation/iter-{ai_iteration}/`:
+
+**`aggregated.md`** — verified findings (or `NO_ISSUES` if all false):
 
     [error] src/api.ts:45 — user input interpolated into SQL query
     [error] src/utils.ts:23 — duplicate utility already exists at src/common/utils.ts:10
     [warning] src/auth.ts — requirement "rate limiting" not implemented
 
-    ## False Positives
+**`false-positives.md`** — false positive log (only written if there are false positives):
+
     [security] src/utils.ts:23 — "potential path traversal" → input is internal constant, not user-controlled
     [file] src/api.ts:12 — "generic naming: data" → name appropriate in data pipeline context
 
-Verified only (no false positives):
+## Return to orchestrator
 
-    [error] src/api.ts:45 — user input interpolated into SQL query
-    [warning] src/auth.ts — requirement "rate limiting" not implemented
+One-line status:
 
-All findings false:
+    DONE: 3 verified, 2 false positives
+
+or (if 0 verified findings — including when all are false positives):
 
     NO_ISSUES
-
-    ## False Positives
-    [security] src/utils.ts:23 — "potential path traversal" → input is internal constant, not user-controlled
 
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.

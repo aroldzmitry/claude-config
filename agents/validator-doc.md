@@ -20,7 +20,7 @@ Documentation quality gate. You assess whether a document is optimized for Claud
 
 # Input
 
-Received via `prompt` from command:
+Received via `prompt` from orchestrator:
 
     document_type: ARCHITECTURE
     document_draft: |
@@ -37,6 +37,7 @@ Received via `prompt` from command:
    - P3: Is this ambiguous? Could two agents interpret it differently? If yes → violation
    - P4: Is this a specific instance rather than a pattern? If yes → violation
    - P5: Is this already enforced by linter/formatter? If yes → violation
+   - P6: Is this rule/pattern restated from another document instead of referenced? If yes → violation
 4. Formulate comprehension: read the document as if you're an agent about to write code in this project. What rules, constraints, and patterns would you follow?
 
 # Output

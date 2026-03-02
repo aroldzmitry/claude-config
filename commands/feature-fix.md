@@ -19,17 +19,21 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Conventions
 
-- `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}/` — timestamp set once at Phase 0 start.
+- `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}` — timestamp set once at Phase 0 start.
 - Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
 - Issue counters for improvement-analyzer prompt:
-  - `issues_found` — unique verified findings across all aggregator runs, deduplicated by file:line + description (excludes false positives, excludes CLI errors).
+  - `issues_found` — sum of N from each aggregator `DONE: N verified` (excludes false positives, excludes CLI errors).
   - `issues_fixed` — `issues_found - issues_remaining`.
   - `issues_remaining` — count of items in `unresolved_summary`.
   - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
   - `ai_iterations` — number of AI fix cycles (coder fix-ai spawns). Initial validator run = 0.
-  - `cli_error_log` — accumulated one-line summaries of CLI errors from each fix-cli cycle (e.g. "iter 1: TS2345 type mismatch in src/api.ts:42; iter 2: missing import in src/utils.ts:5"). Empty string if no CLI errors.
   - `compaction_log` — tracks agents that reported context compaction. Format: `{agent}:{count}, ...`. After each Task agent spawn, check return for `COMPACTED: true` — if present, increment that agent's count. If orchestrator itself experiences compaction, add `orchestrator:1`.
+- Heavy data stored in files, not in orchestrator variables:
+  - CLI errors → `SPEC_DIR/cli-errors/iter-{N}.txt`
+  - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
+  - Aggregated findings → `SPEC_DIR/validation/iter-{N}/aggregated.md`
+  - False positives → `SPEC_DIR/validation/iter-{N}/false-positives.md`
 
 # Workflow
 
@@ -53,30 +57,52 @@ Spawn `planner` with prompt:
     feature: _fix
     spec_dir: SPEC_DIR
 
-After: verify `SPEC_DIR/implementation-plan.md` created. Extract implementation steps. Ignore test strategy (no test-writer in this flow).
+After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision (skip/write + reason).
+
+## Phase 1a: Test Writing (optional)
+
+Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 2.
+
+Otherwise ask user: "Planner recommends writing tests for this fix. Add tests? (adds time but improves coverage)"
+
+User declines → `[Tests: skipped — user declined]`, go to Phase 2.
+
+User confirms → spawn `test-writer` with prompt:
+
+    feature: _fix
+    spec_dir: SPEC_DIR
 
 ## Phase 2: Implementation
 
-Spawn `coder` with prompt:
+Read `SPEC_DIR/implementation-plan.md`. Extract only step count and titles (each `### Step N: <title>`). Do NOT extract full step bodies — coder reads them from the plan file.
 
-    mode: implement
-    feature: _fix
-    spec_dir: SPEC_DIR
-    cli_lint: CLI_LINT
-    cli_typecheck: CLI_TYPECHECK
-    cli_test: CLI_TEST
+For each step in order:
+
+1. `[Step {N}/{total}: {title}]`
+2. Spawn new `coder` with prompt:
+
+        mode: implement
+        feature: _fix
+        spec_dir: SPEC_DIR
+        cli_lint: CLI_LINT
+        cli_typecheck: CLI_TYPECHECK
+        cli_test: CLI_TEST
+        step_number: N
+        step_total: TOTAL
+
+3. If coder returns `UNRESOLVED` → record, continue to next step.
 
 ## Phase 3: Validation Cycle
 
-Two loops, independent counters.
+Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
 
-### 3a: CLI Loop (max 3)
+### 3a: CLI Loop (max 5)
 
 Run CLI_LINT, CLI_TYPECHECK, CLI_TEST via Bash (skip empty).
 
 All pass → 3b.
-Fail + `cli_iter >= 3` → record unresolved, Phase 4.
-Fail + `cli_iter < 3` → append one-line error summary to `cli_error_log` (e.g. "iter 1: TS2345 type mismatch in src/api.ts:42, ESLint no-unused-vars in src/utils.ts:5"). Then spawn new `coder` with prompt:
+Fail + `cli_iter >= 5` → record unresolved, Phase 4.
+Fail + `cli_iter < 5` → `mkdir -p SPEC_DIR/cli-errors/`, write full error output to `SPEC_DIR/cli-errors/iter-{cli_iter}.txt`. Spawn new `coder` with prompt:
 
     mode: fix-cli
     feature: _fix
@@ -84,13 +110,15 @@ Fail + `cli_iter < 3` → append one-line error summary to `cli_error_log` (e.g.
     cli_lint: CLI_LINT
     cli_typecheck: CLI_TYPECHECK
     cli_test: CLI_TEST
-    cli_errors: <full error output>
+    cli_error_file: cli-errors/iter-{cli_iter}.txt
 
-Re-run 3a.
+Increment `cli_iter`. Re-run 3a.
 
 ### 3b: AI Loop (max 2)
 
-`git status --porcelain` → parse file paths, exclude deletions (`D`), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`) → `CHANGED_FILES`.
+`git status --porcelain` → parse file paths, exclude deletions (`D`), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`) → `CHANGED_FILES` (newline-separated).
+
+`mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
 Spawn 3 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
 
@@ -100,38 +128,32 @@ Spawn 3 in parallel (`run_in_background: true`): `validator-structural`, `valida
 
 Each: return `[error|warning] file:line — description` or `NO_ISSUES`.
 
+Write each validator's output to `SPEC_DIR/validation/iter-{ai_iter}/{name}.md` (structural.md, file.md, security.md).
+
 All NO_ISSUES → Phase 4.
 
 Otherwise spawn `aggregator` with prompt:
 
-    ## Structural Validator
-    <structural report>
-
-    ## File Validator
-    <file report>
-
-    ## Security Validator
-    <security report>
-
-Parse aggregator output: split at `## False Positives`.
-- **Before** the header = verified findings (or `NO_ISSUES`). Store as `VERIFIED_REPORT`.
-- **After** the header = false positive log. Store as `FALSE_POSITIVES` (empty if no such section).
-
-Collect each iteration's `VERIFIED_REPORT` into `ALL_VERIFIED_REPORTS` (labeled `## AI Iteration N`).
-
-`VERIFIED_REPORT` is `NO_ISSUES` → Phase 4.
-`VERIFIED_REPORT` has issues + `ai_iter >= 2` → record unresolved, Phase 4.
-`VERIFIED_REPORT` has issues + `ai_iter < 2` → spawn new `coder` with prompt:
-
-    mode: fix-ai
     feature: _fix
     spec_dir: SPEC_DIR
-    cli_lint: CLI_LINT
-    cli_typecheck: CLI_TYPECHECK
-    cli_test: CLI_TEST
-    report: <VERIFIED_REPORT>
+    ai_iteration: N
 
-Re-run from 3a.
+Aggregator reads reports from `validation/iter-{N}/`, writes `aggregated.md` and `false-positives.md` to the same directory. Returns one-line status: `DONE: N verified, M false positives` or `NO_ISSUES`.
+
+Check aggregator status (do NOT parse report contents):
+- `NO_ISSUES` → Phase 4.
+- Has issues + `ai_iter >= 2` → record unresolved, Phase 4.
+- Has issues + `ai_iter < 2` → spawn new `coder` with prompt:
+
+        mode: fix-ai
+        feature: _fix
+        spec_dir: SPEC_DIR
+        cli_lint: CLI_LINT
+        cli_typecheck: CLI_TYPECHECK
+        cli_test: CLI_TEST
+        report_file: validation/iter-{ai_iter}/aggregated.md
+
+Increment `ai_iter`. Re-run from 3a (counters continue, do not reset).
 
 ## Phase 4: Improvement Analysis
 
@@ -145,9 +167,6 @@ Spawn `improvement-analyzer` with prompt:
     issues_fixed: <count>
     issues_remaining: <count>
     unresolved_summary: <list of unresolved issues, or "none">
-    cli_errors: <cli_error_log, or "none">
-    false_positives: <FALSE_POSITIVES from last aggregator run, or "none">
-    verified_reports: <ALL_VERIFIED_REPORTS, or "none">
     compactions: <compaction_log formatted as "agent:count, ...", or "none">
 
 ## Phase 4a: Auto-Apply Regressions
@@ -173,7 +192,7 @@ Spawn `improvement-analyzer` with prompt:
 **Description:** <fix description>
 **Files changed:** N
 **Tests:** M passed (or "skipped")
-**Validation:** CLI {N}/3, AI {N}/2
+**Validation:** CLI {N}/5, AI {N}/2
 
 ### Unresolved Issues
 - [error|warning] file:line — description

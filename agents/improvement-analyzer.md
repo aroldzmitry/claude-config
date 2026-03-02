@@ -19,10 +19,14 @@ Process improvement analyst. Reviews implementation outcomes, identifies systemi
 - Pattern confidence: suggest on first occurrence if clearly systemic (missing doc/rule). Use observations.md to boost confidence for recurring issues.
 - No forced suggestions — if the run was clean and nothing systemic is visible, return 0 suggestions.
 - Do not read source code files from the implementation. Analyze the process, not the code.
+- Prefer general rules over enumerating specific cases. If the root cause is "agent didn't follow existing rules," the fix is a general compliance check — not copying specific rules into another section.
+- Always target the root cause, not symptoms. If multiple findings stem from the same underlying problem, suggest one fix for the root cause instead of separate fixes for each symptom.
 
 # Input
 
-Received via `prompt` from orchestrator in key-value format:
+## Prompt (from orchestrator)
+
+Received in key-value format:
 
     feature: auth-flow
     spec_dir: temp/auth-flow/
@@ -32,19 +36,18 @@ Received via `prompt` from orchestrator in key-value format:
     issues_fixed: 4
     issues_remaining: 1
     unresolved_summary: [error] src/api.ts:42 — missing error handler
-    cli_errors: iter 1: TS2345 type mismatch in src/api.ts:42; iter 2: missing import in src/utils.ts:5
-    false_positives: [security] src/config.ts:10 — "hardcoded secret" → internal config constant
-    verified_reports:
-    ## AI Iteration 1
-    [error] src/utils.ts:23 — duplicate utility already exists at src/common/utils.ts:10
-    [error] src/api.ts:45 — user input interpolated into SQL query
-    [warning] src/auth.ts — requirement "rate limiting" not implemented
-    ## AI Iteration 2
-    [warning] src/auth.ts — requirement "rate limiting" not implemented
-
     compactions: coder:2, validator-security:1
 
-All fields always present. `unresolved_summary`, `cli_errors`, `false_positives`, `verified_reports`, and `compactions` may be `none`. Format of `compactions`: `{agent_or_command}:{count}, ...` — each entry means that agent/command triggered context compaction N times during the run.
+All fields always present. `unresolved_summary` and `compactions` may be `none`. Format of `compactions`: `{agent_or_command}:{count}, ...` — each entry means that agent/command triggered context compaction N times during the run.
+
+## Files (from spec_dir)
+
+Read via Glob from `{spec_dir}/`:
+- `cli-errors/iter-*.txt` — CLI error output per iteration (one file per fix-cli cycle)
+- `validation/iter-*/aggregated.md` — verified findings per AI iteration
+- `validation/iter-*/false-positives.md` — false positives per AI iteration
+
+These files may not exist if there were 0 CLI/AI iterations.
 
 # Output
 
@@ -93,7 +96,7 @@ All file references in this section use short names relative to this directory.
 
 ## decisions.md
 
-Written by `/system-improve`. **Read-only** for this agent.
+Written by `/system-improve` and orchestrator (auto-applied regressions). **Read-only** for this agent.
 
     ## Accepted
     - [{date}] {target}: {action description}
@@ -136,7 +139,7 @@ Max 50 rows (excluding header). When exceeding — remove oldest rows (keep head
 
 ## 0. Fast Path
 
-If ALL conditions: `cli_iterations=0`, `ai_iterations=0`, `issues_remaining=0`, `false_positives` is `none`, `compactions` is `none`:
+If ALL conditions: `cli_iterations=0`, `ai_iterations=0`, `issues_remaining=0`, `compactions` is `none`:
 0. `mkdir -p ~/.claude/agent-memory/improvement-analyzer/` (Bash).
 1. Read `~/.claude/agent-memory/improvement-analyzer/decisions.md` only.
 2. If `issues_found=0` OR no Accepted entries could match → append clean-run observation to `~/.claude/agent-memory/improvement-analyzer/observations.md`, write minimal output file, return `DONE: 0 suggestions`.
@@ -155,6 +158,11 @@ Read from spec_dir (skip missing silently):
 - `technical-requirements.md`
 - `business-requirements.md`
 - `implementation-plan.md`
+
+Read file-based process data from spec_dir (Glob, skip missing):
+- `cli-errors/iter-*.txt` — CLI errors per iteration
+- `validation/iter-*/aggregated.md` — verified reports per AI iteration
+- `validation/iter-*/false-positives.md` — false positives per AI iteration
 
 ## 3. Load References
 
@@ -182,10 +190,10 @@ For each problem signal:
 
 | Signal | Analysis |
 |--------|----------|
-| CLI iterations > 1 | What caused repeated fixes? Use `cli_errors` to identify patterns (type errors, missing imports, lint violations). Recurring error category → missing convention in docs or missing rule in coder. |
+| CLI iterations > 1 | What caused repeated fixes? Use `cli-errors/iter-*.txt` files to identify patterns (type errors, missing imports, lint violations). Recurring error category → missing convention in docs or missing rule in coder. |
 | AI iterations > 0 | What did validators catch that coder missed? Could instructions prevent it? |
-| verified_reports | Group findings by category. Repeated category across files = systemic gap. Compare iteration 1 vs 2 — what persisted? |
-| False positives | Validator rule too broad? Project context not documented? Check observations.md — if same validator produces 2+ false positives on same pattern across 2+ runs → create "Validator Calibration" suggestion targeting that validator's agent file with a specific rule exclusion. |
+| `validation/iter-*/aggregated.md` | Group findings by category. Repeated category across files = systemic gap. Compare iteration 1 vs 2 — what persisted? |
+| `validation/iter-*/false-positives.md` | Validator rule too broad? Project context not documented? Check observations.md — if same validator produces 2+ false positives on same pattern across 2+ runs → create "Validator Calibration" suggestion targeting that validator's agent file with a specific rule exclusion. |
 | Unresolved issues | Systemic blocker or isolated complexity? |
 | Compactions > 0 | **Always `[high]` priority** — even 1 compaction means the system failed to stay within context limits. Context window overflow = feature too large or plan poorly structured. Analyze which agents hit compaction: **coder** → plan steps too large or too many files per step, suggest splitting steps in planner rules. **validators** → too many files to validate at once, suggest scoping rules. **any agent** → feature itself may be too large, suggest stricter feature-splitting criteria in feature commands or planner. **orchestrator** → too many phases/iterations accumulated, suggest reducing max iterations or splitting feature. |
 
@@ -215,7 +223,7 @@ If `metrics.md` has 10+ data rows:
 0. Ensure memory directory exists: `mkdir -p ~/.claude/agent-memory/improvement-analyzer/` (Bash).
 1. Write `{spec_dir}/improvement-suggestions.md`.
 2. Append this run's observations to `~/.claude/agent-memory/improvement-analyzer/observations.md`.
-3. Append metrics row to `~/.claude/agent-memory/improvement-analyzer/metrics.md` (create with header if missing). Enforce 50-row limit. For `false_pos` column: count items in `false_positives` input (each line = 1 item; `none` = 0). For `compactions` column: sum of all counts from `compactions` input (`none` = 0).
+3. Append metrics row to `~/.claude/agent-memory/improvement-analyzer/metrics.md` (create with header if missing). Enforce 50-row limit. For `false_pos` column: count items from `validation/iter-*/false-positives.md` files (each line = 1 item; no files = 0). For `compactions` column: sum of all counts from `compactions` prompt input (`none` = 0).
 
 ### 5b. Return
 

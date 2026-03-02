@@ -77,8 +77,6 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 2. Read `DECISIONS_FILE` if exists.
 3. Read `OBSERVATIONS_FILE` if exists — for cross-session pattern detection.
 4. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
-5. Count user messages. If <4 → "Not enough conversation to analyze. Run after a substantive work session." Stop.
-
 ## Phase 1: Scan
 
 1. Analyze full conversation using S1–S6 categories.
@@ -125,11 +123,19 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
 1. Show summary: N accepted, N rejected, N skipped. List each accepted item (target + action, one line each).
 2. 0 accepted → Phase 4.
 3. Ask user to confirm before applying.
-4. For each accepted item:
+4. Quality gate — verify each accepted change before applying:
+   - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions.
+   - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have explicit bounds (max N).
+   - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections).
+   - **General:** no stack/framework-specific terms in general-purpose files (`~/.claude/commands/`). Specifics → project docs.
+   - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows.
+   - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem?
+   If any check fails → fix the change text before applying. If unfixable → report to user, skip that item.
+5. For each accepted item:
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).
    - Report: file path + what changed (edited/created).
-5. Edit fails (section not found, file restructured) → report, skip that item, continue.
+6. Edit fails (section not found, file restructured) → report, skip that item, continue.
 
 ## Phase 4: Record
 
@@ -167,7 +173,7 @@ Final report: "Applied N changes, recorded N decisions (N accepted, N rejected).
 
 # Edge Cases
 
-- <4 user messages → handled in Phase 0 step 5.
+- Very short session (0-1 user messages) → Phase 1 scan finds 0 signals → handled by Phase 1 step 8.
 - No commands used in session → still works, analyze general interaction quality. Common findings: things that should be commands (S6), missing conventions in CLAUDE.md.
 - Mid-session run → analyze what happened so far, note "partial" in observation.
 - No temp/ directories → skip artifact cross-referencing, proceed with conversation-only analysis.

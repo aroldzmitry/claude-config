@@ -27,7 +27,8 @@ Before asking questions, silently:
 1. Determine feature name from `$ARGUMENTS`
 2. Check if `temp/<feature-name>/business-requirements.md` exists — read it if yes
 3. Read `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md` if they exist
-4. If no `$ARGUMENTS` — ask the user what they want to specify technically
+4. If feature modifies existing code — explore affected modules, data flow, and contracts to understand current state before asking questions (max 5 tool calls)
+5. If no `$ARGUMENTS` — ask the user what they want to specify technically
 
 Do NOT mention this step to the user. Just use the knowledge.
 

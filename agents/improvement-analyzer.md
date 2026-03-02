@@ -187,7 +187,7 @@ For each problem signal:
 | verified_reports | Group findings by category. Repeated category across files = systemic gap. Compare iteration 1 vs 2 — what persisted? |
 | False positives | Validator rule too broad? Project context not documented? Check observations.md — if same validator produces 2+ false positives on same pattern across 2+ runs → create "Validator Calibration" suggestion targeting that validator's agent file with a specific rule exclusion. |
 | Unresolved issues | Systemic blocker or isolated complexity? |
-| Compactions > 0 | Context window overflow = feature too large or plan poorly structured. Analyze which agents hit compaction: **coder** → plan steps too large or too many files per step, suggest splitting steps in planner rules. **validators** → too many files to validate at once, suggest scoping rules. **any agent** → feature itself may be too large, suggest stricter feature-splitting criteria in feature commands or planner. If total compactions across all agents ≥ 3 → `[high]` priority, target planner/feature-split docs. |
+| Compactions > 0 | **Always `[high]` priority** — even 1 compaction means the system failed to stay within context limits. Context window overflow = feature too large or plan poorly structured. Analyze which agents hit compaction: **coder** → plan steps too large or too many files per step, suggest splitting steps in planner rules. **validators** → too many files to validate at once, suggest scoping rules. **any agent** → feature itself may be too large, suggest stricter feature-splitting criteria in feature commands or planner. **orchestrator** → too many phases/iterations accumulated, suggest reducing max iterations or splitting feature. |
 
 For each identified root cause:
 - Check if the target file already covers it → skip (unless regression).
@@ -200,7 +200,7 @@ If `metrics.md` has 10+ data rows:
 - Compare averages of last 5 runs vs previous 5 runs.
 - `cli_iter` or `ai_iter` trending up → flag as `[high]` systemic regression suggestion.
 - `false_pos` trending up → flag as `[medium]` validator calibration needed.
-- `compactions` trending up or consistently > 0 → flag as `[high]` — features are growing beyond context limits, planning/splitting needs improvement.
+- `compactions` > 0 in any run → flag as `[high]` — zero compactions is the target, any compaction means planning/splitting needs improvement.
 - Stagnation (no improvement across 10+ runs) → flag as `[medium]`.
 - Include trend data as evidence in suggestions.
 

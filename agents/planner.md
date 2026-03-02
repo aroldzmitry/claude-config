@@ -98,3 +98,5 @@ Step ordering:
 - Shared utilities before consumers
 - Core logic before integration points
 - Data layer before UI layer
+
+If context compaction occurred during execution, append `COMPACTED: true` as the last line of output.

@@ -86,3 +86,5 @@ For each testable unit:
     - test-cases.md missing — tests derived from spec
 
 Omit WARNINGS if none. Orchestrator does not parse this output — coder discovers test files via Glob.
+
+If context compaction occurred during execution, append `COMPACTED: true` as the last line.

@@ -9,6 +9,7 @@ Project docs (`docs/`) are loaded into agent context as working instructions. Ev
 3. **Unambiguous.** Agents can't ask follow-up questions. Every rule must be clear enough to apply without clarification.
 4. **Patterns, not instances.** `{Feature}Page` is useful. A list of all page names is not.
 5. **No redundancy with tooling.** Don't document what linter/formatter already enforces.
+6. **One fact, one location.** Each rule/pattern lives in exactly one document. Other docs reference it, never restate it.
 
 ## Applying the principles
 

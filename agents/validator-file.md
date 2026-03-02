@@ -79,3 +79,5 @@ Findings exist:
 No findings:
 
     NO_ISSUES
+
+If context compaction occurred during execution, append `COMPACTED: true` as the last line.

@@ -29,6 +29,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
   - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
   - `ai_iterations` — number of AI fix cycles (coder fix-ai spawns). Initial validator run = 0.
   - `cli_error_log` — accumulated one-line summaries of CLI errors from each fix-cli cycle (e.g. "iter 1: TS2345 type mismatch in src/api.ts:42; iter 2: missing import in src/utils.ts:5"). Empty string if no CLI errors.
+  - `compaction_log` — tracks agents that reported context compaction. Format: `{agent}:{count}, ...`. After each Task agent spawn, check return for `COMPACTED: true` — if present, increment that agent's count. If orchestrator itself experiences compaction, add `orchestrator:1`.
 
 # Workflow
 
@@ -147,6 +148,7 @@ Spawn `improvement-analyzer` with prompt:
     cli_errors: <cli_error_log, or "none">
     false_positives: <FALSE_POSITIVES from last aggregator run, or "none">
     verified_reports: <ALL_VERIFIED_REPORTS, or "none">
+    compactions: <compaction_log formatted as "agent:count, ...", or "none">
 
 ## Phase 4a: Auto-Apply Regressions
 

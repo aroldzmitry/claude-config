@@ -78,3 +78,5 @@ All findings false:
 
     ## False Positives
     [security] src/utils.ts:23 — "potential path traversal" → input is internal constant, not user-controlled
+
+If context compaction occurred during execution, append `COMPACTED: true` as the last line.

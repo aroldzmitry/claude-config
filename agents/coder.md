@@ -122,3 +122,5 @@ Omit UNRESOLVED if all steps succeeded.
     - <issue description>
 
 Omit REMAINING if everything was fixed.
+
+**All modes:** if context compaction occurred during execution, append `COMPACTED: true` as the last line.

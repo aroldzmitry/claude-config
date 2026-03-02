@@ -42,7 +42,9 @@ Received via `prompt` from orchestrator in key-value format:
     ## AI Iteration 2
     [warning] src/auth.ts — requirement "rate limiting" not implemented
 
-All fields always present. `unresolved_summary`, `cli_errors`, `false_positives`, and `verified_reports` may be `none`.
+    compactions: coder:2, validator-security:1
+
+All fields always present. `unresolved_summary`, `cli_errors`, `false_positives`, `verified_reports`, and `compactions` may be `none`. Format of `compactions`: `{agent_or_command}:{count}, ...` — each entry means that agent/command triggered context compaction N times during the run.
 
 # Output
 
@@ -113,14 +115,15 @@ Written by this agent after each run.
     - findings_categories: {validator/category: count, ...}
     - false_positives: {validator prefix + description}
     - unresolved: {list}
+    - compactions: {agent: count, ...} or none
     - notes: {systemic observations}
 
 ## metrics.md
 
 Append-only table. One row added after each run.
 
-    | date | feature | cli_iter | ai_iter | found | fixed | remaining | false_pos |
-    |------|---------|----------|---------|-------|-------|-----------|-----------|
+    | date | feature | cli_iter | ai_iter | found | fixed | remaining | false_pos | compactions |
+    |------|---------|----------|---------|-------|-------|-----------|-----------|-------------|
 
 Max 50 rows (excluding header). When exceeding — remove oldest rows (keep header).
 
@@ -133,7 +136,7 @@ Max 50 rows (excluding header). When exceeding — remove oldest rows (keep head
 
 ## 0. Fast Path
 
-If ALL conditions: `cli_iterations=0`, `ai_iterations=0`, `issues_remaining=0`, `false_positives` is `none`:
+If ALL conditions: `cli_iterations=0`, `ai_iterations=0`, `issues_remaining=0`, `false_positives` is `none`, `compactions` is `none`:
 0. `mkdir -p ~/.claude/agent-memory/improvement-analyzer/` (Bash).
 1. Read `~/.claude/agent-memory/improvement-analyzer/decisions.md` only.
 2. If `issues_found=0` OR no Accepted entries could match → append clean-run observation to `~/.claude/agent-memory/improvement-analyzer/observations.md`, write minimal output file, return `DONE: 0 suggestions`.
@@ -184,6 +187,7 @@ For each problem signal:
 | verified_reports | Group findings by category. Repeated category across files = systemic gap. Compare iteration 1 vs 2 — what persisted? |
 | False positives | Validator rule too broad? Project context not documented? Check observations.md — if same validator produces 2+ false positives on same pattern across 2+ runs → create "Validator Calibration" suggestion targeting that validator's agent file with a specific rule exclusion. |
 | Unresolved issues | Systemic blocker or isolated complexity? |
+| Compactions > 0 | Context window overflow = feature too large or plan poorly structured. Analyze which agents hit compaction: **coder** → plan steps too large or too many files per step, suggest splitting steps in planner rules. **validators** → too many files to validate at once, suggest scoping rules. **any agent** → feature itself may be too large, suggest stricter feature-splitting criteria in feature commands or planner. If total compactions across all agents ≥ 3 → `[high]` priority, target planner/feature-split docs. |
 
 For each identified root cause:
 - Check if the target file already covers it → skip (unless regression).
@@ -196,6 +200,7 @@ If `metrics.md` has 10+ data rows:
 - Compare averages of last 5 runs vs previous 5 runs.
 - `cli_iter` or `ai_iter` trending up → flag as `[high]` systemic regression suggestion.
 - `false_pos` trending up → flag as `[medium]` validator calibration needed.
+- `compactions` trending up or consistently > 0 → flag as `[high]` — features are growing beyond context limits, planning/splitting needs improvement.
 - Stagnation (no improvement across 10+ runs) → flag as `[medium]`.
 - Include trend data as evidence in suggestions.
 
@@ -210,7 +215,7 @@ If `metrics.md` has 10+ data rows:
 0. Ensure memory directory exists: `mkdir -p ~/.claude/agent-memory/improvement-analyzer/` (Bash).
 1. Write `{spec_dir}/improvement-suggestions.md`.
 2. Append this run's observations to `~/.claude/agent-memory/improvement-analyzer/observations.md`.
-3. Append metrics row to `~/.claude/agent-memory/improvement-analyzer/metrics.md` (create with header if missing). Enforce 50-row limit. For `false_pos` column: count items in `false_positives` input (each line = 1 item; `none` = 0).
+3. Append metrics row to `~/.claude/agent-memory/improvement-analyzer/metrics.md` (create with header if missing). Enforce 50-row limit. For `false_pos` column: count items in `false_positives` input (each line = 1 item; `none` = 0). For `compactions` column: sum of all counts from `compactions` input (`none` = 0).
 
 ### 5b. Return
 

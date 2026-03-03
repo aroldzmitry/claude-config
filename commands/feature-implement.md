@@ -1,5 +1,5 @@
 ---
-description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → test-writer → coder → validators → fix loop → improvement analyzer), produces staged git diff."
+description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator → test-writer → coder → self-checker → validators → fix loop → improvement analyzer), produces staged git diff."
 argument-hint: "[feature-name]: folder name in temp/"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
 disable-model-invocation: true
@@ -54,6 +54,13 @@ Spawn `planner` with prompt:
 
 After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision (skip/write + reason). Step details loaded in Phase 3.
 
+Spawn `plan-validator` with prompt:
+
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+
+After: log result (CLEAN or FIXED: N issues).
+
 ## Phase 2: Test Writing
 
 Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 3.
@@ -65,7 +72,7 @@ Otherwise spawn `test-writer` with prompt:
 
 ## Phase 3: Implementation
 
-Read `SPEC_DIR/implementation-plan.md`. Extract only step count and titles (each `### Step N: <title>`). Do NOT extract full step bodies — coder reads them from the plan file.
+Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract the full step block (header + **Files** + **Action** + description until next `### Step` or end of file).
 
 For each step in order:
 
@@ -80,8 +87,19 @@ For each step in order:
         cli_test: CLI_TEST
         step_number: N
         step_total: TOTAL
+        step_body: <full step block text>
 
 3. If coder returns `UNRESOLVED` → record, continue to next step.
+4. If coder returns `DONE` → run `git diff --name-only` to get actually changed files. Spawn `self-checker` with prompt:
+
+        feature: $ARGUMENTS
+        spec_dir: SPEC_DIR
+        changed_files: <newline-separated file paths from git diff>
+        cli_lint: CLI_LINT
+        cli_typecheck: CLI_TYPECHECK
+        cli_test: CLI_TEST
+
+5. Log self-checker result (CLEAN or FIXED: N issues). Continue to next step.
 
 ## Phase 4: Validation Cycle
 

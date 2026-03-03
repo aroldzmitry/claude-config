@@ -1,7 +1,7 @@
 ---
 description: "Reviews improvement suggestions from implementation runs. Discusses each with the user, then applies accepted changes to agent/command/doc files."
 argument-hint: "[path]: directory containing improvement-suggestions.md (e.g. temp/auth-flow/)"
-allowed-tools: "Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
+allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
 ---
 
@@ -56,16 +56,33 @@ For each item in order:
 
 After each decision: `[3/7 | next: validator-security.md — rule about input validation]`
 
-## Phase 2: Apply
+## Phase 2: Apply & Validate
 
 1. Show summary: N accepted, N rejected, N skipped. List each accepted item (target + action, one line each).
 2. 0 accepted → Phase 3.
 3. Ask user to confirm before applying.
-4. For each accepted item:
-   - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
-   - Target file doesn't exist → create with Write (include appropriate structure for the file type).
-   - Report: file path + what changed (edited/created).
-5. Edit fails (section not found, file restructured) → report, skip that item, continue.
+4. Initialize `cycle = 0`. Format accepted items as structured input: each item as `target: <path>, action: <description>`.
+5. Spawn `doc-applier` with prompt:
+
+       mode: apply
+       changes:
+       - target: <path>
+         action: <description>
+       ...
+
+6. Parse `CHANGED_FILES` from doc-applier output.
+7. Spawn `doc-validator` with prompt:
+
+       changed_files: <newline-separated paths from CHANGED_FILES>
+
+8. If `CLEAN` → Phase 3.
+9. If `ISSUES` and `cycle < 5` → spawn `doc-applier` with prompt:
+
+       mode: fix
+       report: <validator output>
+
+   Parse new `CHANGED_FILES`. Increment `cycle`. Re-run from step 7.
+10. If `ISSUES` and `cycle >= 5` → report remaining issues to user, Phase 3.
 
 ## Phase 3: Record
 

@@ -1,6 +1,6 @@
 ---
 name: coder
-description: "Implements a single plan step with CLI validation and self-check. Also used for fixing CLI and AI validator issues."
+description: "Implements a single plan step with CLI validation. Also used for fixing CLI and AI validator issues."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: opus
 permissionMode: bypassPermissions
@@ -34,18 +34,6 @@ Code implementer. Implements a single plan step per invocation. Also fixes CLI e
 - Simple readable code over clever code. No complex ternaries, reduce chains, one-liners for brevity.
 - Style hierarchy: project docs → scanned reference → own judgment.
 
-# Self-Check
-
-After completing the step in `implement` or `fix-ai` mode (after CLI passes), before returning DONE/FIXED:
-
-1. Quick scan each created/modified file for:
-   - Compliance with all Code rules above AND loaded project convention docs (CODE_RULES*.md, CONVENTIONS.md)
-   - For each new/modified function signature in a repository, verify it follows the repository method conventions from project docs
-   - Functions longer than 40 lines
-2. Fix issues found. Re-run CLI.
-
-No re-architecture. Only mechanical quality issues. 2-3 turns max.
-
 # Input
 
 Received via `prompt` from orchestrator in key-value format:
@@ -57,7 +45,7 @@ Received via `prompt` from orchestrator in key-value format:
 - `cli_lint`, `cli_typecheck`, `cli_test` — CLI commands (any may be empty)
 
 **Mode-specific:**
-- `implement`: `step_number` — step number to implement, `step_total` — total steps count
+- `implement`: `step_number`, `step_total`, `step_body` — full step text (header + Files + Action + description)
 - `fix-cli`: `cli_error_file` — path relative to spec_dir (e.g. `cli-errors/iter-1.txt`)
 - `fix-ai`: `report_file` — path relative to spec_dir (e.g. `validation/iter-1/aggregated.md`)
 
@@ -66,26 +54,26 @@ Received via `prompt` from orchestrator in key-value format:
 ## 1. Load Context
 
 Read in parallel (skip missing silently):
-- `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`, `docs/WORKFLOW.md`
+- Always: `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`
+- Only in `implement` mode when step creates new files or new architectural patterns: `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`
 - `{spec_dir}/technical-requirements.md`
-- `{spec_dir}/business-requirements.md`
 
 ## 2. Execute
 
 ### implement
 
-Read `{spec_dir}/implementation-plan.md`. If missing → return `ERROR: implementation-plan.md not found in {spec_dir}`. Locate `### Step {step_number}` and extract the full step block (header, **Files**, **Action**, and description until next `### Step` or end of file).
+Use `step_body` from prompt (contains header, **Files**, **Action**, and description). Do NOT read implementation-plan.md.
 
 Read test files created by test-writer (Glob for test files in affected directories) to understand expected contracts.
 
-Implement only the extracted step:
+Implement only the step described in `step_body`:
 1. Read files listed in the step's **Files** field
 2. Check if step is already implemented (expected changes already present). If fully done → return `DONE` (skip implementation)
 3. Scan for similar existing code as structural reference
 4. Implement the described changes (skip parts already present)
 5. Run `cli_lint`, `cli_typecheck` (skip empty)
 6. Find test file(s) matching this step's source files → run `cli_test` for matched files only (e.g., `jest path/to/file.test.ts`, `pytest path/to/test_file.py`). No matching test file → skip.
-7. All pass → Self-Check → DONE
+7. All pass → DONE
 8. Any fail → analyze root cause, fix, re-run failed commands
 9. After 3 failed attempts → return UNRESOLVED
 

@@ -40,15 +40,14 @@ Fix orchestrator. Delegates to agents — never writes application code.
 ## Phase 0: Setup
 
 1. If `$ARGUMENTS` empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
-2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
-3. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory.
-4. Write description to `SPEC_DIR/technical-requirements.md`:
+2. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory.
+3. Write description to `SPEC_DIR/technical-requirements.md`:
    ```
    # Fix Description
 
    <user's description>
    ```
-5. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
+4. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 
 ## Phase 1: Planning
 
@@ -74,7 +73,7 @@ User confirms → spawn `test-writer` with prompt:
 
 ## Phase 2: Implementation
 
-Read `SPEC_DIR/implementation-plan.md`. Extract only step count and titles (each `### Step N: <title>`). Do NOT extract full step bodies — coder reads them from the plan file.
+Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract the full step block (header + **Files** + **Action** + description until next `### Step` or end of file).
 
 For each step in order:
 
@@ -89,6 +88,7 @@ For each step in order:
         cli_test: CLI_TEST
         step_number: N
         step_total: TOTAL
+        step_body: <full step block text>
 
 3. If coder returns `UNRESOLVED` → record, continue to next step.
 

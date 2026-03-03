@@ -55,7 +55,11 @@ No existing tests → detect framework from project config (package.json, pyproj
 
 No framework detected → return `ERROR: no test framework found`.
 
-## 3. Write Tests
+## 3. Scan Shared Fixtures
+
+Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.*`, `**/mocks.*`. Read found files and catalog available fixtures, mock factories, and helper functions. Import from these files instead of creating local copies. Only create new fixtures when no suitable shared one exists.
+
+## 4. Write Tests
 
 **If `test-cases.md` exists** — parse its format:
 - `## Test Strategy` — respect test levels (unit/integration/e2e) and exclusions

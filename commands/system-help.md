@@ -48,7 +48,7 @@ Output this reference (translated to user's language):
 | `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md` |
 | `/feature-implement` | Staged git diff + `improvement-suggestions.md` | `technical-requirements.md`, clean git |
-| `/feature-fix` | Staged git diff + `improvement-suggestions.md` | Clean git |
+| `/feature-fix` | Staged git diff + `improvement-suggestions.md` | — |
 | `/system-improve` | Updated system files | `improvement-suggestions.md` |
 | `/system-find-improve` | Updated system files + `retro/observations.md` | Any conversation |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
@@ -72,7 +72,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: planner → test-writer → coder → CLI loop (max 5) → 3–4 validators → aggregator → AI fix loop (max 2) → improvement analysis
+- Implementation is fully autonomous: planner → plan-validator → test-writer → coder (per step) → self-checker → CLI loop (max 5) → 3–4 validators → aggregator → AI fix loop (max 2) → improvement analysis
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

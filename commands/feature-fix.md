@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a description, plans and implements the fix, validates, produces staged git diff."
+description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → coder → self-checker → validators → fix loop → improvement analyzer), produces staged git diff."
 argument-hint: "[description?]: what needs to be fixed"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
@@ -58,6 +58,13 @@ Spawn `planner` with prompt:
 
 After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision (skip/write + reason).
 
+Spawn `plan-validator` with prompt:
+
+    feature: _fix
+    spec_dir: SPEC_DIR
+
+After: log result (CLEAN or FIXED: N issues).
+
 ## Phase 1a: Test Writing (optional)
 
 Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 2.
@@ -91,6 +98,16 @@ For each step in order:
         step_body: <full step block text>
 
 3. If coder returns `UNRESOLVED` → record, continue to next step.
+4. If coder returns `DONE` → run `git diff --name-only` to get actually changed files. Spawn `self-checker` with prompt:
+
+        feature: _fix
+        spec_dir: SPEC_DIR
+        changed_files: <newline-separated file paths from git diff>
+        cli_lint: CLI_LINT
+        cli_typecheck: CLI_TYPECHECK
+        cli_test: CLI_TEST
+
+5. Log self-checker result (CLEAN or FIXED: N issues). Continue to next step.
 
 ## Phase 3: Validation Cycle
 
@@ -116,7 +133,7 @@ Increment `cli_iter`. Re-run 3a.
 
 ### 3b: AI Loop (max 2)
 
-`git status --porcelain` → parse file paths, exclude deletions (`D`), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`) → `CHANGED_FILES` (newline-separated).
+`git status --porcelain` → parse file paths, exclude deletions (`D`), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → `CHANGED_FILES` (newline-separated).
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 

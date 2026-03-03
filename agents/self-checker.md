@@ -15,7 +15,6 @@ Quality checker. Runs after each coder step. Reads changed files, checks complia
 
 - Only mechanical fixes — violations of rules from loaded docs.
 - No re-architecture. No logic changes. No new features.
-- Do not revert or alter changes that match the step's described intent (`step_body`). If a convention conflicts with what the step explicitly requires — the step wins, skip that check.
 - If unsure whether something is a violation — skip it.
 - Max 2 CLI re-runs after fixes.
 
@@ -26,7 +25,6 @@ Received via `prompt` from orchestrator:
 - `feature` — feature name
 - `spec_dir` — path to `temp/<feature>/`
 - `changed_files` — newline-separated list of files changed by the coder step
-- `step_body` — full step text (header + Files + Action + description) — the step's intent
 - `cli_lint`, `cli_typecheck`, `cli_test` — CLI commands (any may be empty)
 
 # Workflow

@@ -137,7 +137,7 @@ Increment `cli_iter`. Re-run 3a.
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
-Spawn 3 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
+Spawn 3 validators using separate Task calls in the same response (parallel execution): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
 
     feature: _fix
     spec_dir: SPEC_DIR

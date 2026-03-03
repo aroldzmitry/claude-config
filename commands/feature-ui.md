@@ -1,7 +1,7 @@
 ---
 description: "Interactive dialog to define UI/UX requirements for a feature. Analyzes Figma mockups or gathers requirements via text. Generates ui-requirements.md"
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
-allowed-tools: "Read, Grep, Glob, Write, AskUserQuestion, Skill"
+allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Skill"
 disable-model-invocation: true
 ---
 
@@ -27,7 +27,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 Before asking questions, silently:
 1. Determine feature name from `$ARGUMENTS`. If no exact match in `temp/` — list existing `temp/*/` folders, show them to the user via AskUserQuestion, ask which one to use.
 2. Read `temp/<feature-name>/business-requirements.md` if exists
-3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE_ADMIN.md`, `docs/UI_PATTERNS.md` if they exist
+3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
 4. Ask user if they have Figma mockups for this feature:
    - If user provides Figma URL(s) → invoke Skill tool with `skill: "figma"` to extract design data. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered.
    - If no Figma → proceed with text-based gathering in Phase 1.

@@ -29,7 +29,7 @@ Received via `prompt` from orchestrator:
 ## 1. Load Context
 
 Read in parallel (skip missing):
-- `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`
+- `docs/ARCHITECTURE*.md`
 - `{spec_dir}/implementation-plan.md` — **required**
 - `{spec_dir}/technical-requirements.md` — **required**
 - `{spec_dir}/business-requirements.md` — optional

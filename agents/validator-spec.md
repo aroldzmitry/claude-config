@@ -16,10 +16,7 @@ Spec compliance validator. Cross-references implementation against specification
 - Review only files listed in input. Do not expand scope.
 - One finding = one line in output. No prose, no suggestions, no code examples.
 - Report only concrete issues. Include file:line where the code exists; for unimplemented requirements, file reference or requirement name is sufficient. No vague observations.
-- Do not flag issues that belong to other validators:
-  - Logic errors, naming, dead code, readability → file validator
-  - Cross-file duplication, architecture violations → structural validator
-  - XSS, injections, secrets, auth → security validator
+- Scope: only spec compliance and requirement coverage. Defer all else to other validators (structural, file, security).
 
 # Severity
 

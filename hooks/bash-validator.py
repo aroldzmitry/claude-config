@@ -27,6 +27,9 @@ BLOCKED_PATTERNS = [
     (r"\brm\s+-rf\s+/", "rm -rf on root paths is forbidden"),
     (r"\brm\s+-r\s+/", "rm -r on root paths is forbidden"),
 
+    # .env file access
+    (r"\bcat\s+[^\s]*\.env", "Reading .env files via cat is forbidden — use secure env management"),
+
     # System operations
     (r"\bsudo\s+rm\b", "sudo rm is forbidden - too dangerous"),
     (r"\bchmod\s+777\b", "chmod 777 is forbidden - security risk"),

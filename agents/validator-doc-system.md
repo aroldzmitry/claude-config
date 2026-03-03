@@ -1,9 +1,9 @@
 ---
-name: doc-validator
-description: "Validates documentation changes against DOC_PRINCIPLES and system-wide consistency. Reports issues, never modifies files."
+name: validator-doc-system
+description: "Validates documentation changes against DOC_PRINCIPLES and system-wide consistency for system files (post-edit batch validation). Reports issues, never modifies files."
 tools: Read, Glob, Grep
 model: sonnet
-permissionMode: default
+permissionMode: plan
 maxTurns: 25
 ---
 

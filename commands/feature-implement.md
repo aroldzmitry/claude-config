@@ -42,7 +42,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. `SPEC_DIR/technical-requirements.md` missing → stop: "Run `/feature-tech $ARGUMENTS` first."
 4. Verify spec files exist via Glob: `technical-requirements.md` (required), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents — agents read specs from `SPEC_DIR` themselves.
-5. Clean stale iteration data: `cd SPEC_DIR && rm -rf cli-errors/ validation/`
+5. Clean stale iteration data: `rm -rf SPEC_DIR/cli-errors/ SPEC_DIR/validation/`
 6. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 
 ## Phase 1: Planning
@@ -129,7 +129,7 @@ Increment `cli_iter`. Re-run 4a.
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
-Spawn all 4 in parallel (`run_in_background: true`): `validator-structural`, `validator-file`, `validator-security`, `validator-spec`. Each with prompt:
+Spawn all 4 validators using separate Task calls in the same response (parallel execution): `validator-structural`, `validator-file`, `validator-security`, `validator-spec`. Each with prompt:
 
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR

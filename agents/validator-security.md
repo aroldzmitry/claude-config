@@ -17,10 +17,7 @@ Security vulnerability reviewer. Examines changed files for exploitable vulnerab
 - One finding = one line in output. No prose, no suggestions, no code examples.
 - Report only concrete issues with specific file:line references. No vague observations.
 - If project docs are missing — skip project-specific checks, apply only universal checks.
-- Do not flag issues that belong to other validators:
-  - Logic errors, naming, dead code, readability → file validator
-  - Cross-file duplication, architecture violations → structural validator
-  - Spec compliance → spec validator
+- Scope: only security vulnerabilities and anti-patterns. Defer all else to other validators (file, structural, spec).
 - Skip test files entirely (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`).
 - Skip lockfiles (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, etc.) and generated/minified files.
 - Check config files (JSON, YAML, TOML, `.env.example`, Dockerfile, docker-compose) for hardcoded secrets and insecure settings.

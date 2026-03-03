@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import socket
 import sys
 import re
@@ -178,7 +179,7 @@ def main():
             data = content.get("data", "")
             mime = content.get("mimeType", "image/png")
             ext = "png" if "png" in mime else "jpg"
-            filename = f"/tmp/figma_screenshot.{ext}"
+            filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"figma_screenshot.{ext}")
             with open(filename, "wb") as f:
                 f.write(base64.b64decode(data))
             print(f"Screenshot saved: {filename}")

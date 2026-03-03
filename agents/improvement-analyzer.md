@@ -96,7 +96,7 @@ All file references in this section use short names relative to this directory.
 
 ## decisions.md
 
-Written by `/system-improve` and orchestrator (auto-applied regressions). **Read-only** for this agent.
+Written by `/system-improve` and orchestrator (auto-applied regressions). **Read-only** for this agent. Entries tagged `[retro]` are written by `/system-find-improve`. Treat them equally when checking for regressions and duplicates.
 
     ## Accepted
     - [{date}] {target}: {action description}
@@ -174,7 +174,7 @@ Read files based on what the input data indicates:
 - Glob `docs/*.md` — read project docs to check for gaps.
 - Glob agents (`*.md`) — read Role + Rules of all agents not yet loaded. This enables cross-component root cause tracing (e.g. validator catches repeated issue → root cause may be in planner or test-writer, not coder).
 
-Agent files location: `.claude/agents/` (project-level, higher priority). Fallback: `~/.claude/agents/` (user-level).
+Agent files location: `.claude/agents/` (project-level, higher priority). Fallback: `~/.claude/agents/` (user-level). (unique to this agent — other agents/commands assume `~/.claude/agents/` only)
 
 ## 4. Analyze
 

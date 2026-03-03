@@ -64,7 +64,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 # Conventions
 
 - `DECISIONS_FILE` = `~/.claude/agent-memory/improvement-analyzer/decisions.md`
-- `OBSERVATIONS_FILE` = `~/.claude/agent-memory/retro/observations.md`
+- `OBSERVATIONS_FILE` = `~/.claude/agent-memory/improvement-analyzer/observations.md`
 - Date format: `YYYY-MM-DD` (current date).
 - Item order: high → medium → low.
 - Decision tag: `[retro]` — to coexist with improvement-analyzer decisions.
@@ -73,7 +73,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 
 ## Phase 0: Load
 
-1. `mkdir -p ~/.claude/agent-memory/retro/ ~/.claude/agent-memory/improvement-analyzer/`
+1. `mkdir -p ~/.claude/agent-memory/improvement-analyzer/`
 2. Read `DECISIONS_FILE` if exists.
 3. Read `OBSERVATIONS_FILE` if exists — for cross-session pattern detection.
 4. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
@@ -136,6 +136,14 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).
    - Report: file path + what changed (edited/created).
 6. Edit fails (section not found, file restructured) → report, skip that item, continue.
+7. Initialize `val_cycle = 0`. Collect paths of all .md files written/edited in step 5 → `CHANGED_MD`.
+8. If `CHANGED_MD` not empty: spawn `validator-doc-system` with prompt:
+
+       changed_files: <newline-separated paths from CHANGED_MD>
+
+   - `CLEAN` → Phase 4.
+   - `ISSUES` and `val_cycle < 3` → fix each reported issue using Edit, increment `val_cycle`, re-run step 8.
+   - `ISSUES` and `val_cycle >= 3` → report remaining issues to user, Phase 4.
 
 ## Phase 4: Record
 

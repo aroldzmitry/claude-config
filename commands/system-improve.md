@@ -71,7 +71,7 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
        ...
 
 6. Parse `CHANGED_FILES` from doc-applier output.
-7. Spawn `doc-validator` with prompt:
+7. Spawn `validator-doc-system` with prompt:
 
        changed_files: <newline-separated paths from CHANGED_FILES>
 

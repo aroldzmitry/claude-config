@@ -10,9 +10,6 @@
       "Read(**/.claude/**)",
       "Write(**/.claude/**)",
       "Edit(**/.claude/**)",
-      "Read(/Users/dmitry/.claude/**)",
-      "Write(/Users/dmitry/.claude/**)",
-      "Edit(/Users/dmitry/.claude/**)",
       "Bash(mkdir:*)",
       "Bash(npx prettier:*)",
       "Bash(npx eslint:*)",
@@ -24,8 +21,7 @@
       "Bash(python3 *figma_mcp.py*)"
     ],
     "deny": [
-      "Read(.env)",
-      "Read(../.env)"
+      "Read(**/.env*)"
     ],
     "ask": [],
     "defaultMode": "default"

@@ -163,7 +163,7 @@ Maximum 2 rounds of refinement per part. Unresolved details → note in that par
 | 2 | <name>  | ~N steps | <name>     |
 
 ### Next Steps
-- Verify generated specs, then delete original: `rm -rf temp/<feature-name>/`
+- Verify generated specs, then delete the original folder manually after verifying specs
 - `/feature-tech <first-part-name>`
 ```
 

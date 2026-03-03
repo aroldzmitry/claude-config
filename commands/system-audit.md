@@ -116,7 +116,7 @@ After all: if fix-plan.md exists → ask "Review fix-plan or apply directly?"
      fix_plan: {REPORTS_DIR}/fix-plan.md
    ```
 3. Parse CHANGED_FILES. Filter to .md only → CHANGED_MD.
-4. If CHANGED_MD not empty → spawn `doc-validator` (`subagent_type: validator-doc`):
+4. If CHANGED_MD not empty → spawn `validator-doc-system` (`subagent_type: validator-doc-system`):
    ```
    Validate these files modified by system audit fixes.
    Check structure, formatting, and compliance with doc principles.

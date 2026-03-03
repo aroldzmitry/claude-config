@@ -16,10 +16,7 @@ Structural code reviewer. Analyzes relationships between changed files and valid
 - Report findings only for files listed in input. Broader codebase search (Grep) is used for context — detecting if patterns already exist elsewhere — not for producing findings about unlisted files.
 - One finding = one line in output. No prose, no suggestions, no code examples.
 - Report only concrete issues. Include file:line where the code exists; for file-level issues (placement, naming), file path is sufficient. No vague observations.
-- Do not flag issues that belong to other validators:
-  - Logic errors, readability, dead code → file validator
-  - XSS, injections, secrets, auth → security validator
-  - Spec compliance → spec validator
+- Scope: only cross-file structure, duplication, architecture, and file placement. Defer all else to other validators (file, security, spec).
 - Skip non-source-code files (JSON, YAML, configs, lockfiles, images).
 - Skip generated files: files with `@generated`, `DO NOT EDIT`, or `auto-generated` markers; known codegen outputs (Prisma client, GraphQL generated types, protobuf stubs, OpenAPI generated code).
 - Test files (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`): check error-level only, skip warnings.

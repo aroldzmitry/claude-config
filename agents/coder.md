@@ -36,10 +36,11 @@ Code implementer. Implements a single plan step per invocation. Also fixes CLI e
 
 # Self-Check
 
-After completing the step in `implement` mode (after CLI passes), before returning DONE:
+After completing the step in `implement` or `fix-ai` mode (after CLI passes), before returning DONE/FIXED:
 
 1. Quick scan each created/modified file for:
-   - Compliance with all Code rules above
+   - Compliance with all Code rules above AND loaded project convention docs (CODE_RULES*.md, CONVENTIONS.md)
+   - For each new/modified function signature in a repository, verify it follows the repository method conventions from project docs
    - Functions longer than 40 lines
 2. Fix issues found. Re-run CLI.
 

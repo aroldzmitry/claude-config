@@ -37,20 +37,22 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 
 1. Read validator report files from `{spec_dir}/validation/iter-{ai_iteration}/` (structural.md, file.md, security.md, spec.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
-2. Verify each finding:
+2. If `ai_iteration` > 0, read `{spec_dir}/validation/iter-{previous}/false-positives.md` (where previous = ai_iteration - 1, skip if missing). When a new finding matches a previous false positive (same file, same issue pattern), carry forward the false-positive classification unless the code at that location materially changed between iterations.
+
+3. Verify each finding:
    - **Has file:line** → read that location, confirm the issue exists.
    - **Has file, no line** → read the file, confirm the described issue applies.
    - **No file reference** → trust (can't verify without re-doing the validator's work).
    - Finding doesn't match actual code → mark as false positive.
 
-3. Deduplicate verified findings:
+4. Deduplicate verified findings:
    - Same file, same line (±2), same severity → keep more specific description.
 
-4. Sort verified findings:
+5. Sort verified findings:
    - Errors first, then warnings.
    - Within each severity: alphabetical by file path, then by line number.
 
-5. Output: verified findings, then false positives section (if any).
+6. Output: verified findings, then false positives section (if any).
 
 # Output
 

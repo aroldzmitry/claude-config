@@ -43,7 +43,7 @@ Go through these categories in order.
 2. **Feature Description** — What should happen? High-level
 3. **User Flow** — Step by step from the user's perspective
 4. **Scope** — What's explicitly NOT included?
-5. **Edge Cases** — Based on answers, YOU propose edge cases one at a time with severity (`[error]` — must handle, `[warning]` — should handle). Ask user to confirm or reject, then propose the next one. After you've exhausted your proposals, ask if user wants to add any.
+5. **Edge Cases** — For features involving data creation/submission: before proposing individual cases, ask about the overall validation philosophy (strict — reject invalid data, or lenient — accept and flag for review). Use the answer to set default severity for subsequent proposals. Then propose edge cases one at a time with severity (`[error]` — must handle, `[warning]` — should handle). Ask user to confirm or reject, then propose the next one. After you've exhausted your proposals, ask if user wants to add any.
 6. **Acceptance Criteria** — YOU draft criteria one at a time with priority (`[must]`/`[should]`/`[could]`) based on everything discussed. Ask user to confirm or adjust priority, then propose the next one. After you've exhausted your proposals, ask if user wants to add any.
 
 ### Conditional (only when relevant)

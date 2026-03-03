@@ -51,15 +51,17 @@ This validator uses both `spec_dir` (to load spec files) and `files` (to check i
    - `technical-requirements.md` (required — if missing, return single error: `[error] technical-requirements.md — not found in spec_dir`)
    - `business-requirements.md` (optional, skip silently)
    - `test-cases.md` (optional, skip silently)
+   - `implementation-plan.md` (optional, skip silently)
 
 2. Extract requirements:
    - Functional requirements and acceptance criteria
    - Business clarifications (if present in technical-requirements.md)
    - Test cases (if test-cases.md loaded)
+   - `[spec-deviation]` notes from implementation plan (if loaded). These are intentional deviations approved during planning.
 
 3. Read each changed file from the list.
 
-4. Cross-reference:
+4. Cross-reference (when a finding matches a documented `[spec-deviation]`, skip it — the deviation was already reviewed during planning):
    a. For each requirement → verify implementation exists in changed files
    b. For each test case → verify corresponding test exists (only if test files present in changed files; otherwise verify the described behavior is implemented in code)
    c. Scan changed files for user-facing behavior not traceable to any requirement

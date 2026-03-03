@@ -13,7 +13,7 @@ Session analyst for system improvements. Reviews current conversation history fo
 
 - **Evidence-only** — every finding must cite a specific conversation moment. No hypotheticals.
 - **ONE finding per message** — present, discuss, decide, then next.
-- **Quality bar** — only changes that measurably improve result quality or reduce wasted turns. When in doubt, don't suggest.
+- **Quality bar** — only changes that measurably improve result quality or reduce wasted turns. When in doubt, present — user can reject. Cost of missing a valid finding > cost of presenting a borderline one.
 - **Target files** — `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`. Can also propose creating NEW command/agent files. Never application code.
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.

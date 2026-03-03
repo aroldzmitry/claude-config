@@ -1,0 +1,150 @@
+---
+description: "System audit: 7 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
+argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'settings'"
+allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
+disable-model-invocation: true
+---
+
+# Role
+
+System auditor. Coordinates validators, aggregation, review, and fixes. Never writes system files directly — delegates to audit-applier.
+
+# Rules
+
+- **ONE issue per message** in Phase 3 — present, discuss, decide, then next.
+- Match user's language.
+- AskUserQuestion for structured decisions. Plain text for open-ended discussion.
+
+# Conventions
+
+- `REPORTS_DIR` = `~/.claude/agent-memory/system-audit/reports/`
+- `DECISIONS_FILE` = `~/.claude/agent-memory/system-audit/decisions.md`
+- `OBSERVATIONS_FILE` = `~/.claude/agent-memory/system-audit/observations.md`
+
+# Workflow
+
+## Phase 0: Load
+
+1. `mkdir -p ~/.claude/agent-memory/system-audit/reports/`
+2. `rm -f ~/.claude/agent-memory/system-audit/reports/*.md`
+3. Build ALL_FILES via Glob: `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`, `settings.json`, `hooks/*`, `plugins/*`, `skills/*/SKILL.md` (all under `~/.claude/`).
+4. SCOPE from `$ARGUMENTS`: `commands` / `agents` / `docs` / `settings` / `all` (default). Unrecognized → default `all` + warning.
+
+## Phase 1: Validate
+
+Spawn 7 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
+
+| Agent instructions | Output file |
+|---|---|
+| `agents/audit-consistency.md` | `01-consistency.md` |
+| `agents/audit-completeness.md` | `02-completeness.md` |
+| `agents/audit-redundancy.md` | `03-redundancy.md` |
+| `agents/audit-optimization.md` | `04-optimization.md` |
+| `agents/audit-architecture.md` | `05-architecture.md` |
+| `agents/audit-security.md` | `06-security.md` |
+| `agents/audit-workflow.md` | `07-workflow.md` |
+
+Each prompt:
+```
+Read instructions at ~/.claude/{agent_file}. Follow all rules, checks, output format.
+Input:
+  files: {ALL_FILES}
+  scope: {SCOPE}
+  output: {REPORTS_DIR}/{output_file}
+```
+
+Report progress as each finishes.
+
+## Phase 2: Aggregate & Filter
+
+### Pass 1: Deduplicate
+
+Spawn `audit-deduplicator` (`subagent_type: general-purpose`, `model: sonnet`):
+```
+Read instructions at ~/.claude/agents/audit-deduplicator.md.
+Input:
+  reports_dir: {REPORTS_DIR}
+  decisions_file: {DECISIONS_FILE}
+```
+
+### Pass 2: Verify
+
+Spawn `audit-verifier` (`subagent_type: general-purpose`, `model: sonnet`):
+```
+Read instructions at ~/.claude/agents/audit-verifier.md.
+Input:
+  input_file: {REPORTS_DIR}/08-deduplicated.md
+  output_file: {REPORTS_DIR}/09-verified.md
+```
+
+Read `09-verified.md`. If 0 verified → "System audit clean." → Phase 5.
+Show overview: N verified (critical/medium/low), N false positives, N filtered.
+
+## Phase 3: Review
+
+For each verified issue (critical → medium → low):
+
+1. Present: severity, ID, description, files, evidence, found-by, recommendation.
+   Read source files on-demand if user needs more context.
+
+2. Ask via AskUserQuestion: **Fix** / **Reject** / **Skip**.
+
+3. Fix → discuss solution, agree on approach. Append to `REPORTS_DIR/fix-plan.md`:
+   ```
+   ## Fix {ID}: {title}
+   - **Target:** {file path}
+   - **Action:** {agreed action}
+   - **Context:** {discussion summary}
+   ```
+
+4. Reject → ask brief reason. Append to DECISIONS_FILE:
+   `- [YYYY-MM-DD] [audit] {ID} {files}: {description} — reason: "{reason}"`
+
+5. Skip → nothing recorded.
+
+Progress: `[3/N | next: M-02 — description]`
+
+After all: if fix-plan.md exists → ask "Review fix-plan or apply directly?"
+
+## Phase 4: Apply
+
+1. No fix-plan.md → Phase 5.
+2. Spawn `audit-applier` (`subagent_type: general-purpose`, `model: sonnet`):
+   ```
+   Read instructions at ~/.claude/agents/audit-applier.md.
+   Input:
+     fix_plan: {REPORTS_DIR}/fix-plan.md
+   ```
+3. Parse CHANGED_FILES. Filter to .md only → CHANGED_MD.
+4. If CHANGED_MD not empty → spawn `doc-validator` (`subagent_type: validator-doc`):
+   ```
+   Validate these files modified by system audit fixes.
+   Check structure, formatting, and compliance with doc principles.
+   Files: {CHANGED_MD}
+   ```
+5. CLEAN → success. ISSUES → show to user.
+
+## Phase 5: Record
+
+Append to OBSERVATIONS_FILE (create if missing):
+```
+## YYYY-MM-DD
+- scope: {SCOPE}, verified: N (C:N M:N L:N), FP: N, filtered: N, fixed: N, rejected: N, skipped: N
+```
+Size limit: 20 entries max.
+
+Delete reports: `rm -f {REPORTS_DIR}/*.md`
+
+Final: "Audit complete. Fixed N, rejected N, skipped N."
+
+# Edge Cases
+
+- All findings filtered → "All known issues reviewed. Clear skip-list?"
+- DECISIONS_FILE >100 entries → warn, suggest cleanup.
+- Validator fails → skip it, continue with remaining.
+- audit-applier fails mid-apply → report partial progress.
+- User interrupts Phase 3 → rejects saved, fix-plan partial.
+
+# Start
+
+Phase 0.

@@ -41,7 +41,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`"
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. `SPEC_DIR/technical-requirements.md` missing → stop: "Run `/feature-tech $ARGUMENTS` first."
-4. Verify spec files exist via Glob: `technical-requirements.md` (required), `business-requirements.md`, `test-cases.md` (optional). Do NOT read contents — agents read specs from `SPEC_DIR` themselves.
+4. Verify spec files exist via Glob: `technical-requirements.md` (required), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents — agents read specs from `SPEC_DIR` themselves.
 5. Clean stale iteration data: `cd SPEC_DIR && rm -rf cli-errors/ validation/`
 6. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 

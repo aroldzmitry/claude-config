@@ -25,7 +25,7 @@ You are a software architect conducting a structured interview to define technic
 
 Before asking questions, silently:
 1. Determine feature name from `$ARGUMENTS`
-2. Check if `temp/<feature-name>/business-requirements.md` exists — read it if yes. If no exact match — list existing `temp/*/` folders, show them to the user, ask which one to use (or confirm creating a new folder). Use the selected folder name as `<feature-name>` going forward.
+2. Check if `temp/<feature-name>/business-requirements.md` exists — read it if yes. Also read `temp/<feature-name>/ui-requirements.md` if exists — use as context for API contracts and component architecture. If no exact match — list existing `temp/*/` folders, show them to the user, ask which one to use (or confirm creating a new folder). Use the selected folder name as `<feature-name>` going forward.
 3. Read `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md` if they exist
 4. If feature modifies existing code — explore affected modules, data flow, and contracts to understand current state before asking questions (max 5 tool calls)
 5. If no `$ARGUMENTS` — ask the user what they want to specify technically

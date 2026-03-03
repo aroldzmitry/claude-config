@@ -27,6 +27,7 @@ Output this reference (translated to user's language):
 
 /docs-init                    → project onboarding, create docs/
 /feature [name]               → business requirements dialog
+/feature-ui [name]            → UI/UX requirements dialog (optional, for features with admin UI)
 /feature-tech [name]          → technical spec + test cases
 /feature-implement [name]     → autonomous: plan → test → code → validate → stage
 /system-improve [path]        → review & apply improvement suggestions
@@ -45,8 +46,9 @@ Output this reference (translated to user's language):
 |---------|----------|---------------|
 | `/docs-init` | `docs/*.md` | — |
 | `/feature` | `temp/<name>/business-requirements.md` | — |
+| `/feature-ui` | `temp/<name>/ui-requirements.md` | Optional: `business-requirements.md` |
 | `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
-| `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md` |
+| `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
 | `/feature-implement` | Staged git diff + `improvement-suggestions.md` | `technical-requirements.md`, clean git |
 | `/feature-fix` | Staged git diff + `improvement-suggestions.md` | — |
 | `/system-improve` | Updated system files | `improvement-suggestions.md` |
@@ -57,9 +59,11 @@ Output this reference (translated to user's language):
 
 **New project:** `/docs-init`
 
-**New feature:** `/feature` → `/feature-tech` → `/feature-implement`
+**New feature (API-only):** `/feature` → `/feature-tech` → `/feature-implement`
 
-**Large feature:** `/feature` → `/feature-split` → `/feature-tech` (per part) → `/feature-implement` (per part)
+**New feature (with UI):** `/feature` → `/feature-ui` → `/feature-tech` → `/feature-implement`
+
+**Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
 
 **Quick fix:** `/feature-fix fix the login button`
 

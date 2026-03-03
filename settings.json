@@ -20,7 +20,8 @@
       "Bash(yarn:*)",
       "Bash(npm:*)",
       "Bash(git:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(python3 *figma_mcp.py*)"
     ],
     "deny": [
       "Read(.env)",

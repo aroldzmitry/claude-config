@@ -50,11 +50,13 @@ This validator uses both `spec_dir` (to load spec files) and `files` (to check i
 1. Read spec files from `spec_dir`:
    - `technical-requirements.md` (required — if missing, return single error: `[error] technical-requirements.md — not found in spec_dir`)
    - `business-requirements.md` (optional, skip silently)
+   - `ui-requirements.md` (optional, skip silently — UI spec: pages, layouts, states, actions, navigation)
    - `test-cases.md` (optional, skip silently)
    - `implementation-plan.md` (optional, skip silently)
 
 2. Extract requirements:
    - Functional requirements and acceptance criteria
+   - UI requirements: pages, routes, layouts, states, actions, navigation (if ui-requirements.md loaded)
    - Business clarifications (if present in technical-requirements.md)
    - Test cases (if test-cases.md loaded)
    - `[spec-deviation]` notes from implementation plan (if loaded). These are intentional deviations approved during planning.

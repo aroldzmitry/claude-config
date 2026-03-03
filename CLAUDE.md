@@ -1,5 +1,3 @@
-# Global Instructions
-
 ## Honesty & Uncertainty Policy
 
 - **Never guess** - If uncertain about something, ask directly instead of guessing

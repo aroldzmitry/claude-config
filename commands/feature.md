@@ -113,7 +113,8 @@ If any item fails — go back to Step 2 and ask. If all pass and user hasn't con
 5. If user requests changes → apply, show updated version, repeat until confirmed
 6. After final confirmation, suggest the next step:
    - If scope estimate exceeded threshold and user agreed to split → `/feature-split <feature-name>`
-   - Otherwise → `/feature-tech <feature-name>` to create technical specification
+   - If feature includes admin panel UI (pages, forms, tables) → `/feature-ui <feature-name>` to define UI requirements, then `/feature-tech`
+   - If API-only or no UI → `/feature-tech <feature-name>` to create technical specification
 
 ### Document Format
 

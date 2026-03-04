@@ -131,6 +131,7 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
    - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows.
    - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem?
    If any check fails → fix the change text before applying. If unfixable → report to user, skip that item.
+   **Enforcement:** draft exact insert/replace text before calling Edit. Verify checklist against the draft, not abstract description.
 5. For each accepted item:
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).

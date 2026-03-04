@@ -42,6 +42,8 @@ Go through categories in order.
 
 **Business clarification:** if a technical question reveals a business gap — pause the current category, discuss the gap with the user, note it for Business Clarifications, then resume.
 
+**Prerequisite tasks:** if a business gap requires a code change before the current feature (e.g., removing a broken model, fixing a schema) — do NOT generate specs inline. Record it in Business Clarifications as a prerequisite task with a suggested folder name. Finish the current interview first.
+
 ### Categories
 
 1. **Solution Approach** — High-level architecture decision. How does this fit into the existing system? What's the main implementation strategy? If multiple valid approaches exist — present with trade-offs and recommendation.
@@ -231,7 +233,8 @@ Fill gaps found. 2-3 turns max.
 
 1. Show both documents to the user
 2. If user requests changes → apply, show updated, repeat until confirmed
-3. After final confirmation, suggest next step: `/feature-implement <feature-name>`
+3. If prerequisite tasks were recorded in Business Clarifications → suggest `/feature-tech <prerequisite-name>` for each, to be done before `/feature-implement`
+4. After final confirmation, suggest next step: `/feature-implement <feature-name>`
 
 # Start
 

@@ -99,11 +99,11 @@ For each document:
 1. Announce: `[Document N/M: DOC_NAME]`
 2. Go through categories for this doc type, one question at a time
 3. **Skip rule:** skip a category if (a) code exploration clearly covers it AND user confirmed the profile, OR (b) not relevant. State when skipping: `[skipping Data Flow — single-page app, no complex flow]`
-4. **Update mode:** if user chose "Update" for this doc, read the existing doc, identify gaps vs current codebase, ask only about gaps/outdated sections. Skip categories that are already well-covered.
+4. **Update mode:** if user chose "Update" for this doc, read the existing doc, identify gaps vs current codebase (gap = a section the doc should have per document categories but doesn't, OR content that contradicts current code; skip style/wording improvements), ask only about gaps/outdated sections. Skip categories that are already well-covered.
 5. After all categories → generate full document draft
 6. **Validate:** spawn `validator-doc` agent with the draft (see Validation below)
 7. Show validated draft to user
-8. User confirms or requests changes → apply, re-validate if substantial changes, repeat until confirmed
+8. User confirms or requests changes → apply changes via Edit → re-validate (always, regardless of change size) → show result → repeat until confirmed
 9. Write file to `docs/` (create `docs/` directory if it doesn't exist)
 10. Move to next document
 
@@ -191,6 +191,8 @@ Start with: `Common rules: [CODE_RULES.md](CODE_RULES.md)`. Only document rules 
 
 After all documents are written, before wrap-up (max 3 cycles):
 
+Initialize `cross_cycle = 0`.
+
 1. Read all generated/updated docs as a set
 2. Validate against all DOC_PRINCIPLES.md principles. For each violation — fix it
 3. Spawn `validator-doc` on each modified document with prompt:
@@ -199,7 +201,7 @@ After all documents are written, before wrap-up (max 3 cycles):
        document_draft: |
          <full current text>
 
-4. Show user a summary of fixes applied (if any). After 3 cycles with remaining issues — proceed and note unresolved.
+4. Apply fixes. Increment `cross_cycle`. Show user a summary of fixes applied (if any). After 3 cycles with remaining issues — proceed and note unresolved.
 
 ## Phase 3: Wrap Up
 

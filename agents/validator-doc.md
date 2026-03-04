@@ -27,6 +27,8 @@ Received via `prompt` from orchestrator:
       # Architecture
       ...
 
+Derive document_type from the filename: ARCHITECTURE.md → ARCHITECTURE, CODE_RULES.md → CODE_RULES, etc. Use UPPERCASE_SNAKE_CASE.
+
 # Workflow
 
 1. Read `~/.claude/docs/DOC_PRINCIPLES.md`

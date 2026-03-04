@@ -29,7 +29,7 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 
 1. `mkdir -p ~/.claude/agent-memory/system-audit/reports/`
 2. `rm -f ~/.claude/agent-memory/system-audit/reports/*.md`
-3. Build ALL_FILES via Glob: `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`, `settings.json`, `hooks/*`, `plugins/*`, `skills/*/SKILL.md` (all under `~/.claude/`).
+3. Build ALL_FILES via `git -C ~/.claude ls-files --cached` — only tracked files. This excludes internal Claude Code directories (cache/, debug/, plugins/, agent-memory/).
 4. SCOPE from `$ARGUMENTS`: `commands` / `agents` / `docs` / `settings` / `all` (default). Unrecognized → default `all` + warning.
 
 ## Phase 1: Validate
@@ -53,6 +53,12 @@ Input:
   files: {ALL_FILES}
   scope: {SCOPE}
   output: {REPORTS_DIR}/{output_file}
+
+Severity calibration (apply to all findings):
+- CRITICAL: causes wrong output, data loss, or security vulnerability
+- MEDIUM: causes measurably worse behavior in normal workflows
+- LOW: reduces clarity but doesn't change outcomes
+Do NOT report: cosmetic differences (wording, formatting, variable casing), theoretical edge cases without evidence of harm, missing bounds on user-controlled interactive dialogs, intentional design choices (self-contained agents, convenience copies with cross-references).
 ```
 
 Report progress as each finishes.
@@ -93,7 +99,7 @@ For each verified issue (critical → medium → low):
 
 2. Ask via AskUserQuestion: **Fix** / **Reject** / **Skip**.
 
-3. Fix → discuss solution, agree on approach. Append to `REPORTS_DIR/fix-plan.md`:
+3. Fix → discuss solution, agree on approach. Before appending: read the target file section to verify the proposed action is consistent with existing structure, format, and content. Adjust if needed. Append to `REPORTS_DIR/fix-plan.md`:
    ```
    ## Fix {ID}: {title}
    - **Target:** {file path}

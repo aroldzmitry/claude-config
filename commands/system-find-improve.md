@@ -175,7 +175,7 @@ Append to `OBSERVATIONS_FILE` (create if missing):
 - notes: {cross-session trend if detected, or notable observation}
 ```
 
-Size limit: 30 entries max (remove oldest when exceeding).
+On each write: count entries. If > 30, remove oldest until 30 remain, then append new entry.
 
 Final report: "Applied N changes, recorded N decisions (N accepted, N rejected). Observation logged."
 

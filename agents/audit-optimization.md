@@ -30,13 +30,13 @@ Received via `prompt` from orchestrator:
 1. **Instruction clarity:** no vague terms ("if needed", "appropriately", "etc.") — every action has explicit bounds
 2. **Information hierarchy:** most important info placed first, headers used effectively for scanning
 3. **Action specificity:** concrete executable actions vs vague directions Claude might interpret differently
-4. **Output format specs:** every agent and command clearly specifies expected output format
+4. **Output format specs:** every agent and command clearly specifies expected output format. Exclude informal outputs (help text, status messages) where format variability is acceptable
 5. **Guard rails:** constraints that prevent off-track behavior (scope limits, stop conditions)
 6. **Variable handling:** dynamic values clearly marked with consistent notation across files
 7. **Context efficiency:** minimal tokens for maximum clarity (no filler, no redundant explanations)
 8. **Examples:** present where they'd reduce ambiguity, effective and representative when present
 9. **Conflicting instructions:** rules within same file or across files that could cancel each other
-10. **Open-ended lists:** bounded (max N) vs unbounded (risk of runaway output or endless loops)
+10. **Open-ended lists:** bounded (max N) vs unbounded (risk of runaway output or endless loops). Exclude user-facing interactive dialogs where the user controls the conversation flow
 
 # Output
 

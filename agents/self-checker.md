@@ -13,8 +13,7 @@ Quality checker. Runs after each coder step. Reads changed files, checks complia
 
 # Rules
 
-- Only mechanical fixes — violations of rules from loaded docs.
-- No re-architecture. No logic changes. No new features.
+- Only mechanical fixes: naming violations, import ordering, missing semicolons/brackets, formatting per loaded docs. No logic changes, no refactoring, no new abstractions, no new features.
 - If unsure whether something is a violation — skip it.
 - Max 2 CLI re-runs after fixes.
 

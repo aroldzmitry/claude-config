@@ -21,6 +21,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - `SPEC_DIR` = `temp/$ARGUMENTS`
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
+- `unresolved_steps` = [] — initialized at start of Phase 3. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`. Pass as `unresolved_summary` to improvement-analyzer.
 - Issue counters for improvement-analyzer prompt:
   - `issues_found` — sum of N from each aggregator `DONE: N verified` (excludes false positives, excludes CLI errors).
   - `issues_fixed` — `issues_found - issues_remaining`.
@@ -92,7 +93,7 @@ For each step in order:
         step_body: <full step block text>
 
 3. If coder returns `UNRESOLVED` → record, continue to next step.
-4. If coder returns `DONE` → run `git diff --name-only` to get actually changed files. Spawn `self-checker` with prompt:
+4. If coder returns `DONE` → run `git status --porcelain` to get actually changed files (strip the 2-char status prefix, exclude lines starting with `D` for deletions). Spawn `self-checker` with prompt:
 
         feature: $ARGUMENTS
         spec_dir: SPEC_DIR

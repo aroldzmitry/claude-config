@@ -29,7 +29,7 @@ Before asking questions, silently:
 2. Read `temp/<feature-name>/business-requirements.md` if exists
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
 4. Ask user if they have Figma mockups for this feature:
-   - If user provides Figma URL(s) → invoke Skill tool with `skill: "figma"` to extract design data. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered.
+   - If user provides Figma URL(s) → invoke Skill tool with `skill: "figma"` to extract design data. If Skill returns error or empty output → inform user, fall back to text-based UI description gathering in Phase 1. Otherwise use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered.
    - If no Figma → proceed with text-based gathering in Phase 1.
 
 Do NOT mention steps 1-3 to the user. Step 4 is the first user-visible message.

@@ -22,6 +22,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}` — timestamp set once at Phase 0 start.
 - Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
+- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`. Pass as `unresolved_summary` to improvement-analyzer.
 - Issue counters for improvement-analyzer prompt:
   - `issues_found` — sum of N from each aggregator `DONE: N verified` (excludes false positives, excludes CLI errors).
   - `issues_fixed` — `issues_found - issues_remaining`.
@@ -36,6 +37,8 @@ Fix orchestrator. Delegates to agents — never writes application code.
   - False positives → `SPEC_DIR/validation/iter-{N}/false-positives.md`
 
 # Workflow
+
+<!-- Phases 0-5. Phase 2 (test-writing) is omitted vs feature-implement (Phases 0-6). Phase 1a is test-writing (optional). -->
 
 ## Phase 0: Setup
 
@@ -96,7 +99,7 @@ For each step in order:
         step_body: <full step block text>
 
 3. If coder returns `UNRESOLVED` → record, continue to next step.
-4. If coder returns `DONE` → run `git diff --name-only` to get actually changed files. Spawn `self-checker` with prompt:
+4. If coder returns `DONE` → run `git status --porcelain` to get actually changed files (strip the 2-char status prefix, exclude lines starting with `D` for deletions). Spawn `self-checker` with prompt:
 
         feature: _fix
         spec_dir: SPEC_DIR

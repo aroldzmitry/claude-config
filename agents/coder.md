@@ -79,7 +79,7 @@ Implement only the step described in `step_body`:
 
 ### fix-cli
 
-1. Read `{spec_dir}/{cli_error_file}`. Analyze CLI errors — identify root causes and affected files
+1. Read `{spec_dir}/{cli_error_file}`. Analyze CLI errors — identify root causes and affected files. Prioritize: type errors first (block compilation), then lint errors, then test failures. Fix one category at a time.
 2. Read each affected file
 3. Scan for similar existing code as reference for the fix
 4. Apply fixes

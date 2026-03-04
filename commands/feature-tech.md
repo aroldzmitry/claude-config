@@ -56,7 +56,7 @@ Go through categories in order.
 
 5. **Error Handling** — Failure modes specific to this feature. What can go wrong, how to detect, how to recover. Only non-obvious cases — skip if all errors are covered by standard project patterns.
 
-6. **Security** — Authentication, authorization, data validation boundaries, sensitive data handling. Only if feature touches auth, user input, or sensitive data. Skip if feature is purely internal with no trust boundaries.
+6. **Security** — Authentication, authorization, data validation boundaries, sensitive data handling. Only if feature touches auth, user input, or sensitive data. Before skipping: scan API error responses from the API/Interfaces category. If any require auth/access checks beyond standard authenticate + RBAC (e.g., guest vs verified, provider-specific, consent-based) → don't skip. Skip if feature is purely internal with no trust boundaries.
 
 7. **Performance / Constraints** — Load expectations, latency requirements, size limits. Only if performance is a real concern for this feature.
 

@@ -128,10 +128,9 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
    - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have explicit bounds (max N).
    - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections).
    - **General:** no stack/framework-specific terms in general-purpose files (`~/.claude/commands/`). Specifics → project docs.
-   - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows.
+   - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows. Before Edit: show `CURRENT:` and `REPLACEMENT:` text in message — verify no original content unintentionally dropped.
    - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem?
    If any check fails → fix the change text before applying. If unfixable → report to user, skip that item.
-   **Enforcement:** draft exact insert/replace text before calling Edit. Verify checklist against the draft, not abstract description.
 5. For each accepted item:
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).

@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → coder → self-checker → validators → fix loop → improvement analyzer), produces staged git diff."
+description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → [test-writer] → coder → self-checker → validators → fix loop → improvement analyzer), produces staged git diff."
 argument-hint: "[description?]: what needs to be fixed"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
@@ -119,7 +119,7 @@ Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
 Run CLI_LINT, CLI_TYPECHECK, CLI_TEST via Bash (skip empty).
 
 All pass → 3b.
-Fail + `cli_iter >= 5` → record unresolved, Phase 4.
+Fail + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 4.
 Fail + `cli_iter < 5` → `mkdir -p SPEC_DIR/cli-errors/`, write full error output to `SPEC_DIR/cli-errors/iter-{cli_iter}.txt`. Spawn new `coder` with prompt:
 
     mode: fix-cli
@@ -155,13 +155,13 @@ Otherwise spawn `aggregator` with prompt:
 
     feature: _fix
     spec_dir: SPEC_DIR
-    ai_iteration: N
+    ai_iteration: {ai_iter}
 
-Aggregator reads reports from `validation/iter-{N}/`, writes `aggregated.md` and `false-positives.md` to the same directory. Returns one-line status: `DONE: N verified, M false positives` or `NO_ISSUES`.
+Aggregator reads reports from `validation/iter-{ai_iter}/`, writes `aggregated.md` and `false-positives.md` to the same directory. Returns one-line status: `DONE: N verified, M false positives` or `NO_ISSUES`.
 
 Check aggregator status (do NOT parse report contents):
 - `NO_ISSUES` → Phase 4.
-- Has issues + `ai_iter >= 2` → record unresolved, Phase 4.
+- Has issues + `ai_iter >= 2` → append "AI: {aggregator status} after {ai_iter} fix cycles" to unresolved_steps, Phase 4.
 - Has issues + `ai_iter < 2` → spawn new `coder` with prompt:
 
         mode: fix-ai
@@ -195,6 +195,7 @@ Spawn `improvement-analyzer` with prompt:
 3. If `## Regressions` section exists with items:
    a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
    b. Count auto-applied regressions.
+   c. Collect changed .md file paths. If any: spawn `validator-doc-system` with changed_files list. If `ISSUES` → log warning, do not block.
 4. Remaining suggestions (non-regression) → left for manual `/system-improve`.
 
 ## Phase 5: Finalize
@@ -206,7 +207,7 @@ Spawn `improvement-analyzer` with prompt:
 
 # Edge Cases
 
-- Run interrupted mid-implementation → re-run the command; coder checks if step already implemented and skips completed steps automatically.
+- Run interrupted mid-implementation → changes already applied to app files persist; re-run starts a new plan from scratch.
 
 # Report
 

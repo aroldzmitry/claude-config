@@ -32,6 +32,7 @@ BLOCKED_PATTERNS = [
 
     # .env file access
     (r"\bcat\s+[^\s]*\.env", "Reading .env files via cat is forbidden — use secure env management"),
+    (r"\b(grep|head|tail|sed|awk)\b.*\.env", "Reading .env files is forbidden — use secure env management"),
 
     # System operations
     (r"\bsudo\s+rm\b", "sudo rm is forbidden - too dangerous"),

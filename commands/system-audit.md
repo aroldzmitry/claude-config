@@ -1,5 +1,5 @@
 ---
-description: "System audit: 7 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
+description: "System audit: 6 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
 argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'settings'"
 allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
@@ -34,7 +34,7 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 
 ## Phase 1: Validate
 
-Spawn 7 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
+Spawn 6 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
 
 | Agent instructions | Output file |
 |---|---|
@@ -43,8 +43,7 @@ Spawn 7 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
 | `agents/audit-redundancy.md` | `03-redundancy.md` |
 | `agents/audit-optimization.md` | `04-optimization.md` |
 | `agents/audit-architecture.md` | `05-architecture.md` |
-| `agents/audit-security.md` | `06-security.md` |
-| `agents/audit-workflow.md` | `07-workflow.md` |
+| `agents/audit-workflow.md` | `06-workflow.md` |
 
 Each prompt:
 ```
@@ -55,15 +54,16 @@ Input:
   output: {REPORTS_DIR}/{output_file}
 
 Severity calibration (apply to all findings):
-- CRITICAL: causes wrong output, data loss, or security vulnerability
-- MEDIUM: causes measurably worse behavior in normal workflows
-- LOW: reduces clarity but doesn't change outcomes
-Do NOT report: cosmetic differences (wording, formatting, variable casing), theoretical edge cases without evidence of harm, missing bounds on user-controlled interactive dialogs, intentional design choices (self-contained agents, convenience copies with cross-references).
+- CRITICAL: produces wrong output or data loss RIGHT NOW (not theoretically)
+- MEDIUM: causes incorrect behavior in normal workflows
+- LOW: misleading documentation or incorrect cross-references
+Only report things that ARE broken — not things that COULD break.
+Do NOT report: cosmetic differences, defensive coding suggestions (missing limits, bounds, guards, error handling for unlikely paths), security hardening, theoretical edge cases, intentional design choices (self-contained agents, convenience copies), improvements or best practices.
 ```
 
 Report progress as each finishes.
 
-Wait for all 7 validators to complete before proceeding to Phase 2.
+Wait for all 6 validators to complete before proceeding to Phase 2.
 
 ## Phase 2: Aggregate & Filter
 

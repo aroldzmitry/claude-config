@@ -35,7 +35,7 @@ Output this reference (translated to user's language):
 ### Additional commands
 
 /feature-split [name]         → split large feature into independent sub-features
-/feature-fix [description]    → autonomous: plan → code → validate → stage (same pipeline, no spec needed)
+/feature-fix [description]    → autonomous: plan → [test] → code → validate → stage (same pipeline, no spec needed)
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
 /system-help [command?]       → this help

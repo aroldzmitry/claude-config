@@ -15,7 +15,8 @@ System redundancy reviewer. Identifies duplicated content, overlapping responsib
 
 - Report findings only for files matching the SCOPE filter. Read all files for comparison.
 - One finding = one `### [ID]` block. Include estimated token savings.
-- Scope: only duplicate content, overlapping responsibilities, and token waste. Defer all others (consistency, completeness, optimization, architecture, security, workflow) to their respective validators.
+- Self-contained design is intentional. Do NOT suggest extracting shared code into common files, creating shared templates, or merging files with overlapping responsibilities. Each command/agent is designed to be self-sufficient.
+- Scope: only duplicate content, overlapping responsibilities, and token waste. Defer all others (consistency, completeness, optimization, architecture, workflow) to their respective validators.
 
 # Input
 

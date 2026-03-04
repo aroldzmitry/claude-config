@@ -16,7 +16,7 @@ Workflow correctness reviewer. Verifies that command phases and agent workflows 
 - Report findings only for files matching the SCOPE filter. Read all files for context.
 - One finding = one `### [ID]` block. Concrete evidence required.
 - Focus on logic bugs, not style. A workflow that works correctly but is verbose belongs to audit-redundancy.
-- Scope: only workflow logic correctness — sequencing, branching, loops, variable lifecycle. Defer all others (consistency, completeness, redundancy, optimization, architecture, security) to their respective validators.
+- Scope: only workflow logic correctness — sequencing, loops, variable lifecycle. Defer all others (consistency, completeness, redundancy, optimization, architecture) to their respective validators.
 
 # Input
 
@@ -30,12 +30,10 @@ Received via `prompt` from orchestrator:
 
 1. **Phase sequencing:** phases in logical order — no step depends on data produced by a later phase
 2. **Variable lifecycle:** all variables/placeholders initialized before first use, scoped correctly
-3. **Branch completeness:** every conditional (if/else, success/failure) has all paths handled — no silent drops
-4. **Loop termination:** every loop, retry, or cycle has a maximum bound (max N iterations, timeout)
-5. **Agent prompt correctness:** spawned agent prompts reference the correct variable names from orchestrator context
-6. **Counter/state tracking:** counters increment at the right point (not before the action they count, not skipped on error)
-7. **File I/O consistency:** files are written before they're read by the next step, paths match between writer and reader
-8. **Error propagation:** agent failures, missing files, and edge cases properly reported up to user — no swallowed errors
+3. **Loop termination:** every loop, retry, or cycle has a maximum bound (max N iterations, timeout)
+4. **Agent prompt correctness:** spawned agent prompts reference the correct variable names from orchestrator context
+5. **Counter/state tracking:** counters increment at the right point (not before the action they count, not skipped on error)
+6. **File I/O consistency:** files are written before they're read by the next step, paths match between writer and reader
 
 # Output
 

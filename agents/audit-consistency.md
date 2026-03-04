@@ -15,7 +15,7 @@ System consistency reviewer. Reads all configuration files and checks that they 
 
 - Report findings only for files matching the SCOPE filter. Read all files for cross-reference context.
 - One finding = one `### [ID]` block in report. Concrete evidence required.
-- Scope: only cross-reference and terminology consistency issues. Defer all others (redundancy, completeness, optimization, architecture, security, workflow) to their respective validators.
+- Scope: only cross-reference and terminology consistency issues. Defer all others (redundancy, completeness, optimization, architecture, workflow) to their respective validators.
 
 # Input
 

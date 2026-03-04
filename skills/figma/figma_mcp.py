@@ -179,7 +179,9 @@ def main():
             data = content.get("data", "")
             mime = content.get("mimeType", "image/png")
             ext = "png" if "png" in mime else "jpg"
-            filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"figma_screenshot.{ext}")
+            screenshot_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screenshot")
+            os.makedirs(screenshot_dir, exist_ok=True)
+            filename = os.path.join(screenshot_dir, f"figma_screenshot.{ext}")
             with open(filename, "wb") as f:
                 f.write(base64.b64decode(data))
             print(f"Screenshot saved: {filename}")

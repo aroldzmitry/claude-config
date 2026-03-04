@@ -33,7 +33,7 @@ python3 ~/.claude/skills/figma/figma_mcp.py --tool get_variable_defs "$ARGUMENTS
 python3 ~/.claude/skills/figma/figma_mcp.py --tool get_screenshot "$ARGUMENTS"
 ```
 
-Then Glob `~/.claude/skills/figma/figma_screenshot.*` and read the matching file to see the visual.
+Then Glob `~/.claude/skills/figma/screenshot/figma_screenshot.*` and read the matching file to see the visual.
 
 ### 4. Metadata (node hierarchy) — only if needed for complex nodes
 

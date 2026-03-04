@@ -141,7 +141,7 @@ Append to OBSERVATIONS_FILE (create if missing):
 ```
 Size limit: 20 entries max.
 
-Delete reports: `rm -f {REPORTS_DIR}/*.md`
+If audit-applier completed successfully → delete reports: `rm -f {REPORTS_DIR}/*.md`. If audit-applier failed or partially applied → keep `fix-plan.md`, delete only report files (`01-*.md` through `09-*.md`).
 
 Final: "Audit complete. Fixed N, rejected N, skipped N."
 

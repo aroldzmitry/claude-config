@@ -37,7 +37,7 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 
 1. Read validator report files from `{spec_dir}/validation/iter-{ai_iteration}/` (structural.md, file.md, security.md, spec.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
-2. If `ai_iteration` > 0, read `{spec_dir}/validation/iter-{previous}/false-positives.md` (where previous = ai_iteration - 1, skip if missing). When a new finding matches a previous false positive (same file, same issue pattern), Re-read the file at that path:line. If the line content is identical to what the previous false-positive described → carry forward. If the line content differs → re-evaluate as a fresh finding. If `ai_iteration` = 0 → no previous false-positives to carry forward, skip this step.
+2. If `ai_iteration` > 0, read `{spec_dir}/validation/iter-{previous}/false-positives.md` (where previous = ai_iteration - 1, skip if missing). When a new finding matches a previous false positive (same file, same issue pattern), Re-read the file at that path:line. If the line content is identical to what the previous false-positive described → carry forward to false-positives.md (do not include in aggregated.md). If the line content differs → re-evaluate as a fresh finding. If `ai_iteration` = 0 → no previous false-positives to carry forward, skip this step.
 
 3. Verify each finding:
    - **Has file:line** → read that location, confirm the issue exists.

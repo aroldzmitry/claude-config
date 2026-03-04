@@ -141,7 +141,7 @@ Max 50 rows (excluding header). When exceeding — remove oldest rows (keep head
 
 If ALL conditions: `cli_iterations=0`, `ai_iterations=0`, `issues_remaining=0`, `compactions` is `none`:
 1. Read `~/.claude/agent-memory/improvement-analyzer/decisions.md` only.
-2. If `issues_found=0` → append clean-run observation to `~/.claude/agent-memory/improvement-analyzer/observations.md`, append zero-count row to `~/.claude/agent-memory/improvement-analyzer/metrics.md` (create with header if missing): `date | feature | 0 | 0 | 0 | 0 | 0 | 0 | 0`, write minimal output file, return `DONE: 0 suggestions`.
+2. If `issues_found=0` → read `observations.md` (enforce 30-entry limit on write), append clean-run observation. Read `metrics.md` (enforce 50-row limit on write), append zero-count row (create with header if missing): `date | feature | 0 | 0 | 0 | 0 | 0 | 0 | 0`. Write `{spec_dir}/improvement-suggestions.md` with header and stats only (per Step 5 format, omit ## Regressions and ## Suggestions sections). Return `DONE: 0 suggestions`.
 3. If `issues_found > 0` → continue to full workflow.
 
 ## 1. Load Memory

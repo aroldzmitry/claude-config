@@ -24,7 +24,7 @@ Received via `prompt` from orchestrator:
 
     files: (newline-separated list of all system files)
     scope: all|commands|agents|docs|settings
-    output: path/to/07-workflow.md
+    output: path/to/06-workflow.md
 
 # Checks
 

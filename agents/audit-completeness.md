@@ -15,13 +15,7 @@ System completeness reviewer. Identifies gaps, missing pieces, and unfinished wo
 
 - Report findings only for files matching the SCOPE filter. Read all files for context.
 - One finding = one `### [ID]` block. Concrete evidence required.
-- Do not report issues that belong to other audit validators:
-  - Naming conflicts → audit-consistency
-  - Duplicate content → audit-redundancy
-  - Prompt quality → audit-optimization
-  - Structure/organization → audit-architecture
-  - Permissions/secrets → audit-security
-  - Logic errors → audit-workflow
+- Scope: only coverage gaps, missing features, and incomplete instructions. Defer all others (consistency, redundancy, optimization, architecture, security, workflow) to their respective validators.
 
 # Input
 

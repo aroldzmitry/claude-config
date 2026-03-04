@@ -27,7 +27,7 @@ Received via `prompt` from orchestrator:
 
 ## 1. Load
 
-Read `~/.claude/docs/DOC_PRINCIPLES.md`.
+Read `~/.claude/docs/DOC_PRINCIPLES.md` and comply.
 
 ## 2. Validate Each File
 

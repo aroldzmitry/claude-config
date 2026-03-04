@@ -10,7 +10,10 @@ import sys
 import re
 
 # Read input from Claude
-input_data = json.load(sys.stdin)
+try:
+    input_data = json.load(sys.stdin)
+except json.JSONDecodeError:
+    sys.exit(2)
 command = input_data.get("tool_input", {}).get("command", "")
 
 # Dangerous patterns that should always be blocked
@@ -33,6 +36,19 @@ BLOCKED_PATTERNS = [
     # System operations
     (r"\bsudo\s+rm\b", "sudo rm is forbidden - too dangerous"),
     (r"\bchmod\s+777\b", "chmod 777 is forbidden - security risk"),
+
+    # Pipe-to-shell attacks
+    (r"\bcurl\b.*\|\s*(ba)?sh", "curl pipe to shell is forbidden - execute downloaded scripts explicitly"),
+    (r"\bwget\b.*\|\s*(ba)?sh", "wget pipe to shell is forbidden - execute downloaded scripts explicitly"),
+
+    # Dangerous rm targets
+    (r"\brm\s+(-rf|-fr)\s*(~|\$HOME|/home/)", "rm home directory is forbidden"),
+    (r"\brm\b.*\.\.", "rm with path traversal (..) is forbidden"),
+    (r"\brm\s+(-rf|-fr)\s*[\"']*~?/?\.claude", "rm -rf on .claude directory is forbidden"),
+
+    # Dangerous git operations
+    (r"\bgit\s+push\s+.*\s+\+", "git force push via refspec (+) is forbidden"),
+    (r"\bgit\s+clean\s+.*-f", "git clean -f is forbidden - use explicit file removal"),
 ]
 
 # Check command against blocked patterns

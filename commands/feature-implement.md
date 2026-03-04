@@ -59,7 +59,7 @@ Spawn `plan-validator` with prompt:
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
 
-After: log result (CLEAN or FIXED: N issues).
+After: log result (CLEAN or FIXED: N issues). Re-read `SPEC_DIR/implementation-plan.md` and re-extract test decision before Phase 2.
 
 ## Phase 2: Test Writing
 
@@ -69,6 +69,8 @@ Otherwise spawn `test-writer` with prompt:
 
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
+
+If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to Phase 3 (tests skipped).
 
 ## Phase 3: Implementation
 
@@ -180,11 +182,12 @@ Spawn `improvement-analyzer` with prompt:
 
 ## Phase 5a: Auto-Apply Regressions
 
-1. Read `SPEC_DIR/improvement-suggestions.md`.
-2. If `## Regressions` section exists with items:
+1. If `SPEC_DIR/improvement-suggestions.md` not found → skip auto-apply phase, proceed to Phase 6.
+2. Read `SPEC_DIR/improvement-suggestions.md`.
+3. If `## Regressions` section exists with items:
    a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
    b. Count auto-applied regressions.
-3. Remaining suggestions (non-regression) → left for manual `/system-improve`.
+4. Remaining suggestions (non-regression) → left for manual `/system-improve`.
 
 ## Phase 6: Finalize
 
@@ -192,6 +195,10 @@ Spawn `improvement-analyzer` with prompt:
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
 4. Output report
+
+# Edge Cases
+
+- Run interrupted mid-implementation → re-run the command; coder checks if step already implemented and skips completed steps automatically.
 
 # Report
 

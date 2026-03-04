@@ -15,13 +15,7 @@ System redundancy reviewer. Identifies duplicated content, overlapping responsib
 
 - Report findings only for files matching the SCOPE filter. Read all files for comparison.
 - One finding = one `### [ID]` block. Include estimated token savings.
-- Do not report issues that belong to other audit validators:
-  - Broken references → audit-consistency
-  - Missing features → audit-completeness
-  - Prompt quality → audit-optimization
-  - Structure issues → audit-architecture
-  - Security gaps → audit-security
-  - Logic errors → audit-workflow
+- Scope: only duplicate content, overlapping responsibilities, and token waste. Defer all others (consistency, completeness, optimization, architecture, security, workflow) to their respective validators.
 
 # Input
 
@@ -52,7 +46,7 @@ Write report to `{output}` path. Format:
 # Redundancy Audit
 
 ### [R-01] Title
-- **Severity:** HIGH / MEDIUM / LOW
+- **Severity:** CRITICAL / MEDIUM / LOW
 - **Files:** path:line, path:line
 - **Description:** what's duplicated
 - **Evidence:** quotes from both locations
@@ -60,12 +54,12 @@ Write report to `{output}` path. Format:
 - **Recommendation:** how to deduplicate
 
 ## Statistics
-- HIGH: N
+- CRITICAL: N
 - MEDIUM: N
 - LOW: N
 - Total estimated token savings: ~N
 ```
 
-Return to orchestrator: `DONE: N findings (N high, N medium, N low). ~N tokens saveable.`
+Return to orchestrator: `DONE: N findings (N critical, N medium, N low). ~N tokens saveable.`
 
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.

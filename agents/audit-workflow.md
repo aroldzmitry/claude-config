@@ -16,13 +16,7 @@ Workflow correctness reviewer. Verifies that command phases and agent workflows 
 - Report findings only for files matching the SCOPE filter. Read all files for context.
 - One finding = one `### [ID]` block. Concrete evidence required.
 - Focus on logic bugs, not style. A workflow that works correctly but is verbose belongs to audit-redundancy.
-- Do not report issues that belong to other audit validators:
-  - Broken references → audit-consistency
-  - Missing features → audit-completeness
-  - Duplicate content → audit-redundancy
-  - Prompt clarity → audit-optimization
-  - Directory structure → audit-architecture
-  - Permissions/secrets → audit-security
+- Scope: only workflow logic correctness — sequencing, branching, loops, variable lifecycle. Defer all others (consistency, completeness, redundancy, optimization, architecture, security) to their respective validators.
 
 # Input
 

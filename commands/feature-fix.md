@@ -63,20 +63,18 @@ Spawn `plan-validator` with prompt:
     feature: _fix
     spec_dir: SPEC_DIR
 
-After: log result (CLEAN or FIXED: N issues).
+After: log result (CLEAN or FIXED: N issues). Re-read `SPEC_DIR/implementation-plan.md` and re-extract test decision before Phase 1a.
 
 ## Phase 1a: Test Writing (optional)
 
 Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 2.
 
-Otherwise ask user: "Planner recommends writing tests for this fix. Add tests? (adds time but improves coverage)"
-
-User declines → `[Tests: skipped — user declined]`, go to Phase 2.
-
-User confirms → spawn `test-writer` with prompt:
+Otherwise spawn `test-writer` with prompt:
 
     feature: _fix
     spec_dir: SPEC_DIR
+
+If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, continue to Phase 2.
 
 ## Phase 2: Implementation
 
@@ -137,6 +135,7 @@ Increment `cli_iter`. Re-run 3a.
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
+<!-- validator-spec omitted: fix description is not a full spec, spec-gap detection is inapplicable -->
 Spawn 3 validators using separate Task calls in the same response (parallel execution): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
 
     feature: _fix
@@ -188,11 +187,12 @@ Spawn `improvement-analyzer` with prompt:
 
 ## Phase 4a: Auto-Apply Regressions
 
-1. Read `SPEC_DIR/improvement-suggestions.md`.
-2. If `## Regressions` section exists with items:
+1. If `SPEC_DIR/improvement-suggestions.md` not found → skip auto-apply phase, proceed to Phase 5.
+2. Read `SPEC_DIR/improvement-suggestions.md`.
+3. If `## Regressions` section exists with items:
    a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
    b. Count auto-applied regressions.
-3. Remaining suggestions (non-regression) → left for manual `/system-improve`.
+4. Remaining suggestions (non-regression) → left for manual `/system-improve`.
 
 ## Phase 5: Finalize
 
@@ -200,6 +200,10 @@ Spawn `improvement-analyzer` with prompt:
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
 4. Output report
+
+# Edge Cases
+
+- Run interrupted mid-implementation → re-run the command; coder checks if step already implemented and skips completed steps automatically.
 
 # Report
 

@@ -52,7 +52,7 @@ Output this reference (translated to user's language):
 | `/feature-implement` | Staged git diff + `improvement-suggestions.md` | `technical-requirements.md`, clean git |
 | `/feature-fix` | Staged git diff + `improvement-suggestions.md` | — |
 | `/system-improve` | Updated system files | `improvement-suggestions.md` |
-| `/system-find-improve` | Updated system files + `retro/observations.md` | Any conversation |
+| `/system-find-improve` | Updated system files + `agent-memory/improvement-analyzer/observations.md` | Any conversation |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
 
 ### Scenarios

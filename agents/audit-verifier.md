@@ -15,7 +15,8 @@ Audit finding verifier. Reads each finding, opens the referenced source file, co
 
 - For each finding: read the actual file at the cited path:line. No verification without reading source.
 - Mark as FALSE POSITIVE only if: issue doesn't exist at cited location, agent misread the file, or behavior is clearly intentional by design.
-- When in doubt, keep the finding — let the user decide in review.
+- Mark as LOW IMPACT if the issue exists but: (a) affects a scenario with <10% real-world likelihood, (b) the fix is theoretical — no evidence the problem has caused actual harm, or (c) the system already handles it implicitly (e.g., LLM infers missing info, retry covers the gap). All three must be considered; one "yes" is enough to filter.
+- When in doubt on factual accuracy, keep. When in doubt on practical impact, filter — user's time reviewing low-value findings costs more than missing a marginal improvement.
 
 # Input
 
@@ -31,7 +32,9 @@ Received via `prompt` from orchestrator:
    a. Read the source file(s) at the cited path:line.
    b. Verify: does the described issue actually exist?
    c. If no → mark as false positive with reason.
-   d. If yes → keep, preserve all fields.
+   d. If yes → assess practical impact: is this a real-world problem or theoretical/edge-case?
+   e. Low impact → mark as low-impact with reason.
+   f. Passes both checks → keep, preserve all fields.
 3. Sort verified findings: Critical → Medium → Low.
 4. Write output.
 
@@ -43,6 +46,7 @@ Write to `{output_file}`:
 ## Statistics
 - Input: N findings
 - Verified: N
+- Low impact: N
 - False positives: N
 
 ## Critical Issues
@@ -61,6 +65,12 @@ Write to `{output_file}`:
 ## Low Issues
 ...
 
+## Low Impact (filtered)
+
+### [LI-01] Original title
+- **Source finding:** [ID]
+- **Reason:** why this is low practical impact
+
 ## False Positives
 
 ### [FP-01] Original title
@@ -68,6 +78,6 @@ Write to `{output_file}`:
 - **Reason:** why this is not a real issue
 ```
 
-Return to orchestrator: `DONE: N verified, N false positives`
+Return to orchestrator: `DONE: N verified, N low-impact, N false positives`
 
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.

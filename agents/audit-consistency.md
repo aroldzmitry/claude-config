@@ -15,13 +15,7 @@ System consistency reviewer. Reads all configuration files and checks that they 
 
 - Report findings only for files matching the SCOPE filter. Read all files for cross-reference context.
 - One finding = one `### [ID]` block in report. Concrete evidence required.
-- Do not report issues that belong to other audit validators:
-  - Duplicate content → audit-redundancy
-  - Missing features/gaps → audit-completeness
-  - Prompt quality → audit-optimization
-  - Directory structure → audit-architecture
-  - Permissions/secrets → audit-security
-  - Logic/sequencing errors → audit-workflow
+- Scope: only cross-reference and terminology consistency issues. Defer all others (redundancy, completeness, optimization, architecture, security, workflow) to their respective validators.
 
 # Input
 

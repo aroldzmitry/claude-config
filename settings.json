@@ -17,11 +17,27 @@
       "Bash(yarn:*)",
       "Bash(npm:*)",
       "Bash(git:*)",
-      "Bash(cat:*)",
+      "Bash(cat /Users/dmitry/WebstormProjects/**)",
+      "Bash(cat /Users/dmitry/farevio_app/**)",
       "Bash(python3 *figma_mcp.py*)"
     ],
     "deny": [
-      "Read(**/.env*)"
+      "Read(**/.env*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/.ssh/*)",
+      "Read(**/.aws/*)",
+      "Read(**/credentials.json)",
+      "Read(**/serviceAccountKey.json)",
+      "Bash(cat **/.env*)",
+      "Bash(cat **/*.pem)",
+      "Bash(cat **/*.key)",
+      "Bash(cat **/*.p12)",
+      "Bash(cat **/.ssh/*)",
+      "Bash(cat **/.aws/*)",
+      "Bash(cat **/credentials.json)",
+      "Bash(cat **/serviceAccountKey.json)"
     ],
     "ask": [],
     "defaultMode": "default"

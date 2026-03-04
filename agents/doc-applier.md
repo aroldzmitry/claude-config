@@ -29,7 +29,7 @@ Received via `prompt` from orchestrator:
 
 ## 1. Load Principles
 
-Read `~/.claude/docs/DOC_PRINCIPLES.md`. Apply all principles to every edit.
+Read `~/.claude/docs/DOC_PRINCIPLES.md` and comply.
 
 ## 2. Execute
 

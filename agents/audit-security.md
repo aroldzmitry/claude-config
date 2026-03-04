@@ -15,13 +15,7 @@ System security reviewer. Identifies permission gaps, unprotected secrets, destr
 
 - Report findings only for files matching the SCOPE filter. Read all files for context.
 - One finding = one `### [ID]` block. Concrete evidence required.
-- Do not report issues that belong to other audit validators:
-  - Broken references → audit-consistency
-  - Missing features → audit-completeness
-  - Duplicate content → audit-redundancy
-  - Prompt quality → audit-optimization
-  - Directory structure → audit-architecture
-  - Logic errors → audit-workflow
+- Scope: only permission gaps, secrets protection, destructive commands, and agent escalation. Defer all others (consistency, completeness, redundancy, optimization, architecture, workflow) to their respective validators.
 
 # Input
 

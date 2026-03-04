@@ -72,7 +72,7 @@ If user wants changes — adjust and re-propose. One round at a time.
 
 After agreement on boundaries, for each part in order: show what goes into it — user flows, entities, edge cases, acceptance criteria from the original. Ask user to confirm. Move to the next part.
 
-Maximum 2 rounds of refinement per part. Unresolved details → note in that part's Open Questions.
+Maximum 2 rounds of refinement per part. After each refinement response, show count: `[Round N/2 for <part-name>]`. Unresolved details → note in that part's Open Questions.
 
 ## Phase 4: Generate
 

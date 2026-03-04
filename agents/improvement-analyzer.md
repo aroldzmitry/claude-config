@@ -1,7 +1,7 @@
 ---
 name: improvement-analyzer
 description: "Analyzes implementation process errors and patterns. Produces improvement suggestions for system instructions, project docs, and development workflow."
-tools: Read, Glob, Grep, Write, Edit, Bash
+tools: Read, Glob, Grep, Write, Edit
 model: opus
 permissionMode: acceptEdits
 maxTurns: 50
@@ -29,7 +29,7 @@ Process improvement analyst. Reviews implementation outcomes, identifies systemi
 Received in key-value format:
 
     feature: auth-flow
-    spec_dir: temp/auth-flow/
+    spec_dir: temp/auth-flow/ # or temp/_fix-{timestamp}/ for fix runs
     cli_iterations: 2
     ai_iterations: 1
     issues_found: 5
@@ -140,10 +140,9 @@ Max 50 rows (excluding header). When exceeding — remove oldest rows (keep head
 ## 0. Fast Path
 
 If ALL conditions: `cli_iterations=0`, `ai_iterations=0`, `issues_remaining=0`, `compactions` is `none`:
-0. `mkdir -p ~/.claude/agent-memory/improvement-analyzer/` (Bash).
 1. Read `~/.claude/agent-memory/improvement-analyzer/decisions.md` only.
 2. If `issues_found=0` OR no Accepted entries could match → append clean-run observation to `~/.claude/agent-memory/improvement-analyzer/observations.md`, write minimal output file, return `DONE: 0 suggestions`.
-3. If Accepted entries might be regressing (issues were found but all fixed with 0 extra iterations) → continue to full workflow.
+3. If decisions.md has Accepted entries AND issues_found > 0 → continue to full workflow.
 
 ## 1. Load Memory
 
@@ -220,7 +219,6 @@ If `metrics.md` has 10+ data rows:
 
 ## 5. Write Output
 
-0. Ensure memory directory exists: `mkdir -p ~/.claude/agent-memory/improvement-analyzer/` (Bash).
 1. Write `{spec_dir}/improvement-suggestions.md`.
 2. Append this run's observations to `~/.claude/agent-memory/improvement-analyzer/observations.md`.
 3. Append metrics row to `~/.claude/agent-memory/improvement-analyzer/metrics.md` (create with header if missing). Enforce 50-row limit. For `false_pos` column: count items from `validation/iter-*/false-positives.md` files (each line = 1 item; no files = 0). For `compactions` column: sum of all counts from `compactions` prompt input (`none` = 0).
@@ -228,3 +226,5 @@ If `metrics.md` has 10+ data rows:
 ### 5b. Return
 
 Return summary to orchestrator.
+
+If context compaction occurred during execution, append `COMPACTED: true` as the last line.

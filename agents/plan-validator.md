@@ -73,4 +73,14 @@ or
     - description of fix 1
     - description of fix 2
 
+or
+
+    PARTIAL: N issues remain after max passes
+
+or
+
+    ERROR: {file} not found in {spec_dir}
+
+Orchestrators should log PARTIAL as a warning before continuing.
+
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.

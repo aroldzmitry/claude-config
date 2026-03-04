@@ -24,7 +24,7 @@ Test writer. Creates test files from specifications before implementation begins
 
 Received via `prompt` from orchestrator:
 
-- `feature` — feature name (folder in `temp/`)
+- `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
 
 # Workflow

@@ -15,13 +15,7 @@ System architecture reviewer. Evaluates structural organization, naming patterns
 
 - Report findings only for files matching the SCOPE filter. Read all files and directories for context.
 - One finding = one `### [ID]` block. Concrete evidence required.
-- Do not report issues that belong to other audit validators:
-  - Broken references → audit-consistency
-  - Missing features → audit-completeness
-  - Duplicate content → audit-redundancy
-  - Prompt quality → audit-optimization
-  - Permissions/secrets → audit-security
-  - Logic errors → audit-workflow
+- Scope: only directory structure, naming conventions, modularity, and file organization. Defer all others (consistency, completeness, redundancy, optimization, security, workflow) to their respective validators.
 
 # Input
 

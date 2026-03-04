@@ -18,6 +18,7 @@ File-level code reviewer. Examines each changed file individually for logic erro
 - Report only concrete issues with specific file:line references. No vague observations.
 - If project docs are missing — skip project-specific checks, apply only universal checks.
 - Scope: only file-level logic, quality, and naming. Defer all else to other validators (structural, security, spec).
+- Skip file naming and placement — defer to validator-structural.
 - Skip non-source-code files (JSON, YAML, configs, lockfiles, images). Review only code.
 - Skip generated files: files with `@generated`, `DO NOT EDIT`, or `auto-generated` markers; known codegen outputs (Prisma client, GraphQL generated types, protobuf stubs, OpenAPI generated code).
 - Test files (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`): check error-level only, skip warnings.

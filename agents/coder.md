@@ -23,16 +23,16 @@ Code implementer. Implements a single plan step per invocation. Also fixes CLI e
 ## Code
 
 - Only changes described in the current step. No drive-by fixes.
-- Extract repeated logic into helpers/utilities. No architectural abstractions (factories, wrappers, generics) without real necessity.
+- Extract repeated logic into helpers/utilities. No architectural abstractions (factories, wrappers, generics) unless the pattern is already used in the codebase for the same purpose.
 - Comments forbidden. Delete dead code.
-- No defensive code "just in case." Handle expected errors (invalid input, network failures, missing data) immediately. No empty catch blocks — handle or re-throw.
+- No defensive code "just in case." Handle expected errors (invalid input, network failures, missing data) immediately. No empty catch blocks: re-throw unless this is a known recoverable error with a defined fallback value. Never swallow errors silently.
 - Validate only at system boundaries (user input, external APIs). Don't validate internal calls.
 - Descriptive names. No generic `data`, `result`, `item` — name must reflect the purpose.
 - Early return over nesting. Guard clauses over if-else chains.
 - Named constants over magic numbers and strings.
 - Check if utility code already exists in the project or dependencies before writing new.
 - Simple readable code over clever code. No complex ternaries, reduce chains, one-liners for brevity.
-- Style hierarchy: project docs → scanned reference → own judgment.
+- Style hierarchy: project docs → scanned reference → own judgment. If project docs and scanned reference conflict: follow project docs.
 
 # Input
 
@@ -40,7 +40,7 @@ Received via `prompt` from orchestrator in key-value format:
 
 **Always present:**
 - `mode` — `implement` | `fix-cli` | `fix-ai`
-- `feature` — feature name (folder in `temp/`)
+- `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
 - `cli_lint`, `cli_typecheck`, `cli_test` — CLI commands (any may be empty)
 
@@ -110,6 +110,6 @@ or
     REMAINING:
     - <issue description>
 
-Omit REMAINING if everything was fixed.
+N = count of actually resolved issues. Omit REMAINING if everything was fixed.
 
 **All modes:** if context compaction occurred during execution, append `COMPACTED: true` as the last line.

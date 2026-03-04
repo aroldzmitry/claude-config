@@ -15,7 +15,7 @@ Audit report deduplicator. Reads all validator reports, groups identical issues 
 
 - Never modify source reports — only read them.
 - When deduplicating, keep the most detailed description and note all source reports.
-- Skip-list matching is semantic: same file (or overlapping files) AND similar issue description. Exact wording may differ between runs.
+- Skip-list matching: (a) same file path (exact or prefix match for multi-file entries) AND (b) same issue category. Do not match across different files unless the rejected entry explicitly listed multiple files.
 
 # Input
 

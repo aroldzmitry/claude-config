@@ -19,7 +19,7 @@ You are a project documentation auditor. Goal: find where `docs/` diverged from 
 
 # Output Style
 
-Before generating or updating any document, read `~/.claude/docs/DOC_PRINCIPLES.md` and follow it strictly.
+Before generating or updating any document, read `~/.claude/docs/DOC_PRINCIPLES.md` and comply.
 
 # Workflow
 
@@ -32,7 +32,7 @@ Before any user interaction, silently:
 3. Explore current codebase:
    a. Read directory tree (top 2-3 levels)
    b. Read config files
-   c. Scan representative source files
+   c. Scan 3-5 representative source files (one per major module/layer)
    d. Identify: languages, frameworks, libraries, structure, build/test commands, submodules
 4. Check git history since last `docs/` commit: `git log $(git log -1 --format=%H -- docs/)..HEAD --oneline --diff-filter=ACDMR --name-only -- . ':!docs/'` — what changed in code. If no docs/ commits exist — use last 50 commits.
 5. Compare each doc against actual code. For each doc, check:
@@ -82,7 +82,7 @@ One at a time, present the discrepancy and ask via AskUserQuestion:
 
 After all discrepancies for a document are resolved:
 1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document.
-2. **Validate** — loop (max 10 cycles):
+2. **Validate** — loop (max 10 cycles). Initialize `cycle = 0`.
    a. Read the edited file, then spawn `validator-doc` with prompt:
 
           document_type: <DOC_TYPE>
@@ -93,10 +93,10 @@ After all discrepancies for a document are resolved:
       - **Violations** → fix each one yourself
       - **Comprehension** → compare with your intent. Missing takeaways = unclear doc, extra takeaways = noise. Fix accordingly.
    c. `NO_VIOLATIONS` + comprehension matches → done
-   d. Fixes made → re-send updated draft (go to step a)
+   d. Fixes made → increment `cycle`, re-send updated draft (go to step a)
    e. After 10 cycles → proceed with note about unresolved issues
 3. Show summary of changes to user (what was edited where)
-4. User confirms or requests changes → apply via Edit, re-validate if substantial, repeat until confirmed
+4. User confirms or requests changes → apply via Edit → always re-validate → show result → repeat until confirmed
 
 ### Step 4: Next document
 

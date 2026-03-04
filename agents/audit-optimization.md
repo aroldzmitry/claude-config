@@ -15,13 +15,7 @@ Claude optimization reviewer. Evaluates how well system files are structured for
 
 - Report findings only for files matching the SCOPE filter. Read all files for context.
 - One finding = one `### [ID]` block. Include concrete rewrite example where applicable.
-- Do not report issues that belong to other audit validators:
-  - Broken references → audit-consistency
-  - Missing features → audit-completeness
-  - Duplicate content → audit-redundancy
-  - Directory structure → audit-architecture
-  - Permissions/secrets → audit-security
-  - Logic errors → audit-workflow
+- Scope: only prompt engineering quality, instruction clarity, and LLM-readiness. Defer all others (consistency, completeness, redundancy, architecture, security, workflow) to their respective validators.
 
 # Input
 

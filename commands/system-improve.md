@@ -61,6 +61,9 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
 1. Show summary: N accepted, N rejected, N skipped. List each accepted item (target + action, one line each).
 2. 0 accepted → Phase 3.
 3. Ask user to confirm before applying.
+
+### Pre-loop (once)
+
 4. Initialize `cycle = 0`. Format accepted items as structured input: each item as `target: <path>, action: <description>`.
 5. Spawn `doc-applier` with prompt:
 
@@ -71,6 +74,9 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
        ...
 
 6. Parse `CHANGED_FILES` from doc-applier output.
+
+### Loop (max 5 cycles)
+
 7. Spawn `validator-doc-system` with prompt:
 
        changed_files: <newline-separated paths from CHANGED_FILES>
@@ -81,6 +87,7 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
        mode: fix
        report: <validator output>
 
+   If doc-applier returns `DONE: 0 files changed` → stop fix loop, proceed to Phase 3 with last known CHANGED_FILES.
    Parse new `CHANGED_FILES`. Increment `cycle`. Re-run from step 7.
 10. If `ISSUES` and `cycle >= 5` → report remaining issues to user, Phase 3.
 

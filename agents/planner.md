@@ -21,7 +21,7 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 # Input
 
 Received via prompt from orchestrator:
-- `feature` — feature name (folder in `temp/`)
+- `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
 
 # Workflow

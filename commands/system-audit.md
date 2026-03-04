@@ -19,6 +19,8 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 
 - `REPORTS_DIR` = `~/.claude/agent-memory/system-audit/reports/`
 - `DECISIONS_FILE` = `~/.claude/agent-memory/system-audit/decisions.md`
+- `DEDUP_FILE` = `{REPORTS_DIR}/08-deduplicated.md`
+- `VERIFIED_FILE` = `{REPORTS_DIR}/09-verified.md`
 - `OBSERVATIONS_FILE` = `~/.claude/agent-memory/system-audit/observations.md`
 
 # Workflow
@@ -55,6 +57,8 @@ Input:
 
 Report progress as each finishes.
 
+Wait for all 7 validators to complete before proceeding to Phase 2.
+
 ## Phase 2: Aggregate & Filter
 
 ### Pass 1: Deduplicate
@@ -73,12 +77,12 @@ Spawn `audit-verifier` (`subagent_type: general-purpose`, `model: sonnet`):
 ```
 Read instructions at ~/.claude/agents/audit-verifier.md.
 Input:
-  input_file: {REPORTS_DIR}/08-deduplicated.md
-  output_file: {REPORTS_DIR}/09-verified.md
+  input_file: {DEDUP_FILE}
+  output_file: {VERIFIED_FILE}
 ```
 
-Read `09-verified.md`. If 0 verified → "System audit clean." → Phase 5.
-Show overview: N verified (critical/medium/low), N false positives, N filtered.
+Read `{VERIFIED_FILE}`. If 0 verified → "System audit clean." → Phase 5.
+Show overview: N verified (critical/medium/low), N low-impact, N false positives, N filtered.
 
 ## Phase 3: Review
 
@@ -116,11 +120,9 @@ After all: if fix-plan.md exists → ask "Review fix-plan or apply directly?"
      fix_plan: {REPORTS_DIR}/fix-plan.md
    ```
 3. Parse CHANGED_FILES. Filter to .md only → CHANGED_MD.
-4. If CHANGED_MD not empty → spawn `validator-doc-system` (`subagent_type: validator-doc-system`):
+4. If CHANGED_MD not empty → spawn `validator-doc-system` with prompt:
    ```
-   Validate these files modified by system audit fixes.
-   Check structure, formatting, and compliance with doc principles.
-   Files: {CHANGED_MD}
+   changed_files: {CHANGED_MD}
    ```
 5. CLEAN → success. ISSUES → show to user.
 
@@ -129,7 +131,7 @@ After all: if fix-plan.md exists → ask "Review fix-plan or apply directly?"
 Append to OBSERVATIONS_FILE (create if missing):
 ```
 ## YYYY-MM-DD
-- scope: {SCOPE}, verified: N (C:N M:N L:N), FP: N, filtered: N, fixed: N, rejected: N, skipped: N
+- scope: {SCOPE}, verified: N (C:N M:N L:N), low-impact: N, FP: N, filtered: N, fixed: N, rejected: N, skipped: N
 ```
 Size limit: 20 entries max.
 

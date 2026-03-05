@@ -57,6 +57,7 @@ Check the plan against these criteria:
 - Each step traces back to a requirement
 - File paths for modify/delete actions exist (Glob check)
 - No step uses something created in a later step
+- Cross-step method references — when a step uses a repository/service method defined in an earlier step, verify the method name matches exactly and the return type includes all fields the consuming step accesses.
 - If a step must deviate from spec due to technical constraints → must have `[spec-deviation]` note explaining why
 
 ## 3. Fix

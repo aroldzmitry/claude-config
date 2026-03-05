@@ -17,6 +17,9 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 - Do not include code. Describe *what* to do, not *how* to write it.
 - Each step = one logical change. A type and its usage can be one step. "Add import" is not a separate step.
 - Each step must leave the codebase in a compilable/lintable state.
+- Each step must target at most 2–3 public functions/methods. If a step requires implementing more, split into multiple sub-steps (e.g., "Step 8a: add createDraft, getActive, updateDeceased", "Step 8b: add updateVisit, updateFuneral"). Large rewrites of entire files must be broken into logical sub-steps.
+- When describing data structures in plan steps, use TypeScript-like type notation instead of natural language. E.g., `field: Type | null`, `items: Array<{id, name}>`, not 'field (nullable)' or 'list of objects with id and name'.
+- When a step requires persisting data, use explicit DB operation language: "persist to DB", "write to table", "call repository.update". Avoid ambiguous verbs like "update" or "set" without specifying the target (variable vs database).
 
 # Input
 

@@ -7,10 +7,6 @@ permissionMode: acceptEdits
 maxTurns: 40
 ---
 
-# Role
-
-Test writer. Creates test files from specifications before implementation begins.
-
 # Rules
 
 - Write tests that will pass only when the implementation is correct. No trivially passing tests, no placeholder assertions.
@@ -35,7 +31,7 @@ Read in parallel:
 - `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/ARCHITECTURE*.md`, `docs/WORKFLOW.md` — skip if missing
 - `{spec_dir}/technical-requirements.md` — **required**
 - `{spec_dir}/business-requirements.md` — skip if missing
-- `{spec_dir}/test-cases.md` — primary test source, fallback if missing
+- `{spec_dir}/test-cases.md` — optional — derive from specs if missing
 - `{spec_dir}/implementation-plan.md` — **required**
 
 If `technical-requirements.md` is missing → return `ERROR: technical-requirements.md not found in {spec_dir}`.
@@ -68,6 +64,8 @@ Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.
 **If deriving from specs** (test-cases.md was missing) — use test cases extracted in Step 1. Default to unit tests for all testable logic.
 
 Write ALL test cases regardless of priority. Map each to a concrete test.
+
+After writing all tests, verify coverage: for each item in test-cases.md, confirm a corresponding test exists. If a single test-cases.md item lists multiple fields/scenarios (e.g. 'sorting by A, B, C'), each must have its own test case or parameterized variant.
 
 For each testable unit:
 

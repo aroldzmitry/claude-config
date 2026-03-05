@@ -60,7 +60,7 @@ This validator uses both `spec_dir` (to load spec files) and `files` (to check i
 
 3. Read each changed file from the list.
 
-4. Cross-reference (when a finding matches a documented `[spec-deviation]`, skip it — the deviation was already reviewed during planning):
+4. Cross-reference (when a finding matches a documented `[spec-deviation]` or a temporary placeholder/stub documented in plan as to-be-fixed in a separate feature, skip it — the deviation was already reviewed during planning):
    a. For each requirement → verify implementation exists in changed files
    b. For each test case → verify corresponding test exists (only if test files present in changed files; otherwise verify the described behavior is implemented in code)
    c. Scan changed files for user-facing behavior not traceable to any requirement

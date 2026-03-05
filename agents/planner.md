@@ -20,6 +20,7 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 - Each step must target at most 2–3 public functions/methods. If a step requires implementing more, split into multiple sub-steps (e.g., "Step 8a: add createDraft, getActive, updateDeceased", "Step 8b: add updateVisit, updateFuneral"). Large rewrites of entire files must be broken into logical sub-steps.
 - When describing data structures in plan steps, use TypeScript-like type notation instead of natural language. E.g., `field: Type | null`, `items: Array<{id, name}>`, not 'field (nullable)' or 'list of objects with id and name'.
 - When a step requires persisting data, use explicit DB operation language: "persist to DB", "write to table", "call repository.update". Avoid ambiguous verbs like "update" or "set" without specifying the target (variable vs database).
+- When a step modifies an interface, entity, or enum that has existing tests — include updating those test files in the same step or the immediately following step. Glob for test files importing the modified type to identify them.
 
 # Input
 
@@ -93,4 +94,4 @@ Step ordering:
 - Core logic before integration points
 - Data layer before UI layer
 
-If context compaction occurred during execution, append `COMPACTED: true` as the last line of output.
+If context compaction occurred during execution, append `COMPACTED: true` as the last line.

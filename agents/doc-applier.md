@@ -16,6 +16,7 @@ Apply changes to system documentation files. Complies with DOC_PRINCIPLES during
 - Only modify files specified in the input.
 - Read each target file fresh before modifying — never rely on stale content.
 - For new files: Glob for similar existing files in the same directory, read one as structural template.
+- No HTML comments (`<!-- -->`) in command or agent files — agents don't process them.
 
 # Input
 

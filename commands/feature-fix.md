@@ -1,5 +1,6 @@
 ---
 description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → [test-writer] → coder → self-checker → validators → fix loop → improvement analyzer), produces staged git diff."
+model: sonnet
 argument-hint: "[description?]: what needs to be fixed"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
@@ -11,7 +12,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Rules
 
-- If `$ARGUMENTS` is provided — use as fix description. If empty — ask user what needs to be fixed, wait for response.
+- If `$ARGUMENTS` is provided — use as fix description. If empty — see Phase 0 step 1.
 - Fully autonomous after description is known — no user questions. Ambiguities → decide, note in report.
 - Fail fast — critical agent failure → stop, report what was completed.
 - Before each phase: `[Phase N: description]`
@@ -37,8 +38,6 @@ Fix orchestrator. Delegates to agents — never writes application code.
   - False positives → `SPEC_DIR/validation/iter-{N}/false-positives.md`
 
 # Workflow
-
-<!-- Phases 0-5. Phase 2 (test-writing) is omitted vs feature-implement (Phases 0-6). Phase 1a is test-writing (optional). -->
 
 ## Phase 0: Setup
 
@@ -98,17 +97,21 @@ For each step in order:
         step_total: TOTAL
         step_body: <full step block text>
 
-3. If coder returns `UNRESOLVED` → record, continue to next step.
-4. If coder returns `DONE` → run `git status --porcelain` to get actually changed files (strip the 2-char status prefix, exclude lines starting with `D` for deletions). Spawn `self-checker` with prompt:
+3. If coder returns `UNRESOLVED` → record. If `DONE` → continue to next step.
+
+After all steps complete:
+
+4. `git status --porcelain` → parse changed files (strip 2-char status prefix, exclude `D` deletions).
+5. Spawn `self-checker` (max_turns: 40) with prompt:
 
         feature: _fix
         spec_dir: SPEC_DIR
-        changed_files: <newline-separated file paths from git diff>
+        changed_files: <newline-separated file paths from git status>
         cli_lint: CLI_LINT
         cli_typecheck: CLI_TYPECHECK
         cli_test: CLI_TEST
 
-5. Log self-checker result (CLEAN or FIXED: N issues). Continue to next step.
+6. Log self-checker result (CLEAN or FIXED: N issues).
 
 ## Phase 3: Validation Cycle
 
@@ -116,7 +119,7 @@ Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
 
 ### 3a: CLI Loop (max 5)
 
-Run CLI_LINT, CLI_TYPECHECK, CLI_TEST via Bash (skip empty).
+Run CLI_LINT, CLI_TYPECHECK, CLI_TEST in a single Bash call joined with `;` (skip empty commands).
 
 All pass → 3b.
 Fail + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 4.
@@ -138,7 +141,6 @@ Increment `cli_iter`. Re-run 3a.
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
-<!-- validator-spec omitted: fix description is not a full spec, spec-gap detection is inapplicable -->
 Spawn 3 validators using separate Task calls in the same response (parallel execution): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
 
     feature: _fix

@@ -1,5 +1,6 @@
 ---
 description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator → test-writer → coder → self-checker → validators → fix loop → improvement analyzer), produces staged git diff."
+model: sonnet
 argument-hint: "[feature-name]: folder name in temp/"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
 disable-model-invocation: true
@@ -41,10 +42,10 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`"
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
-3. `SPEC_DIR/technical-requirements.md` missing → stop: "Run `/feature-tech $ARGUMENTS` first."
-4. Verify spec files exist via Glob: `technical-requirements.md` (required), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents — agents read specs from `SPEC_DIR` themselves.
-5. Clean stale iteration data: `rm -rf SPEC_DIR/cli-errors/ SPEC_DIR/validation/`
-6. Detect CLI commands: `docs/WORKFLOW.md` → extract lint/typecheck/test. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
+3. In parallel (3 tool calls in one response):
+   - Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
+   - Bash: `rm -rf SPEC_DIR/cli-errors/ SPEC_DIR/validation/`
+   - Read `docs/WORKFLOW.md` → extract CLI_LINT, CLI_TYPECHECK, CLI_TEST. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 
 ## Phase 1: Planning
 
@@ -92,17 +93,21 @@ For each step in order:
         step_total: TOTAL
         step_body: <full step block text>
 
-3. If coder returns `UNRESOLVED` → record, continue to next step.
-4. If coder returns `DONE` → run `git status --porcelain` to get actually changed files (strip the 2-char status prefix, exclude lines starting with `D` for deletions). Spawn `self-checker` with prompt:
+3. If coder returns `UNRESOLVED` → record. If `DONE` → continue to next step.
+
+After all steps complete:
+
+4. `git status --porcelain` → parse changed files (strip 2-char status prefix, exclude `D` deletions).
+5. Spawn `self-checker` (max_turns: 40) with prompt:
 
         feature: $ARGUMENTS
         spec_dir: SPEC_DIR
-        changed_files: <newline-separated file paths from git diff>
+        changed_files: <newline-separated file paths from git status>
         cli_lint: CLI_LINT
         cli_typecheck: CLI_TYPECHECK
         cli_test: CLI_TEST
 
-5. Log self-checker result (CLEAN or FIXED: N issues). Continue to next step.
+6. Log self-checker result (CLEAN or FIXED: N issues).
 
 ## Phase 4: Validation Cycle
 
@@ -110,7 +115,7 @@ Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
 
 ### 4a: CLI Loop (max 5)
 
-Run CLI_LINT, CLI_TYPECHECK, CLI_TEST via Bash (skip empty).
+Run CLI_LINT, CLI_TYPECHECK, CLI_TEST in a single Bash call joined with `;` (skip empty commands).
 
 All pass → 4b.
 Fail + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 5.
@@ -196,7 +201,8 @@ Spawn `improvement-analyzer` with prompt:
 1. `git status --porcelain` → changed files
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
-4. Output report
+4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report.
+5. Output report
 
 # Edge Cases
 
@@ -222,6 +228,7 @@ Spawn `improvement-analyzer` with prompt:
 ### Next Steps
 - Review: `git diff --cached`
 - Commit: `git commit -m "feat: <feature-name>"`
+- Fix warnings: `/feature-fix <feature-name>-warnings`
 ```
 
-Omit **Unresolved Issues** if none. Omit **Improvements** section if no suggestions and no regressions.
+Omit **Unresolved Issues** if none. Omit **Improvements** section if no suggestions and no regressions. Omit **Fix warnings** in Next Steps if no unresolved issues.

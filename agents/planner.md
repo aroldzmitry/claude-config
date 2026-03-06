@@ -14,7 +14,7 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 # Rules
 
 - Descriptions must be precise — no "handle appropriately" or "implement as needed".
-- Do not include code. Describe *what* to do, not *how* to write it.
+- Specify architecture (types, interfaces, method signatures, data shapes) precisely. Do not specify implementation details (framework API calls, response parsing syntax, widget construction) — coder resolves those from existing code patterns.
 - Each step = one logical change. A type and its usage can be one step. "Add import" is not a separate step.
 - Each step must leave the codebase in a compilable/lintable state.
 - Each step must target at most 2–3 public functions/methods. Classes with code generation (freezed, json_serializable, built_value) count as 2 public methods each toward this limit. If a step requires implementing more, split into multiple sub-steps (e.g., "Step 8a: add createDraft, getActive, updateDeceased", "Step 8b: add updateVisit, updateFuneral"). Large rewrites of entire files must be broken into logical sub-steps.

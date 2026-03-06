@@ -57,6 +57,16 @@ Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.
 
 ## 4. Write Tests
 
+Before writing any test files, plan the full set:
+1. List all test files to be created (from implementation plan's test steps)
+2. Identify test data, stub notifiers, and mock classes needed by 2+ files
+3. If shared items found: create a shared fixture file first (in `test/fakes/` or `test/helpers/`), containing all common constants, stubs, and mock classes
+4. Write each test file, importing shared items from the fixture file
+
+If only 1 test file is needed, skip sub-steps 2–3.
+
+Never duplicate test constants or stub classes across files written in the same run.
+
 **If `test-cases.md` exists** — parse its format:
 - `## Test Strategy` — respect test levels (unit/integration/e2e) and exclusions
 - `## Test Cases` — each item is `- [ ] [must|should|could] <scenario — expected behavior>`

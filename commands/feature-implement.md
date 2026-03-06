@@ -30,6 +30,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
   - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
   - `ai_iterations` — number of AI fix cycles (coder fix-ai spawns). Initial validator run = 0.
   - `compaction_log` — tracks agents that reported context compaction. Format: `{agent}:{count}, ...`. After each Task agent spawn, check return for `COMPACTED: true` — if present, increment that agent's count. If orchestrator itself experiences compaction, add `orchestrator:1`.
+- `metrics_log` = [] — initialized at start. After each Task agent spawn, append `{phase}:{agent_type}:{total_tokens}:{duration_ms}` (extract from `<usage>` block in agent response). Used for metrics recording in Finalize.
 - Heavy data stored in files, not in orchestrator variables:
   - CLI errors → `SPEC_DIR/cli-errors/iter-{N}.txt`
   - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
@@ -202,7 +203,21 @@ Spawn `improvement-analyzer` with prompt:
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
 4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report.
-5. Output report
+5. Record metrics: group `metrics_log` entries by phase (planning, implementation, self-checker, validation, improvement). Compute totals per phase (sum tokens, sum duration). Append entry to `~/.claude/agent-memory/command-metrics.md`:
+   ```
+   ## YYYY-MM-DD — /feature-implement {feature}
+   - plan_steps: N
+   - cli_iterations: N, ai_iterations: N
+   - issues: found N, fixed N, remaining N
+   - phases:
+     - planning: {total_tokens}K tokens, {total_duration}s ({agent}: {tokens}K/{duration}s, ...)
+     - implementation: {total_tokens}K tokens, {total_duration}s (N coder steps, avg {avg_tokens}K/{avg_duration}s per step)
+     - self-checker: {tokens}K tokens, {duration}s
+     - validation: {total_tokens}K tokens, {total_duration}s (iter-0: {tokens}K/{duration}s, iter-1: ...)
+     - improvement: {tokens}K tokens, {duration}s
+   - total: {sum_tokens}K tokens, {sum_duration}s
+   ```
+6. Output report
 
 # Edge Cases
 

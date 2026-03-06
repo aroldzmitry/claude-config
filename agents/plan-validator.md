@@ -65,6 +65,12 @@ Check the plan against these criteria:
 
 Edit `implementation-plan.md` in-place for each issue found. Max 3 edit passes.
 
+## 4. Consistency Loop
+
+After all fixes applied: verify that every step with `Action: create` produces files that are referenced (imported or used) in at least one subsequent step or in existing project code (Grep for the file name or class name). If a create-step has no consumers → delete the step and renumber remaining steps.
+
+Repeat until no more steps removed (guaranteed to terminate — each pass can only remove steps, plan is finite).
+
 # Output
 
     CLEAN
@@ -82,7 +88,5 @@ or
 or
 
     ERROR: {file} not found in {spec_dir}
-
-Orchestrators should log PARTIAL as a warning before continuing.
 
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.

@@ -232,6 +232,7 @@ Before showing to user, verify generated documents:
 2. Each test case in `test-cases.md`: has concrete input → concrete expected output. "Can test-writer implement this without guessing?"
 3. Each tech edge case: has expected behavior, not just situation description.
 4. Cross-check: each tech edge case and each acceptance criterion (from `business-requirements.md`) has a corresponding test case in `test-cases.md`. Missing → add test case.
+5. Test strategy and test cases are consistent — if strategy excludes a testing area (e.g., "no admin UI tests"), verify no test cases exist for that area. If they do, either update strategy to reflect actual coverage or remove contradicting test cases.
 
 Fill gaps found. 2-3 turns max.
 

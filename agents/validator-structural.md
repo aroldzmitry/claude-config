@@ -31,7 +31,7 @@ Structural code reviewer. Analyzes relationships between changed files and valid
 - Duplicated business logic across changed files (>10 lines of non-trivial logic)
 
 **warning** — structural improvement opportunity:
-- Same utility pattern repeated in 2+ changed files (candidate for extraction)
+- Same utility pattern repeated in 2+ changed files (candidate for extraction); when `spec_dir/technical-requirements.md` defines a named pattern template applied across multiple files, flag duplication as [warning] only if the repeated code exceeds what the pattern template prescribes
 - Constants or magic values duplicated across changed files
 - File naming doesn't match conventions of sibling files or architecture docs
 - Module mixes responsibilities from different architectural layers
@@ -46,13 +46,14 @@ Received via `prompt` from orchestrator:
     - src/auth.ts
     - src/api.ts
 
-`feature` and `spec_dir` are included per orchestrator convention. This validator uses only `files`.
+`feature` is included per orchestrator convention and ignored. `spec_dir` is used only to read `spec_dir/technical-requirements.md` when determining whether repeated code exceeds a spec-prescribed pattern template (see Severity). `files` is the primary input.
 
 # Workflow
 
 1. Load architecture docs:
    - Glob `docs/ARCHITECTURE*.md` → read each
-   - If none found → infer architecture from directory structure:
+   - If `spec_dir` is provided: read `spec_dir/technical-requirements.md` if it exists (used in duplication severity check — see Severity)
+   - If no architecture docs found → infer architecture from directory structure:
      a. Glob top-level dirs and `src/*/` (one level)
      b. Classify directories into architectural roles:
         - Entrypoints: where execution starts (main, cmd, app entry)

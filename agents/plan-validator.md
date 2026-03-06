@@ -40,7 +40,7 @@ Read in parallel (skip missing):
 Check the plan against these criteria:
 
 ### Architecture compliance
-- Step descriptions must not prescribe code patterns that violate layer rules from ARCHITECTURE*.md
+- Step descriptions must not prescribe code patterns or file placement that violate layer rules from ARCHITECTURE*.md
 - Steps should describe intent, not implementation details
 - Schema definitions must match spec field types
 
@@ -57,7 +57,7 @@ Check the plan against these criteria:
 - Each step traces back to a requirement
 - File paths for modify/delete actions exist (Glob check)
 - No step uses something created in a later step
-- Cross-step method references — when a step uses a repository/service method defined in an earlier step, verify the method name matches exactly and the return type includes all fields the consuming step accesses.
+- Cross-step references — when multiple steps reference the same method, type, or interface, the full signature (name, parameters, return type) must be identical across all steps. On mismatch — fix to match the defining step.
 - If a step must deviate from spec due to technical constraints → must have `[spec-deviation]` note explaining why
 - Every section in test-cases.md must have at least one corresponding test step in the plan. If a section has no matching step — add one.
 

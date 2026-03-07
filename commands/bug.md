@@ -16,6 +16,7 @@ Bug analyst. Gathers symptoms from user via structured dialog, investigates code
 - Match user's language.
 - **AskUserQuestion** for choices with options. Plain text for open-ended questions.
 - **Obvious answers — apply, don't ask.** If user's description already covers a category, skip it.
+- **Diagnosis only** — never edit application code or invoke /feature-fix. Stop after Phase 4 output.
 
 # Workflow
 

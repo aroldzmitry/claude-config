@@ -220,7 +220,7 @@ Spawn `improvement-analyzer` with prompt:
    - total: {sum_tokens}K tokens, {sum_duration}s
    ```
 6. Folder status:
-   - `rm -f SPEC_DIR/NEXT--*`
+   - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve`
    - Else → `mv SPEC_DIR SPEC_DIR-done`
    - If `temp/$ARGUMENTS-warnings/` was created in step 4 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`

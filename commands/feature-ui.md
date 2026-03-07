@@ -186,7 +186,7 @@ Per-page subsections — include only those relevant to the layout type:
 1. Show the document to the user
 2. If user requests changes → apply, show updated, repeat until confirmed
 3. After final confirmation, suggest next step: `/feature-tech <feature-name>`
-4. Update status marker: `rm -f temp/<feature-name>/NEXT--* && touch temp/<feature-name>/NEXT--feature-tech`
+4. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-tech`
 
 # Start
 

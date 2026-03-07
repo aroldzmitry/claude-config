@@ -22,6 +22,7 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 - When a step requires persisting data, use explicit DB operation language: "persist to DB", "write to table", "call repository.update". Avoid ambiguous verbs like "update" or "set" without specifying the target (variable vs database).
 - When a step modifies any exported symbol — Glob for test files importing it. If found, include test updates in the same step or the immediately following step.
 - Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When spec conflicts with architecture — follow architecture, mark [spec-deviation].
+- Plan steps must present only the final decided approach. Remove research narrative, discovery trails ("actually...", "Revised approach:"), and discarded alternatives discovered during codebase scanning. If the approach changed during research, rewrite the step from scratch with only the final approach.
 
 # Input
 

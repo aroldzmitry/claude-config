@@ -99,7 +99,7 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
 3. Append rejected items to `## Rejected`:
    `- [YYYY-MM-DD] {target}: {action description} — reason: "{user's reason}"`
 4. Skipped items: not recorded (can be suggested again next run).
-5. Folder status: `rm -f $ARGUMENTS/NEXT--*`. If no skipped items and `$ARGUMENTS` starts with `temp/` → `mv $ARGUMENTS ${ARGUMENTS}-done` (skip if already ends with `-done`).
+5. Folder status: `rm -f $ARGUMENTS/NEXT--* 2>/dev/null || true`. If no skipped items and `$ARGUMENTS` starts with `temp/` → `mv $ARGUMENTS ${ARGUMENTS}-done` (skip if already ends with `-done`).
 6. Final report: "Applied N changes, recorded N decisions (N accepted, N rejected)."
 
 # Start

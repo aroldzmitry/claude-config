@@ -135,14 +135,15 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).
    - Report: file path + what changed (edited/created).
-6. Edit fails (section not found, file restructured) → report, skip that item, continue.
-7. Initialize `val_cycle = 0`. Collect paths of all .md files written/edited in step 5 → `CHANGED_MD`.
-8. If `CHANGED_MD` not empty: spawn `validator-doc-system` with prompt:
+6. Cross-reference update: if any command was created or renamed in step 5, Grep for references to the command name across `~/.claude/commands/` and `~/.claude/agents/`. Update found references (system-help.md command list, other commands' "next step" suggestions). Add updated files to CHANGED_MD.
+7. Edit fails (section not found, file restructured) → report, skip that item, continue.
+8. Initialize `val_cycle = 0`. Collect paths of all .md files written/edited in steps 5–6 → `CHANGED_MD`.
+9. If `CHANGED_MD` not empty: spawn `validator-doc-system` with prompt:
 
        changed_files: <newline-separated paths from CHANGED_MD>
 
    - `CLEAN` → Phase 4.
-   - `ISSUES` and `val_cycle < 3` → fix each reported issue using Edit, increment `val_cycle`, re-run step 8.
+   - `ISSUES` and `val_cycle < 3` → fix each reported issue using Edit, increment `val_cycle`, re-run step 9.
    - `ISSUES` and `val_cycle >= 3` → report remaining issues to user, Phase 4.
 
 ## Phase 4: Record

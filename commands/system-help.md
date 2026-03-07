@@ -34,8 +34,9 @@ Output this reference (translated to user's language):
 
 ### Additional commands
 
+/bug [description]            → interactive bug diagnosis: gather symptoms → investigate code → produce fix requirements
 /feature-split [name]         → split large feature into independent sub-features
-/feature-fix [description]    → autonomous: plan → [test] → code → validate → stage (same pipeline, no spec needed)
+/feature-fix [description|folder] → autonomous: plan → [test] → code → validate → stage (accepts description or /bug output folder)
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
 /system-help [command?]       → this help
@@ -50,7 +51,8 @@ Output this reference (translated to user's language):
 | `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
 | `/feature-implement` | Staged git diff + `improvement-suggestions.md` | `technical-requirements.md`, clean git |
-| `/feature-fix` | Staged git diff + `improvement-suggestions.md` | — |
+| `/bug` | `temp/_fix-<ts>/technical-requirements.md` (with diagnosis) | — |
+| `/feature-fix` | Staged git diff + `improvement-suggestions.md` | — (or `/bug` output folder) |
 | `/system-improve` | Updated system files | `improvement-suggestions.md` |
 | `/system-find-improve` | Updated system files + `agent-memory/improvement-analyzer/observations.md` | Any conversation |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
@@ -65,7 +67,9 @@ Output this reference (translated to user's language):
 
 **Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
 
-**Quick fix:** `/feature-fix fix the login button`
+**Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix _fix-20260307-120000`
+
+**Quick fix (known cause):** `/feature-fix fix the login button`
 
 **After implementation:** `/system-improve temp/<feature-name>/`
 

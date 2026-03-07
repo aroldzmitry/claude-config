@@ -12,7 +12,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Rules
 
-- If `$ARGUMENTS` is provided — use as fix description. If empty — see Phase 0 step 1.
+- If `$ARGUMENTS` is provided — use as fix description or existing folder (see Phase 0 step 1). If empty — see Phase 0 step 2.
 - Fully autonomous after description is known — no user questions. Ambiguities → decide, note in report.
 - Fail fast — critical agent failure → stop, report what was completed.
 - Before each phase: `[Phase N: description]`
@@ -42,9 +42,9 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 0: Setup
 
-1. If `$ARGUMENTS` empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
-2. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory.
-3. Write description to `SPEC_DIR/technical-requirements.md`:
+1. If `$ARGUMENTS` matches an existing `temp/_fix-*` folder containing `technical-requirements.md` → set as SPEC_DIR, skip to step 4.
+2. If `$ARGUMENTS` is provided — use as fix description. If empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
+3. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory. Write description to `SPEC_DIR/technical-requirements.md`:
    ```
    # Fix Description
 

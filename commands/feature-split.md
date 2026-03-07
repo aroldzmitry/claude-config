@@ -149,7 +149,8 @@ Maximum 2 rounds of refinement per part. After each refinement response, show co
 - **Related Features** — only if there's a real dependency on another sub-feature or existing feature
 - **Open Questions** — only if there are genuinely unresolved questions
 
-2. Output summary:
+2. For each sub-feature folder: `touch temp/<sub-name>/NEXT--feature-tech`
+3. Output summary:
 
 ```
 ## Split Complete

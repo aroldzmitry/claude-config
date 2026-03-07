@@ -223,7 +223,12 @@ Spawn `improvement-analyzer` with prompt:
      - improvement: {tokens}K tokens, {duration}s
    - total: {sum_tokens}K tokens, {sum_duration}s
    ```
-6. Output report
+6. Folder status:
+   - `rm -f SPEC_DIR/NEXT--*`
+   - If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve`
+   - Else → `mv SPEC_DIR SPEC_DIR-done`
+   - If `temp/_fix-warnings/` was created in step 4 → `touch temp/_fix-warnings/NEXT--feature-fix`
+7. Output report
 
 # Edge Cases
 

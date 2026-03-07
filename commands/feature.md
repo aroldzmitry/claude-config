@@ -113,6 +113,7 @@ If any item fails — go back to Step 2 and ask. If all pass and user hasn't con
    - If user previously chose to split → `/feature-split <feature-name>`
    - If feature includes admin panel UI (pages, forms, tables) → `/feature-ui <feature-name>` to define UI requirements, then `/feature-tech`
    - If API-only or no UI → `/feature-tech <feature-name>` to create technical specification
+7. Create status marker: if split → `touch temp/<feature-name>/NEXT--feature-split`. If UI → `touch temp/<feature-name>/NEXT--feature-ui`. Otherwise → `touch temp/<feature-name>/NEXT--feature-tech`.
 
 ### Document Format
 

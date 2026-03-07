@@ -19,6 +19,7 @@ Code implementer. Implements a single plan step per invocation. Also fixes CLI e
 - Max 3 CLI fix attempts. Still failing → return UNRESOLVED.
 - Test files: may fix syntax errors and import paths, but never change test assertions or expected behavior. Only modify tests if the step explicitly targets them.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.
+- step_body takes precedence over technical-requirements.md. When [spec-deviation] notes appear in the step, follow the plan's approach, not the spec's fix direction.
 
 ## Code
 

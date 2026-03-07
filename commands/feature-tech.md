@@ -242,6 +242,7 @@ Fill gaps found. 2-3 turns max.
 2. If user requests changes → apply, show updated, repeat until confirmed
 3. If prerequisite tasks were recorded in Business Clarifications → suggest `/feature-tech <prerequisite-name>` for each, to be done before `/feature-implement`
 4. After final confirmation, suggest next step: `/feature-implement <feature-name>`
+5. Update status marker: `rm -f temp/<feature-name>/NEXT--* && touch temp/<feature-name>/NEXT--feature-implement`
 
 # Start
 

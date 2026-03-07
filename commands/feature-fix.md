@@ -120,11 +120,13 @@ Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
 
 ### 3a: CLI Loop (max 5)
 
-Run CLI_LINT, CLI_TYPECHECK, CLI_TEST in a single Bash call joined with `;` (skip empty commands).
+`mkdir -p SPEC_DIR/cli-errors/`. Spawn `cli-checker` (model: haiku) with prompt:
 
-All pass → 3b.
-Fail + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 4.
-Fail + `cli_iter < 5` → `mkdir -p SPEC_DIR/cli-errors/`, write full error output to `SPEC_DIR/cli-errors/iter-{cli_iter}.txt`. Spawn new `coder` with prompt:
+    error_file: <absolute path to SPEC_DIR/cli-errors/iter-{cli_iter}.txt>
+
+`CLEAN` → 3b.
+`FAIL` + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 4.
+`FAIL` + `cli_iter < 5` → Spawn new `coder` with prompt:
 
     mode: fix-cli
     feature: _fix

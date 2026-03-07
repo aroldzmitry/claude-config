@@ -56,7 +56,7 @@ Received via `prompt` from orchestrator in key-value format:
 
 Read in parallel (skip missing silently):
 - Always: `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`
-- Only in `implement` mode when step creates new files or new architectural patterns: `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`
+- In `implement` mode when step creates new files or new architectural patterns, OR in `fix-ai` mode always: `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`
 - `{spec_dir}/technical-requirements.md`
 
 ## 2. Execute

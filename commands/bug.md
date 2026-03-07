@@ -56,7 +56,8 @@ After each response: `[2/4: Steps to reproduce | next: Context]`
        Identify all affected files.
        Suggest specific fix direction (what code changes would resolve this).
 
-3. Analyze findings.
+3. If root cause involves a third-party library/SDK — verify diagnosis against its official documentation (WebSearch + WebFetch). Check if fix direction matches documented setup requirements.
+4. Analyze findings.
 
 ## Phase 3: Present Diagnosis
 

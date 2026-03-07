@@ -47,6 +47,7 @@
     "ask": [],
     "defaultMode": "default"
   },
+  "model": "opus",
   "enabledMcpjsonServers": [
     "trello"
   ],
@@ -64,6 +65,5 @@
     ]
   },
   "autoUpdatesChannel": "stable",
-  "skipDangerousModePermissionPrompt": true,
-  "model": "sonnet"
+  "skipDangerousModePermissionPrompt": true
 }

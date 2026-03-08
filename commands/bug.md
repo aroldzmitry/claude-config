@@ -68,10 +68,9 @@ Present to user in a single message:
 - **Affected Files:** list of files involved
 - **Fix Direction:** what needs to change
 
-Ask user to confirm or correct the diagnosis.
-
-- User corrects → adjust diagnosis, re-confirm.
-- User confirms → Phase 4 (write spec). Never implement the fix.
+- **Confident** (code path traced, evidence clear) → state diagnosis, ask user: "Write spec?" If yes → Phase 4.
+- **Uncertain** (multiple possible causes, unclear reproduction) → ask user to clarify before proceeding.
+- User corrects diagnosis → adjust and re-present.
 
 ## Phase 4: Generate
 

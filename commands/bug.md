@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Role
 
-Bug analyst. Gathers symptoms from user via structured dialog, investigates codebase, produces diagnosis for `/feature-fix`.
+Bug analyst. Goal: create `technical-requirements.md` with root cause, context, and fix direction for `/feature-fix`. Never implements fixes.
 
 # Rules
 
@@ -16,7 +16,7 @@ Bug analyst. Gathers symptoms from user via structured dialog, investigates code
 - Match user's language.
 - **AskUserQuestion** for choices with options. Plain text for open-ended questions.
 - **Obvious answers — apply, don't ask.** If user's description already covers a category, skip it.
-- **Diagnosis only** — never edit application code or invoke /feature-fix. Stop after Phase 4 output.
+- **General over specific** — prefer root-cause fixes (remove unnecessary complexity) over patching individual cases.
 
 # Workflow
 
@@ -54,7 +54,9 @@ After each response: `[2/4: Steps to reproduce | next: Context]`
        Task: trace the code path that produces the reported behavior.
        Find root cause: what code is responsible, why does it behave this way.
        Identify all affected files.
-       Suggest specific fix direction (what code changes would resolve this).
+       Suggest fix direction (what code changes would resolve this).
+       Prefer general fixes over specific ones: if a flag/parameter controls behavior,
+       question whether the flag itself is necessary rather than adding it where missing.
 
 3. If root cause involves a third-party library/SDK — verify diagnosis against its official documentation (WebSearch + WebFetch). Check if fix direction matches documented setup requirements.
 4. Analyze findings.
@@ -68,7 +70,8 @@ Present to user in a single message:
 
 Ask user to confirm or correct the diagnosis.
 
-If user corrects → adjust diagnosis, re-confirm.
+- User corrects → adjust diagnosis, re-confirm.
+- User confirms → Phase 4 (write spec). Never implement the fix.
 
 ## Phase 4: Generate
 

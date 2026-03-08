@@ -208,8 +208,8 @@ Spawn `improvement-analyzer` with prompt:
 1. `git status --porcelain` → changed files
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
-4. If `unresolved_steps` is non-empty: create `temp/_fix-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report.
-5. Record metrics: group `metrics_log` entries by phase (planning, implementation, self-checker, validation, improvement). Compute totals per phase (sum tokens, sum duration). Append entry to `~/.claude/agent-memory/command-metrics.md`:
+4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report.
+5. Record metrics: group `metrics_log` entries by phase (planning, implementation, self-checker, validation, improvement). Compute totals per phase (sum tokens, sum duration). `mkdir -p ~/.claude/agent-memory/metrics/`. Append entry to `~/.claude/agent-memory/metrics/$(date +%Y-%m-%d).md` (create if not exists):
    ```
    ## YYYY-MM-DD — /feature-fix {description}
    - plan_steps: N
@@ -227,7 +227,7 @@ Spawn `improvement-analyzer` with prompt:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve`
    - Else → `mv SPEC_DIR SPEC_DIR-done`
-   - If `temp/_fix-warnings/` was created in step 4 → `touch temp/_fix-warnings/NEXT--feature-fix`
+   - If `temp/_fix-{timestamp}-warnings/` was created in step 4 → `touch temp/_fix-{timestamp}-warnings/NEXT--feature-fix`
 7. Output report
 
 # Edge Cases
@@ -254,7 +254,7 @@ Spawn `improvement-analyzer` with prompt:
 ### Next Steps
 - Review: `git diff --cached`
 - Commit: `git commit -m "fix: <description>"`
-- Fix warnings: `/feature-fix _fix-warnings`
+- Fix warnings: `/feature-fix _fix-{timestamp}-warnings`
 ```
 
 Omit **Unresolved Issues** if none. Omit **Improvements** section if no suggestions and no regressions. Omit **Fix warnings** in Next Steps if no unresolved issues.

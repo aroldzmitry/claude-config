@@ -32,7 +32,11 @@ System improvement advisor. Reviews suggestions from the improvement-analyzer, h
 3. Parse: header (stats), `## Regressions`, `## Suggestions`.
 4. No items → "0 suggestions — implementation was clean." Stop.
 5. Read `DECISIONS_FILE` if it exists (for context).
-6. Show overview: stats from header + count of regressions + suggestions by priority.
+6. `mkdir -p ~/.claude/agent-memory/metrics/`. Glob `~/.claude/agent-memory/metrics/*.md` sorted descending by filename. Read up to 7 most recent files → `COMMAND_METRICS` (concatenated entries). If 0 files → `COMMAND_METRICS` = empty.
+7. Show overview: stats from header + count of regressions + suggestions by priority. If `COMMAND_METRICS` has ≥4 non-trivial entries (cli_iterations > 0 or ai_iterations > 0): split chronologically into older/newer halves, compute avg_cli, fix_rate = sum(fixed)/sum(found)×100%, avg_rem, avg_tokens per half. Append:
+   ```
+   Metrics: CLI {older:.1f}→{newer:.1f} | Fix rate {older:.0f}%→{newer:.0f}% | Remaining {older:.1f}→{newer:.1f} | Avg tokens {older:.0f}K→{newer:.0f}K | {improving/mixed/degrading}
+   ```
 
 ## Phase 1: Discussion
 
@@ -99,8 +103,13 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
 3. Append rejected items to `## Rejected`:
    `- [YYYY-MM-DD] {target}: {action description} — reason: "{user's reason}"`
 4. Skipped items: not recorded (can be suggested again next run).
-5. Folder status: `rm -f $ARGUMENTS/NEXT--* 2>/dev/null || true`. If no skipped items and `$ARGUMENTS` starts with `temp/` → `mv $ARGUMENTS ${ARGUMENTS}-done` (skip if already ends with `-done`).
-6. Final report: "Applied N changes, recorded N decisions (N accepted, N rejected)."
+5. Append improvement outcome to `~/.claude/agent-memory/metrics/$(date +%Y-%m-%d).md` (create if not exists):
+   ```
+   ## YYYY-MM-DD — /system-improve {$ARGUMENTS}
+   - accepted: N, rejected: N, skipped: N
+   ```
+6. Folder status: `rm -f $ARGUMENTS/NEXT--* 2>/dev/null || true`. If no skipped items and `$ARGUMENTS` starts with `temp/` → `mv $ARGUMENTS ${ARGUMENTS}-done` (skip if already ends with `-done`).
+7. Final report: "Applied N changes, recorded N decisions (N accepted, N rejected)."
 
 # Start
 

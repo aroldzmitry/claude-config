@@ -75,7 +75,12 @@ Present to user in a single message:
 ## Phase 4: Generate
 
 1. Set `SPEC_DIR = temp/_fix-{YYYYMMDD-HHmmss}/`, create directory.
-2. Write `SPEC_DIR/technical-requirements.md`:
+2. If affected files span multiple project roots (different git repos or top-level app directories):
+   - Create separate `SPEC_DIR-{suffix}/` per project (suffix = short project identifier, e.g. `mobile`, `api`)
+   - Each `technical-requirements.md` contains only that project's relevant Root Cause items, Fix Direction sections, and Affected Files
+   - Each gets its own `NEXT--feature-fix` marker in step 4
+   - Step 5 output lists all created directories
+3. Write `SPEC_DIR/technical-requirements.md`:
 
    ```
    # Fix Description
@@ -98,8 +103,8 @@ Present to user in a single message:
    - path/to/file2.ts — what needs to change
    ```
 
-3. Create status marker: `touch SPEC_DIR/NEXT--feature-fix`
-4. Output: "Diagnosis written to `SPEC_DIR/`. Next: `/feature-fix _fix-{timestamp}`"
+4. Create status marker: `touch SPEC_DIR/NEXT--feature-fix` (and for each per-project dir from step 2)
+5. Output: "Diagnosis written to `SPEC_DIR/`. Next: `/feature-fix _fix-{timestamp}`" (list all directories if multi-project)
 
 # Start
 

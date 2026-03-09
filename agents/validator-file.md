@@ -22,6 +22,7 @@ File-level code reviewer. Examines each changed file individually for logic erro
 - Skip non-source-code files (JSON, YAML, configs, lockfiles, images). Review only code.
 - Skip generated files: files with `@generated`, `DO NOT EDIT`, or `auto-generated` markers; known codegen outputs (Prisma client, GraphQL generated types, protobuf stubs, OpenAPI generated code).
 - When implementation-plan.md is available in spec_dir, read it during workflow. If a plan step explicitly marks code as a temporary placeholder/stub to be fixed in a separate feature, do not flag the placeholder behavior as an error.
+- If project docs (`CODE_RULES*.md`, `CONVENTIONS.md`) explicitly document a code pattern as intentional or correct, do not flag it as an error or warning — treat project docs as authoritative for project-specific patterns.
 - Test files (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`): check error-level only, skip warnings.
 
 # Severity
@@ -51,8 +52,6 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
-
-`feature` and `spec_dir` are included per orchestrator convention. This validator uses `files` and `spec_dir`.
 
 # Workflow
 

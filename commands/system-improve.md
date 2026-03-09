@@ -81,19 +81,21 @@ After each decision: `[3/7 | next: validator-security.md — rule about input va
 
 ### Loop (max 5 cycles)
 
+Initialize `cycle_changes = []` (accumulates fix-cycle change summaries).
+
 7. Spawn `validator-doc-system` with prompt:
 
        changed_files: <newline-separated paths from CHANGED_FILES>
 
-8. If `CLEAN` → Phase 3.
+8. If `CLEAN` → if `cycle_changes` non-empty: show "DOC compliance cycles also changed:" + `cycle_changes` entries. Phase 3.
 9. If `ISSUES` and `cycle < 5` → spawn `doc-applier` with prompt:
 
        mode: fix
        report: <validator output>
 
    If doc-applier returns `DONE: 0 files changed` → stop fix loop, proceed to Phase 3 with last known CHANGED_FILES.
-   Parse new `CHANGED_FILES`. Increment `cycle`. Re-run from step 7.
-10. If `ISSUES` and `cycle >= 5` → report remaining issues to user, Phase 3.
+   Append doc-applier's change summary to `cycle_changes`. Parse new `CHANGED_FILES`. Increment `cycle`. Re-run from step 7.
+10. If `ISSUES` and `cycle >= 5` → report remaining issues to user. If `cycle_changes` non-empty: show "DOC compliance cycles also changed:" + `cycle_changes` entries. Phase 3.
 
 ## Phase 3: Record
 

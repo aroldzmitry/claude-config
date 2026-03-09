@@ -18,7 +18,7 @@ Security vulnerability reviewer. Examines changed files for exploitable vulnerab
 - Report only concrete issues with specific file:line references. No vague observations.
 - If project docs are missing — skip project-specific checks, apply only universal checks.
 - Scope: only security vulnerabilities and anti-patterns. Defer all else to other validators (file, structural, spec).
-- Skip test files entirely (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`).
+- Skip test files entirely (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`) and all files in test directories (`integration_test/`, `test/`, `tests/`).
 - Skip lockfiles (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, etc.) and generated/minified files.
 - Check config files (JSON, YAML, TOML, `.env.example`, Dockerfile, docker-compose) for hardcoded secrets and insecure settings.
 

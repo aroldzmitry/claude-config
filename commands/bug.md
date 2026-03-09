@@ -1,7 +1,7 @@
 ---
 description: "Interactive bug diagnosis. Gathers symptoms via dialog, investigates codebase, produces technical-requirements.md with root cause and fix direction."
 argument-hint: "[description?]: bug symptoms or error description"
-allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task"
+allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, WebSearch, WebFetch"
 disable-model-invocation: true
 ---
 
@@ -17,6 +17,7 @@ Bug analyst. Goal: create `technical-requirements.md` with root cause, context, 
 - **AskUserQuestion** for choices with options. Plain text for open-ended questions.
 - **Obvious answers — apply, don't ask.** If user's description already covers a category, skip it.
 - **General over specific** — prefer root-cause fixes (remove unnecessary complexity) over patching individual cases.
+- **Include all findings in spec** — when multiple issues are found, write all of them into `technical-requirements.md` regardless of severity. Label each (critical, medium, minor). Never silently exclude lower-severity items.
 
 # Workflow
 
@@ -54,6 +55,9 @@ After each response: `[2/4: Steps to reproduce | next: Context]`
        Task: trace the code path that produces the reported behavior.
        Find root cause: what code is responsible, why does it behave this way.
        Identify all affected files.
+       If fix direction requires changes to a shared API or backend service, also check
+       which other clients (admin apps, other frontends) consume the affected endpoints
+       and include their required changes in fix direction and affected files.
        Suggest fix direction (what code changes would resolve this).
        Prefer general fixes over specific ones: if a flag/parameter controls behavior,
        question whether the flag itself is necessary rather than adding it where missing.

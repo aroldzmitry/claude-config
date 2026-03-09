@@ -91,7 +91,7 @@ Implement only the step described in `step_body`:
 
 1. Read `{spec_dir}/{report_file}`. Parse the report — group issues by file
 2. For each file: read it, scan for similar code as reference
-3. Fix all reported issues
+3. Fix all reported issues. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them.
 4. Run all non-empty CLI commands to verify no regressions
 5. CLI fail → fix and re-run (max 3 attempts)
 

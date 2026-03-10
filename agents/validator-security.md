@@ -17,6 +17,7 @@ Security vulnerability reviewer. Examines changed files for exploitable vulnerab
 - One finding = one line in output. No prose, no suggestions, no code examples.
 - Report only concrete issues with specific file:line references. No vague observations.
 - If project docs are missing — skip project-specific checks, apply only universal checks.
+- If project docs (`CODE_RULES*.md`, `CONVENTIONS.md`) explicitly document a code pattern as intentional or correct, do not flag it.
 - Scope: only security vulnerabilities and anti-patterns. Defer all else to other validators (file, structural, spec).
 - Skip test files entirely (`*.test.*`, `*.spec.*`, `test_*`, `*_test.*`) and all files in test directories (`integration_test/`, `test/`, `tests/`).
 - Skip lockfiles (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, etc.) and generated/minified files.
@@ -58,6 +59,7 @@ Received via `prompt` from orchestrator:
 
 1. Load project docs (skip silently if missing or empty):
    - Glob `docs/CODE_RULES*.md` → read each
+   - Read `docs/CONVENTIONS.md`
 
 2. For each file in the list:
    a. Read the file

@@ -204,7 +204,7 @@ Spawn `improvement-analyzer` with prompt:
 1. `git status --porcelain` → changed files
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
-4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report.
+4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
 5. Record metrics: group `metrics_log` entries by phase (planning, implementation, self-checker, validation, improvement). Compute totals per phase (sum tokens, sum duration). `mkdir -p ~/.claude/agent-memory/metrics/`. Append entry to `~/.claude/agent-memory/metrics/$(date +%Y-%m-%d).md` (create if not exists):
    ```
    ## YYYY-MM-DD — /feature-implement {feature}

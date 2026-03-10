@@ -60,6 +60,8 @@ Check the plan against these criteria:
 - Cross-step references — when multiple steps reference the same method, type, or interface, the full signature (name, parameters, return type) must be identical across all steps. On mismatch — fix to match the defining step.
 - If a step must deviate from spec due to technical constraints → must have `[spec-deviation]` note explaining why
 - Every section in test-cases.md must have at least one corresponding test step in the plan. If a section has no matching step — add one.
+- If a step description contains fenced code blocks — remove the block and rewrite as prose with inline pseudocode references where needed.
+- When a step creates a new file F that imports from existing file A, and any step also adds an export or re-export in A pointing back to F — flag as circular dependency. Remove the circular re-export from A; note that consumers should import from F directly.
 
 ## 3. Fix
 

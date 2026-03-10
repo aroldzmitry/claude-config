@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coder-plan-step.schema.json",
+  "type": "object",
+  "required": ["number", "title", "files", "action", "description"],
+  "properties": {
+    "number": { "type": "integer", "minimum": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "files": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "action": { "type": "string", "enum": ["create", "modify", "delete"] },
+    "description": { "type": "string", "minLength": 1 },
+    "spec_deviation": { "type": "boolean" },
+    "preconditions": { "type": "array", "items": { "type": "string" } },
+    "completion_criteria": { "type": "array", "items": { "type": "string" } },
+    "safe_to_retry": { "type": "boolean" }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coder-implement-task.schema.json",
+  "type": "object",
+  "required": ["version", "kind", "workflow", "run_id", "request_id", "worker", "feature", "spec_dir", "inputs", "context", "output_path"],
+  "properties": {
+    "worker": { "type": "string", "const": "coder-implement" },
+    "inputs": {
+      "type": "object",
+      "required": ["project_context", "technical_requirements", "coder_plan"],
+      "properties": {
+        "project_context": { "type": "string" },
+        "technical_requirements": { "type": "string" },
+        "business_requirements": { "type": "string" },
+        "ui_requirements": { "type": "string" },
+        "coder_plan": { "type": "string" }
+      }
+    },
+    "context": {
+      "type": "object",
+      "required": ["step_number", "cli"],
+      "properties": {
+        "step_number": { "type": "integer", "minimum": 1 },
+        "cli": {
+          "type": "object",
+          "properties": {
+            "lint": { "type": "string" },
+            "typecheck": { "type": "string" },
+            "test": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

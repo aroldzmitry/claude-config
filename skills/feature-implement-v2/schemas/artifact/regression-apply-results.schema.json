@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "regression-apply-results.schema.json",
+  "type": "object",
+  "required": ["version", "run_id", "items"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "run_id": { "type": "string" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item_index", "target_file", "action", "status"],
+        "properties": {
+          "item_index": { "type": "integer", "minimum": 0 },
+          "target_file": { "type": "string" },
+          "action": { "type": "string", "enum": ["replace", "insert", "delete"] },
+          "status": { "type": "string", "enum": ["applied", "skipped"] },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}

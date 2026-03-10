@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "conversion-report.schema.json",
+  "type": "object",
+  "required": ["version", "feature", "status", "converted"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "feature": { "type": "string" },
+    "status": { "type": "string", "enum": ["succeeded", "failed"] },
+    "required_missing": { "type": "array", "items": { "type": "string" } },
+    "converted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "output", "type"],
+        "properties": {
+          "source": { "type": "string" },
+          "output": { "type": "string" },
+          "type": { "type": "string" }
+        }
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "reason"],
+        "properties": {
+          "type": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "message", "source"],
+        "properties": {
+          "severity": { "type": "string" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "source": { "type": "string" },
+          "conflicting_sources": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "message", "source"],
+        "properties": {
+          "severity": { "type": "string" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "source": { "type": "string" },
+          "conflicting_sources": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

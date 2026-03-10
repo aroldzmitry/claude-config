@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coder-implement-result.schema.json",
+  "type": "object",
+  "required": ["version", "kind", "workflow", "run_id", "request_id", "worker", "execution_status", "next_action", "summary", "data", "issues", "artifacts"],
+  "properties": {
+    "worker": { "type": "string", "const": "coder-implement" },
+    "data": {
+      "type": "object",
+      "required": ["step_number", "files_changed", "cli", "step_result"],
+      "properties": {
+        "step_number": { "type": "integer", "minimum": 1 },
+        "files_changed": { "type": "array", "items": { "type": "string" } },
+        "cli": {
+          "type": "object",
+          "properties": {
+            "lint": { "type": "string", "enum": ["passed", "failed", "skipped"] },
+            "typecheck": { "type": "string", "enum": ["passed", "failed", "skipped"] },
+            "tests": { "type": "string", "enum": ["passed", "failed", "skipped"] }
+          }
+        },
+        "step_result": { "type": "string", "enum": ["implemented", "already_done", "unresolved"] }
+      }
+    }
+  }
+}

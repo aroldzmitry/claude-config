@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coder-fix-validation-task.schema.json",
+  "type": "object",
+  "required": ["version", "kind", "workflow", "run_id", "request_id", "worker", "feature", "spec_dir", "inputs", "context", "output_path"],
+  "properties": {
+    "worker": { "type": "string", "const": "coder-fix-validation" },
+    "inputs": {
+      "type": "object",
+      "required": ["project_context", "aggregated_validation"],
+      "properties": {
+        "project_context": { "type": "string" },
+        "technical_requirements": { "type": "string" },
+        "business_requirements": { "type": "string" },
+        "aggregated_validation": { "type": "string" }
+      }
+    },
+    "context": {
+      "type": "object",
+      "required": ["iteration"],
+      "properties": {
+        "iteration": { "type": "integer", "minimum": 0 },
+        "changed_files": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

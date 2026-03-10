@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "events.schema.json",
+  "type": "object",
+  "required": ["version", "timestamp", "run_id", "phase", "worker_id", "attempt", "event_type", "status"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "phase": { "type": "string" },
+    "worker_id": { "type": "string" },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "run_started",
+        "phase_started",
+        "worker_started",
+        "worker_finished",
+        "worker_retried",
+        "artifact_written",
+        "warning_recorded",
+        "run_finished"
+      ]
+    },
+    "status": { "type": "string" },
+    "step_id": { "type": "string" },
+    "path": { "type": "string" },
+    "details": {
+      "type": "object",
+      "properties": {
+        "reason": { "type": "string" },
+        "error_code": { "type": "string" },
+        "attempt_limit": { "type": "integer" },
+        "worker_status": { "type": "string" },
+        "worker_id": { "type": "string" }
+      }
+    }
+  }
+}

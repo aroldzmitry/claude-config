@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "planner-task.schema.json",
+  "type": "object",
+  "required": ["version", "kind", "workflow", "run_id", "request_id", "worker", "feature", "spec_dir", "inputs", "context", "output_path"],
+  "properties": {
+    "worker": { "type": "string", "const": "planner" },
+    "inputs": {
+      "type": "object",
+      "required": ["technical_requirements"],
+      "properties": {
+        "technical_requirements": { "type": "string" },
+        "business_requirements": { "type": "string" },
+        "ui_requirements": { "type": "string" },
+        "test_cases": { "type": "string" }
+      }
+    },
+    "context": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["implement", "fix"] },
+        "docs": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

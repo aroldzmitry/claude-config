@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "shared": {
+    "always": ["docs/CODE_RULES.md", "docs/CONVENTIONS.md"],
+    "conditional": {
+      "architecture": ["docs/ARCHITECTURE.md"],
+      "design_system": ["docs/DESIGN_SYSTEM.md"]
+    }
+  }
+}

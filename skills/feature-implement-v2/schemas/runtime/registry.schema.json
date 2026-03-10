@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "registry.schema.json",
+  "type": "object",
+  "required": ["version", "runtime_family", "defaults", "workers"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "runtime_family": { "type": "string", "const": "feature-implement-v2" },
+    "defaults": {
+      "type": "object",
+      "required": ["timeout_ms", "permission_mode", "cwd_policy"],
+      "properties": {
+        "timeout_ms": { "type": "integer", "minimum": 1000 },
+        "permission_mode": { "type": "string" },
+        "cwd_policy": { "type": "string" }
+      }
+    },
+    "workers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["file", "model", "max_turns", "permission_mode", "task_schema", "result_schema", "enabled", "category"],
+        "properties": {
+          "file": { "type": "string" },
+          "model": { "type": "string", "enum": ["haiku", "sonnet", "opus"] },
+          "max_turns": { "type": "integer", "minimum": 1 },
+          "permission_mode": { "type": "string", "enum": ["default", "plan", "acceptEdits", "bypassPermissions"] },
+          "tools": { "type": "array", "items": { "type": "string" } },
+          "task_schema": { "type": "string" },
+          "result_schema": { "type": "string" },
+          "enabled": { "type": "boolean" },
+          "category": { "type": "string", "enum": ["preprocess", "planning", "execution", "validation", "improvement"] },
+          "supports_parallelism": { "type": "boolean" },
+          "execution_mode": { "type": "string", "enum": ["read_only", "workspace_write"] }
+        }
+      }
+    }
+  }
+}

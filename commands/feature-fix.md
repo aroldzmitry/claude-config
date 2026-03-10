@@ -103,7 +103,7 @@ For each step in order:
 After all steps complete:
 
 4. `git status --porcelain` → parse changed files (strip 2-char status prefix, exclude `D` deletions).
-5. Spawn `self-checker` (max_turns: 40) with prompt:
+5. Spawn `self-checker` (max_turns: 20) with prompt:
 
         feature: _fix
         spec_dir: SPEC_DIR
@@ -144,7 +144,7 @@ Increment `cli_iter`. Re-run 3a.
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
-Spawn 3 validators using separate Task calls in the same response (parallel execution): `validator-structural`, `validator-file`, `validator-security`. Each with prompt:
+Spawn 2 validators using separate Task calls in the same response (parallel execution): `validator-structural`, `validator-file`. Each with prompt:
 
     feature: _fix
     spec_dir: SPEC_DIR
@@ -152,7 +152,7 @@ Spawn 3 validators using separate Task calls in the same response (parallel exec
 
 Each: return `[error|warning] file:line — description` or `NO_ISSUES`.
 
-Write each validator's output to `SPEC_DIR/validation/iter-{ai_iter}/{name}.md` (structural.md, file.md, security.md).
+Write each validator's output to `SPEC_DIR/validation/iter-{ai_iter}/{name}.md` (structural.md, file.md).
 
 All NO_ISSUES → Phase 4.
 
@@ -177,10 +177,13 @@ Check aggregator status (do NOT parse report contents):
         cli_test: CLI_TEST
         report_file: validation/iter-{ai_iter}/aggregated.md
 
-Increment `ai_iter`. Re-run from 3a (counters continue, do not reset).
+Increment `ai_iter`. Re-run from 3b (skip CLI re-check — CLI was already clean before fix-ai ran).
 
 ## Phase 4: Improvement Analysis
 
+> **[TEMPORARILY DISABLED — skip, proceed to Phase 5]**
+
+<!--
 Spawn `improvement-analyzer` with prompt:
 
     feature: _fix
@@ -192,9 +195,13 @@ Spawn `improvement-analyzer` with prompt:
     issues_remaining: <count>
     unresolved_summary: <list of unresolved issues, or "none">
     compactions: <compaction_log formatted as "agent:count, ...", or "none">
+-->
 
 ## Phase 4a: Auto-Apply Regressions
 
+> **[TEMPORARILY DISABLED — skip, proceed to Phase 5]**
+
+<!--
 1. If `SPEC_DIR/improvement-suggestions.md` not found → skip auto-apply phase, proceed to Phase 5.
 2. Read `SPEC_DIR/improvement-suggestions.md`.
 3. If `## Regressions` section exists with items:
@@ -202,6 +209,7 @@ Spawn `improvement-analyzer` with prompt:
    b. Count auto-applied regressions.
    c. Collect changed .md file paths. If any: spawn `validator-doc-system` with changed_files list. If `ISSUES` → log warning, do not block.
 4. Remaining suggestions (non-regression) → left for manual `/system-improve`.
+-->
 
 ## Phase 5: Finalize
 
@@ -225,9 +233,9 @@ Spawn `improvement-analyzer` with prompt:
    ```
 6. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
-   - If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve`
-   - Else → `mv SPEC_DIR SPEC_DIR-done`
+   - `mv SPEC_DIR SPEC_DIR-done`
    - If `temp/_fix-{timestamp}-warnings/` was created in step 4 → `touch temp/_fix-{timestamp}-warnings/NEXT--feature-fix`
+   <!-- DISABLED: If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve` -->
 7. Output report
 
 # Edge Cases
@@ -247,14 +255,10 @@ Spawn `improvement-analyzer` with prompt:
 ### Unresolved Issues
 - [error|warning] file:line — description
 
-### Improvements
-- Regressions auto-fixed: N
-- New suggestions: N (high: X, medium: Y, low: Z) → `/system-improve temp/_fix-{timestamp}/`
-
 ### Next Steps
 - Review: `git diff --cached`
 - Commit: `git commit -m "fix: <description>"`
 - Fix warnings: `/feature-fix _fix-{timestamp}-warnings`
 ```
 
-Omit **Unresolved Issues** if none. Omit **Improvements** section if no suggestions and no regressions. Omit **Fix warnings** in Next Steps if no unresolved issues.
+Omit **Unresolved Issues** if none. Omit **Fix warnings** in Next Steps if no unresolved issues.

@@ -28,17 +28,20 @@ Before asking questions, silently:
 1. Determine feature name from `$ARGUMENTS`. If no exact match in `temp/` — list existing `temp/*/` folders, show them to the user via AskUserQuestion, ask which one to use.
 2. Read `temp/<feature-name>/business-requirements.md` if exists
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
-4. Ask user if they have Figma mockups for this feature:
+4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
+5. Ask user if they have Figma mockups for this feature:
    - If user provides Figma URL(s) → invoke Skill tool with `skill: "figma"` to extract design data. If Skill returns error or empty output → inform user, fall back to text-based UI description gathering in Phase 1. Otherwise use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered.
    - If no Figma → proceed with text-based gathering in Phase 1.
 
-Do NOT mention steps 1-3 to the user. Step 4 is the first user-visible message.
+Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
 
 ## Phase 1: Gathering
 
 Go through categories in order.
 
-**Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature, OR (c) Figma mockups already define it fully. State when skipping: `[skipping Filters — not a list page]`.
+**Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. Batch pattern-following decisions where possible — show several at once and ask to confirm or flag changes.
+
+**Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature, OR (c) Figma mockups already define it fully, OR (d) the established codebase pattern fully defines it — state the pattern being followed. State when skipping: `[skipping Filters — not a list page]`.
 
 **Ambiguity check:** after each user answer — are there ambiguities that would affect UI? Yes → ask before moving on. No → next category.
 

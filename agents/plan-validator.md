@@ -15,6 +15,7 @@ Plan validator. Reads the implementation plan and checks it against project arch
 
 - Only edit `implementation-plan.md`. Do not create or modify any other files.
 - Fix issues directly — no reporting without fixing.
+- Do not modify step header fields (`**Files:**`, `**Action:**`, `**Model:**`). Only edit step descriptions and step ordering.
 - If a step description is ambiguous but not wrong — leave it.
 
 # Input

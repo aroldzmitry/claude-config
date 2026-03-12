@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → [test-writer] → coder → self-checker → validators → fix loop → improvement analyzer), produces staged git diff."
+description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → [test-writer] → coder → validators → fix loop), produces staged git diff."
 model: sonnet
 argument-hint: "[description?]: what needs to be fixed"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
@@ -23,15 +23,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}` — timestamp set once at Phase 0 start.
 - Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
-- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`. Pass as `unresolved_summary` to improvement-analyzer.
-- Issue counters for improvement-analyzer prompt:
-  - `issues_found` — sum of N from each aggregator `DONE: N verified` (excludes false positives, excludes CLI errors).
-  - `issues_fixed` — `issues_found - issues_remaining`.
-  - `issues_remaining` — count of items in `unresolved_summary`.
-  - `cli_iterations` — number of CLI fix cycles (coder fix-cli spawns). Initial CLI check = 0.
-  - `ai_iterations` — number of AI fix cycles (coder fix-ai spawns). Initial validator run = 0.
-  - `compaction_log` — tracks agents that reported context compaction. Format: `{agent}:{count}, ...`. After each Task agent spawn, check return for `COMPACTED: true` — if present, increment that agent's count. If orchestrator itself experiences compaction, add `orchestrator:1`.
-- `metrics_log` = [] — initialized at start. After each Task agent spawn, append `{phase}:{agent_type}:{total_tokens}:{duration_ms}` (extract from `<usage>` block in agent response). Used for metrics recording in Finalize.
+- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - CLI errors → `SPEC_DIR/cli-errors/iter-{N}.txt`
   - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
@@ -81,12 +73,13 @@ If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, 
 
 ## Phase 2: Implementation
 
-Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract the full step block (header + **Files** + **Action** + description until next `### Step` or end of file).
+Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract the full step block (header + **Files** + **Action** + **Model** (optional) + description until next `### Step` or end of file).
 
 For each step in order:
 
 1. `[Step {N}/{total}: {title}]`
-2. Spawn new `coder` with prompt:
+2. Extract `**Model:**` from step block (if present). Use as coder model; default to opus if absent.
+3. Spawn new `coder` (model from step 2) with prompt:
 
         mode: implement
         feature: _fix
@@ -98,21 +91,7 @@ For each step in order:
         step_total: TOTAL
         step_body: <full step block text>
 
-3. If coder returns `UNRESOLVED` → record. If `DONE` → continue to next step.
-
-After all steps complete:
-
-4. `git status --porcelain` → parse changed files (strip 2-char status prefix, exclude `D` deletions).
-5. Spawn `self-checker` (max_turns: 20) with prompt:
-
-        feature: _fix
-        spec_dir: SPEC_DIR
-        changed_files: <newline-separated file paths from git status>
-        cli_lint: CLI_LINT
-        cli_typecheck: CLI_TYPECHECK
-        cli_test: CLI_TEST
-
-6. Log self-checker result (CLEAN or FIXED: N issues).
+4. If coder returns `UNRESOLVED` → record. If `DONE` → continue to next step.
 
 ## Phase 3: Validation Cycle
 
@@ -217,26 +196,12 @@ Spawn `improvement-analyzer` with prompt:
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
 4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
-5. Record metrics: group `metrics_log` entries by phase (planning, implementation, self-checker, validation, improvement). Compute totals per phase (sum tokens, sum duration). `mkdir -p ~/.claude/agent-memory/metrics/`. Append entry to `~/.claude/agent-memory/metrics/$(date +%Y-%m-%d).md` (create if not exists):
-   ```
-   ## YYYY-MM-DD — /feature-fix {description}
-   - plan_steps: N
-   - cli_iterations: N, ai_iterations: N
-   - issues: found N, fixed N, remaining N
-   - phases:
-     - planning: {total_tokens}K tokens, {total_duration}s ({agent}: {tokens}K/{duration}s, ...)
-     - implementation: {total_tokens}K tokens, {total_duration}s (N coder steps, avg {avg_tokens}K/{avg_duration}s per step)
-     - self-checker: {tokens}K tokens, {duration}s
-     - validation: {total_tokens}K tokens, {total_duration}s (iter-0: {tokens}K/{duration}s, iter-1: ...)
-     - improvement: {tokens}K tokens, {duration}s
-   - total: {sum_tokens}K tokens, {sum_duration}s
-   ```
-6. Folder status:
+5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - If `temp/_fix-{timestamp}-warnings/` was created in step 4 → `touch temp/_fix-{timestamp}-warnings/NEXT--feature-fix`
    <!-- DISABLED: If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve` -->
-7. Output report
+6. Output report
 
 # Edge Cases
 

@@ -16,6 +16,7 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 - Descriptions must be precise — no "handle appropriately" or "implement as needed".
 - Step descriptions must not contain code blocks (fenced multi-line code). Describe changes in prose. Function signatures and type contracts may appear inline using pseudocode notation — not TypeScript syntax: `processOrder(orderId) → OrderResult`, not `processOrder(orderId: string): Promise<OrderResult>`. Pseudocode signals intent; coder derives exact signatures and implementation from existing patterns.
 - Each step = one logical change. A type and its usage can be one step. "Add import" is not a separate step.
+- Merge trivial adjacent steps that touch the same 1-2 files into one step (e.g., add field + update usage + adjust import). The merged step must stay within the 2-3 file limit and remain implementable in a single coder invocation.
 - Each step must leave the codebase in a compilable/lintable state.
 - Each step must target at most 2–3 public functions/methods. Classes with code generation (freezed, json_serializable, built_value) count as 2 public methods each toward this limit. If a step requires implementing more, split into multiple sub-steps (e.g., "Step 8a: add createDraft, getActive, updateDeceased", "Step 8b: add updateVisit, updateFuneral"). Large rewrites of entire files must be broken into logical sub-steps.
 - When describing data structures, use plain language: "nullable string", "array of order items with id and name". Do not use TypeScript or code syntax.
@@ -84,11 +85,14 @@ The plan file must follow this exact structure:
     ### Step 1: <title>
     **Files:** path/to/file1.ts, path/to/file2.ts
     **Action:** create | modify | delete
+    **Model:** sonnet
 
     <description — specific enough that coder doesn't need to re-derive the approach>
 
     ### Step 2: <title>
     ...
+
+`**Model:**` is optional. Add `**Model:** sonnet` for straightforward modify-steps (< 3 files, no new architecture, no complex logic). Omit the field for steps that create new files, introduce architectural patterns, or require complex reasoning — orchestrator defaults to opus.
 
 Step ordering:
 - Types/interfaces before implementations

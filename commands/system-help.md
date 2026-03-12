@@ -50,9 +50,9 @@ Output this reference (translated to user's language):
 | `/feature-ui` | `temp/<name>/ui-requirements.md` | Optional: `business-requirements.md` |
 | `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
-| `/feature-implement` | Staged git diff + `improvement-suggestions.md` | `technical-requirements.md`, clean git |
+| `/feature-implement` | Staged git diff | `technical-requirements.md`, clean git |
 | `/bug` | `temp/_fix-<ts>/technical-requirements.md` (with diagnosis) | — |
-| `/feature-fix` | Staged git diff + `improvement-suggestions.md` | — (or `/bug` output folder) |
+| `/feature-fix` | Staged git diff | — (or `/bug` output folder) |
 | `/system-improve` | Updated system files | `improvement-suggestions.md` |
 | `/system-find-improve` | Updated system files + `agent-memory/improvement-analyzer/observations.md` | Any conversation |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
@@ -80,7 +80,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: planner → plan-validator → test-writer → coder (per step) → self-checker → CLI loop (max 5) → 4 validators (feature-implement) / 3 validators (feature-fix) → aggregator → AI fix loop (max 2) → improvement analysis
+- Implementation is fully autonomous: planner → plan-validator → test-writer → coder (per step) → CLI loop (max 5) → validators (3 for feature-implement / 2 for feature-fix) → aggregator → AI fix loop (max 2)
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

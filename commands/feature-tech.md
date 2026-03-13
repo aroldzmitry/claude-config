@@ -2,13 +2,13 @@
 description: "Interactive dialog to define technical specification and test cases for a feature. Asks targeted questions, verifies completeness, generates technical-requirements.md and test-cases.md"
 model: opus
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
-allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion"
+allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, Bash"
 disable-model-invocation: true
 ---
 
 # Role
 
-You are a software architect conducting a structured interview to define technical specification for a feature. Goal: help the user make all key technical decisions before implementation — clear architecture, explicit contracts, complete test coverage.
+You are a software architect conducting a structured interview to define technical specification for a feature.
 
 # Rules
 
@@ -44,7 +44,7 @@ Do NOT mention this step to the user. Just use the knowledge.
 
 Go through categories in order.
 
-**Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature. State when skipping: `[skipping Dependencies — no new external deps needed]`.
+**Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature. State the reason when skipping: `[skipping <category> — <reason>]`.
 
 **Ambiguity check:** after each user answer — are there ambiguities that would affect implementation? Yes → ask before moving on. No → next category.
 
@@ -70,7 +70,7 @@ Go through categories in order.
 
 8. **Test Strategy** — What needs testing? Unit / integration / e2e? What's hard to test and how to handle it? What to explicitly NOT test?
 
-9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases grouped by severity. Present all `[error]` cases together, then all `[warning]` cases (one batch per message, max). For each: situation → expected behavior. Verify expected behavior against codebase patterns first — apply silent decisions principle (established pattern → state with source, don't ask). Only cases where expected behavior is non-obvious or requires explicit handling code — not observations confirming existing design. User confirms batch or rejects specific items. After all batches, ask if user wants to add any.
+9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases grouped by severity. Present all `[error]` cases together, then all `[warning]` cases (one batch per message, max). For each: situation → expected behavior. Verify expected behavior against codebase patterns first — apply silent decisions principle (see Rules). Only propose cases where the expected behavior requires a decision or explicit handling code; skip cases where the existing design already handles them. User confirms batch or rejects specific items. After all batches, ask if user wants to add any.
 
 ### Conditional (only when relevant)
 
@@ -78,11 +78,7 @@ Go through categories in order.
 
 ### Progress tracking
 
-After each user response, include a brief progress line:
-
-`[3/7: API ✓ | next: Error Handling]`
-
-Adjust the total based on which categories are relevant.
+After each user response, include a brief progress line in format `[{done}/{total}: {current} ✓ | next: {next}]`. Adjust the total based on which categories are relevant.
 
 ## Phase 2: Verification
 
@@ -227,16 +223,37 @@ Test cases are derived from:
 
 Each test case must be specific enough for a test-writer agent to implement without guessing.
 
-### Step 3a: Spec Self-Check
+### Step 3a: Dual-LLM Spec Validation
 
-Before showing to user, verify generated documents:
-1. Each API contract in `technical-requirements.md`: has request format, response format, and error responses.
-2. Each test case in `test-cases.md`: has concrete input → concrete expected output. "Can test-writer implement this without guessing?"
-3. Each tech edge case: has expected behavior, not just situation description.
-4. Cross-check: each tech edge case and each acceptance criterion (from `business-requirements.md`) has a corresponding test case in `test-cases.md`. Missing → add test case.
-5. Test strategy and test cases are consistent — if strategy excludes a testing area (e.g., "no admin UI tests"), verify no test cases exist for that area. If they do, either update strategy to reflect actual coverage or remove contradicting test cases.
+Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
-Fill gaps found. 2-3 turns max.
+**Validation loop (max 2 iterations):**
+
+1. Launch 6 validators in parallel (same response):
+   - **Claude Tasks** — each with `feature: <name>, spec_dir: temp/<name>/, output_file: <path>`:
+     - `validator-spec-contracts` → `output_file: temp/<name>/validation/spec/contracts.md`
+     - `validator-spec-testability` → `output_file: temp/<name>/validation/spec/testability.md`
+     - `validator-spec-consistency` → `output_file: temp/<name>/validation/spec/consistency.md`
+   - **Codex Tasks** — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency]:
+     - `validator-{V}` with `feature: <name>, spec_dir: temp/<name>/, output_file: temp/<name>/validation/spec/{V-short}-codex.md`
+     - (short names: contracts-codex, testability-codex, consistency-codex)
+
+2. Spawn `aggregator-spec`:
+
+       feature: <name>
+       spec_dir: temp/<name>/
+
+3. `NO_ISSUES` → proceed to **Step 4: Present and confirm**.
+
+4. `HAS_ISSUES` → read `temp/<name>/validation/spec/aggregated.md`. For each finding decide:
+   - **Fix silently** if: the correct answer is unambiguous from spec context, existing contracts, or project patterns. Examples: remove class name, derive missing error code from other endpoints, add missing test case from existing edge case, replace vague word with concrete one from context.
+   - **Ask user** only if: multiple valid options exist with real trade-offs, OR the required information is simply absent from all available context and cannot be derived. Collect all such findings first.
+
+5. Apply all silent fixes. Then show user a compact numbered list of what was fixed automatically (`Auto-fixed: N items` header, one line per fix stating what was changed and why). If user-input findings exist → ask about them one at a time (one question per message). After each answer — update documents.
+
+6. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1.
+
+7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining findings in Open Questions section of `technical-requirements.md`, proceed to Step 4.
 
 ### Step 4: Present and confirm
 

@@ -74,11 +74,10 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 
 ## Phase 0: Load
 
-1. `mkdir -p ~/.claude/agent-memory/system-find-improve/ ~/.claude/agent-memory/metrics/`
+1. `mkdir -p ~/.claude/agent-memory/system-find-improve/`
 2. Read `DECISIONS_FILE` if exists.
 3. Read `OBSERVATIONS_FILE` if exists — for cross-session pattern detection.
-4. Glob `~/.claude/agent-memory/metrics/*.md` sorted descending by filename (date). Read up to 7 most recent files → `COMMAND_METRICS` (concatenated entries with their date context). If 0 files → `COMMAND_METRICS` = empty.
-5. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
+4. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
 ## Phase 1: Scan
 
 1. Analyze full conversation using S1–S6 categories.
@@ -93,18 +92,8 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
    - `claude-md` → only `CLAUDE.md` targets
    - `all` or empty → no filter
 7. Sort: high → medium → low.
-8. If 0 findings → "No actionable improvements found — system performed well in this session." Show metrics trend (step 10), record observation per Phase 4 format (findings: 0) → stop.
+8. If 0 findings → "No actionable improvements found — system performed well in this session." Record observation per Phase 4 format (findings: 0) → stop.
 9. Show overview: finding count by priority + target files list.
-10. Metrics trend: if `COMMAND_METRICS` non-empty — parse all entries: extract `cli_iterations`, `ai_iterations`, `found`/`fixed`/`remaining` (from `issues:` line), total tokens and seconds (from `total:` line). Non-trivial = cli_iterations > 0 or ai_iterations > 0. If ≥4 non-trivial entries: split chronologically — older half vs newer half. Compute per group: avg_cli, avg_ai, fix_rate = sum(fixed)/sum(found)×100%, avg_rem, avg_tokens. Show:
-    ```
-    Metrics trend (newer vs older half, N non-trivial runs, last 7 days):
-    - CLI iterations: {older:.1f} → {newer:.1f}
-    - Fix rate: {older:.0f}% → {newer:.0f}%
-    - Remaining: {older:.1f} → {newer:.1f}
-    - Avg tokens: {older:.0f}K → {newer:.0f}K
-    - Overall: improving / degrading / mixed
-    ```
-    Improving = cli↓ AND fix_rate↑ AND remaining↓. Degrading = all worse. Mixed otherwise. Skip if <4 non-trivial entries.
 
 ## Phase 2: Discussion
 

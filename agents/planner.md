@@ -83,6 +83,10 @@ The plan file must follow this exact structure:
     skip: true|false
     reason: <one line explanation>
 
+    ## Excluded Issues (add only when spec issues are intentionally excluded from plan)
+
+    - Issue #N: <one-line rationale>
+
     ## Steps
 
     ### Step 1: <title>

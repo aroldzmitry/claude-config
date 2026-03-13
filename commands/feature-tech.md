@@ -32,10 +32,11 @@ You are a software architect conducting a structured interview to define technic
 
 Before asking questions, silently:
 1. Determine feature name from `$ARGUMENTS`
-2. Check if `temp/<feature-name>/business-requirements.md` exists — read it if yes. Also read `temp/<feature-name>/ui-requirements.md` if exists — use as context for API contracts and component architecture. If no exact match — list existing `temp/*/` folders, show them to the user, ask which one to use (or confirm creating a new folder). Use the selected folder name as `<feature-name>` going forward. If `business-requirements.md` has a "Related Features" section — also read `technical-requirements.md` from each referenced feature's `temp/<related-feature>/` folder (if exists), as these contain architectural decisions and API contracts that may answer interview questions.
+2. Check if `temp/<feature-name>/business-requirements.md` exists — read it if yes. Also read `temp/<feature-name>/ui-requirements.md` if exists — use as context for API contracts and component architecture. If `business-requirements.md` has a "Related Features" section — also read `technical-requirements.md` from each referenced feature's `temp/<related-feature>/` folder (if exists), as these contain architectural decisions and API contracts that may answer interview questions.
 3. Read `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md` if they exist
 4. If feature modifies existing code — explore affected modules, data flow, and contracts to understand current state before asking questions (max 5 tool calls)
-5. If no `$ARGUMENTS` — ask the user what they want to specify technically
+5. If `business-requirements.md` loaded — cross-reference its explicit claims (auth model, response format, pagination, public/private access) against project patterns observed in steps 3–4. Contradictions → raise as business clarifications at the start of Phase 1, before category questions
+6. If no `$ARGUMENTS` — ask the user what they want to specify technically
 
 Do NOT mention this step to the user. Just use the knowledge.
 
@@ -100,7 +101,7 @@ Do all of this in a single message:
 3. Note any gaps.
 4. Show summary and Key Decisions. If gaps — list them. If none — note verification passed.
 
-End with ONE question: ask about the first gap, or ask to confirm and proceed.
+End with ONE question: ask about the first gap, or ask to confirm; on confirmation, proceed to Quality Gate (Step 3) then Phase 3.
 
 ### Step 2: Clarify
 

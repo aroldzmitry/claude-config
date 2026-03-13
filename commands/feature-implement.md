@@ -14,14 +14,14 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 - Fully autonomous — no user questions. Ambiguities → decide, note in report.
 - Fail fast — missing files or critical agent failure → stop, report what was completed.
-- Before each phase: `[Phase N: description]` (phases 1-6; phase 0 is silent precondition check)
+- Before each phase: `[Phase N: description]` (phases 1-5; phase 0 is silent precondition check)
 - Match user's language.
 
 # Conventions
 
 - `SPEC_DIR` = `temp/$ARGUMENTS`
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
-- CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
+- CLI validation commands are NOT tracked by the orchestrator — coder and cli-checker detect them independently from `docs/WORKFLOW.md`.
 - `unresolved_steps` = [] — initialized at start of Phase 3. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - CLI errors → `SPEC_DIR/cli-errors/iter-{N}.txt`
@@ -36,10 +36,9 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`"
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
-3. In parallel (3 tool calls in one response):
+3. In parallel (2 tool calls in one response):
    - Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
    - Bash: `rm -rf SPEC_DIR/cli-errors/ SPEC_DIR/validation/`
-   - Read `docs/WORKFLOW.md` → extract CLI_LINT, CLI_TYPECHECK, CLI_TEST. Fallback: detect from package.json / Makefile / Cargo.toml / pyproject.toml.
 
 ## Phase 1: Planning
 
@@ -50,41 +49,31 @@ Spawn `planner` with prompt:
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
 
-After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision (skip/write + reason). Step details loaded in Phase 3.
+After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`). Step details loaded in Phase 3.
 
 ### Dual-LLM Plan Validation
 
-1. Read `~/.claude/agents/plan-validator.md`. Strip YAML frontmatter (everything between first `---` and second `---`, inclusive). Store as `PV_INSTRUCTIONS`.
+1. `mkdir -p SPEC_DIR/validation/plan/`
 
-2. Write Codex prompt to `/tmp/codex_plan-validator.txt`:
+2. Launch 2 validators in parallel (same response):
+   - **Claude Task**: spawn `plan-validator` with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR, output_file: SPEC_DIR/validation/plan/claude.md`
+   - **Codex Task**: spawn `codex` with prompt:
+     ```
+     plan-validator
+     feature: $ARGUMENTS
+     spec_dir: SPEC_DIR
+     output_file: SPEC_DIR/validation/plan/codex.md
+     ```
 
-       {PV_INSTRUCTIONS}
+3. Check: if Claude returned `NO_ISSUES` AND Codex returned `NO_ISSUES` (or `NO_OUTPUT`) → log `[Plan validation: clean]`, go to Phase 2.
 
-       # Task
-
-       feature: $ARGUMENTS
-       spec_dir: SPEC_DIR
-
-3. `mkdir -p SPEC_DIR/validation/plan/`
-
-4. Launch 2 validators in parallel (same response):
-   - **Claude Task**: spawn `plan-validator` with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR`
-   - **Codex Bash**: `codex exec -s read-only --ephemeral -o SPEC_DIR/validation/plan/codex.md - < /tmp/codex_plan-validator.txt 2>/dev/null`
-
-5. Write Claude plan-validator output to `SPEC_DIR/validation/plan/claude.md`.
-   If Codex output file is empty (0 bytes) → write `CODEX_ERROR` to `SPEC_DIR/validation/plan/codex.md`.
-
-6. Check both files: if both contain only `NO_ISSUES` → log `[Plan validation: clean]`, go to Phase 2.
-
-7. Otherwise → re-spawn `planner` with prompt:
+4. Otherwise → re-spawn `planner` with prompt:
 
        feature: $ARGUMENTS
        spec_dir: SPEC_DIR
        revision_dir: SPEC_DIR/validation/plan/
 
-   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue to Phase 2.
-
-Re-read `SPEC_DIR/implementation-plan.md` and re-extract test decision before Phase 2.
+   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue. Extract test decision from planner return value before Phase 2.
 
 ## Phase 2: Test Writing
 
@@ -110,9 +99,6 @@ For each step in order:
         mode: implement
         feature: $ARGUMENTS
         spec_dir: SPEC_DIR
-        cli_lint: CLI_LINT
-        cli_typecheck: CLI_TYPECHECK
-        cli_test: CLI_TEST
         step_number: N
         step_total: TOTAL
         step_body: <full step block text>
@@ -130,15 +116,12 @@ Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
     error_file: <absolute path to SPEC_DIR/cli-errors/iter-{cli_iter}.txt>
 
 `CLEAN` → 4b.
-`FAIL` + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 6.
+`FAIL` + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 5.
 `FAIL` + `cli_iter < 5` → Spawn new `coder` with prompt:
 
     mode: fix-cli
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
-    cli_lint: CLI_LINT
-    cli_typecheck: CLI_TYPECHECK
-    cli_test: CLI_TEST
     cli_error_file: cli-errors/iter-{cli_iter}.txt
 
 Increment `cli_iter`. Re-run 4a.
@@ -149,28 +132,16 @@ Increment `cli_iter`. Re-run 4a.
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
-For each validator `V` in [`structural`, `file`, `spec`]:
-1. Read `~/.claude/agents/validator-{V}.md`. Strip YAML frontmatter. Store as `V_INSTRUCTIONS`.
-2. Write Codex prompt to `/tmp/codex_validator-{V}.txt`:
+Launch 8 validators in parallel (same response):
+- **Claude Tasks** — each with `feature: $ARGUMENTS, spec_dir: SPEC_DIR, files: CHANGED_FILES, output_file: <path>`:
+  - `validator-structural` → `output_file: SPEC_DIR/validation/iter-{ai_iter}/structural.md`
+  - `validator-file` → `output_file: SPEC_DIR/validation/iter-{ai_iter}/file.md`
+  - `validator-spec` → `output_file: SPEC_DIR/validation/iter-{ai_iter}/spec.md`
+  - `validator-security` → `output_file: SPEC_DIR/validation/iter-{ai_iter}/security.md`
+- **Codex Tasks** — spawn `codex` for each `V` in [structural, file, spec, security]:
+  - `validator-{V}` with `feature: $ARGUMENTS, spec_dir: SPEC_DIR, files: CHANGED_FILES, output_file: SPEC_DIR/validation/iter-{ai_iter}/{V}-codex.md`
 
-       {V_INSTRUCTIONS}
-
-       # Task
-
-       feature: $ARGUMENTS
-       spec_dir: SPEC_DIR
-       files: CHANGED_FILES
-
-Launch 6 validators in parallel (same response):
-- 3 **Claude Task**: spawn `validator-structural`, `validator-file`, `validator-spec` each with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR, files: CHANGED_FILES`
-- 3 **Codex Bash**: for each `V` in [structural, file, spec]: `codex exec -s read-only --ephemeral -o SPEC_DIR/validation/iter-{ai_iter}/{V}-codex.md - < /tmp/codex_validator-{V}.txt 2>/dev/null`
-
-Write each Claude validator's output to `SPEC_DIR/validation/iter-{ai_iter}/{name}.md` (structural.md, file.md, spec.md).
-If any Codex output file is empty (0 bytes) → write `CODEX_ERROR` to that `-codex.md` file.
-
-All Claude validators returned NO_ISSUES AND all Codex validators returned NO_ISSUES (or CODEX_ERROR) → Phase 6.
-
-Otherwise spawn `aggregator` with prompt:
+Spawn `aggregator` with prompt:
 
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
@@ -179,21 +150,18 @@ Otherwise spawn `aggregator` with prompt:
 Aggregator reads reports from `validation/iter-{ai_iter}/`, writes `aggregated.md` and `false-positives.md` to the same directory. Returns one-line status: `DONE: N verified, M false positives` or `NO_ISSUES`.
 
 Check aggregator status (do NOT parse report contents):
-- `NO_ISSUES` → Phase 6.
-- Has issues + `ai_iter >= 2` → append "AI: {aggregator status} after {ai_iter} fix cycles" to unresolved_steps, Phase 6.
+- `NO_ISSUES` → Phase 5.
+- Has issues + `ai_iter >= 2` → append "AI: {aggregator status} after {ai_iter} fix cycles" to unresolved_steps, Phase 5.
 - Has issues + `ai_iter < 2` → spawn new `coder` with prompt:
 
         mode: fix-ai
         feature: $ARGUMENTS
         spec_dir: SPEC_DIR
-        cli_lint: CLI_LINT
-        cli_typecheck: CLI_TYPECHECK
-        cli_test: CLI_TEST
         report_file: validation/iter-{ai_iter}/aggregated.md
 
 Increment `ai_iter`. Re-run from 4a.
 
-## Phase 6: Finalize
+## Phase 5: Finalize
 
 1. `git status --porcelain` → changed files
 2. `git add` implementation files

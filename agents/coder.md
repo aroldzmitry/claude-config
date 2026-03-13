@@ -43,7 +43,6 @@ Received via `prompt` from orchestrator in key-value format:
 - `mode` — `implement` | `fix-cli` | `fix-ai`
 - `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
-- `cli_lint`, `cli_typecheck`, `cli_test` — CLI commands (any may be empty)
 
 **Mode-specific:**
 - `implement`: `step_number`, `step_total`, `step_body` — full step text (header + Files + Action + description)
@@ -59,6 +58,8 @@ Read in parallel (skip missing silently):
 - In `implement` mode when step creates new files or new architectural patterns, OR in `fix-ai` mode always: `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`
 - `{spec_dir}/technical-requirements.md`
 
+Detect CLI commands: read `docs/WORKFLOW.md` → extract CLI_LINT, CLI_TYPECHECK, CLI_TEST. Fallback: detect from `package.json` / `Makefile` / `Cargo.toml` / `pyproject.toml`.
+
 ## 2. Execute
 
 ### implement
@@ -72,8 +73,8 @@ Implement only the step described in `step_body`:
 2. Check if step is already implemented (expected changes already present). If fully done → return `DONE` (skip implementation)
 3. Scan for similar existing code as structural reference
 4. Implement the described changes (skip parts already present)
-5. Run `cli_lint`, `cli_typecheck` (skip empty)
-6. Find test file(s) matching this step's source files → run `cli_test` for matched files only (e.g., `jest path/to/file.test.ts`, `pytest path/to/test_file.py`). No matching test file → skip.
+5. Run CLI_LINT, CLI_TYPECHECK (skip empty)
+6. Find test file(s) matching this step's source files → run CLI_TEST for matched files only (e.g., `jest path/to/file.test.ts`, `pytest path/to/test_file.py`). No matching test file → skip.
 7. All pass → DONE
 8. Any fail → analyze root cause, fix, re-run failed commands
 9. After 3 failed attempts → return UNRESOLVED
@@ -84,7 +85,7 @@ Implement only the step described in `step_body`:
 2. Read each affected file
 3. Scan for similar existing code as reference for the fix
 4. Apply fixes
-5. Run all non-empty CLI commands to verify
+5. Run CLI_LINT, CLI_TYPECHECK, CLI_TEST to verify
 6. Still failing → fix and re-run (max 3 total attempts)
 
 ### fix-ai
@@ -92,7 +93,7 @@ Implement only the step described in `step_body`:
 1. Read `{spec_dir}/{report_file}`. Parse the report — group issues by file
 2. For each file: read it, scan for similar code as reference
 3. Fix all reported issues. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them.
-4. Run all non-empty CLI commands to verify no regressions
+4. Run CLI_LINT, CLI_TYPECHECK, CLI_TEST to verify no regressions
 5. CLI fail → fix and re-run (max 3 attempts)
 
 # Output

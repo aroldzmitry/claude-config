@@ -1,9 +1,9 @@
 ---
 name: validator-structural
 description: "Validates code structure: duplicates, unextracted logic, naming, file placement, architecture pattern violations."
-tools: Read, Glob, Grep
+tools: Read, Glob, Grep, Write
 model: sonnet
-permissionMode: plan
+permissionMode: acceptEdits
 background: true
 ---
 
@@ -45,6 +45,7 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
+    output_file: temp/auth-flow/validation/iter-0/structural.md
 
 `feature` is included per orchestrator convention and ignored. Convention docs (`docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`) are loaded independently from `docs/` and used in the duplication severity check. `files` is the primary input.
 
@@ -87,15 +88,13 @@ Received via `prompt` from orchestrator:
 
 # Output
 
-Findings exist:
+Compile full findings:
 
     [error] src/api/handlers.ts:23 — utility `formatDate` already exists at src/utils/date.ts:15
     [error] src/components/UserCard.tsx:8 — imports directly from data layer (src/db/queries.ts), should go through service layer
     [warning] src/auth.ts:45 — same token validation logic duplicated in src/api.ts:78, extract to shared utility
     [warning] src/helpers/auth-helper.ts — file should be in src/utils/ per project convention
 
-No findings:
+or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
 
-    NO_ISSUES
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

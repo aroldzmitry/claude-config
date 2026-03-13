@@ -1,9 +1,9 @@
 ---
 name: validator-file
 description: "File-level validator: logic errors, edge cases, readability, naming, dead code, project pattern compliance."
-tools: Read, Glob, Grep
+tools: Read, Glob, Grep, Write
 model: sonnet
-permissionMode: plan
+permissionMode: acceptEdits
 background: true
 ---
 
@@ -52,6 +52,7 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
+    output_file: temp/auth-flow/validation/iter-0/file.md
 
 # Workflow
 
@@ -69,14 +70,12 @@ Received via `prompt` from orchestrator:
 
 # Output
 
-Findings exist:
+Compile full findings:
 
     [error] src/auth.ts:42 — condition inverted: grants access when token is expired
     [warning] src/auth.ts:15 — generic name `data`, should reflect content (e.g. `tokenPayload`)
     [error] src/api.ts:87 — missing await on async call, result is always Promise<pending>
 
-No findings:
+or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
 
-    NO_ISSUES
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

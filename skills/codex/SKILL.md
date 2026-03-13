@@ -1,7 +1,7 @@
 ---
 description: "Runs agent instructions through Codex CLI. Reads agent .md as system prompt, passes task prompt to codex exec."
 argument-hint: "<agent-name> <prompt>"
-allowed-tools: "Read, Bash, Glob"
+allowed-tools: "Read, Write, Bash, Glob"
 model: sonnet
 ---
 
@@ -31,8 +31,8 @@ Run any agent's instructions through Codex CLI.
 
 6. Run:
 
-       codex exec -s read-only --ephemeral -o /tmp/codex_{AGENT_NAME}_out.txt - < /tmp/codex_{AGENT_NAME}.txt 2>/dev/null
+       codex exec -s workspace-write --ephemeral - < /tmp/codex_{AGENT_NAME}.txt 2>/dev/null
 
 7. Check result:
-   - Output file exists and non-empty → Read and return contents of `/tmp/codex_{AGENT_NAME}_out.txt`.
-   - Output file empty or missing → "Codex error: agent returned no output. Run with `2>&1` instead of `2>/dev/null` to debug."
+   - If `PROMPT` contains `output_file: <path>` → read that file and return its contents.
+   - Otherwise → "Done. Agent writes output to a file — specify `output_file: <path>` in your prompt to capture results."

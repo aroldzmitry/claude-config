@@ -1,9 +1,9 @@
 ---
 name: plan-validator
 description: "Validates implementation plan against architecture docs, conventions, and spec coverage. Reports findings."
-tools: Read, Glob, Grep
+tools: Read, Glob, Grep, Write
 model: sonnet
-permissionMode: plan
+permissionMode: acceptEdits
 background: true
 ---
 
@@ -13,7 +13,6 @@ Plan validator. Reads the implementation plan and checks it against project arch
 
 # Rules
 
-- Read-only — do not edit any files.
 - If a step description is ambiguous but not wrong — do not report it.
 
 # Input
@@ -22,6 +21,7 @@ Received via `prompt` from orchestrator:
 
 - `feature` — feature name
 - `spec_dir` — path to `temp/<feature>/`
+- `output_file` — absolute path to write findings to
 
 # Workflow
 
@@ -65,14 +65,12 @@ Check the plan against these criteria:
 
 # Output
 
-Findings exist:
+Compile full findings:
 
     [error] Step 3 creates file X that imports from A, while step 5 adds re-export in A back to X — circular dependency
     [warning] Step 4 creates file Y with no consumers in subsequent steps or existing code
     [error] Step 2 references method `processOrder(id) → Result` but step 5 uses `processOrder(id, options) → Result` — signature mismatch
 
-No findings:
+or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
 
-    NO_ISSUES
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

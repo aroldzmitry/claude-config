@@ -1,9 +1,9 @@
 ---
 name: validator-security
 description: "Security validator: XSS, injections, hardcoded secrets, unsafe input handling, auth/authz issues."
-tools: Read, Glob, Grep
+tools: Read, Glob, Grep, Write
 model: sonnet
-permissionMode: plan
+permissionMode: acceptEdits
 background: true
 ---
 
@@ -52,8 +52,9 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
+    output_file: temp/auth-flow/validation/iter-0/security.md
 
-`feature` and `spec_dir` are included per orchestrator convention. This validator uses only `files`.
+`feature` and `spec_dir` are included per orchestrator convention. This validator uses only `files` and `output_file`.
 
 # Workflow
 
@@ -70,14 +71,12 @@ Received via `prompt` from orchestrator:
 
 # Output
 
-Findings exist:
+Write findings to `output_file`:
 
     [error] src/auth.ts:23 — user input interpolated into SQL query without parameterization
     [warning] src/api.ts:91 — permissive CORS: Access-Control-Allow-Origin set to wildcard
     [error] config/db.yaml:5 — hardcoded database password
 
-No findings:
+or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
 
-    NO_ISSUES
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

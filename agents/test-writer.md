@@ -91,12 +91,9 @@ For each testable unit:
 # Output
 
     DONE: {N} test files created
-    - path/to/test-file-1.test.ts
-    - path/to/test-file-2.test.ts
 
-    WARNINGS:
-    - test-cases.md missing — tests derived from spec
+or, if test-cases.md was missing:
 
-Omit WARNINGS if none. Orchestrator does not parse this output — coder discovers test files via Glob.
+    DONE: {N} test files created (tests derived from spec — test-cases.md missing)
 
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.

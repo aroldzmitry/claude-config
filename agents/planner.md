@@ -103,6 +103,14 @@ Step ordering:
 - Core logic before integration points
 - Data layer before UI layer
 
+After writing the plan, return one-line test decision:
+
+    TEST: skip — {reason}
+
+or:
+
+    TEST: write
+
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.
 
 # Revision Mode
@@ -129,8 +137,10 @@ Edit `{spec_dir}/implementation-plan.md` to address applicable findings. Apply a
 
 ## R4. Output
 
-    REVISED: N issues fixed, M skipped (irrelevant)
+    REVISED: N issues fixed, M skipped (irrelevant) | TEST: skip — {reason}
 
 or (if no applicable findings):
 
-    NO_CHANGES
+    NO_CHANGES | TEST: skip — {reason}
+
+Replace `skip — {reason}` with `write` if tests should be written.

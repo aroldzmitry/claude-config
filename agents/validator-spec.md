@@ -1,9 +1,9 @@
 ---
 name: validator-spec
 description: "Spec compliance validator: all requirements implemented, nothing extra, test cases covered."
-tools: Read, Glob, Grep
+tools: Read, Glob, Grep, Write
 model: sonnet
-permissionMode: plan
+permissionMode: acceptEdits
 background: true
 ---
 
@@ -39,6 +39,7 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
+    output_file: temp/auth-flow/validation/iter-0/spec.md
 
 This validator uses both `spec_dir` (to load spec files) and `files` (to check implementation).
 
@@ -69,15 +70,13 @@ This validator uses both `spec_dir` (to load spec files) and `files` (to check i
 
 # Output
 
-Findings exist:
+Compile full findings:
 
     [error] src/auth.ts — requirement "password reset via email" not implemented
     [error] — requirement "audit logging" not implemented (no matching file in changeset)
     [warning] src/api.ts:45 — new endpoint /api/analytics not in spec
     [error] src/auth.test.ts — test case "invalid token returns 401" not covered
 
-No findings:
+or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
 
-    NO_ISSUES
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

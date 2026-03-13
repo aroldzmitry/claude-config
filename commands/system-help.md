@@ -1,5 +1,6 @@
 ---
 description: "System help: shows FDL workflow, command reference, and usage guide. With argument — detailed help for a specific command."
+model: sonnet
 argument-hint: "[command-name?]: command name for detailed help (e.g., feature-implement)"
 disable-model-invocation: true
 allowed-tools: "Read, Glob"

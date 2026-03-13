@@ -1,5 +1,6 @@
 ---
 description: "System audit: 6 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
+model: sonnet
 argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'settings'"
 allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true

@@ -1,5 +1,6 @@
 ---
 description: "Split a large feature into independent sub-features. Reads business-requirements.md, discusses boundaries, generates independent business-requirements.md for each part."
+model: sonnet
 argument-hint: "[feature-name]: folder name in temp/ with business-requirements.md"
 allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion"
 disable-model-invocation: true

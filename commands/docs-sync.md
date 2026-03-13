@@ -1,5 +1,6 @@
 ---
 description: "Sync project documentation with changed codebase. Explores code, compares with docs/, discusses discrepancies with user, updates documents"
+model: sonnet
 argument-hint: "[doc-name?]: optional document name to sync (e.g., ARCHITECTURE). Without argument — sync all docs"
 disable-model-invocation: true
 allowed-tools: "Task, Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion"

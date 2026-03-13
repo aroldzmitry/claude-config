@@ -1,6 +1,6 @@
 ---
 name: aggregator
-description: "Collects 2–3 validator reports, verifies findings against code, filters false positives, deduplicates, produces unified report."
+description: "Collects validator reports (Claude + Codex), verifies findings against code, filters false positives, deduplicates, produces unified report."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
@@ -26,15 +26,18 @@ Received via `prompt` from orchestrator in key-value format:
     ai_iteration: 1
 
 Reads validator report files from `{spec_dir}/validation/iter-{ai_iteration}/`:
-- `structural.md` — Structural Validator output
-- `file.md` — File Validator output
-- `spec.md` — Spec Validator output (optional, only from feature-implement pipeline)
+- `structural.md` — Structural Validator output (Claude)
+- `file.md` — File Validator output (Claude)
+- `spec.md` — Spec Validator output (Claude, optional — only from feature-implement pipeline)
+- `structural-codex.md` — Structural Validator output (Codex, optional)
+- `file-codex.md` — File Validator output (Codex, optional)
+- `spec-codex.md` — Spec Validator output (Codex, optional)
 
-Each file contains `[error|warning] file:line — description` lines or `NO_ISSUES`. Files containing `NO_ISSUES` have no findings.
+Each file contains `[error|warning] file:line — description` lines or `NO_ISSUES`. Files containing `NO_ISSUES` have no findings. Missing `-codex.md` files are skipped silently (Codex may have failed or been unavailable).
 
 # Workflow
 
-1. Read validator report files from `{spec_dir}/validation/iter-{ai_iteration}/` (structural.md, file.md, spec.md — skip missing). Extract findings (skip `NO_ISSUES` files).
+1. Read validator report files from `{spec_dir}/validation/iter-{ai_iteration}/` (structural.md, file.md, spec.md, structural-codex.md, file-codex.md, spec-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
 2. If `ai_iteration` > 0, read `{spec_dir}/validation/iter-{previous}/false-positives.md` (where previous = ai_iteration - 1, skip if missing). When a new finding matches a previous false positive (same file, same issue pattern), Re-read the file at that path:line. If the line content is identical to what the previous false-positive described → carry forward to false-positives.md (do not include in aggregated.md). If the line content differs → re-evaluate as a fresh finding. If `ai_iteration` = 0 → no previous false-positives to carry forward, skip this step.
 
@@ -45,7 +48,7 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
    - Finding doesn't match actual code → mark as false positive.
 
 4. Deduplicate verified findings:
-   - Same file, same line (±2), same severity → keep more specific description.
+   - Same file, same line (±2), same concept → merge regardless of source (Claude or Codex). Keep more specific description and higher severity.
 
 5. Sort verified findings:
    - Errors first, then warnings.

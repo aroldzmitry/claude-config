@@ -77,7 +77,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: planner → plan-validator → test-writer → coder (per step) → CLI loop (max 5) → validators (3 for feature-implement / 2 for feature-fix) → aggregator → AI fix loop (max 2)
+- Implementation is fully autonomous: planner → plan-validator + Codex → planner revision → test-writer → coder (per step) → CLI loop (max 5) → validators + Codex (6 for feature-implement / 4 for feature-fix) → aggregator → AI fix loop (max 2)
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

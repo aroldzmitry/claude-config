@@ -30,8 +30,11 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 Received via prompt from orchestrator:
 - `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
+- `revision_dir` — (optional) path to directory with plan validation findings (e.g., `temp/<feature>/validation/plan/`)
 
 # Workflow
+
+If `revision_dir` is provided → go to **Revision Mode** below. Otherwise proceed with normal workflow.
 
 ## 1. Load Context
 
@@ -101,3 +104,33 @@ Step ordering:
 - Data layer before UI layer
 
 If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+
+# Revision Mode
+
+Triggered when `revision_dir` is provided. The plan already exists — fix it based on validation findings.
+
+## R1. Load
+
+Read in parallel:
+- `{spec_dir}/implementation-plan.md` — **required**
+- All `.md` files in `{revision_dir}/` — these are validation findings from plan-validator (Claude) and Codex. Each file contains `[error|warning] description` lines or `NO_ISSUES`.
+- `docs/ARCHITECTURE*.md` — if needed by findings (e.g., architecture compliance issues)
+
+## R2. Evaluate
+
+For each finding across all files:
+- Check if the finding is still applicable to the current plan content.
+- Skip findings that don't match the plan (stale or irrelevant).
+- Group related findings that affect the same step.
+
+## R3. Fix
+
+Edit `{spec_dir}/implementation-plan.md` to address applicable findings. Apply all Rules from the normal workflow (step size, pseudocode notation, DB operation language, etc.).
+
+## R4. Output
+
+    REVISED: N issues fixed, M skipped (irrelevant)
+
+or (if no applicable findings):
+
+    NO_CHANGES

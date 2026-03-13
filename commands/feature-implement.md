@@ -1,5 +1,5 @@
 ---
-description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator → test-writer → coder → validators → fix loop), produces staged git diff."
+description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → test-writer → coder → validators + Codex → fix loop), produces staged git diff."
 model: sonnet
 argument-hint: "[feature-name]: folder name in temp/"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
@@ -25,6 +25,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - `unresolved_steps` = [] — initialized at start of Phase 3. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - CLI errors → `SPEC_DIR/cli-errors/iter-{N}.txt`
+  - Plan validation findings → `SPEC_DIR/validation/plan/{source}.md`
   - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
   - Aggregated findings → `SPEC_DIR/validation/iter-{N}/aggregated.md`
   - False positives → `SPEC_DIR/validation/iter-{N}/false-positives.md`
@@ -42,6 +43,8 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 ## Phase 1: Planning
 
+### Create Plan
+
 Spawn `planner` with prompt:
 
     feature: $ARGUMENTS
@@ -49,12 +52,39 @@ Spawn `planner` with prompt:
 
 After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision (skip/write + reason). Step details loaded in Phase 3.
 
-Spawn `plan-validator` with prompt:
+### Dual-LLM Plan Validation
 
-    feature: $ARGUMENTS
-    spec_dir: SPEC_DIR
+1. Read `~/.claude/agents/plan-validator.md`. Strip YAML frontmatter (everything between first `---` and second `---`, inclusive). Store as `PV_INSTRUCTIONS`.
 
-After: log result (CLEAN or FIXED: N issues). Re-read `SPEC_DIR/implementation-plan.md` and re-extract test decision before Phase 2.
+2. Write Codex prompt to `/tmp/codex_plan-validator.txt`:
+
+       {PV_INSTRUCTIONS}
+
+       # Task
+
+       feature: $ARGUMENTS
+       spec_dir: SPEC_DIR
+
+3. `mkdir -p SPEC_DIR/validation/plan/`
+
+4. Launch 2 validators in parallel (same response):
+   - **Claude Task**: spawn `plan-validator` with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR`
+   - **Codex Bash**: `codex exec -s read-only --ephemeral -o SPEC_DIR/validation/plan/codex.md - < /tmp/codex_plan-validator.txt 2>/dev/null`
+
+5. Write Claude plan-validator output to `SPEC_DIR/validation/plan/claude.md`.
+   If Codex output file is empty (0 bytes) → write `CODEX_ERROR` to `SPEC_DIR/validation/plan/codex.md`.
+
+6. Check both files: if both contain only `NO_ISSUES` → log `[Plan validation: clean]`, go to Phase 2.
+
+7. Otherwise → re-spawn `planner` with prompt:
+
+       feature: $ARGUMENTS
+       spec_dir: SPEC_DIR
+       revision_dir: SPEC_DIR/validation/plan/
+
+   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue to Phase 2.
+
+Re-read `SPEC_DIR/implementation-plan.md` and re-extract test decision before Phase 2.
 
 ## Phase 2: Test Writing
 
@@ -119,17 +149,26 @@ Increment `cli_iter`. Re-run 4a.
 
 `mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
 
-Spawn 3 validators using separate Task calls in the same response (parallel execution): `validator-structural`, `validator-file`, `validator-spec`. Each with prompt:
+For each validator `V` in [`structural`, `file`, `spec`]:
+1. Read `~/.claude/agents/validator-{V}.md`. Strip YAML frontmatter. Store as `V_INSTRUCTIONS`.
+2. Write Codex prompt to `/tmp/codex_validator-{V}.txt`:
 
-    feature: $ARGUMENTS
-    spec_dir: SPEC_DIR
-    files: CHANGED_FILES
+       {V_INSTRUCTIONS}
 
-Each: return `[error|warning] file:line — description` or `NO_ISSUES`.
+       # Task
 
-Write each validator's output to `SPEC_DIR/validation/iter-{ai_iter}/{name}.md` (structural.md, file.md, spec.md).
+       feature: $ARGUMENTS
+       spec_dir: SPEC_DIR
+       files: CHANGED_FILES
 
-All NO_ISSUES → Phase 6.
+Launch 6 validators in parallel (same response):
+- 3 **Claude Task**: spawn `validator-structural`, `validator-file`, `validator-spec` each with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR, files: CHANGED_FILES`
+- 3 **Codex Bash**: for each `V` in [structural, file, spec]: `codex exec -s read-only --ephemeral -o SPEC_DIR/validation/iter-{ai_iter}/{V}-codex.md - < /tmp/codex_validator-{V}.txt 2>/dev/null`
+
+Write each Claude validator's output to `SPEC_DIR/validation/iter-{ai_iter}/{name}.md` (structural.md, file.md, spec.md).
+If any Codex output file is empty (0 bytes) → write `CODEX_ERROR` to that `-codex.md` file.
+
+All Claude validators returned NO_ISSUES AND all Codex validators returned NO_ISSUES (or CODEX_ERROR) → Phase 6.
 
 Otherwise spawn `aggregator` with prompt:
 

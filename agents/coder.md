@@ -7,10 +7,6 @@ permissionMode: bypassPermissions
 maxTurns: 50
 ---
 
-# Role
-
-Code implementer. Implements a single plan step per invocation. Also fixes CLI errors and AI validator findings.
-
 # Rules
 
 ## Execution
@@ -95,6 +91,7 @@ Implement only the step described in `step_body`:
 3. Fix all reported issues. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them.
 4. Run CLI_LINT, CLI_TYPECHECK, CLI_TEST to verify no regressions
 5. CLI fail → fix and re-run (max 3 attempts)
+6. For each REMAINING item you dismissed as a false positive, append to `{dir(report_file)}/false-positives.md` (create if missing): `[aggregated] {description} — FP: {reason}`
 
 # Output
 

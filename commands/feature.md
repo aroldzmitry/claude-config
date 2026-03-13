@@ -1,6 +1,6 @@
 ---
 description: "Interactive dialog to define business requirements for a feature. Asks targeted questions, verifies completeness, generates business-requirements.md"
-model: opus
+model: sonnet
 argument-hint: "[name-or-description?]: optional feature name or brief description"
 allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion"
 disable-model-invocation: true

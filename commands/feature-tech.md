@@ -1,6 +1,6 @@
 ---
 description: "Interactive dialog to define technical specification and test cases for a feature. Asks targeted questions, verifies completeness, generates technical-requirements.md and test-cases.md"
-model: opus
+model: sonnet
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
 allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, Bash"
 disable-model-invocation: true

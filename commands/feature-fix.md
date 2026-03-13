@@ -1,6 +1,6 @@
 ---
 description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator + Codex → planner revision → [test-writer] → coder → cli-checker loop → validators + Codex → fix loop), produces staged git diff."
-model: opus
+model: sonnet
 argument-hint: "[description?]: what needs to be fixed"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
@@ -35,7 +35,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 0: Setup
 
-1. If `$ARGUMENTS` is a path to an existing directory containing `technical-requirements.md` → set as SPEC_DIR, go to Phase 1.
+1. If `$ARGUMENTS` is provided, use the Read tool to check `{$ARGUMENTS}/technical-requirements.md`. If the file exists → set `$ARGUMENTS` as SPEC_DIR, go to Phase 1.
 2. If `$ARGUMENTS` is provided — use as fix description. If empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
 3. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory. Write description to `SPEC_DIR/technical-requirements.md`:
    ```

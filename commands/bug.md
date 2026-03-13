@@ -1,6 +1,6 @@
 ---
 description: "Interactive bug diagnosis. Gathers symptoms via dialog, investigates codebase, produces technical-requirements.md with root cause and fix direction."
-model: sonnet
+model: opus
 argument-hint: "[description?]: bug symptoms or error description"
 allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, WebSearch, WebFetch"
 disable-model-invocation: true

@@ -1,6 +1,6 @@
 ---
-description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → [test-writer] → coder → validators → fix loop), produces staged git diff."
-model: sonnet
+description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator → [test-writer] → coder → cli-checker loop → validators → fix loop), produces staged git diff."
+model: opus
 argument-hint: "[description?]: what needs to be fixed"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
@@ -12,7 +12,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Rules
 
-- If `$ARGUMENTS` is provided — use as fix description or existing folder (see Phase 0 step 1). If empty — see Phase 0 step 2.
+- If `$ARGUMENTS` is provided — use as existing folder or fix description (see Phase 0 steps 1–2). If empty — see Phase 0 step 2.
 - Fully autonomous after description is known — no user questions. Ambiguities → decide, note in report.
 - Fail fast — critical agent failure → stop, report what was completed.
 - Before each phase: `[Phase N: description]`
@@ -23,7 +23,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}` — timestamp set once at Phase 0 start.
 - Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands stored as CLI_LINT, CLI_TYPECHECK, CLI_TEST (any may be empty).
-- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
+- `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - CLI errors → `SPEC_DIR/cli-errors/iter-{N}.txt`
   - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
@@ -34,7 +34,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 0: Setup
 
-1. If `$ARGUMENTS` matches an existing `temp/_fix-*` folder containing `technical-requirements.md` → set as SPEC_DIR, skip to step 4.
+1. If `$ARGUMENTS` is a path to an existing directory containing `technical-requirements.md` → set as SPEC_DIR, skip to step 4.
 2. If `$ARGUMENTS` is provided — use as fix description. If empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
 3. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory. Write description to `SPEC_DIR/technical-requirements.md`:
    ```
@@ -156,51 +156,18 @@ Check aggregator status (do NOT parse report contents):
         cli_test: CLI_TEST
         report_file: validation/iter-{ai_iter}/aggregated.md
 
-Increment `ai_iter`. Re-run from 3b (skip CLI re-check — CLI was already clean before fix-ai ran).
+Increment `ai_iter`. Re-run from 3a.
 
-## Phase 4: Improvement Analysis
-
-> **[TEMPORARILY DISABLED — skip, proceed to Phase 5]**
-
-<!--
-Spawn `improvement-analyzer` with prompt:
-
-    feature: _fix
-    spec_dir: SPEC_DIR
-    cli_iterations: <count>
-    ai_iterations: <count>
-    issues_found: <count>
-    issues_fixed: <count>
-    issues_remaining: <count>
-    unresolved_summary: <list of unresolved issues, or "none">
-    compactions: <compaction_log formatted as "agent:count, ...", or "none">
--->
-
-## Phase 4a: Auto-Apply Regressions
-
-> **[TEMPORARILY DISABLED — skip, proceed to Phase 5]**
-
-<!--
-1. If `SPEC_DIR/improvement-suggestions.md` not found → skip auto-apply phase, proceed to Phase 5.
-2. Read `SPEC_DIR/improvement-suggestions.md`.
-3. If `## Regressions` section exists with items:
-   a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
-   b. Count auto-applied regressions.
-   c. Collect changed .md file paths. If any: spawn `validator-doc-system` with changed_files list. If `ISSUES` → log warning, do not block.
-4. Remaining suggestions (non-regression) → left for manual `/system-improve`.
--->
-
-## Phase 5: Finalize
+## Phase 4: Finalize
 
 1. `git status --porcelain` → changed files
 2. `git add` implementation files
 3. `git diff --cached --stat` → stats
-4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from aggregated report. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
+4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from the aggregated report; if `ai_iter = 0` (CLI-only failures), describe issues based on the CLI error file content. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - If `temp/_fix-{timestamp}-warnings/` was created in step 4 → `touch temp/_fix-{timestamp}-warnings/NEXT--feature-fix`
-   <!-- DISABLED: If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve` -->
 6. Output report
 
 # Edge Cases

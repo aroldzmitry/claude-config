@@ -31,7 +31,6 @@ Output this reference (translated to user's language):
 /feature-ui [name]            → UI/UX requirements dialog (optional, for features with admin UI)
 /feature-tech [name]          → technical spec + test cases
 /feature-implement [name]     → autonomous: plan → test → code → validate → stage
-/system-improve [path]        → review & apply improvement suggestions
 
 ### Additional commands
 
@@ -54,8 +53,7 @@ Output this reference (translated to user's language):
 | `/feature-implement` | Staged git diff | `technical-requirements.md`, clean git |
 | `/bug` | `temp/_fix-<ts>/technical-requirements.md` (with diagnosis) | — |
 | `/feature-fix` | Staged git diff | — (or `/bug` output folder) |
-| `/system-improve` | Updated system files | `improvement-suggestions.md` |
-| `/system-find-improve` | Updated system files + `agent-memory/improvement-analyzer/observations.md` | Any conversation |
+| `/system-find-improve` | Updated system files + `agent-memory/system-find-improve/observations.md` | Any conversation |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
 
 ### Scenarios
@@ -71,8 +69,6 @@ Output this reference (translated to user's language):
 **Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix _fix-20260307-120000`
 
 **Quick fix (known cause):** `/feature-fix fix the login button`
-
-**After implementation:** `/system-improve temp/<feature-name>/`
 
 **After any session:** `/system-find-improve`
 

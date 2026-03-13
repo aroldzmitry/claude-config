@@ -1,6 +1,6 @@
 ---
 description: "Session analysis: reviews conversation to find improvements for commands, agents, and instructions. Can propose modifications and new system files."
-model: sonnet
+model: opus
 argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'claude-md'"
 allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
@@ -64,17 +64,17 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 
 # Conventions
 
-- `DECISIONS_FILE` = `~/.claude/agent-memory/improvement-analyzer/decisions.md`
-- `OBSERVATIONS_FILE` = `~/.claude/agent-memory/improvement-analyzer/observations.md`
+- `DECISIONS_FILE` = `~/.claude/agent-memory/system-find-improve/decisions.md`
+- `OBSERVATIONS_FILE` = `~/.claude/agent-memory/system-find-improve/observations.md`
 - Date format: `YYYY-MM-DD` (current date).
 - Item order: high → medium → low.
-- Decision tag: `[retro]` — to coexist with improvement-analyzer decisions.
+- Decision tag: `[retro]`.
 
 # Workflow
 
 ## Phase 0: Load
 
-1. `mkdir -p ~/.claude/agent-memory/improvement-analyzer/ ~/.claude/agent-memory/metrics/`
+1. `mkdir -p ~/.claude/agent-memory/system-find-improve/ ~/.claude/agent-memory/metrics/`
 2. Read `DECISIONS_FILE` if exists.
 3. Read `OBSERVATIONS_FILE` if exists — for cross-session pattern detection.
 4. Glob `~/.claude/agent-memory/metrics/*.md` sorted descending by filename (date). Read up to 7 most recent files → `COMMAND_METRICS` (concatenated entries with their date context). If 0 files → `COMMAND_METRICS` = empty.

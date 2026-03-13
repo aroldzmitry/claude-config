@@ -100,7 +100,7 @@ Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
     error_file: <absolute path to SPEC_DIR/cli-errors/iter-{cli_iter}.txt>
 
 `CLEAN` → 4b.
-`FAIL` + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 5.
+`FAIL` + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 6.
 `FAIL` + `cli_iter < 5` → Spawn new `coder` with prompt:
 
     mode: fix-cli
@@ -129,7 +129,7 @@ Each: return `[error|warning] file:line — description` or `NO_ISSUES`.
 
 Write each validator's output to `SPEC_DIR/validation/iter-{ai_iter}/{name}.md` (structural.md, file.md, spec.md).
 
-All NO_ISSUES → Phase 5.
+All NO_ISSUES → Phase 6.
 
 Otherwise spawn `aggregator` with prompt:
 
@@ -140,8 +140,8 @@ Otherwise spawn `aggregator` with prompt:
 Aggregator reads reports from `validation/iter-{ai_iter}/`, writes `aggregated.md` and `false-positives.md` to the same directory. Returns one-line status: `DONE: N verified, M false positives` or `NO_ISSUES`.
 
 Check aggregator status (do NOT parse report contents):
-- `NO_ISSUES` → Phase 5.
-- Has issues + `ai_iter >= 2` → append "AI: {aggregator status} after {ai_iter} fix cycles" to unresolved_steps, Phase 5.
+- `NO_ISSUES` → Phase 6.
+- Has issues + `ai_iter >= 2` → append "AI: {aggregator status} after {ai_iter} fix cycles" to unresolved_steps, Phase 6.
 - Has issues + `ai_iter < 2` → spawn new `coder` with prompt:
 
         mode: fix-ai
@@ -152,39 +152,7 @@ Check aggregator status (do NOT parse report contents):
         cli_test: CLI_TEST
         report_file: validation/iter-{ai_iter}/aggregated.md
 
-Increment `ai_iter`. Re-run from 4b (skip CLI re-check — CLI was already clean before fix-ai ran).
-
-## Phase 5: Improvement Analysis
-
-> **[TEMPORARILY DISABLED — skip, proceed to Phase 6]**
-
-<!--
-Spawn `improvement-analyzer` with prompt:
-
-    feature: $ARGUMENTS
-    spec_dir: SPEC_DIR
-    cli_iterations: <count>
-    ai_iterations: <count>
-    issues_found: <count>
-    issues_fixed: <count>
-    issues_remaining: <count>
-    unresolved_summary: <list of unresolved issues, or "none">
-    compactions: <compaction_log formatted as "agent:count, ...", or "none">
--->
-
-## Phase 5a: Auto-Apply Regressions
-
-> **[TEMPORARILY DISABLED — skip, proceed to Phase 6]**
-
-<!--
-1. If `SPEC_DIR/improvement-suggestions.md` not found → skip auto-apply phase, proceed to Phase 6.
-2. Read `SPEC_DIR/improvement-suggestions.md`.
-3. If `## Regressions` section exists with items:
-   a. For each regression: Read the target file → apply the action via Edit → record in `~/.claude/agent-memory/improvement-analyzer/decisions.md` under `## Accepted` with date and `(auto-applied regression)`.
-   b. Count auto-applied regressions.
-   c. Collect changed .md file paths. If any: spawn `validator-doc-system` with changed_files list. If `ISSUES` → log warning, do not block.
-4. Remaining suggestions (non-regression) → left for manual `/system-improve`.
--->
+Increment `ai_iter`. Re-run from 4a.
 
 ## Phase 6: Finalize
 
@@ -196,7 +164,6 @@ Spawn `improvement-analyzer` with prompt:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - If `temp/$ARGUMENTS-warnings/` was created in step 4 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
-   <!-- DISABLED: If `improvement-suggestions.md` exists with non-regression items → `touch SPEC_DIR/NEXT--system-improve` -->
 6. Output report
 
 # Edge Cases

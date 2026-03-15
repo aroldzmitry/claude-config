@@ -41,4 +41,6 @@ Prompt from orchestrator:
          -- codex exec --full-auto --ephemeral --json \
          "$PROMPT"
 
-5. The Bash output is a single JSON line with `"type":"item.completed"`. Its `"text"` field is the agent's response. Return it verbatim.
+5. If Bash returned **non-zero exit code** → return `NO_OUTPUT` immediately. Do not retry.
+
+6. The Bash output is a single JSON line with `"type":"item.completed"`. Its `"text"` field is the agent's response. Return it verbatim.

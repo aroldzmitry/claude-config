@@ -60,7 +60,7 @@ Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.
 Before writing any test files, plan the full set:
 1. List all test files to be created (from implementation plan's test steps)
 2. Identify test data, stub notifiers, and mock classes needed by 2+ files
-3. If shared items found: create a shared fixture file first (in `test/fakes/` or `test/helpers/`), containing all common constants, stubs, and mock classes
+3. If shared items found: create a shared fixture file first (prefer the directory where existing shared fixtures are located from Step 3 scan; if none exist, default to `test/helpers/`), containing all common constants, stubs, and mock classes
 4. Write each test file, importing shared items from the fixture file
 
 If only 1 test file is needed, skip sub-steps 2–3.
@@ -71,7 +71,7 @@ Never duplicate test constants or stub classes across files written in the same 
 - `## Test Strategy` — respect test levels (unit/integration/e2e) and exclusions
 - `## Test Cases` — each item is `- [ ] [must|should|could] <scenario — expected behavior>`
 
-**If deriving from specs** (test-cases.md was missing) — use test cases extracted in Step 1. Default to unit tests for all testable logic.
+**If deriving from specs** (test-cases.md was missing) — use test cases extracted in workflow Step 1 (Load Context). Default to unit tests for all testable logic.
 
 Write ALL test cases regardless of priority. Map each to a concrete test.
 
@@ -87,6 +87,8 @@ For each testable unit:
    - Import from planned source paths (files don't exist yet — expected)
    - Assert expected behavior per spec
 4. Include edge cases from spec
+
+Mock completeness scan: after writing all mock factory entries, Grep each new method name across all test utility files. For any other mock or composite that exposes the same interface (aggregate client mocks, builder mocks), add the missing entries.
 
 # Output
 

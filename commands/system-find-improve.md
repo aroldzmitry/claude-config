@@ -83,7 +83,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 1. Analyze full conversation using S1–S6 categories.
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
-4. Read target files for surviving findings — verify root cause exists in current file content.
+4. Read target files for surviving findings — verify root cause exists in current file content. Then verify each proposed change is pattern-level, not instance-specific: if the narrowest fix references specific names or artifacts from this session (file names, class names, error messages, agent names), search for the broader rule that covers all similar cases first.
 5. Check observations.md for cross-session patterns — boost priority if signal repeats 3+ times.
 6. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets

@@ -2,7 +2,7 @@
 description: "Interactive bug diagnosis. Gathers symptoms via dialog, investigates codebase, produces technical-requirements.md with root cause and fix direction."
 model: sonnet
 argument-hint: "[description?]: bug symptoms or error description"
-allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, WebSearch, WebFetch"
+allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion, Task, ToolSearch, WebSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs"
 disable-model-invocation: true
 ---
 
@@ -63,8 +63,9 @@ After each response: `[2/4: Steps to reproduce | next: Context]`
        Prefer general fixes over specific ones: if a flag/parameter controls behavior,
        question whether the flag itself is necessary rather than adding it where missing.
 
-3. If root cause involves a third-party library/SDK — verify diagnosis against its official documentation (WebSearch + WebFetch). Check if fix direction matches documented setup requirements.
-4. Analyze findings.
+3. If the probable root cause can be confirmed empirically (DB query error, API call, pure function): write a minimal reproduction script in the project's test directory, run it against the local environment, capture the actual error. Confirms or refutes the hypothesis. Delete the script after.
+4. If root cause claims a library API is used incorrectly: load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.
+5. Analyze findings.
 
 ## Phase 3: Present Diagnosis
 

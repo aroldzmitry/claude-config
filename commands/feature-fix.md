@@ -20,7 +20,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Conventions
 
-- `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}` — timestamp set once at Phase 0 start.
+- `SPEC_DIR` = `temp/FIX-{slug}` — slug: 2–4 word kebab-case from the fix description, set once at Phase 0 start.
 - Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
@@ -38,7 +38,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 1. If `$ARGUMENTS` is provided, use the Read tool to check `{$ARGUMENTS}/technical-requirements.md`. If the file exists → set `$ARGUMENTS` as SPEC_DIR, go to Phase 1.
 2. If `$ARGUMENTS` is provided — use as fix description. If empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
-3. Set SPEC_DIR timestamp (`temp/_fix-{YYYYMMDD-HHmmss}/`), create directory. Write description to `SPEC_DIR/technical-requirements.md`:
+3. Derive a 2–4 word kebab-case slug from the fix description. Set SPEC_DIR = `temp/FIX-{slug}/`, create directory. Write description to `SPEC_DIR/technical-requirements.md`:
    ```
    # Fix Description
 
@@ -145,11 +145,11 @@ Check global-validator status:
 2. `git diff --cached --name-only` → `PRE_STAGED`. If non-empty → `git restore --staged <PRE_STAGED>`.
    `git add` implementation files.
 3. `git diff --cached --stat` → stats. If `PRE_STAGED` non-empty → `git add <PRE_STAGED>`.
-4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from the aggregated report; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
+4. If `unresolved_steps` is non-empty: create `{SPEC_DIR_base}-warnings/technical-requirements.md` (where `SPEC_DIR_base` = SPEC_DIR path without trailing slash) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from the aggregated report; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
-   - If `temp/_fix-{timestamp}-warnings/` was created in step 4 → `touch temp/_fix-{timestamp}-warnings/NEXT--feature-fix`
+   - If `{SPEC_DIR_base}-warnings/` was created in step 4 → `touch {SPEC_DIR_base}-warnings/NEXT--feature-fix`
 6. Output report
 
 # Edge Cases
@@ -172,7 +172,7 @@ Check global-validator status:
 ### Next Steps
 - Review: `git diff --cached`
 - Commit: `git commit -m "fix: <description>"`
-- Fix warnings: `/feature-fix _fix-{timestamp}-warnings`
+- Fix warnings: `/feature-fix {SPEC_DIR_base}-warnings`
 ```
 
 Omit **Unresolved Issues** if none. Omit **Fix warnings** in Next Steps if no unresolved issues.

@@ -51,7 +51,7 @@ Output this reference (translated to user's language):
 | `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
 | `/feature-implement` | Staged git diff | `technical-requirements.md`, clean git |
-| `/bug` | `temp/_fix-<ts>/technical-requirements.md` (with diagnosis) | — |
+| `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
 | `/feature-fix` | Staged git diff | — (or `/bug` output folder) |
 | `/system-find-improve` | Updated system files + `agent-memory/system-find-improve/observations.md` | Any conversation |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
@@ -66,7 +66,7 @@ Output this reference (translated to user's language):
 
 **Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
 
-**Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix _fix-20260307-120000`
+**Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix BUG-409-create-user`
 
 **Quick fix (known cause):** `/feature-fix fix the login button`
 

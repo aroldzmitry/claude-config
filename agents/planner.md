@@ -92,14 +92,11 @@ The plan file must follow this exact structure:
     ### Step 1: <title>
     **Files:** path/to/file1.ts, path/to/file2.ts
     **Action:** create | modify | delete
-    **Model:** sonnet
 
     <description — specific enough that coder doesn't need to re-derive the approach>
 
     ### Step 2: <title>
     ...
-
-`**Model:**` is optional. Add `**Model:** sonnet` for straightforward modify-steps (< 3 files, no new architecture, no complex logic). Omit the field for steps that create new files, introduce architectural patterns, or require complex reasoning — orchestrator defaults to opus.
 
 Step ordering:
 - Types/interfaces before implementations

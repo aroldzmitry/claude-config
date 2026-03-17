@@ -21,7 +21,7 @@ Prompt from orchestrator:
 
 2. Launch (instant):
 
-       Bash: ~/.claude/bin/launch-agent.sh launch "{AGENT_NAME}" "{TASK_BODY}"
+       Bash: ~/.claude/bin/launch-agent.sh launch --backend claude "{AGENT_NAME}" "{TASK_BODY}"
 
    - If output starts with `ERROR:` → return it verbatim. Stop.
    - Otherwise output is a directory path — save it as SESSION_DIR.
@@ -36,6 +36,5 @@ Prompt from orchestrator:
 # Rules
 
 - Never modify the agent's output. Return exactly what poll prints.
-- Never call `claude` or `run-claude-agent.sh` directly. Only use `launch-agent.sh`.
-- Never add `timeout` parameter to Bash calls — all calls complete in under 5 seconds.
+- Never call `claude` or `run-agent.sh` directly. Only use `launch-agent.sh`.
 - Do not add extra text, commentary, or formatting to the response.

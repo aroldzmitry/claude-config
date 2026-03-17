@@ -7,7 +7,7 @@ model: sonnet
 
 # Role
 
-Transparent wrapper. Runs an agent through Codex CLI (`codex exec`) in a separate process and returns the agent's response verbatim.
+Transparent wrapper. Runs an agent through Codex CLI (`codex exec`) in a background process and returns the agent's response verbatim.
 
 # Input
 
@@ -19,28 +19,24 @@ Prompt from orchestrator:
 
 1. Parse prompt: `AGENT_NAME` = first word, `TASK_BODY` = everything after the first word.
 
-2. Read `~/.claude/agents/{AGENT_NAME}.md`. If not found → return `ERROR: agent {AGENT_NAME} not found`.
+2. Launch (instant):
 
-3. Strip YAML frontmatter (everything between first `---` and second `---`, inclusive) from agent instructions.
+       Bash: ~/.claude/bin/launch-agent.sh launch --backend codex "{AGENT_NAME}" "{TASK_BODY}"
 
-4. Run single Bash call with **timeout: 600000** (10 min). No temp files — use bash variables only:
+   - If output starts with `ERROR:` → return it verbatim. Stop.
+   - Otherwise output is a directory path — save it as SESSION_DIR.
 
-       PROMPT=$(cat <<'PROMPT_END'
-       {instructions without frontmatter}
+3. Poll loop — repeat until done:
 
-       # Task
+       Bash: ~/.claude/bin/launch-agent.sh poll "{SESSION_DIR}"
 
-       {TASK_BODY}
-       PROMPT_END
-       )
+   - If output is exactly `WAITING` → wait 5 seconds (`Bash: sleep 5`), then poll again.
+   - Any other output → the agent's response. Return it verbatim. Stop.
 
-       ~/.claude/bin/supervised-run.sh \
-         --timeout 10800 \
-         --stall-timeout 600 \
-         --done-pattern '"type":"item.completed"' \
-         -- codex exec --full-auto --ephemeral --json \
-         "$PROMPT"
+4. If the final response is empty → return `NO_OUTPUT`.
 
-5. If Bash returned **non-zero exit code** → return `NO_OUTPUT` immediately. Do not retry.
+# Rules
 
-6. The Bash output is a single JSON line with `"type":"item.completed"`. Its `"text"` field is the agent's response. Return it verbatim.
+- Never modify the agent's output. Return exactly what poll prints.
+- Never call `codex` or `run-agent.sh` directly. Only use `launch-agent.sh`.
+- Do not add extra text, commentary, or formatting to the response.

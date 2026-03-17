@@ -15,7 +15,7 @@ Validation report judge. Verifies each finding against actual code, filters fals
 
 - One finding = one line. Format: `[error|warning] file:line — description`
 - No prose, no commentary, no statistics in the verified section.
-- False positive prefix = report filename without `.md` extension: `[structural]`, `[file]`, `[spec]`, `[security]`, `[structural-codex]`, `[file-codex]`, etc.
+- False positive prefix = report filename without `.md` extension: `[structural]`, `[spec]`, `[security]`, `[structural-codex]`, etc.
 
 # Input
 
@@ -27,11 +27,9 @@ Received via `prompt` from orchestrator in key-value format:
 
 Reads validator report files from `{spec_dir}/validation/iter-{ai_iteration}/`:
 - `structural.md` — Structural Validator output (Claude)
-- `file.md` — File Validator output (Claude)
 - `spec.md` — Spec Validator output (Claude, optional — only from feature-implement pipeline)
 - `security.md` — Security Validator output (Claude)
 - `structural-codex.md` — Structural Validator output (Codex, optional)
-- `file-codex.md` — File Validator output (Codex, optional)
 - `spec-codex.md` — Spec Validator output (Codex, optional)
 - `security-codex.md` — Security Validator output (Codex, optional)
 
@@ -39,9 +37,11 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 
 # Workflow
 
-1. Read validator report files from `{spec_dir}/validation/iter-{ai_iteration}/` (structural.md, file.md, spec.md, security.md, structural-codex.md, file-codex.md, spec-codex.md, security-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
+1. Read validator report files from `{spec_dir}/validation/iter-{ai_iteration}/` (structural.md, spec.md, security.md, structural-codex.md, spec-codex.md, security-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
 2. If `ai_iteration` > 0, read `{spec_dir}/validation/iter-{previous}/false-positives.md` (where previous = ai_iteration - 1, skip if missing). When a new finding matches a previous false positive (same file, same issue pattern), Re-read the file at that path:line. If the line content is identical to what the previous false-positive described → carry forward to false-positives.md (do not include in aggregated.md). If the line content differs → re-evaluate as a fresh finding. If `ai_iteration` = 0 → no previous false-positives to carry forward, skip this step. After processing all current findings, copy any unmatched entries from previous false-positives.md to current false-positives.md verbatim — this preserves the carry-forward chain when a known FP is not re-raised by validators in the current iteration.
+
+2a. Glob `{spec_dir}/validation/step-*/false-positives.md`. For each match → carry forward entries as FP, reason: "step-N FP: {original reason}".
 
 3. Read `{spec_dir}/implementation-plan.md` if it exists. Extract two things:
    - **Excluded issues** (`## Excluded Issues` section): if a finding matches (same concept, same or nearby code location) → classify as FP immediately, reason `"excluded from plan: {rationale}"`.
@@ -64,7 +64,7 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 7. Output: verified findings, then false positives section (if any).
 
 8. Delete raw validator files from `{spec_dir}/validation/iter-{ai_iteration}/` (keep `aggregated.md` and `false-positives.md`):
-   `rm -f {spec_dir}/validation/iter-{ai_iteration}/structural.md {spec_dir}/validation/iter-{ai_iteration}/file.md {spec_dir}/validation/iter-{ai_iteration}/spec.md {spec_dir}/validation/iter-{ai_iteration}/security.md {spec_dir}/validation/iter-{ai_iteration}/structural-codex.md {spec_dir}/validation/iter-{ai_iteration}/file-codex.md {spec_dir}/validation/iter-{ai_iteration}/spec-codex.md {spec_dir}/validation/iter-{ai_iteration}/security-codex.md`
+   `rm -f {spec_dir}/validation/iter-{ai_iteration}/structural.md {spec_dir}/validation/iter-{ai_iteration}/spec.md {spec_dir}/validation/iter-{ai_iteration}/security.md {spec_dir}/validation/iter-{ai_iteration}/structural-codex.md {spec_dir}/validation/iter-{ai_iteration}/spec-codex.md {spec_dir}/validation/iter-{ai_iteration}/security-codex.md`
 
 # Output
 
@@ -81,7 +81,7 @@ Write to `{spec_dir}/validation/iter-{ai_iteration}/`:
 **`false-positives.md`** — false positive log, including carried-forward entries from previous iterations (written if any false positives exist, including carry-forward-only):
 
     [structural] src/utils.ts:23 — "potential path traversal" → input is internal constant, not user-controlled
-    [file] src/api.ts:12 — "generic naming: data" → name appropriate in data pipeline context
+    [security] src/api.ts:12 — "SQL injection" → parameterized query, not string interpolation
 
 ## Return to orchestrator
 

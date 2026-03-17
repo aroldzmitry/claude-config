@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Async agent launcher for super-agent.
+# Async agent launcher.
 # Two modes:
-#   launch <agent-name> [task-body]  → prints SESSION_DIR, agent runs in background
+#   launch [--backend claude|codex] <agent-name> [task-body]  → prints SESSION_DIR, agent runs in background
 #   poll <session-dir>               → prints WAITING, or agent response + cleanup
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -12,6 +12,12 @@ shift
 
 case "$MODE" in
   launch)
+    BACKEND="claude"
+    if [[ "${1:-}" == "--backend" ]]; then
+      BACKEND="${2:?--backend requires a value}"
+      shift 2
+    fi
+
     AGENT_NAME="${1:?agent name required}"
     TASK_BODY="${2:-}"
     AGENT_FILE="$HOME/.claude/agents/${AGENT_NAME}.md"
@@ -23,15 +29,16 @@ case "$MODE" in
     fi
 
     SESSION_DIR=$(mktemp -d /tmp/claude_agent.XXXXXX)
+    echo "$BACKEND" > "$SESSION_DIR/.backend"
 
     # Background: run agent, extract response, write .done marker
     (
       EXIT_CODE=0
-      "$SCRIPT_DIR/run-claude-agent.sh" "$AGENT_NAME" "$TASK_BODY" \
+      "$SCRIPT_DIR/run-agent.sh" --backend "$BACKEND" "$AGENT_NAME" "$TASK_BODY" \
         > "$SESSION_DIR/output.txt" 2>"$SESSION_DIR/error.txt" \
         || EXIT_CODE=$?
 
-      # Extract plain text from JSON result line: {"type":"result","result":"..."}
+      # Extract plain text from JSON result line
       if [[ -s "$SESSION_DIR/output.txt" ]]; then
         python3 -c "
 import sys, json
@@ -42,10 +49,24 @@ for line in raw.splitlines():
         continue
     try:
         d = json.loads(line)
+        # claude backend: {\"type\":\"result\",\"result\":\"...\"}
         if d.get('type') == 'result':
             print(d.get('result', ''))
             sys.exit(0)
-    except (json.JSONDecodeError, KeyError):
+        # codex backend: {\"type\":\"item.completed\",\"item\":{...}}
+        if d.get('type') == 'item.completed':
+            item = d.get('item', {})
+            # text may be top-level in item, or nested in content
+            text = item.get('text', '')
+            if not text:
+                content = item.get('content', [])
+                if isinstance(content, list):
+                    parts = [c.get('text', '') for c in content if isinstance(c, dict)]
+                    text = ''.join(parts)
+            if text:
+                print(text)
+                sys.exit(0)
+    except (json.JSONDecodeError, KeyError, AttributeError):
         pass
 # Fallback: return raw output
 print(raw)

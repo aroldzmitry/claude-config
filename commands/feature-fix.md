@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator + Codex → planner revision → [test-writer] → coder → cli-checker loop → validators + Codex → fix loop), produces staged git diff."
+description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator + Codex → planner revision → [test-writer] → coder → global-validator → fix loop), produces staged git diff."
 model: sonnet
 argument-hint: "[description?]: what needs to be fixed"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
@@ -22,10 +22,11 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 - `SPEC_DIR` = `temp/_fix-{YYYYMMDD-HHmmss}` — timestamp set once at Phase 0 start.
 - Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
-- CLI validation commands are NOT tracked by the orchestrator — coder and cli-checker detect them independently from `docs/WORKFLOW.md`.
+- CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
-  - CLI errors → `SPEC_DIR/cli-errors/iter-{N}.txt`
+  - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
+  - Step FP → `SPEC_DIR/validation/step-{N}/false-positives.md`
   - Plan validation findings → `SPEC_DIR/validation/plan/{source}.md`
   - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
   - Aggregated findings → `SPEC_DIR/validation/iter-{N}/aggregated.md`
@@ -91,84 +92,61 @@ If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, 
 
 ## Phase 2: Implementation
 
-Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract the full step block (header + **Files** + **Action** + **Model** (optional) + description until next `### Step` or end of file).
+Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract the full step block (header + **Files** + **Action** + description until next `### Step` or end of file).
 
 For each step in order:
 
 1. `[Step {N}/{total}: {title}]`
-2. Extract `**Model:**` from step block (if present). Use as coder model; default to opus if absent.
-3. Spawn new `coder` (model from step 2) with prompt:
+2. Spawn `coder` via Task(super-agent) with prompt:
 
-        mode: implement
-        feature: _fix
-        spec_dir: SPEC_DIR
-        step_number: N
-        step_total: TOTAL
-        step_body: <full step block text>
+       coder
+       mode: implement
+       feature: _fix
+       spec_dir: SPEC_DIR
+       step_number: N
+       step_total: TOTAL
+       step_body: <full step block text>
 
-4. If coder returns `UNRESOLVED` → record. If `DONE` → continue to next step.
+3. `DONE` → next step. `UNRESOLVED` → record.
 
 ## Phase 3: Validation Cycle
 
-Initialize `cli_iter = 0`, `ai_iter = 0` before starting.
-
-### 3a: CLI Loop (max 5)
-
-`mkdir -p SPEC_DIR/cli-errors/`. Spawn `cli-checker` (model: haiku) with prompt:
-
-    error_file: <absolute path to SPEC_DIR/cli-errors/iter-{cli_iter}.txt>
-
-`CLEAN` → 3b.
-`FAIL` + `cli_iter >= 5` → append "CLI: validation failed after {cli_iter} iterations" to unresolved_steps, Phase 4.
-`FAIL` + `cli_iter < 5` → Spawn new `coder` with prompt:
-
-    mode: fix-cli
-    feature: _fix
-    spec_dir: SPEC_DIR
-    cli_error_file: cli-errors/iter-{cli_iter}.txt
-
-Increment `cli_iter`. Re-run 3a.
-
-### 3b: AI Loop (max 2)
+Initialize `ai_iter = 0` before starting.
 
 `git status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → `CHANGED_FILES` (newline-separated).
 
-`mkdir -p SPEC_DIR/validation/iter-{ai_iter}/`
+Spawn `global-validator` via Task(super-agent) with prompt:
 
-Launch 6 validators in parallel (same response):
-- **Claude Tasks** — each with `feature: _fix, spec_dir: SPEC_DIR, files: CHANGED_FILES, output_file: <path>`:
-  - `validator-structural` → `output_file: SPEC_DIR/validation/iter-{ai_iter}/structural.md`
-  - `validator-file` → `output_file: SPEC_DIR/validation/iter-{ai_iter}/file.md`
-  - `validator-security` → `output_file: SPEC_DIR/validation/iter-{ai_iter}/security.md`
-- **Codex Tasks** — spawn `codex` for each `V` in [structural, file, security]:
-  - `validator-{V}` with `feature: _fix, spec_dir: SPEC_DIR, files: CHANGED_FILES, output_file: SPEC_DIR/validation/iter-{ai_iter}/{V}-codex.md`
-
-Spawn `aggregator` with prompt:
-
+    global-validator
     feature: _fix
     spec_dir: SPEC_DIR
-    ai_iteration: {ai_iter}
+    ai_iteration: 0
+    skip_spec: true
+    files:
+    - {CHANGED_FILES, each on own line with "- " prefix}
 
-Aggregator reads reports from `validation/iter-{ai_iter}/`, writes `aggregated.md` and `false-positives.md` to the same directory. Returns one-line status: `DONE: N verified, M false positives` or `NO_ISSUES`.
-
-Check aggregator status (do NOT parse report contents):
+Check global-validator status:
 - `NO_ISSUES` → Phase 4.
-- Has issues + `ai_iter >= 2` → append "AI: {aggregator status} after {ai_iter} fix cycles" to unresolved_steps, Phase 4.
-- Has issues + `ai_iter < 2` → spawn new `coder` with prompt:
+- `HAS_ISSUES` + `ai_iter >= 2` → append "AI: {status} after {ai_iter} fix cycles" to unresolved_steps, Phase 4.
+- `HAS_ISSUES` + `ai_iter < 2` → spawn `coder` via Task(super-agent) with prompt:
 
+        coder
         mode: fix-ai
         feature: _fix
         spec_dir: SPEC_DIR
         report_file: validation/iter-{ai_iter}/aggregated.md
 
-Increment `ai_iter`. Re-run from 3a.
+  coder crash (super-agent error) → still increment ai_iter, re-run global-validator.
+  Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with new `ai_iteration` and CHANGED_FILES.
 
 ## Phase 4: Finalize
 
 1. `git status --porcelain` → changed files
-2. `git add` implementation files
-3. `git diff --cached --stat` → stats
-4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from the aggregated report; if `ai_iter = 0` (CLI-only failures), describe issues based on the CLI error file content. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
+2. `git diff --cached --name-only` → `PRE_STAGED`. If non-empty → `git restore --staged <PRE_STAGED>` (temporarily unstage pre-existing user work).
+   `git add` implementation files.
+3. `git diff --cached --stat` → stats.
+   If `PRE_STAGED` non-empty → `git add <PRE_STAGED>` (re-stage pre-existing files to restore original staged state). Note in report: "N pre-existing staged files temporarily unstaged during fix (re-staged): <list>".
+4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from the aggregated report; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
@@ -187,7 +165,7 @@ Increment `ai_iter`. Re-run from 3a.
 **Description:** <fix description>
 **Files changed:** N
 **Tests:** M passed (or "skipped")
-**Validation:** CLI {N}/5, AI {N}/2
+**Validation:** {len(unresolved_steps)} unresolved, Post-all AI {ai_iter}/2
 
 ### Unresolved Issues
 - [error|warning] file:line — description

@@ -44,6 +44,7 @@ Check the plan against these criteria:
 - Schema definitions must match spec field types
 
 ### Test case coverage
+- If `test-cases.md` was not found → skip this section entirely.
 - Test steps must reference test-cases.md by section (e.g., "covering all cases from test-cases.md § POST /api/v1/client/orders") rather than enumerating individual test cases
 - If a test step lists individual test case names → [warning] report
 
@@ -58,7 +59,7 @@ Check the plan against these criteria:
 - No step uses something created in a later step
 - Cross-step references — when multiple steps reference the same method, type, or interface, the full signature (name, parameters, return type) must be identical across all steps. On mismatch → [error] report with both signatures.
 - If a step must deviate from spec due to technical constraints → must have `[spec-deviation]` note. Missing note → [warning] report.
-- Every section in test-cases.md must have at least one corresponding test step. Missing step → [error] report.
+- For each `##` section in test-cases.md that contains test case items: at least one plan step must cover it. If test-cases.md was not found → skip. Missing step → [error] report.
 - If a step description contains fenced code blocks → [warning] report (should be prose with inline pseudocode).
 - When a step creates a new file F that imports from existing file A, and any step also adds an export or re-export in A pointing back to F → [error] report as circular dependency.
 - Every step with `Action: create` must produce files referenced in at least one subsequent step or existing project code (Grep). No consumers → [warning] report as orphaned step.

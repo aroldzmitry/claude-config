@@ -38,12 +38,8 @@ If `revision_dir` is provided → go to **Revision Mode** below. Otherwise proce
 
 ## 1. Load Context
 
-Read in parallel:
-- `docs/ARCHITECTURE*.md`, `docs/WORKFLOW.md` — if they exist
-- `{spec_dir}/technical-requirements.md` — required
-- `{spec_dir}/business-requirements.md` — optional
-- `{spec_dir}/ui-requirements.md` — optional (UI spec for component/page structure)
-- `{spec_dir}/test-cases.md` — optional
+1. Glob (parallel): `{spec_dir}/*.md`, `docs/ARCHITECTURE*.md`
+2. Read (parallel): only files returned by Glob. Required: `{spec_dir}/technical-requirements.md` — abort if missing. All others optional.
 
 If `docs/` is missing or empty — proceed without it, rely on code scanning.
 

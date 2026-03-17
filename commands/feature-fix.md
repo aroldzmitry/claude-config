@@ -1,7 +1,7 @@
 ---
 description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator + Codex → planner revision → [test-writer] → coder → global-validator → fix loop), produces staged git diff."
 model: sonnet
-argument-hint: "[description?]: what needs to be fixed"
+argument-hint: "<folder>: spec folder name (e.g. BUG-phone-field-required)"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
 disable-model-invocation: true
 ---
@@ -12,7 +12,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Rules
 
-- If `$ARGUMENTS` is provided — use as existing folder or fix description (see Phase 0 steps 1–2). If empty — see Phase 0 step 2.
+- `$ARGUMENTS` is required — folder name containing `technical-requirements.md`. If empty or spec not found → stop with error.
 - Fully autonomous after description is known — no user questions. Ambiguities → decide, note in report.
 - Fail fast — critical agent failure → stop, report what was completed.
 - Before each phase: `[Phase N: description]`
@@ -20,7 +20,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Conventions
 
-- `SPEC_DIR` = `temp/FIX-{slug}` — slug: 2–4 word kebab-case from the fix description, set once at Phase 0 start.
+- `SPEC_DIR` — directory containing `technical-requirements.md`, resolved in Phase 0.
 - Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
@@ -36,14 +36,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 0: Setup
 
-1. If `$ARGUMENTS` is provided, use the Read tool to check `{$ARGUMENTS}/technical-requirements.md`. If the file exists → set `$ARGUMENTS` as SPEC_DIR, go to Phase 1.
-2. If `$ARGUMENTS` is provided — use as fix description. If empty → analyze the conversation context (recent messages, errors, user complaints) to determine what likely needs fixing. Present your understanding to the user and ask to confirm or correct. Use confirmed description as the fix description.
-3. Derive a 2–4 word kebab-case slug from the fix description. Set SPEC_DIR = `temp/FIX-{slug}/`, create directory. Write description to `SPEC_DIR/technical-requirements.md`:
-   ```
-   # Fix Description
-
-   <user's description>
-   ```
+1. `$ARGUMENTS` is required. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR, go to Phase 1. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /bug first to create a spec."`
 ## Phase 1: Planning
 
 ### Create Plan

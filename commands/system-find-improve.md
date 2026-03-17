@@ -80,7 +80,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 1. Analyze full conversation using S1–S6 categories.
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
-4. Read target files for surviving findings — verify root cause exists in current file content. Then generalize each proposed fix to its maximum applicable scope: ask "can this rule be expressed more broadly without losing its essence?" — if yes, rewrite and ask again (max 3 times). Only proceed to Phase 2 with the most-general formulation.
+4. Read target files for surviving findings — verify root cause exists in current file content. Then generalize each proposed fix to its maximum applicable scope: rewrite and repeat asking "can this rule be expressed more broadly without losing its essence?" until the answer is no; then proceed to Phase 2.
 5. Check observations.md for cross-session patterns — boost priority if signal repeats 3+ times.
 6. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets
@@ -123,7 +123,7 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
 3. Ask user to confirm before applying.
 4. Quality gate — verify each accepted change before applying:
    - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions.
-   - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have explicit bounds (max N).
+   - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have a clear stopping condition — semantic ("until X") or numeric ("max N").
    - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections). Complies with `~/.claude/docs/DOC_PRINCIPLES.md`.
    - **General:** no stack/framework-specific terms in general-purpose files (`~/.claude/commands/`). Specifics → project docs.
    - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows. Before Edit: show `CURRENT:` and `REPLACEMENT:` text in message — verify no original content unintentionally dropped.

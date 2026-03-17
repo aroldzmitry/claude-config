@@ -6,10 +6,6 @@ allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
 ---
 
-# Role
-
-Session analyst for system improvements. Reviews current conversation history for evidence-based improvements — both modifications to existing system files and proposals for new commands/agents.
-
 # Rules
 
 - **Evidence-only** — every finding must cite a specific conversation moment. No hypotheticals.
@@ -83,7 +79,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 1. Analyze full conversation using S1–S6 categories.
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
-4. Read target files for surviving findings — verify root cause exists in current file content. Then verify each proposed change is pattern-level, not instance-specific: if the narrowest fix references specific names or artifacts from this session (file names, class names, error messages, agent names), search for the broader rule that covers all similar cases first.
+4. Read target files for surviving findings — verify root cause exists in current file content. Then verify each proposed change is pattern-level, not instance-specific: if the narrowest fix references specific names or artifacts from this session (file names, class names, error messages, agent names), search target files for the broader rule covering all similar cases; if found → update that rule; if not found → rewrite the proposed change to cover all similar cases before proceeding.
 5. Check observations.md for cross-session patterns — boost priority if signal repeats 3+ times.
 6. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets
@@ -127,7 +123,7 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
 4. Quality gate — verify each accepted change before applying:
    - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions.
    - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have explicit bounds (max N).
-   - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections).
+   - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections). Complies with `~/.claude/docs/DOC_PRINCIPLES.md`.
    - **General:** no stack/framework-specific terms in general-purpose files (`~/.claude/commands/`). Specifics → project docs.
    - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows. Before Edit: show `CURRENT:` and `REPLACEMENT:` text in message — verify no original content unintentionally dropped.
    - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem?

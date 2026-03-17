@@ -142,10 +142,9 @@ Check global-validator status:
 ## Phase 4: Finalize
 
 1. `git status --porcelain` → changed files
-2. `git diff --cached --name-only` → `PRE_STAGED`. If non-empty → `git restore --staged <PRE_STAGED>` (temporarily unstage pre-existing user work).
+2. `git diff --cached --name-only` → `PRE_STAGED`. If non-empty → `git restore --staged <PRE_STAGED>`.
    `git add` implementation files.
-3. `git diff --cached --stat` → stats.
-   If `PRE_STAGED` non-empty → `git add <PRE_STAGED>` (re-stage pre-existing files to restore original staged state). Note in report: "N pre-existing staged files temporarily unstaged during fix (re-staged): <list>".
+3. `git diff --cached --stat` → stats. If `PRE_STAGED` non-empty → `git add <PRE_STAGED>`.
 4. If `unresolved_steps` is non-empty: create `temp/_fix-{timestamp}-warnings/technical-requirements.md` (where `{timestamp}` = SPEC_DIR's timestamp) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from the aggregated report; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`

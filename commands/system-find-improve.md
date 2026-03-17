@@ -15,8 +15,8 @@ disable-model-invocation: true
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.
 - **Current session only** — Claude Code doesn't persist conversation history across sessions. This command analyzes the current session.
-- Match user's language.
-- AskUserQuestion for structured decisions. Plain text for open-ended discussion.
+- **Language** — match the user's language.
+- **Decisions** — AskUserQuestion for structured choices. Plain text for open-ended discussion.
 
 # Signal Categories (S1–S6)
 
@@ -62,7 +62,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 
 - `DECISIONS_FILE` = `~/.claude/agent-memory/system-find-improve/decisions.md`
 - `OBSERVATIONS_FILE` = `~/.claude/agent-memory/system-find-improve/observations.md`
-- Date format: `YYYY-MM-DD` (current date).
+- Date format: `YYYY-MM-DD`.
 - Item order: high → medium → low.
 - Decision tag: `[retro]`.
 
@@ -74,12 +74,13 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 2. Read `DECISIONS_FILE` if exists.
 3. Read `OBSERVATIONS_FILE` if exists — for cross-session pattern detection.
 4. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
+
 ## Phase 1: Scan
 
 1. Analyze full conversation using S1–S6 categories.
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
-4. Read target files for surviving findings — verify root cause exists in current file content. Then verify each proposed change is pattern-level, not instance-specific: if the narrowest fix references specific names or artifacts from this session (file names, class names, error messages, agent names), search target files for the broader rule covering all similar cases; if found → update that rule; if not found → rewrite the proposed change to cover all similar cases before proceeding.
+4. Read target files for surviving findings — verify root cause exists in current file content. Then generalize each proposed fix to its maximum applicable scope: ask "can this rule be expressed more broadly without losing its essence?" — if yes, rewrite and ask again (max 3 times). Only proceed to Phase 2 with the most-general formulation.
 5. Check observations.md for cross-session patterns — boost priority if signal repeats 3+ times.
 6. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets
@@ -132,7 +133,7 @@ After each decision: `[3/7 | next: feature-tech.md — missing check for empty t
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).
    - Report: file path + what changed (edited/created).
-6. Cross-reference update: if any command was created or renamed in step 5, Grep for references to the command name across `~/.claude/commands/` and `~/.claude/agents/`. Update found references (system-help.md command list, other commands' "next step" suggestions). Add updated files to CHANGED_MD.
+6. Cross-reference update: if any command was created or renamed in step 5, Grep for references to the command name across `~/.claude/commands/` and `~/.claude/agents/`. Update found references (system-help.md command list, other commands' "next step" suggestions). Mark updated files for CHANGED_MD (collected in step 8).
 7. Edit fails (section not found, file restructured) → report, skip that item, continue.
 8. Initialize `val_cycle = 0`. Collect paths of all .md files written/edited in steps 5–6 → `CHANGED_MD`.
 9. If `CHANGED_MD` not empty: spawn `validator-doc-system` with prompt:

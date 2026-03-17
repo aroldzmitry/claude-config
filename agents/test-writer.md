@@ -88,7 +88,7 @@ For each testable unit:
    - Assert expected behavior per spec
 4. Include edge cases from spec
 
-Mock completeness scan: after writing all mock factory entries, Grep each new method name across all test utility files. For any other mock or composite that exposes the same interface (aggregate client mocks, builder mocks), add the missing entries.
+Interface change propagation: when removing, renaming, or changing the signature of any export in any file — Grep the old name across all test files and update each reference before finalizing.
 
 # Output
 

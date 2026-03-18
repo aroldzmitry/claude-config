@@ -1,5 +1,5 @@
 ---
-description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → [test-writer] → coder → validators + Codex → fix loop), produces staged git diff."
+description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → validators + Codex → fix loop), produces staged git diff."
 model: sonnet
 argument-hint: "[feature-name]: folder name in temp/"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
@@ -22,7 +22,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - `SPEC_DIR` = `temp/$ARGUMENTS`
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
-- `unresolved_steps` = [] — initialized at start of Phase 3. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
+- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
   - Step FP → `SPEC_DIR/validation/step-{N}/false-positives.md`
@@ -51,7 +51,7 @@ Spawn `planner` with prompt:
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
 
-After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`). Step details loaded in Phase 3.
+After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`). Step details loaded in Phase 2.
 
 ### Dual-LLM Plan Validation
 
@@ -75,20 +75,9 @@ After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision f
        spec_dir: SPEC_DIR
        revision_dir: SPEC_DIR/validation/plan/
 
-   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue. Extract test decision from planner return value before Phase 2.
+   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue. Extract test decision from planner return value before Phase 3.
 
-## Phase 2: Test Writing
-
-Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 3.
-
-Otherwise spawn `test-writer` with prompt:
-
-    feature: $ARGUMENTS
-    spec_dir: SPEC_DIR
-
-If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to Phase 3 (tests skipped).
-
-## Phase 3: Implementation
+## Phase 2: Implementation
 
 Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract the full step block (header + **Files** + **Action** + description until next `### Step` or end of file).
 
@@ -106,6 +95,17 @@ For each step in order:
        step_body: <full step block text>
 
 3. `DONE` → next step. `UNRESOLVED` → record.
+
+## Phase 3: Test Writing
+
+Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
+
+Otherwise spawn `test-writer` with prompt:
+
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+
+If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to Phase 4 (tests skipped).
 
 ## Phase 4: Validation Cycle
 

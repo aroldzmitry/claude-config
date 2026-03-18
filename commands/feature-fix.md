@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a description, coordinates agents (planner → plan-validator + Codex → planner revision → [test-writer] → coder → global-validator → fix loop), produces staged git diff."
+description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → global-validator → fix loop), produces staged git diff."
 model: sonnet
 argument-hint: "<folder>: spec folder name (e.g. BUG-phone-field-required)"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
@@ -15,7 +15,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - `$ARGUMENTS` is required — folder name containing `technical-requirements.md`. If empty or spec not found → stop with error.
 - Fully autonomous after description is known — no user questions. Ambiguities → decide, note in report.
 - Fail fast — critical agent failure → stop, report what was completed.
-- Before each phase: `[Phase N: description]`
+- Before each phase: `[Phase N: description]` (phase 0 is silent precondition check)
 - Match user's language.
 
 # Conventions
@@ -27,6 +27,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
   - Step FP → `SPEC_DIR/validation/step-{N}/false-positives.md`
+  - Step raw → `SPEC_DIR/validation/step-{N}/*.md, *.txt`
   - Plan validation findings → `SPEC_DIR/validation/plan/{source}.md`
   - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
   - Aggregated findings → `SPEC_DIR/validation/iter-{N}/aggregated.md`
@@ -37,6 +38,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 ## Phase 0: Setup
 
 1. `$ARGUMENTS` is required. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR, go to Phase 1. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /bug first to create a spec."`
+
 ## Phase 1: Planning
 
 ### Create Plan
@@ -62,7 +64,7 @@ After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision f
      output_file: SPEC_DIR/validation/plan/codex.md
      ```
 
-3. Check: if Claude returned `NO_ISSUES` AND Codex returned `NO_ISSUES` (or `NO_OUTPUT`) → log `[Plan validation: clean]`, go to Phase 1a (tests).
+3. Check: if Claude returned `NO_ISSUES` AND Codex returned `NO_ISSUES` (or `NO_OUTPUT`) → log `[Plan validation: clean]`, go to Phase 2.
 
 4. Otherwise → re-spawn `planner` with prompt:
 
@@ -70,18 +72,7 @@ After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision f
        spec_dir: SPEC_DIR
        revision_dir: SPEC_DIR/validation/plan/
 
-   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue. Extract test decision from planner return value before Phase 1a (tests).
-
-## Phase 1a: Test Writing (optional)
-
-Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 2.
-
-Otherwise spawn `test-writer` with prompt:
-
-    feature: _fix
-    spec_dir: SPEC_DIR
-
-If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, continue to Phase 2.
+   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue. Extract test decision from planner return value before Phase 3 (tests).
 
 ## Phase 2: Implementation
 
@@ -102,7 +93,18 @@ For each step in order:
 
 3. `DONE` → next step. `UNRESOLVED` → record.
 
-## Phase 3: Validation Cycle
+## Phase 3: Test Writing (optional)
+
+Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
+
+Otherwise spawn `test-writer` with prompt:
+
+    feature: _fix
+    spec_dir: SPEC_DIR
+
+If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, continue to Phase 4.
+
+## Phase 4: Validation Cycle
 
 Initialize `ai_iter = 0` before starting.
 
@@ -119,8 +121,8 @@ Spawn `global-validator` via Task(super-agent) with prompt:
     - {CHANGED_FILES, each on own line with "- " prefix}
 
 Check global-validator status:
-- `NO_ISSUES` → Phase 4.
-- `HAS_ISSUES` + `ai_iter >= 2` → append "AI: {status} after {ai_iter} fix cycles" to unresolved_steps, Phase 4.
+- `NO_ISSUES` → Phase 5.
+- `HAS_ISSUES` + `ai_iter >= 2` → append "AI: {status} after {ai_iter} fix cycles" to unresolved_steps, Phase 5.
 - `HAS_ISSUES` + `ai_iter < 2` → spawn `coder` via Task(super-agent) with prompt:
 
         coder
@@ -132,7 +134,7 @@ Check global-validator status:
   coder crash (super-agent error) → still increment ai_iter, re-run global-validator.
   Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with new `ai_iteration` and CHANGED_FILES.
 
-## Phase 4: Finalize
+## Phase 5: Finalize
 
 1. `git status --porcelain` → changed files
 2. `git diff --cached --name-only` → `PRE_STAGED`. If non-empty → `git restore --staged <PRE_STAGED>`.

@@ -50,7 +50,7 @@ Received via `prompt` from orchestrator in key-value format:
 
 Read in parallel (skip missing silently):
 - Always: `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`
-- In `implement` mode when step creates new files or new architectural patterns, OR in `fix-ai` mode always: `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`
+- In `implement` mode when step creates new files (**Action: create** in step_body), OR in `fix-ai` mode always: `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`
 - `{spec_dir}/technical-requirements.md`
 
 ## 2. Execute
@@ -58,8 +58,6 @@ Read in parallel (skip missing silently):
 ### implement
 
 Use `step_body` from prompt (contains header, **Files**, **Action**, and description). Do NOT read implementation-plan.md.
-
-Read test files created by test-writer (Glob for test files in affected directories) to understand expected contracts.
 
 Implement only the step described in `step_body`:
 1. Read files listed in the step's **Files** field

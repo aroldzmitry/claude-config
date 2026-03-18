@@ -30,13 +30,13 @@ Output this reference (translated to user's language):
 /feature [name]               → business requirements dialog
 /feature-ui [name]            → UI/UX requirements dialog (optional, for features with admin UI)
 /feature-tech [name]          → technical spec + test cases
-/feature-implement [name]     → autonomous: plan → test → code → validate → stage
+/feature-implement [name]     → autonomous: plan → code → [test] → validate → stage
 
 ### Additional commands
 
 /bug [description]            → interactive bug diagnosis: gather symptoms → investigate code → produce fix requirements
 /feature-split [name]         → split large feature into independent sub-features
-/feature-fix [description|folder] → autonomous: plan → [test] → code → validate → stage (accepts description or /bug output folder)
+/feature-fix <folder>         → autonomous: plan → code → [test] → validate → stage (accepts /bug output folder)
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
 /system-help [command?]       → this help
@@ -68,7 +68,7 @@ Output this reference (translated to user's language):
 
 **Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix BUG-409-create-user`
 
-**Quick fix (known cause):** `/feature-fix fix the login button`
+**Quick fix (known cause):** `/bug fix the login button` → `/feature-fix BUG-fix-login-button`
 
 **After any session:** `/system-find-improve`
 
@@ -77,7 +77,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: planner → plan-validator + Codex → planner revision → test-writer → coder (per step) → validators + Codex (6 for feature-implement / 4 for feature-fix) → AI fix loop (max 2)
+- Implementation is fully autonomous: planner → plan-validator + Codex → planner revision → coder (per step) → [test-writer] → validators + Codex (6 for feature-implement / 4 for feature-fix) → AI fix loop (max 2)
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

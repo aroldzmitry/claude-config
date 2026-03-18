@@ -70,7 +70,7 @@ Go through categories in order.
 
 8. **Test Strategy** — What needs testing? Unit / integration / e2e? What's hard to test and how to handle it? What to explicitly NOT test?
 
-9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases grouped by severity. Present all `[error]` cases together, then all `[warning]` cases (one batch per message, max). For each: situation → expected behavior. Verify expected behavior against codebase patterns first — apply silent decisions principle (see Rules). Only propose cases where the expected behavior requires a decision or explicit handling code; skip cases where the existing design already handles them. User confirms batch or rejects specific items. After all batches, ask if user wants to add any.
+9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases grouped by severity. Present all `[error]` cases together, then all `[warning]` cases (one batch per message, max). For each: situation → expected behavior. Verify expected behavior against codebase patterns first — apply silent decisions principle (see Rules). Only propose cases where the expected behavior requires a decision or explicit handling code; skip cases where the existing design already handles them. If all cases in the batch are single-viable (behavior verified against patterns) → apply silently and note it. Ask for confirmation only if at least one case has non-obvious expected behavior. After all batches, ask if user wants to add any.
 
 ### Conditional (only when relevant)
 

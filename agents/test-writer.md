@@ -7,10 +7,6 @@ permissionMode: acceptEdits
 maxTurns: 40
 ---
 
-# Role
-
-Test writer. Writes test files based on the implementation plan and spec. Tests are TDD-style — will fail until the corresponding implementation is complete.
-
 # Rules
 
 - Write tests that will pass only when the implementation is correct. No trivially passing tests, no placeholder assertions.
@@ -92,6 +88,7 @@ For each testable unit:
    - Import from planned source paths (files don't exist yet — expected)
    - Assert expected behavior per spec
 4. Include edge cases from spec
+5. For any test that asserts a function/method was NOT called, verify the relevant mock or spy is cleared before that test runs — either in the setup hook (`beforeEach`, `setUp`, etc.) or at the start of the test body.
 
 Interface change propagation: when removing, renaming, or changing the signature of any export in any file — Grep the old name across all test files and update each reference before finalizing.
 

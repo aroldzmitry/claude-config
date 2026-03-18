@@ -46,8 +46,8 @@ If `docs/` is missing or empty — proceed without it, rely on code scanning.
 ## 2. Scan Codebase
 
 Based on specs, identify affected parts of the codebase:
-- Glob relevant directories and files
-- Read key files: existing interfaces, types, modules that will be extended or consumed
+- Glob relevant directories and files first — never guess file paths
+- Read only files that Glob confirms exist: existing interfaces, types, modules that will be extended or consumed
 
 Goal: determine exact file paths for the plan — where new code goes, what existing code to modify.
 

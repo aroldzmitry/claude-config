@@ -235,15 +235,20 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
      - `validator-spec-testability` → `output_file: temp/<name>/validation/spec/testability.md`
      - `validator-spec-consistency` → `output_file: temp/<name>/validation/spec/consistency.md`
    - **Codex Tasks** — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency]:
-     - `validator-{V}` with `feature: <name>, spec_dir: temp/<name>/, output_file: temp/<name>/validation/spec/{V-short}-codex.md`
-     - (short names: contracts-codex, testability-codex, consistency-codex)
+     ```
+     validator-{V}
+     feature: <name>
+     spec_dir: temp/<name>/
+     output_file: temp/<name>/validation/spec/{V-short}-codex.md
+     ```
+     short names: contracts, testability, consistency
 
 2. Spawn `aggregator-spec`:
 
        feature: <name>
        spec_dir: temp/<name>/
 
-3. `NO_ISSUES` → proceed to **Step 5: Present and confirm**.
+3. `NO_ISSUES` → proceed to **Step 5: Present**.
 
 4. `HAS_ISSUES` → read `temp/<name>/validation/spec/aggregated.md`. For each finding decide:
    - **Fix silently** if: the correct answer is unambiguous from spec context, existing contracts, or project patterns. Examples: remove class name, derive missing error code from other endpoints, add missing test case from existing edge case, replace vague word with concrete one from context.
@@ -255,12 +260,12 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining findings in Open Questions section of `technical-requirements.md`, proceed to Step 5.
 
-### Step 5: Present and confirm
+### Step 5: Present
 
-1. Show both documents to the user
-2. If user requests changes → apply, show updated, repeat until confirmed
+1. Show both documents + one-line validation summary (N items auto-fixed, if any)
+2. If user requests changes → apply, show updated
 3. If prerequisite tasks were recorded in Business Clarifications → suggest `/feature-tech <prerequisite-name>` for each, to be done before `/feature-implement`
-4. After final confirmation, suggest next step: `/feature-implement <feature-name>`
+4. Suggest next step: `/feature-implement <feature-name>`
 5. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-implement`
 
 # Start

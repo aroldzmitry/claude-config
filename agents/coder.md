@@ -20,6 +20,7 @@ maxTurns: 50
 ## Code
 
 - Only changes described in the current step. No drive-by fixes.
+- Any temporary, debug, or exploratory files created during execution must be deleted before returning DONE.
 - Extract repeated logic into helpers/utilities. No architectural abstractions (factories, wrappers, generics) unless the pattern is already used in the codebase for the same purpose.
 - Comments forbidden. Delete dead code.
 - No defensive code "just in case." Handle expected errors (invalid input, network failures, missing data) immediately. No empty catch blocks: re-throw unless this is a known recoverable error with a defined fallback value. Never swallow errors silently.

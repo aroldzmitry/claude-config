@@ -223,7 +223,7 @@ Test cases are derived from:
 
 Each test case must be specific enough for a test-writer agent to implement without guessing.
 
-### Step 3a: Dual-LLM Spec Validation
+### Step 4: Dual-LLM Spec Validation
 
 Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
@@ -243,7 +243,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
        feature: <name>
        spec_dir: temp/<name>/
 
-3. `NO_ISSUES` → proceed to **Step 4: Present and confirm**.
+3. `NO_ISSUES` → proceed to **Step 5: Present and confirm**.
 
 4. `HAS_ISSUES` → read `temp/<name>/validation/spec/aggregated.md`. For each finding decide:
    - **Fix silently** if: the correct answer is unambiguous from spec context, existing contracts, or project patterns. Examples: remove class name, derive missing error code from other endpoints, add missing test case from existing edge case, replace vague word with concrete one from context.
@@ -253,9 +253,9 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 6. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1.
 
-7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining findings in Open Questions section of `technical-requirements.md`, proceed to Step 4.
+7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining findings in Open Questions section of `technical-requirements.md`, proceed to Step 5.
 
-### Step 4: Present and confirm
+### Step 5: Present and confirm
 
 1. Show both documents to the user
 2. If user requests changes → apply, show updated, repeat until confirmed

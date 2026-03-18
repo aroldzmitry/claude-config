@@ -78,7 +78,7 @@ Write to `{spec_dir}/validation/spec/`:
 
 One-line status:
 
-    DONE: 3 verified, 2 false positives
+    HAS_ISSUES: 3 verified, 2 false positives
 
 or (if 0 verified findings):
 

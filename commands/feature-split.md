@@ -30,8 +30,8 @@ Estimation formula (same as `/feature`):
 steps_estimate = user_flows × 3 + new_entities × 2 + must_criteria + error_edges
 ```
 
-Target per sub-feature: ≤ 10 (safe margin from the 12-step limit).
-Optimal number of parts: `ceil(total_estimate / 10)`, adjusted for logical boundaries.
+Target per sub-feature: ≤ 20 (safe margin from the 25-step limit).
+Optimal number of parts: `ceil(total_estimate / 20)`, adjusted for logical boundaries.
 
 # Workflow
 
@@ -44,13 +44,13 @@ Optimal number of parts: `ceil(total_estimate / 10)`, adjusted for logical bound
 
 ## Phase 1: Evaluate
 
-If `steps_estimate ≤ 12`:
+If `steps_estimate ≤ 25`:
 - Tell the user: feature fits in one cycle (show estimate and threshold).
 - Ask: proceed with splitting anyway, or stop?
 - If stop → suggest: `/feature-tech $ARGUMENTS`
 - If proceed → Phase 2.
 
-If `steps_estimate > 12` → Phase 2.
+If `steps_estimate > 25` → Phase 2.
 
 ## Phase 2: Propose Split
 

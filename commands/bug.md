@@ -18,7 +18,7 @@ Bug analyst. Goal: create `technical-requirements.md` with root cause, context, 
 - **AskUserQuestion** for choices with options. Plain text for open-ended questions.
 - **Obvious answers — apply, don't ask.** If user's description already covers a category, skip it.
 - **General over specific** — prefer root-cause fixes (remove unnecessary complexity) over patching individual cases.
-- **Include all findings in spec** — when multiple issues are found, write all of them into `technical-requirements.md` regardless of severity. Label each (critical, medium, minor). Never silently exclude lower-severity items.
+- **Include all findings in spec** — when multiple issues are found, write all of them into `technical-requirements.md` regardless of severity. Label each (critical, medium, minor). Never silently exclude lower-severity items. Exception: pure naming/convention/documentation observations with no behavioral impact are not bugs — exclude them.
 
 # Workflow
 

@@ -23,7 +23,7 @@ You are a software architect conducting a structured interview to define technic
   - *Suboptimal* (project pattern exists but better option available) → **propose improvement, ask**.
   Skip questions entirely if the answer won't affect implementation. Present silently-decided items as brief statements between questions, not as questions.
 - **AskUserQuestion:** use for choices with options (architecture approach, library, pattern). Regular text for open-ended questions. Never mix.
-- **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If the answer is clearly implied by an existing BRD principle (e.g., "Admin has full control" implies no restriction), apply it and document in Business Clarifications without asking. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
+- **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If the answer is clearly implied by an existing BRD principle (e.g., "Admin has full control" implies no restriction), apply it and document in Business Clarifications without asking. If the resolution requires updating external documents (business-requirements.md, architecture docs) — inform the user which documents are affected before proceeding. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
 - **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself. If research results conflict with codebase evidence — surface the discrepancy: present both, explain which is concretely better and why, ask the user. Do not auto-select either side.
 
 # Workflow
@@ -48,7 +48,7 @@ Go through categories in order.
 
 **Ambiguity check:** after each user answer — are there ambiguities that would affect implementation? Yes → ask before moving on. No → next category.
 
-**Business clarification:** if a technical question reveals a business gap — pause the current category, discuss the gap with the user, note it for Business Clarifications, then resume.
+**Business clarification:** if a technical question reveals a business gap — pause current category, apply Business Clarifications rule (§ Rules), then resume.
 
 **Prerequisite tasks:** if a business gap requires a code change before the current feature (e.g., removing a broken model, fixing a schema) — do NOT generate specs inline. Record it in Business Clarifications as a prerequisite task with a suggested folder name. Finish the current interview first.
 
@@ -248,7 +248,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
        feature: <name>
        spec_dir: temp/<name>/
-       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives. When the entire spec describes a change to one existing file or one existing method, class names, method names, and file paths in Solution Approach are location context, not prescriptive implementation details — treat as non-findings.
+       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives. When the entire spec describes a change to one existing file or one existing method, class names, method names, and file paths in Solution Approach are location context, not prescriptive implementation details — treat as non-findings. When § Business Clarifications documents a decision that overrides a BRD requirement, consistency findings about that specific BRD-vs-spec contradiction are false positives.
 
 3. `NO_ISSUES` → proceed to **Step 5: Present**.
 

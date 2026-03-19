@@ -80,7 +80,10 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 1. Analyze full conversation using S1–S6 categories.
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
-4. Read target files for surviving findings — verify root cause exists in current file content. Then generalize each proposed fix to its maximum applicable scope: rewrite and repeat asking "can this rule be expressed more broadly without losing its essence?" until the answer is no; then proceed to Phase 2.
+4. Read target files for surviving findings — verify root cause exists in current file content. Then validate each proposed fix is genuinely general using all 3 mechanical tests (a fix that fails any test is too specific — either abstract further or discard):
+   - **Strip test:** remove all session-specific identifiers (filenames, function names, library names, error messages) from the proposed rule. If the rule becomes incoherent or meaningless → it's a specific fix, not a general rule.
+   - **3-scenario test:** name 3 structurally different situations where this rule applies (different language, framework, or problem domain). If you cannot → it's too narrow.
+   - **Subsumption test:** check whether existing rules in the target file already cover this case. If they do → don't add a duplicate; if partial coverage → extend the existing rule instead of adding a new one.
 5. Check observations.md for cross-session patterns — boost priority if signal repeats (see Cross-Session Pattern Boosting).
 6. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets
@@ -114,7 +117,7 @@ For each finding, one per message:
 3. "Reject" → follow up: ask for a brief reason (one message).
 4. "Modify" → discuss user's alternative. Once agreed → record as accepted with modified action. For new file proposals: discuss structure, scope, and conventions with user until agreed. If user decides against → re-ask (Accept / Reject / Skip).
 
-After each decision: `[3/7 | next: feature-tech.md — missing check for empty test strategy]`
+After each decision: `[{current}/{total} | next: {target-file} — {finding-summary}]`
 
 ## Phase 3: Apply
 
@@ -187,6 +190,3 @@ Final report: "Applied N changes, recorded N decisions (N accepted, N rejected).
 - No temp/ directories → skip artifact cross-referencing, proceed with conversation-only analysis.
 - Long session (compressed context) → only analyze messages visible in full. Don't fabricate evidence for compressed segments.
 
-# Start
-
-Phase 0.

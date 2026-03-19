@@ -65,7 +65,7 @@ Implement only the step described in `step_body`:
 2. Check if step is already implemented (expected changes already present). If fully done → return `DONE` (skip implementation)
 3. Scan for similar existing code as structural reference
 4. Implement the described changes (skip parts already present)
-5. Collect modified files: `git status --porcelain` → parse new/modified files (exclude deletions, lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`), intersect with step's scope (directories of step's **Files** field)
+5. Collect modified files: `git status --porcelain` → parse new/modified files (exclude both staged `D ` and working-tree ` D` deletions, lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`), intersect with step's scope (directories of step's **Files** field)
 6. Task(super-agent) — prompt in multi-line key-value format:
        step-validator
        feature: {feature}
@@ -85,10 +85,11 @@ Implement only the step described in `step_body`:
 
 1. Read `{spec_dir}/{report_file}`. Parse the report — group issues by file
 2. For each file: read it, scan for similar code as reference
-3. Fix all reported issues. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them. When a fix adds or tightens a constraint on a value type (new required field, type narrowing, runtime validation check) — Grep test fixture and factory files for constructions of the constrained type and update them to satisfy the new constraint.
-4. Task(static-checker, error_file: absolute path to {spec_dir}/validation/static-recheck.txt)
-5. FAIL → fix issues from error_file, re-run static-checker (max 3 total). Still FAIL after 3 → continue (report REMAINING, global-validator re-catches). CLEAN → continue.
-6. For each REMAINING item you dismissed as a false positive, append to `{dir(report_file)}/false-positives.md` (create if missing): `[aggregated] {description} — FP: {reason}`
+3. Fix all reported issues. Files in the report were pre-filtered to the session's changed set by the orchestrator — do not re-evaluate scope using git status. Fix every issue present in the current code. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them. When a fix adds or tightens a constraint on a value type (new required field, type narrowing, runtime validation check) — Grep test fixture and factory files for constructions of the constrained type and update them to satisfy the new constraint.
+4. Re-read each modified section. For each reported issue, verify its description no longer applies to the current code. If it still applies → move to REMAINING.
+5. Task(static-checker, error_file: absolute path to {spec_dir}/validation/static-recheck.txt)
+6. FAIL → fix issues from error_file, re-run static-checker (max 3 total). Still FAIL after 3 → continue (report REMAINING, global-validator re-catches). CLEAN → continue.
+7. For each REMAINING item you dismissed as a false positive, append to `{dir(report_file)}/false-positives.md` (create if missing): `[aggregated] {description} — FP: {reason}`
 
 # Output
 

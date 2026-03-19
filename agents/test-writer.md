@@ -43,7 +43,7 @@ If `technical-requirements.md` is missing → return `ERROR: technical-requireme
 
 If `implementation-plan.md` is missing → return `ERROR: implementation-plan.md not found in {spec_dir}`.
 
-If `test-cases.md` is missing or empty → derive test cases from specs: extract function inputs/outputs, API contracts, error conditions, edge cases, and state transitions from `technical-requirements.md` and `business-requirements.md`. Note for output: append `(tests derived from spec — test-cases.md missing)` to the DONE line.
+If `test-cases.md` is missing or empty → derive test cases from specs: extract function inputs/outputs, API contracts, error conditions, edge cases, and state transitions from `technical-requirements.md` and `business-requirements.md`. Use the alternate DONE format from Output section.
 
 ## 2. Scan Test Patterns
 
@@ -93,6 +93,7 @@ For each testable unit:
    - Assert expected behavior per spec
 4. Include edge cases from spec
 5. For any test that asserts a function/method was NOT called, verify the relevant mock or spy is cleared before that test runs — either in the setup hook (`beforeEach`, `setUp`, etc.) or at the start of the test body.
+6. **Mock behavioral contracts:** when mocking an object whose methods trigger side effects in real code (events, callbacks, state transitions), simulate those side effects in the mock if the test verifies anything that depends on them. When mocking a factory called multiple times (retry loops, recovery logic), prepare enough distinct instances to cover all expected invocations — not just the first.
 
 Interface change propagation: when removing, renaming, or changing the signature of any export in any file — Grep the old name across all test files and update each reference before finalizing.
 

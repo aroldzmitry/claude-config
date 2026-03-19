@@ -3,7 +3,7 @@ name: global-validator
 description: "Post-implementation validation dispatcher. Runs static/test checks, AI validators + Codex, aggregates findings."
 tools: Task, Read, Write, Glob, Grep, Bash
 model: sonnet
-maxTurns: 35
+maxTurns: 200
 ---
 
 # Role

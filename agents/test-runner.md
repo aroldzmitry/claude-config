@@ -3,7 +3,7 @@ name: test-runner
 description: "Runs test commands, returns pass/fail with failure details."
 tools: Bash, Read, Write
 model: haiku
-maxTurns: 15
+maxTurns: 200
 permissionMode: bypassPermissions
 ---
 

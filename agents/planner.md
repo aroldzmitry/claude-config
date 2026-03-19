@@ -4,6 +4,7 @@ description: "Creates implementation plan from technical spec. Reads specs + pro
 tools: Read, Glob, Grep, Write
 model: opus
 permissionMode: acceptEdits
+maxTurns: 200
 ---
 
 # Rules

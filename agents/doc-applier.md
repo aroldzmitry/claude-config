@@ -4,7 +4,7 @@ description: "Applies changes to system documentation files (agents, commands, d
 tools: Read, Glob, Grep, Edit, Write
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 30
+maxTurns: 200
 ---
 
 # Role

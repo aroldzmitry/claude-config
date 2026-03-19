@@ -4,7 +4,7 @@ description: "System audit: finds duplicate content, overlapping responsibilitie
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 40
+maxTurns: 200
 ---
 
 # Role

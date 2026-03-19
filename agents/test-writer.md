@@ -4,7 +4,7 @@ description: "Writes test files based on spec, test-cases.md, and implementation
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 40
+maxTurns: 200
 ---
 
 # Role

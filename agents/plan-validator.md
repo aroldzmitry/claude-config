@@ -5,6 +5,7 @@ tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
 background: true
+maxTurns: 200
 ---
 
 # Role

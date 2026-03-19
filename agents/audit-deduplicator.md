@@ -4,7 +4,7 @@ description: "System audit pass 1: deduplicates findings across 6 validator repo
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 40
+maxTurns: 200
 ---
 
 # Role

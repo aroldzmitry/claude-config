@@ -3,7 +3,7 @@ name: static-checker
 description: "Runs lint and typecheck commands, returns only errors."
 tools: Bash, Read, Write
 model: haiku
-maxTurns: 10
+maxTurns: 200
 permissionMode: bypassPermissions
 ---
 

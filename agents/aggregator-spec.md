@@ -4,7 +4,7 @@ description: "Collects spec validator reports (Claude + Codex), verifies finding
 tools: Read, Glob, Write, Bash
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 20
+maxTurns: 200
 ---
 
 # Role

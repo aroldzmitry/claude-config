@@ -4,7 +4,7 @@ description: "Implements a single plan step with validation. Also used for fixin
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: opus
 permissionMode: bypassPermissions
-maxTurns: 50
+maxTurns: 200
 ---
 
 # Rules

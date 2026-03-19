@@ -4,7 +4,7 @@ description: "System audit: evaluates prompt engineering quality, instruction cl
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 40
+maxTurns: 200
 ---
 
 # Role

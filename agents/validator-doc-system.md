@@ -4,7 +4,7 @@ description: "Validates documentation changes against DOC_PRINCIPLES and system-
 tools: Read, Glob, Grep
 model: sonnet
 permissionMode: plan
-maxTurns: 25
+maxTurns: 200
 ---
 
 # Role

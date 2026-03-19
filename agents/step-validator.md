@@ -3,7 +3,7 @@ name: step-validator
 description: "Per-step validation dispatcher. Runs static-checker + AI validators in parallel, aggregates findings."
 tools: Task, Read, Write, Glob, Grep, Bash
 model: sonnet
-maxTurns: 30
+maxTurns: 200
 ---
 
 # Role

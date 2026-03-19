@@ -4,7 +4,7 @@ description: "System audit pass 2: verifies each deduplicated finding against ac
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 60
+maxTurns: 200
 ---
 
 # Role

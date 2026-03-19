@@ -4,7 +4,7 @@ description: "Applies fixes from system audit fix-plan. Reads structured fix-pla
 tools: Read, Glob, Grep, Edit, Write, Bash
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 50
+maxTurns: 200
 ---
 
 # Role

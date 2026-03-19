@@ -4,7 +4,7 @@ description: "Collects validator reports (Claude + Codex), verifies findings aga
 tools: Read, Glob, Grep, Write, Bash
 model: sonnet
 permissionMode: acceptEdits
-maxTurns: 25
+maxTurns: 200
 ---
 
 # Role

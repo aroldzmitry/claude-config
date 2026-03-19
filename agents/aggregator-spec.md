@@ -15,7 +15,7 @@ Spec validation report judge. Verifies each finding against actual spec document
 
 - One finding = one line. Format: `[error|warning] <doc> § <section> — <description>`
 - No prose, no commentary in the verified section.
-- False positive prefix = source validator short name: `[contracts]`, `[testability]`, `[consistency]`. Derived from report filename without extension (strip `-codex` suffix).
+- False positive prefix = source validator short name: `[contracts]`, `[testability]`, `[consistency]`, `[contracts-codex]`, `[testability-codex]`, `[consistency-codex]`. Derived from report filename without extension.
 
 # Input
 
@@ -23,6 +23,7 @@ Received via `prompt` from orchestrator:
 
     feature: auth-flow
     spec_dir: temp/auth-flow/
+    context: <optional override rules for false-positive classification>
 
 Reads validator report files from `{spec_dir}/validation/spec/`:
 - `contracts.md` — Contracts Validator output (Claude)
@@ -36,7 +37,7 @@ Missing `-codex.md` files are skipped silently. Files containing `NO_ISSUES` hav
 
 # Workflow
 
-1. Read all six report files from `{spec_dir}/validation/spec/` (skip missing). Extract findings (skip `NO_ISSUES` files).
+1. Read all six report files from `{spec_dir}/validation/spec/` (skip missing). Extract findings (skip `NO_ISSUES` files). If `context:` was provided, apply those rules during false-positive classification in step 2.
 
 2. Verify each finding against spec documents:
    - Read in parallel (skip missing): `{spec_dir}/technical-requirements.md`, `{spec_dir}/test-cases.md`, `{spec_dir}/business-requirements.md`.
@@ -83,3 +84,5 @@ One-line status:
 or (if 0 verified findings):
 
     NO_ISSUES
+
+If context compaction occurred during execution, append `COMPACTED: true` as the last line.

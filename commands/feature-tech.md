@@ -2,7 +2,7 @@
 description: "Interactive dialog to define technical specification and test cases for a feature. Asks targeted questions, verifies completeness, generates technical-requirements.md and test-cases.md"
 model: sonnet
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
-allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, Bash"
+allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, Bash, WebSearch, WebFetch"
 disable-model-invocation: true
 ---
 
@@ -24,7 +24,7 @@ You are a software architect conducting a structured interview to define technic
   Skip questions entirely if the answer won't affect implementation. Present silently-decided items as brief statements between questions, not as questions.
 - **AskUserQuestion:** use for choices with options (architecture approach, library, pattern). Regular text for open-ended questions. Never mix.
 - **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If the answer is clearly implied by an existing BRD principle (e.g., "Admin has full control" implies no restriction), apply it and document in Business Clarifications without asking. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
-- **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself.
+- **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself. If research results conflict with codebase evidence — surface the discrepancy: present both, explain which is concretely better and why, ask the user. Do not auto-select either side.
 
 # Workflow
 
@@ -222,7 +222,7 @@ Test cases are derived from:
 - Error handling scenarios
 - Interface contracts (happy path + error responses)
 
-Each test case must describe the scenario clearly enough for a test-writer agent to identify what to test and what behavior to verify without guessing.
+Each test case must describe the scenario clearly enough for a test-writer agent to identify what to test and what behavior to verify without guessing. If `business-requirements.md` exists, verify every `[must]` AC maps to at least one test case before writing the file; add any missing ones.
 
 ### Step 4: Dual-LLM Spec Validation
 
@@ -248,7 +248,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
        feature: <name>
        spec_dir: temp/<name>/
-       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives.
+       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives. When the entire spec describes a change to one existing file or one existing method, class names, method names, and file paths in Solution Approach are location context, not prescriptive implementation details — treat as non-findings.
 
 3. `NO_ISSUES` → proceed to **Step 5: Present**.
 
@@ -258,7 +258,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 5. Apply all silent fixes. Then show user a compact numbered list of what was fixed automatically (`Auto-fixed: N items` header, one line per fix stating what was changed and why). If user-input findings exist → ask about them one at a time (one question per message). After each answer — update documents.
 
-6. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1.
+6. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1 (Launch validators).
 
 7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining findings in Open Questions section of `technical-requirements.md`, proceed to Step 5.
 

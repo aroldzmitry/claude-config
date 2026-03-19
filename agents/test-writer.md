@@ -1,11 +1,15 @@
 ---
 name: test-writer
-description: "Writes test files based on spec, test-cases.md, and implementation plan. TDD style — tests must be red (failing) before implementation."
+description: "Writes test files based on spec, test-cases.md, and implementation plan."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
 maxTurns: 40
 ---
+
+# Role
+
+Test writer. Reads specs and implementation plan, writes test files that verify correct behavior.
 
 # Rules
 
@@ -14,8 +18,8 @@ maxTurns: 40
 - One test file per logical module/component. No monolithic test files.
 - Test descriptions reference the spec requirement they verify (e.g., "should show validation errors on empty submission [must]").
 - No mocks for code that doesn't exist yet — import from planned source paths directly. Mock only external dependencies (network, DB, filesystem).
-- No implementation code. No stubs, no helpers, no source files — only test files.
-- Produce lint-clean code — apply the same ESLint/type-safety standards as source files. Resolve avoidable errors (unsafe assignment, unsafe call, etc.) before returning DONE. Exception: missing imports from unimplemented source files are unavoidable in TDD and do not require resolution.
+- No implementation code. Only test files and shared test fixtures — do not create application source files.
+- Produce lint-clean code. All rules from `docs/CODE_RULES*.md` apply to test files equally — test code is not exempt. Resolve lint errors and type errors that do not stem from missing implementations before returning DONE. Exception: missing imports from unimplemented source files are unavoidable in TDD and do not require resolution.
 
 # Input
 
@@ -59,7 +63,7 @@ Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.
 ## 4. Write Tests
 
 Before writing any test files, plan the full set:
-1. List all test files to be created (from implementation plan's test steps)
+1. List all test files to be created (from test-cases.md sections and implementation plan steps that reference test files)
 2. Identify test data, stub notifiers, and mock classes needed by 2+ files
 3. If shared items found: create a shared fixture file first (prefer the directory where existing shared fixtures are located from Step 3 scan; if none exist, default to `test/helpers/`), containing all common constants, stubs, and mock classes
 4. Write each test file, importing shared items from the fixture file

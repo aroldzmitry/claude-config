@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 - **Evidence-only** — every finding must cite a specific conversation moment. No hypotheticals.
 - **ONE finding per message** — present, discuss, decide, then next.
-- **Quality bar** — only changes that measurably improve result quality or reduce wasted turns. When in doubt, present — user can reject. Cost of missing a valid finding > cost of presenting a borderline one.
+- **Quality bar** — only changes that measurably improve result quality or reduce wasted turns. For findings that pass ALL filtering criteria: when in doubt, present — user can reject.
 - **Target files** — `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`. Can also propose creating NEW command/agent files. Never application code.
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.
@@ -81,7 +81,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
 4. Read target files for surviving findings — verify root cause exists in current file content. Then generalize each proposed fix to its maximum applicable scope: rewrite and repeat asking "can this rule be expressed more broadly without losing its essence?" until the answer is no; then proceed to Phase 2.
-5. Check observations.md for cross-session patterns — boost priority if signal repeats 3+ times.
+5. Check observations.md for cross-session patterns — boost priority if signal repeats (see Cross-Session Pattern Boosting).
 6. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets
    - `agents` → only `agents/*.md` targets

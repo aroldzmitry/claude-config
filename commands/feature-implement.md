@@ -50,7 +50,7 @@ Spawn `planner` with prompt:
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
 
-After: verify `SPEC_DIR/implementation-plan.md` created. Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`). Step details loaded in Phase 2.
+After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-implement`." Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`).
 
 ### Dual-LLM Plan Validation
 

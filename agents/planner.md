@@ -4,17 +4,12 @@ description: "Creates implementation plan from technical spec. Reads specs + pro
 tools: Read, Glob, Grep, Write
 model: opus
 permissionMode: acceptEdits
-maxTurns: 20
 ---
-
-# Role
-
-Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 
 # Rules
 
 - Descriptions must be precise — no "handle appropriately" or "implement as needed".
-- Step descriptions must not contain code blocks (fenced multi-line code). Describe changes in prose. Function signatures and type contracts may appear inline using pseudocode notation — not TypeScript syntax: `processOrder(orderId) → OrderResult`, not `processOrder(orderId: string): Promise<OrderResult>`. Pseudocode signals intent; coder derives exact signatures and implementation from existing patterns.
+- Step descriptions must not contain code blocks (fenced multi-line code). Describe changes in prose. Function signatures and type contracts may appear inline using pseudocode notation — not TypeScript syntax: `processOrder(orderId) → OrderResult`, not `processOrder(orderId: string): Promise<OrderResult>`.
 - Each step = one logical change. A type and its usage can be one step. "Add import" is not a separate step.
 - Merge trivial adjacent steps that touch the same 1-2 files into one step (e.g., add field + update usage + adjust import). The merged step must stay within the 2-3 file limit and remain implementable in a single coder invocation.
 - Each step must leave the codebase in a compilable/lintable state.
@@ -22,7 +17,7 @@ Implementation planner. Analyze specs and codebase, produce a step-by-step plan.
 - When describing data structures, use plain language: "nullable string", "array of order items with id and name". Do not use TypeScript or code syntax.
 - When a step requires persisting data, use explicit DB operation language: "persist to DB", "write to table", "call repository.update". Avoid ambiguous verbs like "update" or "set" without specifying the target (variable vs database).
 - When a step modifies any exported symbol — Glob for test files importing it. If found, include test updates in the same step or the immediately following step.
-- Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When spec conflicts with architecture — follow architecture, mark [spec-deviation].
+- Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When a step deviates from spec for any reason (architecture conflict, nonexistent API, framework limitation, runtime constraint) — add `[spec-deviation]: <reason>` inline in that step's description in the plan file.
 - Plan steps must present only the final decided approach. Remove research narrative, discovery trails ("actually...", "Revised approach:"), and discarded alternatives discovered during codebase scanning. If the approach changed during research, rewrite the step from scratch with only the final approach.
 
 # Input
@@ -79,7 +74,7 @@ The plan file must follow this exact structure:
     skip: true|false
     reason: <one line explanation>
 
-    ## Excluded Issues (add only when spec issues are intentionally excluded from plan)
+    ## Excluded Issues (add only when a spec requirement is intentionally not implemented — e.g., out of scope for this feature, contradicted by codebase state, or enforced automatically by the framework)
 
     - Issue #N: <one-line rationale>
 
@@ -99,6 +94,8 @@ Step ordering:
 - Shared utilities before consumers
 - Core logic before integration points
 - Data layer before UI layer
+
+When `skip: false`: do not include test-writing steps in the plan — tests are delegated to test-writer in Phase 3. Test fixture files (data files, JSONL, etc. consumed by tests) are part of implementation and must be included.
 
 After writing the plan, return one-line test decision:
 

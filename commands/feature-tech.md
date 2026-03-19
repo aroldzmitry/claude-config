@@ -19,11 +19,11 @@ You are a software architect conducting a structured interview to define technic
 - Match the user's language (all your messages, including scripted phrases, must be in the user's language)
 - **Silent decisions:** before each question, classify the decision:
   - *Established* (project conventions/architecture/codebase patterns dictate the answer) or *Single viable* (only one reasonable option) → apply silently, state briefly: "Using X (project pattern)". Do NOT ask for confirmation.
-  - *Multiple valid* (no project preference, real trade-offs) → **ask with options and recommendation**.
+  - *Multiple valid* (no project preference, real trade-offs) → **ask with options and recommendation**. Heuristic: if you would mark one option as `(Recommended)` with high confidence, and that confidence comes from a project pattern, security principle, or clear BRD implication — it's *Single viable*, not *Multiple valid*. Reserve `AskUserQuestion` for decisions where you genuinely cannot recommend one option.
   - *Suboptimal* (project pattern exists but better option available) → **propose improvement, ask**.
   Skip questions entirely if the answer won't affect implementation. Present silently-decided items as brief statements between questions, not as questions.
 - **AskUserQuestion:** use for choices with options (architecture approach, library, pattern). Regular text for open-ended questions. Never mix.
-- **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. Discuss it here, get user's decision, record in Business Clarifications section of `technical-requirements.md`.
+- **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If the answer is clearly implied by an existing BRD principle (e.g., "Admin has full control" implies no restriction), apply it and document in Business Clarifications without asking. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
 - **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself.
 
 # Workflow
@@ -207,6 +207,7 @@ Create `temp/<feature-name>/test-cases.md`:
 ## Test Strategy
 
 <approach: what levels of testing, what's excluded and why>
+Concrete inputs and expected values are the test-writer agent's responsibility — test cases here describe scenarios only.
 
 ## Test Cases
 
@@ -221,7 +222,7 @@ Test cases are derived from:
 - Error handling scenarios
 - Interface contracts (happy path + error responses)
 
-Each test case must be specific enough for a test-writer agent to implement without guessing.
+Each test case must describe the scenario clearly enough for a test-writer agent to identify what to test and what behavior to verify without guessing.
 
 ### Step 4: Dual-LLM Spec Validation
 
@@ -247,6 +248,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
        feature: <name>
        spec_dir: temp/<name>/
+       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives.
 
 3. `NO_ISSUES` → proceed to **Step 5: Present**.
 

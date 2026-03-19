@@ -1,6 +1,6 @@
 ---
 name: super-agent
-description: "Super Agent — runs any agent's instructions through Claude CLI in a separate process. First word of prompt = agent name, rest = task params. Writes findings via the agent, returns agent's one-line status."
+description: "Super Agent — runs any agent's instructions through Claude CLI in a separate process. First word of prompt = agent name, rest = task params. Returns the agent's full response verbatim."
 tools: Bash
 model: sonnet
 ---
@@ -31,6 +31,7 @@ Prompt from orchestrator:
        Bash: ~/.claude/bin/launch-agent.sh poll "{SESSION_DIR}"
 
    - If output is exactly `WAITING` → wait 5 seconds (`Bash: sleep 5`), then poll again.
+   - If output contains `authentication_error` or `401` → return: "AUTH_ERROR: OAuth token expired. Run `claude setup-token` (1-year token) then re-run the command." Stop.
    - Any other output → the agent's response. Return it verbatim. Stop.
 
 # Rules

@@ -76,7 +76,7 @@ Do all of this in a single message:
 
 5. **Scope estimate** — count distinct user flows, new entities, `[must]` acceptance criteria, and `[error]` edge cases. Formula: `user_flows × 3 + new_entities × 2 + must_criteria + error_edges`. If estimate > 25 → ask user BEFORE generating: "Feature is large (estimate: N). Generate full doc now, or run `/feature-split` first?" Only generate if user chooses to proceed.
 
-End the message with ONE question: ask about the first gap found, or about splitting if estimate > 12, or ask to confirm everything and proceed to document generation (if no gaps and estimate ≤ 12).
+End the message with ONE question: ask about the first gap found, or about splitting if estimate > 25, or ask to confirm everything and proceed to document generation (if no gaps and estimate ≤ 25).
 
 ### Step 2: Clarify
 
@@ -93,12 +93,12 @@ Before proceeding, verify internally:
 - [ ] Scope boundaries are explicit (included AND excluded)
 - [ ] All gap check scenarios are resolved or recorded in Open Questions
 
-If any item fails — go back to Step 2 and ask. If all pass — propose the feature name and ask for confirmation to proceed. Naming rules: if `$ARGUMENTS` is 1–3 words → use as-is in kebab-case; if longer → derive a concise name from it; if no arguments → derive from dialog content. Only proceed on explicit confirmation.
+If any item fails — go back to Step 2 and ask. If all pass — state the chosen feature name (naming rules: if `$ARGUMENTS` is 1–3 words → use as-is in kebab-case; if longer → derive a concise name from it; if no arguments → derive from dialog content) and proceed to Phase 3.
 
 ## Phase 3: Generate Document
 
 1. Create directory: `temp/<feature-name>/`
-2. Write `temp/<feature-name>/business-requirements.md` using the format below
+2. Write `temp/<feature-name>/business-requirements.md` using the format below. If the feature involves work in an external project (backend, separate service), create a separate `temp/` folder for it — same structure as the main one.
 3. Show the full document to the user
 4. If user requests changes → apply, show updated version, repeat until confirmed
 5. After final confirmation, suggest the next step:

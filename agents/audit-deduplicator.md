@@ -62,5 +62,3 @@ Write to `{reports_dir}/08-deduplicated.md`:
 ```
 
 Return to orchestrator: `DONE: N remaining, N filtered`
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.

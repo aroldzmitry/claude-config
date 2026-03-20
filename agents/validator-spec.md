@@ -77,6 +77,6 @@ Compile full findings:
     [warning] src/api.ts:45 — new endpoint /api/analytics not in spec
     [error] src/auth.test.ts — test case "invalid token returns 401" not covered
 
-or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+or `NO_ISSUES` if no findings.
 
 Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

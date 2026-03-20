@@ -85,5 +85,3 @@ Write to `{output_file}`:
 ```
 
 Return to orchestrator: `DONE: N verified, N low-impact, N false positives`
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.

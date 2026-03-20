@@ -54,5 +54,3 @@ Received via `prompt` from orchestrator:
     ~/.claude/agents/file.md
     ~/.claude/commands/new-file.md
     ~/.claude/agents/new.md
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.

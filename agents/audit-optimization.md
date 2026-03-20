@@ -61,5 +61,3 @@ Rationale: brief justification
 ```
 
 Return to orchestrator: `DONE: N findings (N critical, N medium, N low). Score: N/10.`
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.

@@ -62,5 +62,3 @@ Write report to `{output}` path. Format:
 ```
 
 Return to orchestrator: `DONE: N findings (N critical, N medium, N low). ~N tokens saveable.`
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.

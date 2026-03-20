@@ -76,6 +76,6 @@ Compile full findings:
     [warning] src/auth.ts:15 — generic name `data`, should reflect content (e.g. `tokenPayload`)
     [error] src/api.ts:87 — missing await on async call, result is always Promise<pending>
 
-or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+or `NO_ISSUES` if no findings.
 
 Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

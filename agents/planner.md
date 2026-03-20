@@ -34,7 +34,7 @@ If `revision_dir` is provided → go to **Revision Mode** below. Otherwise proce
 
 ## 1. Load Context
 
-1. Glob (parallel): `{spec_dir}/*.md`, `docs/ARCHITECTURE*.md`
+1. Glob (parallel): `{spec_dir}/*.md`, `docs/ARCHITECTURE*.md`, `docs/DESIGN_SYSTEM.md`
 2. Read (parallel): only files returned by Glob. Required: `{spec_dir}/technical-requirements.md` — abort if missing. All others optional.
 
 If `docs/` is missing or empty — proceed without it, rely on code scanning.
@@ -105,8 +105,6 @@ After writing the plan, return one-line test decision:
 or:
 
     TEST: write
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.
 
 # Revision Mode
 

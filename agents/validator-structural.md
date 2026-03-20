@@ -95,6 +95,6 @@ Compile full findings:
     [warning] src/auth.ts:45 — same token validation logic duplicated in src/api.ts:78, extract to shared utility
     [warning] src/helpers/auth-helper.ts — file should be in src/utils/ per project convention
 
-or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+or `NO_ISSUES` if no findings.
 
 Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

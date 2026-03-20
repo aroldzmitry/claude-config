@@ -77,6 +77,6 @@ Write findings to `output_file`:
     [warning] src/api.ts:91 — permissive CORS: Access-Control-Allow-Origin set to wildcard
     [error] config/db.yaml:5 — hardcoded database password
 
-or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+or `NO_ISSUES` if no findings.
 
 Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

@@ -62,5 +62,3 @@ or
     ISSUES: N found
     - [path/to/file.md:42] description of issue
     - [path/to/other.md:15] description of issue
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.

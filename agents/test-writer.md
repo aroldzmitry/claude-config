@@ -104,5 +104,3 @@ Interface change propagation: when removing, renaming, or changing the signature
 or, if test-cases.md was missing:
 
     DONE: {N} test files created (tests derived from spec — test-cases.md missing)
-
-If context compaction occurred during execution, append `COMPACTED: true` as the last line.

@@ -72,6 +72,6 @@ Compile full findings:
     [warning] Step 4 creates file Y with no consumers in subsequent steps or existing code
     [error] Step 2 references method `processOrder(id) → Result` but step 5 uses `processOrder(id, options) → Result` — signature mismatch
 
-or `NO_ISSUES` if no findings. If context compaction occurred during execution, append `COMPACTED: true` as the last line.
+or `NO_ISSUES` if no findings.
 
 Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

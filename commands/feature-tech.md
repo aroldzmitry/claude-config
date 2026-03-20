@@ -247,7 +247,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
        feature: <name>
        spec_dir: temp/<name>/
-       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives. When the entire spec describes a change to one existing file or one existing method, class names, method names, and file paths in Solution Approach are location context, not prescriptive implementation details — treat as non-findings. When § Business Clarifications documents a decision that overrides a BRD requirement, consistency findings about that specific BRD-vs-spec contradiction are false positives.
+       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives. When the entire spec describes a change to one existing file or one existing method, class names, method names, and file paths in Solution Approach are location context, not prescriptive implementation details — treat as non-findings. When § Business Clarifications documents a decision that overrides a BRD requirement, consistency findings about that specific BRD-vs-spec contradiction are false positives. When § Business Clarifications explicitly excludes a BRD requirement as already implemented, test coverage and consistency findings for that excluded scope are false positives.
 
 3. `NO_ISSUES` → proceed to **Step 5: Present**.
 

@@ -76,7 +76,7 @@ Do all of this in a single message:
 
 5. **Scope estimate** — count distinct user flows, new entities, `[must]` acceptance criteria, and `[error]` edge cases. Formula: `user_flows × 3 + new_entities × 2 + must_criteria + error_edges`. If estimate > 25 → ask user BEFORE generating: "Feature is large (estimate: N). Generate full doc now, or run `/feature-split` first?" Only generate if user chooses to proceed.
 
-End the message with ONE question: ask about the first gap found, or about splitting if estimate > 25, or ask to confirm everything and proceed to document generation (if no gaps and estimate ≤ 25).
+End the message with ONE question only if a gap exists (ask about the first gap) or if estimate > 25 (ask about splitting). If no gaps and estimate ≤ 25 — note that verification passed and proceed directly to Phase 3 without asking.
 
 ### Step 2: Clarify
 
@@ -92,6 +92,7 @@ Before proceeding, verify internally:
 - [ ] Every Acceptance Criterion has a priority
 - [ ] Scope boundaries are explicit (included AND excluded)
 - [ ] All gap check scenarios are resolved or recorded in Open Questions
+- [ ] Document is internally consistent: every capability stated in the Actor section is covered by at least one AC; every entity in Key Entities matches its description in User Flow and ACs
 
 If any item fails — go back to Step 2 and ask. If all pass — state the chosen feature name (naming rules: if `$ARGUMENTS` is 1–3 words → use as-is in kebab-case; if longer → derive a concise name from it; if no arguments → derive from dialog content) and proceed to Phase 3.
 

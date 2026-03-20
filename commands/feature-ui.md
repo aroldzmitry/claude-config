@@ -2,7 +2,7 @@
 description: "Interactive dialog to define UI/UX requirements for a feature. Analyzes Figma mockups or gathers requirements via text. Generates ui-requirements.md"
 model: sonnet
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
-allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Skill"
+allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion, Skill"
 disable-model-invocation: true
 ---
 
@@ -16,7 +16,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 - Keep responses concise — question + context why you're asking (1 sentence max), nothing else. No preambles, no summaries of what user just said, no filler.
 - When multiple valid answers exist: present options with pros/cons and your recommendation.
 - Match the user's language (all your messages, including scripted phrases, must be in the user's language)
-- Every question must pass the filter: "if the answer differs, will the UI differ?" If no — don't ask
+- Every question must pass the filter: "if the answer differs, will the UI differ, AND are there multiple genuinely valid non-obvious options?" If either no — don't ask
 - **AskUserQuestion:** use for choices with options (layout pattern, component type, action behavior). Regular text for open-ended questions. Never mix.
 - **No technical implementation details.** Focus on what the user sees and does, not on React components or hooks. If user drifts into code — redirect: note the point for `/feature-tech`, steer back to UI behavior.
 - **Design system compliance.** All proposals must align with `docs/DESIGN_SYSTEM.md`. If user requests something outside the design system — flag it, discuss, resolve.
@@ -100,7 +100,7 @@ Do all of this in a single message:
 4. Check against `business-requirements.md` (if exists): every user flow step has UI coverage?
 5. Show summary and Key UI Decisions. If gaps — list them. If none — note verification passed.
 
-End with ONE question: ask about the first gap, or ask to confirm and proceed.
+End with ONE question only if a gap exists. If no gaps — note verification passed and proceed directly to Phase 3 without asking.
 
 ### Step 2: Clarify
 
@@ -120,7 +120,7 @@ Before proceeding, verify internally:
 - [ ] Every page mentioned in Navigation exists in Pages section
 - [ ] All gaps resolved or recorded in Open Questions
 
-If any item fails — go back to Step 2. If all pass and user hasn't confirmed — ask for confirmation. Only proceed on explicit confirmation.
+If any item fails — go back to Step 2. If all pass — proceed directly to Phase 3.
 
 ## Phase 3: Generate Document
 
@@ -203,4 +203,4 @@ If `$ARGUMENTS` matches an existing `temp/*/` folder:
 
 If `$ARGUMENTS` is provided but no matching folder — create folder, proceed to Phase 0.
 
-If no arguments — ask what feature the user wants to design UI for.
+If no arguments — ask what feature the user wants to design UI for. Once user responds, use the response as the feature name and proceed to Phase 0.

@@ -35,7 +35,7 @@ Before asking questions, silently:
 2. Check if `temp/<feature-name>/business-requirements.md` exists — read it if yes. Also read `temp/<feature-name>/ui-requirements.md` if exists — use as context for API contracts and component architecture. If `business-requirements.md` has a "Related Features" section — also read `technical-requirements.md` from each referenced feature's `temp/<related-feature>/` folder (if exists), as these contain architectural decisions and API contracts that may answer interview questions.
 3. Read `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md` if they exist
 4. If feature modifies existing code — explore affected modules, data flow, and contracts to understand current state before asking questions (max 5 tool calls)
-5. If `business-requirements.md` loaded — cross-reference its explicit claims (auth model, response format, pagination, public/private access) against project patterns observed in steps 3–4. Contradictions → raise as business clarifications at the start of Phase 1, before category questions
+5. If `business-requirements.md` loaded — cross-reference its explicit claims (auth model, response format, pagination, public/private access) against project patterns observed in steps 3–4. Also cross-check: every capability stated in the Actor section has a corresponding UI component or API endpoint in the solution approach; capability with no technical counterpart → raise as business clarification. Contradictions → raise as business clarifications at the start of Phase 1, before category questions
 6. If no `$ARGUMENTS` — ask the user what they want to specify technically
 
 Do NOT mention this step to the user. Just use the knowledge.
@@ -97,7 +97,7 @@ Do all of this in a single message:
 3. Note any gaps.
 4. Show summary and Key Decisions. If gaps — list them. If none — note verification passed.
 
-End with ONE question: ask about the first gap, or ask to confirm; on confirmation, proceed to Quality Gate (Step 3) then Phase 3.
+End with ONE question only if a gap exists. If no gaps — note verification passed and proceed directly to Quality Gate (Step 3) then Phase 3 without asking.
 
 ### Step 2: Clarify
 
@@ -115,7 +115,7 @@ Before proceeding, verify internally:
 - [ ] No vague instructions remain
 - [ ] All gaps resolved or recorded in Open Questions
 
-If any item fails — go back to Step 2. If all pass and user hasn't confirmed — ask for confirmation. Only proceed on explicit confirmation.
+If any item fails — go back to Step 2. If all pass — proceed directly to Phase 3.
 
 ## Phase 3: Generate Documents
 
@@ -207,7 +207,6 @@ Create `temp/<feature-name>/test-cases.md`:
 ## Test Strategy
 
 <approach: what levels of testing, what's excluded and why>
-Concrete inputs and expected values are the test-writer agent's responsibility — test cases here describe scenarios only.
 
 ## Test Cases
 

@@ -114,7 +114,7 @@ For each finding, one per message:
    - **Reject** — won't be suggested again
    - **Skip** — defer, no record
 
-3. "Reject" → follow up: ask for a brief reason (one message).
+3. "Reject" → follow up: ask for a brief reason (one message). If the stated reason contradicts the mechanical tests already run (e.g., user says "too rare" but 3-scenario test passed with 3 distinct domains), present the counter-evidence in one message and ask once more. Accept the second rejection unconditionally. While recording the reason — also scan for signals of an alternative problem or a differently-framed root cause. If found → present it as a new finding immediately after closing this item: "You seem to be pointing at [X]. Should we discuss that?"
 4. "Modify" → discuss user's alternative. Once agreed → record as accepted with modified action. For new file proposals: discuss structure, scope, and conventions with user until agreed. If user decides against → re-ask (Accept / Reject / Skip).
 
 After each decision: `[{current}/{total} | next: {target-file} — {finding-summary}]`

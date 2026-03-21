@@ -26,7 +26,7 @@ Received via `prompt` from orchestrator in key-value format:
    - `static-checker` with `error_file: <absolute path to {spec_dir}/validation/static.txt>`
    - `test-runner` with `error_file: <absolute path to {spec_dir}/validation/tests.txt>`
 
-3. Both complete → check statuses. Any FAIL (including crash without parseable status) → collect errors from ALL failed checks, write to `{spec_dir}/validation/aggregated.md` in format `[error] file:line — description` (or `[error] category — description` without file reference). Return `HAS_ISSUES: N errors (static/test)`.
+3. Both complete → check statuses. Any FAIL (including crash without parseable status) → collect errors from ALL failed checks, write to `{spec_dir}/validation/aggregated.md` in format `[error] file:line — description` (or `[error] category — description` without file reference). Update `{spec_dir}/validation/issues.md`: for each error, if issues.md does not already contain `[open] {line}` → append `[open] {line}` (create if missing; a `[fixed]` entry with same text is NOT a match). Return `HAS_ISSUES: N errors (static/test)`.
 
 4. Both clean → launch AI validators in parallel:
    - `validator-structural` + `codex "validator-structural"` (→ structural.md, structural-codex.md)

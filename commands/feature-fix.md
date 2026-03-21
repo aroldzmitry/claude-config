@@ -136,16 +136,17 @@ Check global-validator status:
 
 ## Phase 5: Finalize
 
-1. `git status --porcelain` → changed files
-2. `git diff --cached --name-only` → `PRE_STAGED`. If non-empty → `git restore --staged <PRE_STAGED>`.
-   `git add` implementation files.
-3. `git diff --cached --stat` → stats. If `PRE_STAGED` non-empty → `git add <PRE_STAGED>`.
-4. If `unresolved_steps` is non-empty: create `{SPEC_DIR_base}-warnings/technical-requirements.md` (where `SPEC_DIR_base` = SPEC_DIR path without trailing slash) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
-5. Folder status:
+1. `git status --porcelain` → parse entries, exclude non-source files (same list as Phase 4). Stage by status:
+   - Working-tree deletions (second char `D`): `git rm --cached`.
+   - Already-staged deletions (first char `D`, second char ` `): skip.
+   - Everything else: `git add`.
+2. `git diff --cached --stat` → stats.
+3. If `unresolved_steps` is non-empty: create `{SPEC_DIR_base}-warnings/technical-requirements.md` (where `SPEC_DIR_base` = SPEC_DIR path without trailing slash) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+4. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
-   - If `{SPEC_DIR_base}-warnings/` was created in step 4 → `touch {SPEC_DIR_base}-warnings/NEXT--feature-fix`
-6. Output report
+   - If `{SPEC_DIR_base}-warnings/` was created in step 3 → `touch {SPEC_DIR_base}-warnings/NEXT--feature-fix`
+5. Output report
 
 # Edge Cases
 

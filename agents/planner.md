@@ -25,7 +25,7 @@ maxTurns: 200
   | Adds dependency without changing exports | Glob: module's own tests | Add to **Files**, mock new dependency |
   | Changes asserted value (error code, constant) | Grep tests: old value | Add to **Files**, update assertion |
   | Modifies method parameter list | Grep tests: method name | Add to **Files**, update call-argument assertions |
-- Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When the spec's description contains a suggested implementation approach (e.g., "create file X that imports from Y", "wrap module Z"), treat it as a hint — verify it against architecture layer rules before adopting it; if it violates a constraint, implement the nearest valid alternative. When a step deviates from spec for any reason (architecture conflict, nonexistent API, framework limitation, runtime constraint) — add `[spec-deviation]: <reason>` inline in that step's description in the plan file.
+- Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When the spec's description contains a suggested implementation approach (e.g., "create file X that imports from Y", "wrap module Z"), treat it as a hint — verify it against architecture layer rules before adopting it; if it violates a constraint, implement the nearest valid alternative. When a new file doesn't fit any documented directory's stated purpose, add a plan step to create the directory and update `docs/ARCHITECTURE*.md` — do not place files in ill-fitting existing directories. When a step deviates from spec for any reason (architecture conflict, nonexistent API, framework limitation, runtime constraint) — add `[spec-deviation]: <reason>` inline in that step's description in the plan file.
 - Plan steps must present only the final decided approach. Remove research narrative, discovery trails ("actually...", "Revised approach:"), and discarded alternatives discovered during codebase scanning. If the approach changed during research, rewrite the step from scratch with only the final approach.
 
 # Input
@@ -101,7 +101,7 @@ Step ordering:
 - Core logic before integration points
 - Data layer before UI layer
 
-When `skip: false`: do not include test-writing steps in the plan — tests are delegated to test-writer by the orchestrator. Test fixture files (data files, JSONL, etc. consumed by tests) are part of implementation and must be included.
+When `skip: false`: do not include steps that write new tests — tests are delegated to test-writer by the orchestrator. Fixing existing incorrect tests (wrong assertion, broken mock, wrong callback path) is an implementation step; include it in the plan. Test fixture files are part of implementation and must be included.
 
 After writing the plan, return one-line test decision:
 

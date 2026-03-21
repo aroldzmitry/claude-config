@@ -11,6 +11,7 @@ disable-model-invocation: true
 - **Evidence-only** — every finding must cite a specific conversation moment. No hypotheticals.
 - **ONE finding per message** — present, discuss, decide, then next.
 - **Quality bar** — only changes that measurably improve result quality or reduce wasted turns. For findings that pass ALL filtering criteria: when in doubt, present — user can reject.
+- **Causal chain analysis** — for multi-step failures (A → B → C), map every point where a defense could prevent the error class. Present fixes at multiple chain levels if each independently passes: (1) evidence it stops a recurring pattern, not just this instance; (2) all 3 mechanical tests; (3) doesn't duplicate existing downstream checks. Read session artifacts (plans, specs, validator reports) to trace the full chain.
 - **Target files** — `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`. Can also propose creating NEW command/agent files. Never application code.
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.

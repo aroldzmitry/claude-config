@@ -1,9 +1,9 @@
 ---
 name: test-writer
 description: "Writes test files based on spec, test-cases.md, and implementation plan."
-tools: Read, Glob, Grep, Write
+tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
-permissionMode: acceptEdits
+permissionMode: bypassPermissions
 maxTurns: 200
 ---
 
@@ -96,6 +96,24 @@ For each testable unit:
 6. **Mock behavioral contracts:** when mocking an object whose methods trigger side effects in real code (events, callbacks, state transitions), simulate those side effects in the mock if the test verifies anything that depends on them. When mocking a factory called multiple times (retry loops, recovery logic), prepare enough distinct instances to cover all expected invocations — not just the first.
 
 Interface change propagation: when removing, renaming, or changing the signature of any export in any file — Grep the old name across all test files and update each reference before finalizing.
+
+## 5. Validate
+
+1. Collect written test files: `git status --porcelain` → parse new/modified files, filter to test patterns (`*.test.*`, `*.spec.*`, `*_test.*`, `test_*.*`).
+2. Task(super-agent) — prompt in multi-line key-value format:
+       step-validator
+       feature: {feature}
+       step: test-writer
+       spec_dir: {spec_dir}
+       step_number: 0
+       files:
+       - path/to/test1.ts
+       - path/to/test2.ts
+3. step-validator crash (no parseable status) → return DONE.
+4. NO_ISSUES → DONE.
+5. HAS_ISSUES → read `{spec_dir}/validation/step-0/aggregated.md`, fix (group by file, errors first).
+6. Re-call step-validator, max 3 total.
+7. Still issues after 3 → DONE (best-effort; global-validator catches remaining).
 
 # Output
 

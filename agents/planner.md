@@ -17,7 +17,14 @@ maxTurns: 200
 - Each step must target at most 2–3 public functions/methods. Classes with code generation (freezed, json_serializable, built_value) count as 2 public methods each toward this limit. If a step requires implementing more, split into multiple sub-steps (e.g., "Step 8a: add createDraft, getActive, updateDeceased", "Step 8b: add updateVisit, updateFuneral"). Large rewrites of entire files must be broken into logical sub-steps.
 - When describing data structures, use plain language: "nullable string", "array of order items with id and name". Do not use TypeScript or code syntax.
 - When a step requires persisting data, use explicit DB operation language: "persist to DB", "write to table", "call repository.update". Avoid ambiguous verbs like "update" or "set" without specifying the target (variable vs database).
-- When a step modifies any exported symbol — Glob for test files importing it. If found, include test updates in the same step or the immediately following step. When a step adds new external dependencies to an existing module without changing its exports — Glob for that module's own test files; if found, add them to the step's **Files** list and include a description line: "In [test file], mock [new dependency]." When a step changes a value that is asserted in tests (error code, exception class, constant) — Grep test directories for the old value; include any found test files in that step's **Files** list with an instruction to update the assertion.
+- When a step risks breaking tests, find and include affected test files:
+
+  | Trigger | Search | Action |
+  |---|---|---|
+  | Modifies exported symbol | Glob: test importers | Include test updates in same/next step |
+  | Adds dependency without changing exports | Glob: module's own tests | Add to **Files**, mock new dependency |
+  | Changes asserted value (error code, constant) | Grep tests: old value | Add to **Files**, update assertion |
+  | Modifies method parameter list | Grep tests: method name | Add to **Files**, update call-argument assertions |
 - Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When the spec's description contains a suggested implementation approach (e.g., "create file X that imports from Y", "wrap module Z"), treat it as a hint — verify it against architecture layer rules before adopting it; if it violates a constraint, implement the nearest valid alternative. When a step deviates from spec for any reason (architecture conflict, nonexistent API, framework limitation, runtime constraint) — add `[spec-deviation]: <reason>` inline in that step's description in the plan file.
 - Plan steps must present only the final decided approach. Remove research narrative, discovery trails ("actually...", "Revised approach:"), and discarded alternatives discovered during codebase scanning. If the approach changed during research, rewrite the step from scratch with only the final approach.
 

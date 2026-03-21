@@ -2,7 +2,7 @@
 description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → global-validator → fix loop), produces staged git diff."
 model: sonnet
 argument-hint: "<folder>: spec folder name (e.g. BUG-phone-field-required)"
-allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion"
+allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
 disable-model-invocation: true
 ---
 
@@ -29,9 +29,10 @@ Fix orchestrator. Delegates to agents — never writes application code.
   - Step FP → `SPEC_DIR/validation/step-{N}/false-positives.md`
   - Step raw → `SPEC_DIR/validation/step-{N}/*.md, *.txt`
   - Plan validation findings → `SPEC_DIR/validation/plan/{source}.md`
-  - Validator reports → `SPEC_DIR/validation/iter-{N}/{name}.md`
-  - Aggregated findings → `SPEC_DIR/validation/iter-{N}/aggregated.md`
-  - False positives → `SPEC_DIR/validation/iter-{N}/false-positives.md`
+  - Validator reports → `SPEC_DIR/validation/{name}.md` (flat, overwritten each iteration)
+  - Aggregated findings → `SPEC_DIR/validation/aggregated.md`
+  - Open/fixed issue tracking → `SPEC_DIR/validation/issues.md`
+  - False positives → `SPEC_DIR/validation/false-positives.md`
 
 # Workflow
 
@@ -115,7 +116,6 @@ Spawn `global-validator` via Task(super-agent) with prompt:
     global-validator
     feature: _fix
     spec_dir: SPEC_DIR
-    ai_iteration: 0
     skip_spec: true
     files:
     - {CHANGED_FILES, each on own line with "- " prefix}
@@ -129,10 +129,10 @@ Check global-validator status:
         mode: fix-ai
         feature: _fix
         spec_dir: SPEC_DIR
-        report_file: validation/iter-{ai_iter}/aggregated.md
+        report_file: validation/issues.md
 
   coder crash (super-agent error) → still increment ai_iter, re-run global-validator.
-  Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with new `ai_iteration` and CHANGED_FILES.
+  Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES.
 
 ## Phase 5: Finalize
 
@@ -140,7 +140,7 @@ Check global-validator status:
 2. `git diff --cached --name-only` → `PRE_STAGED`. If non-empty → `git restore --staged <PRE_STAGED>`.
    `git add` implementation files.
 3. `git diff --cached --stat` → stats. If `PRE_STAGED` non-empty → `git add <PRE_STAGED>`.
-4. If `unresolved_steps` is non-empty: create `{SPEC_DIR_base}-warnings/technical-requirements.md` (where `SPEC_DIR_base` = SPEC_DIR path without trailing slash) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/iter-{ai_iter - 1}/aggregated.md` and include context from the aggregated report; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. The planner discovers correct identifiers from codebase scanning.
+4. If `unresolved_steps` is non-empty: create `{SPEC_DIR_base}-warnings/technical-requirements.md` (where `SPEC_DIR_base` = SPEC_DIR path without trailing slash) with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`

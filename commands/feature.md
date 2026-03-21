@@ -28,6 +28,7 @@ You are a business analyst conducting a structured interview to define feature r
 Before asking questions, silently:
 1. Check if the project has `docs/` directory
 2. Read `docs/ARCHITECTURE*.md` if they exist — to understand existing structure, features, and terminology
+3. If `$ARGUMENTS` mentions platforms or systems outside this repo's scope (mobile app, separate service, different codebase) — note as cross-repo feature; Phase 3 will require separate `temp/` folders per project
 
 Do NOT mention this step to the user. Just use the knowledge.
 

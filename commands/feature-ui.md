@@ -19,7 +19,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 - Every question must pass the filter: "if the answer differs, will the UI differ, AND are there multiple genuinely valid non-obvious options?" If either no — don't ask
 - **AskUserQuestion:** use for choices with options (layout pattern, component type, action behavior). Regular text for open-ended questions. Never mix.
 - **No technical implementation details.** Focus on what the user sees and does, not on React components or hooks. If user drifts into code — redirect: note the point for `/feature-tech`, steer back to UI behavior.
-- **Design system compliance.** All proposals must align with `docs/DESIGN_SYSTEM.md`. If user requests something outside the design system — flag it, discuss, resolve.
+- **Design system compliance.** All proposals must align with `docs/DESIGN_SYSTEM.md`. If user requests something outside the design system — flag it, discuss, resolve. If the resolution overrides a statement in `business-requirements.md`, update that statement before moving to the next question.
 
 # Workflow
 
@@ -40,7 +40,7 @@ Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
 
 Go through categories in order.
 
-**Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. Batch pattern-following decisions where possible — show several at once and ask to confirm or flag changes.
+**Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. When 2+ consecutive categories follow established patterns without requiring user input, present them together in a single message and ask to confirm or flag changes.
 
 **Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature, OR (c) Figma mockups already define it fully, OR (d) the established codebase pattern fully defines it — state the pattern being followed. State when skipping: `[skipping Filters — not a list page]`.
 

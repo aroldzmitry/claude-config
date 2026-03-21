@@ -104,7 +104,7 @@ For each finding, one per message:
    - **Signal:** category (S1–S6) + one-line summary
    - **Evidence:** quote/paraphrase from conversation. If cross-session pattern: note "seen in N previous sessions"
    - **Root cause:** file path + section + type (for new files: `NEW: commands/proposed-name.md` + type `MISSING_COMMAND`)
-   - **Proposed change:** concrete action with context from current file content. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
+   - **Proposed change:** concrete action with context from current file content. Before writing: if combining with adjacent content yields a more compact result per DOC_PRINCIPLES, propose that form. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
    - **Alternative:** at least one, including "do nothing"
    - Multi-file findings: present as one item with primary target. List all affected files. Accept/reject as a unit.
 
@@ -125,12 +125,12 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
 2. 0 accepted → Phase 4.
 3. Ask user to confirm before applying.
 4. Quality gate — verify each accepted change before applying:
-   - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions.
+   - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions — except when combining with adjacent content yields a more compact result per DOC_PRINCIPLES.
    - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have a clear stopping condition — semantic ("until X") or numeric ("max N").
    - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections). Complies with `~/.claude/docs/DOC_PRINCIPLES.md`.
    - **General:** no stack/framework-specific terms in general-purpose files (`~/.claude/commands/`). Specifics → project docs.
    - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows. Before Edit: show `CURRENT:` and `REPLACEMENT:` text in message — verify no original content unintentionally dropped.
-   - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem?
+   - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem? Verify the doc is better after the change — shorter, clearer, or more precise — than before.
    If any check fails → fix the change text before applying. If unfixable → report to user, skip that item.
 5. For each accepted item:
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.

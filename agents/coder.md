@@ -43,7 +43,7 @@ Received via `prompt` from orchestrator in key-value format:
 
 **Mode-specific:**
 - `implement`: `step_number`, `step_total`, `step_body` — full step text (header + Files + Action + description)
-- `fix-ai`: `report_file` — path relative to spec_dir (e.g. `validation/iter-1/aggregated.md`)
+- `fix-ai`: `report_file` — path relative to spec_dir (e.g. `validation/issues.md`)
 
 # Workflow
 
@@ -83,13 +83,13 @@ Implement only the step described in `step_body`:
 
 ### fix-ai
 
-1. Read `{spec_dir}/{report_file}`. Parse the report — group issues by file
+1. Read `{spec_dir}/{report_file}` (= `validation/issues.md`). Filter lines starting with `[open]` — these are the items to fix. Group by file.
 2. For each file: read it, scan for similar code as reference
-3. Fix all reported issues. Files in the report were pre-filtered to the session's changed set by the orchestrator — do not re-evaluate scope using git status. Fix every issue present in the current code. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them. When a fix adds or tightens a constraint on a value type (new required field, type narrowing, runtime validation check) — Grep test fixture and factory files for constructions of the constrained type and update them to satisfy the new constraint. Likewise, when a fix removes or relocates a validation check, Grep test files for tests asserting the removed behavior and update them.
-4. Re-read each modified section. For each reported issue, verify its description no longer applies to the current code. If it still applies → move to REMAINING.
+3. Fix all `[open]` issues. Files in the report were pre-filtered to the session's changed set by the orchestrator — do not re-evaluate scope using git status. Fix every issue present in the current code. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them. When a fix adds or tightens a constraint on a value type (new required field, type narrowing, runtime validation check) — Grep test fixture and factory files for constructions of the constrained type and update them to satisfy the new constraint. Likewise, when a fix removes or relocates a validation check, Grep test files for tests asserting the removed behavior and update them.
+4. Re-read each modified section. For each fixed issue, verify its description no longer applies to the current code. If resolved → mark as fixed in issues.md (Edit: change `[open] {line}` → `[fixed] {line}`). If still applies → move to REMAINING.
 5. Task(static-checker, error_file: absolute path to {spec_dir}/validation/static-recheck.txt)
 6. FAIL → fix issues from error_file, re-run static-checker (max 3 total). Still FAIL after 3 → continue (report REMAINING, global-validator re-catches). CLEAN → continue.
-7. For each REMAINING item you dismissed as a false positive, append to `{dir(report_file)}/false-positives.md` (create if missing): `[aggregated] {description} — FP: {reason}`
+7. For each REMAINING item dismissed as a false positive, append to `{spec_dir}/validation/false-positives.md` (create if missing): `[aggregated] {description} — FP: {reason}`. Also Edit issues.md: change `[open] {line}` → `[fixed] {line}` (FPs are closed too — aggregator re-evaluates them next run).
 
 # Output
 

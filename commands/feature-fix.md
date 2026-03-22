@@ -130,15 +130,7 @@ Check global-validator status:
         spec_dir: SPEC_DIR
         issues_file: validation/issues.md
 
-  Then spawn `coder` via Task(super-agent) with prompt:
-
-        coder
-        mode: fix-ai
-        feature: _fix
-        spec_dir: SPEC_DIR
-        report_file: validation/issues.md
-
-  coder crash (super-agent error) → still increment ai_iter, re-run global-validator.
+  Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
   Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize

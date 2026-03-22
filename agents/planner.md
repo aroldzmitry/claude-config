@@ -34,7 +34,7 @@ Received via prompt from orchestrator:
 - `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
 - `revision_dir` — (optional) path to directory with plan validation findings (e.g., `temp/<feature>/validation/plan/`)
-- `issues_file` — (optional) path relative to `spec_dir` to an issues file; triggers Filter-Issues Mode
+- `issues_file` — (optional) path relative to `spec_dir` to an issues file; triggers Fix-Plan Mode
 
 # Workflow
 
@@ -144,28 +144,31 @@ or (if no applicable findings):
 
 Replace `skip — {reason}` with `write` if tests should be written.
 
-# Filter-Issues Mode
+# Fix-Plan Mode
 
-Triggered when `issues_file` is provided. Cross-references open issues against excluded decisions to prevent fix-ai from reverting intentional design choices.
+Triggered when `issues_file` is provided. Filters false positives, then produces a full implementation plan for remaining open issues.
 
 ## F1. Load
 
 Read in parallel:
 - `{spec_dir}/implementation-plan.md` — **required**
 - `{spec_dir}/{issues_file}` — **required**
+- `docs/ARCHITECTURE*.md`, `docs/CONVENTIONS.md` — for placement and structural decisions
 
-## F2. Filter
+## F2. Filter FPs
 
 For each line starting with `[open]` in `{issues_file}`:
 - Check if the issue targets a pattern that the plan's **Excluded Issues** section marks as intentionally correct.
-- If yes: false positive — validator flagged an intentional design.
+- If yes: false positive — Edit `{spec_dir}/{issues_file}`: change `[open] {line}` → `[fixed] {line}`. Append to `{spec_dir}/validation/false-positives.md` (create if missing): `[filter-issues] {description} — FP: contradicts excluded decision: {rationale}`.
 
-## F3. Write
+## F3. Scan Codebase
 
-For each identified false positive:
-- Edit `{spec_dir}/{issues_file}`: change `[open] {line}` → `[fixed] {line}`
-- Append to `{spec_dir}/validation/false-positives.md` (create if missing): `[filter-issues] {description} — FP: contradicts excluded decision: {rationale}`
+For each remaining `[open]` issue, read the files it references. Grep/Glob for related code — same approach as Step 2 in normal workflow.
 
-## F4. Output
+## F4. Write Fix Plan
 
-    FILTERED: N false positives removed, M issues remain open
+Write `{spec_dir}/validation/fix-plan.md` using the same structure, Rules, and depth as the main implementation plan (`## Steps`, `### Step N` format, **Files**/**Action** fields, step-size limits, ordering rules, test-breakage checks). Plan only the changes needed for `[open]` issues. If no issues remain after FP filtering, write `## Steps` with no steps listed.
+
+## F5. Output
+
+    FIX-PLAN: N steps, M false positives removed

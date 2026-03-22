@@ -124,8 +124,14 @@ Spawn `global-validator` via Task(super-agent) with prompt:
 
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
-- `HAS_ISSUES` + `ai_iter >= 2` → append "AI: {status} after {ai_iter} fix cycles" to unresolved_steps, Phase 5.
-- `HAS_ISSUES` + `ai_iter < 2` → spawn `coder` via Task(super-agent) with prompt:
+- `HAS_ISSUES` + `ai_iter >= 2` → append "AI: HAS_ISSUES after {ai_iter} fix cycles" to unresolved_steps, Phase 5.
+- `HAS_ISSUES` + `ai_iter < 2` → spawn `planner` with prompt:
+
+        feature: $ARGUMENTS
+        spec_dir: SPEC_DIR
+        issues_file: validation/issues.md
+
+  Then spawn `coder` via Task(super-agent) with prompt:
 
         coder
         mode: fix-ai
@@ -134,7 +140,7 @@ Check global-validator status:
         report_file: validation/issues.md
 
   coder crash (super-agent error) → still increment ai_iter, re-run global-validator.
-  Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES.
+  Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 
@@ -143,11 +149,12 @@ Check global-validator status:
    - Already-staged deletions (first char `D`, second char ` `): skip.
    - Everything else: `git add`.
 2. `git diff --cached --stat` → stats.
-3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "feat: {description}"`. Log `[Committed: feat: {description}]`. If commit fails: log `[Commit failed: {error}]`, continue.
+3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "feat: {description}"`. On hook failure: write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`feature: $ARGUMENTS`), re-stage (step 1), retry commit. Max 2 fix attempts.
 4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
+   - `mkdir -p temp/done && mv SPEC_DIR-done temp/done/`
    - If `temp/$ARGUMENTS-warnings/` was created in step 4 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
 6. Output report
 

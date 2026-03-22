@@ -34,6 +34,7 @@ Received via prompt from orchestrator:
 - `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
 - `revision_dir` — (optional) path to directory with plan validation findings (e.g., `temp/<feature>/validation/plan/`)
+- `issues_file` — (optional) path relative to `spec_dir` to an issues file; triggers Filter-Issues Mode
 
 # Workflow
 
@@ -142,3 +143,29 @@ or (if no applicable findings):
     NO_CHANGES | TEST: skip — {reason}
 
 Replace `skip — {reason}` with `write` if tests should be written.
+
+# Filter-Issues Mode
+
+Triggered when `issues_file` is provided. Cross-references open issues against excluded decisions to prevent fix-ai from reverting intentional design choices.
+
+## F1. Load
+
+Read in parallel:
+- `{spec_dir}/implementation-plan.md` — **required**
+- `{spec_dir}/{issues_file}` — **required**
+
+## F2. Filter
+
+For each line starting with `[open]` in `{issues_file}`:
+- Check if the issue targets a pattern that the plan's **Excluded Issues** section marks as intentionally correct.
+- If yes: false positive — validator flagged an intentional design.
+
+## F3. Write
+
+For each identified false positive:
+- Edit `{spec_dir}/{issues_file}`: change `[open] {line}` → `[fixed] {line}`
+- Append to `{spec_dir}/validation/false-positives.md` (create if missing): `[filter-issues] {description} — FP: contradicts excluded decision: {rationale}`
+
+## F4. Output
+
+    FILTERED: N false positives removed, M issues remain open

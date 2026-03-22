@@ -128,7 +128,8 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
 4. Quality gate — verify each accepted change before applying:
    - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions — except when combining with adjacent content yields a more compact result per DOC_PRINCIPLES.
    - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have a clear stopping condition — semantic ("until X") or numeric ("max N").
-   - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections). Complies with `~/.claude/docs/DOC_PRINCIPLES.md`.
+   - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections).
+   - **DOC-compliant:** every added line changes agent behavior.
    - **General:** no stack/framework-specific terms in general-purpose files (`~/.claude/commands/`). Specifics → project docs.
    - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows. Before Edit: show `CURRENT:` and `REPLACEMENT:` text in message — verify no original content unintentionally dropped.
    - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem? Verify the doc is better after the change — shorter, clearer, or more precise — than before.

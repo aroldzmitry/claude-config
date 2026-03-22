@@ -140,7 +140,7 @@ Check global-validator status:
    - Already-staged deletions (first char `D`, second char ` `): skip.
    - Everything else: `git add`.
 2. `git diff --cached --stat` → stats.
-3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "fix: {description}"`. On hook failure: write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`feature: _fix`), re-stage (step 1), retry commit. Max 2 fix attempts.
+3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "fix: {description}"`. On hook failure: re-stage all currently-staged files from working tree to pick up any formatter output (`git diff --cached --name-only | xargs -r git add 2>/dev/null || true`), write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`feature: _fix`), re-stage (step 1), retry commit. Max 2 fix attempts.
 4. If `unresolved_steps` is non-empty: compute `WARNINGS_DIR` from `SPEC_DIR_base` (SPEC_DIR path without trailing slash):
    - If `SPEC_DIR_base` ends with `-warnings` (no digits) → `WARNINGS_DIR = {base}-warnings1` (where `base` = SPEC_DIR_base with `-warnings` stripped)
    - If `SPEC_DIR_base` ends with `-warnings{N}` (N = integer) → `WARNINGS_DIR = {base}-warnings{N+1}`

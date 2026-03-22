@@ -11,7 +11,7 @@ disable-model-invocation: true
 - **Evidence-only** — every finding must cite a specific conversation moment. No hypotheticals.
 - **ONE finding per message** — present, discuss, decide, then next.
 - **Quality bar** — only changes that measurably improve result quality or reduce wasted turns. For findings that pass ALL filtering criteria: when in doubt, present — user can reject.
-- **Causal chain analysis** — for multi-step failures (A → B → C), map every point where a defense could prevent the error class. Present fixes at multiple chain levels if each independently passes: (1) evidence it stops a recurring pattern, not just this instance; (2) all 3 mechanical tests; (3) doesn't duplicate existing downstream checks. Read session artifacts (plans, specs, validator reports) to trace the full chain.
+- **Root cause first** — before proposing any fix, trace the invocation chain backward from the failure: identify which command/agent file governed the failing agent, read it, check if it contains a rule preventing this failure class. If not → the fix targets that file. If the rule exists but the orchestrator didn't pass sufficient inputs → fix targets the orchestrator. Walk up until finding the deepest file with a missing or wrong rule. Never propose a fix at agent-behavior level when the governing instruction is the actual gap. Each proposed fix must pass: (1) evidence it stops a recurring pattern; (2) all 3 mechanical tests; (3) dominance check — no deeper fix in the same chain also passes these tests. Read session artifacts (plans, specs, validator reports) to trace the full chain.
 - **Target files** — `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`. Can also propose creating NEW command/agent files. Never application code.
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.
@@ -54,6 +54,7 @@ EXCLUDE if ANY true:
 - Adds complexity without improving quality
 - One-off situation unlikely to recur
 - Execution failure, not instruction failure (rule exists but wasn't followed)
+- Proximate fix when a deeper fix in the same causal chain independently passes all 3 mechanical tests — the proximate fix is redundant
 
 # Cross-Session Pattern Boosting
 

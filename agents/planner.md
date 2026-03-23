@@ -1,6 +1,6 @@
 ---
 name: planner
-description: "Creates or revises implementation plan from technical spec. Reads specs + project architecture docs, produces implementation-plan.md with ordered steps and test strategy decision."
+description: "Creates or revises implementation plan from technical spec and architecture docs. In fix-plan mode (triggered by issues_file), produces validation/fix-plan.md targeting open validation issues instead of implementation-plan.md."
 tools: Read, Glob, Grep, Write
 model: opus
 permissionMode: acceptEdits
@@ -53,6 +53,7 @@ Based on specs, identify affected parts of the codebase:
 - Glob relevant directories and files first — never guess file paths
 - Read only files that Glob confirms exist: existing interfaces, types, modules that will be extended or consumed
 - When a step creates a new file, read 1–2 existing files from its target directory to capture export style, sync vs async pattern, and naming conventions — plan descriptions must match
+- When the spec prescribes a specific inline expression for an existing file, check that file for an equivalent named variable or constant — use the named form in the step description rather than the inline expression
 
 ## 3. Decide Test Strategy
 
@@ -164,7 +165,7 @@ For each line starting with `[open]` in `{issues_file}`:
 
 ## F3. Scan Codebase
 
-For each remaining `[open]` issue, read the files it references. Grep/Glob for related code — same approach as Step 2 in normal workflow.
+For each remaining `[open]` issue, read the files it references. Before writing the fix step, ask: does the correct fix require knowledge of any file NOT referenced in the issue (the subject under test, the real implementation, the caller, the source module)? If yes — read those files too. Grep/Glob for related code — same approach as Step 2 in normal workflow.
 
 ## F4. Write Fix Plan
 

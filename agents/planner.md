@@ -52,6 +52,7 @@ If `docs/` is missing or empty — proceed without it, rely on code scanning.
 Based on specs, identify affected parts of the codebase:
 - Glob relevant directories and files first — never guess file paths
 - Read only files that Glob confirms exist: existing interfaces, types, modules that will be extended or consumed
+- When a step creates a new file, read 1–2 existing files from its target directory to capture export style, sync vs async pattern, and naming conventions — plan descriptions must match
 
 ## 3. Decide Test Strategy
 

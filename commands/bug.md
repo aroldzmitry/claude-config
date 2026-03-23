@@ -41,7 +41,7 @@ Go through these categories in order. Skip categories already covered by `$ARGUM
 
 ### Progress tracking
 
-After each response: `[2/4: Steps to reproduce | next: Context]`
+After each response: `[3/4: Steps to reproduce | next: Context]`
 
 ## Phase 2: Investigate
 
@@ -62,6 +62,9 @@ After each response: `[2/4: Steps to reproduce | next: Context]`
        Suggest fix direction (what code changes would resolve this).
        Prefer general fixes over specific ones: if a flag/parameter controls behavior,
        question whether the flag itself is necessary rather than adding it where missing.
+       If fix direction introduces a new API endpoint or resource, verify the access
+       requirements are met by all user roles/actors named in the reported issue — flag
+       any potential mismatch.
 
 3. If the probable root cause can be confirmed empirically (DB query error, API call, pure function): write a minimal reproduction script in the project's test directory, run it against the local environment, capture the actual error. Confirms or refutes the hypothesis. Delete the script after.
 4. If root cause claims a library API is used incorrectly: load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.
@@ -74,7 +77,7 @@ Present to user in a single message:
 - **Affected Files:** list of files involved
 - **Fix Direction:** what needs to change
 
-- **Confident** (code path traced, evidence clear) → state diagnosis, ask user: "Write spec?" If yes → Phase 4.
+- **Confident** (code path traced, evidence clear) → state diagnosis → Phase 4.
 - **Uncertain** (multiple possible causes, unclear reproduction) → ask user to clarify before proceeding.
 - User corrects diagnosis → adjust and re-present.
 

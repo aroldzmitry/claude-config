@@ -14,7 +14,7 @@ Does not edit the plan.
 
 # Rules
 
-- If a step description is ambiguous but not wrong — do not report it.
+- Do not report imprecise wording unless the ambiguity could lead to an implementation that conflicts with the spec or violates architecture rules.
 
 # Input
 
@@ -41,7 +41,6 @@ Check the plan against these criteria:
 
 ### Architecture compliance
 - Step descriptions must not prescribe code patterns or file placement that violate layer rules from ARCHITECTURE*.md
-- Steps should describe intent, not implementation details
 - Schema definitions must match spec field types
 
 ### Test case coverage
@@ -74,4 +73,4 @@ Compile full findings:
 
 or `NO_ISSUES` if no findings.
 
-Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.
+Write findings to `output_file`. Return exactly `NO_ISSUES` or `HAS_ISSUES` — no other text.

@@ -62,7 +62,7 @@ Use `step_body` from prompt (contains header, **Files**, **Action**, and descrip
 
 Implement only the step described in `step_body`:
 1. Read files listed in the step's **Files** field
-2. Check if step is already implemented (expected changes already present). If fully done → return `DONE` (skip implementation)
+2. Check if step is already implemented (expected changes already present). If fully done → return `DONE: no changes` (skip implementation)
 3. Scan for similar existing code as structural reference
 4. Implement the described changes (skip parts already present)
 5. Collect modified files: `git status --porcelain` → parse new/modified files (exclude both staged `D ` and working-tree ` D` deletions, lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`), intersect with step's scope (directories of step's **Files** field)
@@ -76,10 +76,10 @@ Implement only the step described in `step_body`:
        - path/to/file1.ts
        - path/to/file2.ts
 7. step-validator crash (no parseable status) → return UNRESOLVED
-8. NO_ISSUES → DONE
+8. NO_ISSUES → DONE: modified
 9. HAS_ISSUES → read `{spec_dir}/validation/step-{step_number}/aggregated.md`, fix (group by file, errors first)
 10. Re-call step-validator, max 3 total
-11. Still issues after 3 → DONE (best-effort: global-validator catches remaining)
+11. Still issues after 3 → DONE: modified (best-effort: global-validator catches remaining)
 
 ### fix-ai
 
@@ -95,7 +95,11 @@ Implement only the step described in `step_body`:
 
 **implement:**
 
-    DONE
+    DONE: modified
+
+or (step was already implemented before coder ran — no files changed):
+
+    DONE: no changes
 
 or
 

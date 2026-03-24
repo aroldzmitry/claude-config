@@ -87,6 +87,8 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
    - **Strip test:** remove all session-specific identifiers (filenames, function names, library names, error messages) from the proposed rule. If the rule becomes incoherent or meaningless → it's a specific fix, not a general rule.
    - **3-scenario test:** name 3 structurally different situations where this rule applies (different language, framework, or problem domain). If you cannot → it's too narrow.
    - **Subsumption test:** check whether existing rules in the target file already cover this case. If they do → don't add a duplicate; if partial coverage → extend the existing rule instead of adding a new one.
+
+   Mechanical test results are internal filtering only — do not include them in Phase 2 finding presentations.
 5. Check observations.md for cross-session patterns — boost priority if signal repeats (see Cross-Session Pattern Boosting).
 6. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets
@@ -140,7 +142,7 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).
    - Report: file path + what changed (edited/created).
-6. Cross-reference update: if any command was created or renamed in step 5, Grep for references to the command name across `~/.claude/commands/` and `~/.claude/agents/`. Update found references (system-help.md command list, other commands' "next step" suggestions). Mark updated files for CHANGED_MD (collected in step 8).
+6. Cross-reference update: if any command was created or renamed in step 5, Grep for references to the command name across `~/.claude/commands/` and `~/.claude/agents/`. Update found references (system-help.md command list, other commands' "next step" suggestions).
 7. Edit fails (section not found, file restructured) → report, skip that item, continue.
 8. Initialize `val_cycle = 0`. Collect paths of all .md files written/edited in steps 5–6 → `CHANGED_MD`.
 9. If `CHANGED_MD` not empty: spawn `validator-doc-system` with prompt:

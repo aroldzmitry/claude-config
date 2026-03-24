@@ -43,7 +43,7 @@ If `technical-requirements.md` is missing → return `ERROR: technical-requireme
 
 If `implementation-plan.md` is missing → return `ERROR: implementation-plan.md not found in {spec_dir}`.
 
-If `test-cases.md` is missing or empty → derive test cases from specs: extract function inputs/outputs, API contracts, error conditions, edge cases, and state transitions from `technical-requirements.md` and `business-requirements.md`. Use the alternate DONE format from Output section.
+If `test-cases.md` is missing or empty → derive test cases from specs: extract function inputs/outputs, API contracts, error conditions, edge cases, and state transitions from `technical-requirements.md` (and `business-requirements.md` if it was loaded). Use the alternate DONE format from Output section.
 
 ## 2. Scan Test Patterns
 
@@ -80,7 +80,7 @@ Never duplicate test constants or stub classes across files written in the same 
 
 Write ALL test cases regardless of priority. Map each to a concrete test.
 
-After writing all tests, verify coverage: for each item in test-cases.md, confirm a corresponding test exists. If a single test-cases.md item lists multiple fields/scenarios (e.g. 'sorting by A, B, C'), each must have its own test case or parameterized variant.
+After writing all tests, verify coverage: for each item in test-cases.md, confirm a corresponding test exists — search both newly created files and existing test files referenced in implementation-plan.md steps. If an item is not covered anywhere, add it to the most appropriate of those files. If a single test-cases.md item lists multiple fields/scenarios (e.g. 'sorting by A, B, C'), each must have its own test case or parameterized variant.
 
 For each testable unit:
 
@@ -99,7 +99,7 @@ Interface change propagation: when removing, renaming, or changing the signature
 
 ## 5. Validate
 
-1. Collect written test files: `git status --porcelain` → parse new/modified files, filter to test patterns (`*.test.*`, `*.spec.*`, `*_test.*`, `test_*.*`).
+1. Collect written test files: `git status --porcelain` → parse new/modified files, filter to test patterns (same patterns as Step 2).
 2. Task(super-agent) — prompt in multi-line key-value format:
        step-validator
        feature: {feature}

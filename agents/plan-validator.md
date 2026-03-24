@@ -60,7 +60,8 @@ Check the plan against these criteria:
 - If a step must deviate from spec due to technical constraints → must have `[spec-deviation]` note. Missing note → [warning] report.
 - If a step description contains fenced code blocks → [warning] report (should be prose with inline pseudocode).
 - When a step creates a new file F that imports from existing file A, and any step also adds an export or re-export in A pointing back to F → [error] report as circular dependency.
-- Every step with `Action: create` must produce files referenced in at least one subsequent step or existing project code (Grep). No consumers → [warning] report as orphaned step.
+- Every step with `Action: create` must produce files referenced in at least one subsequent step or existing project code (Grep). Every step with `Action: modify` that adds new exported symbols (helpers, getters, constants, enum variants) must have at least one consumer in a subsequent step or existing code. No consumers → [warning] report as orphaned step.
+- When two or more steps add structurally identical logic blocks (switch cases, mapping tables, translation formulas) to different files → [warning] report as duplicate logic; a shared-helper extraction step should precede the consumers.
 - When a step renames a module (deletes old filename, creates new filename), Grep for the old base name across the `files:` listed in the plan. If other plan files share the same prefix pattern and are not also being renamed → [warning] report as incomplete rename.
 
 # Output

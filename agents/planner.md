@@ -1,6 +1,6 @@
 ---
 name: planner
-description: "Creates or revises implementation plan from technical spec and architecture docs. In fix-plan mode (triggered by issues_file), produces validation/fix-plan.md targeting open validation issues instead of implementation-plan.md."
+description: "Creates or revises implementation plan from technical spec and architecture docs. In fix-plan mode (triggered when issues_file param is provided), produces validation/fix-plan.md targeting open validation issues instead of implementation-plan.md."
 tools: Read, Glob, Grep, Write
 model: opus
 permissionMode: acceptEdits
@@ -25,6 +25,7 @@ maxTurns: 200
   | Adds dependency without changing exports | Glob: module's own tests | Add to **Files**, mock new dependency |
   | Changes asserted value (error code, constant) | Grep tests: old value | Add to **Files**, update assertion |
   | Modifies method parameter list | Grep tests: method name | Add to **Files**, update call-argument assertions |
+- When a step adds new exported symbols (helpers, getters, constants) to an existing file, verify at least one subsequent step or existing code consumes them. If none do, remove the step or inline the symbols into the consuming step.
 - Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When the spec's description contains a suggested implementation approach (e.g., "create file X that imports from Y", "wrap module Z"), treat it as a hint — verify it against architecture layer rules before adopting it; if it violates a constraint, implement the nearest valid alternative. When a new file doesn't fit any documented directory's stated purpose, add a plan step to create the directory and update `docs/ARCHITECTURE*.md` — do not place files in ill-fitting existing directories. When a step deviates from spec for any reason (architecture conflict, nonexistent API, framework limitation, runtime constraint) — add `[spec-deviation]: <reason>` inline in that step's description in the plan file.
 - Plan steps must present only the final decided approach. Remove research narrative, discovery trails ("actually...", "Revised approach:"), and discarded alternatives discovered during codebase scanning. If the approach changed during research, rewrite the step from scratch with only the final approach.
 
@@ -38,7 +39,7 @@ Received via prompt from orchestrator:
 
 # Workflow
 
-If `revision_dir` is provided → go to **Revision Mode** below. Otherwise proceed with normal workflow.
+If `issues_file` is provided → go to **Fix-Plan Mode** below. If `revision_dir` is provided → go to **Revision Mode** below. Otherwise proceed with normal workflow.
 
 ## 1. Load Context
 
@@ -100,7 +101,7 @@ The plan file must follow this exact structure:
 
 Step ordering:
 - Types/interfaces before implementations
-- Shared utilities before consumers
+- Shared utilities before consumers — when two or more steps add structurally identical logic (switch tables, mapping blocks, parallel implementations) to different files, add a shared-helper extraction step before them
 - Core logic before integration points
 - Data layer before UI layer
 
@@ -165,7 +166,7 @@ For each line starting with `[open]` in `{issues_file}`:
 
 ## F3. Scan Codebase
 
-For each remaining `[open]` issue, read the files it references. Before writing the fix step, ask: does the correct fix require knowledge of any file NOT referenced in the issue (the subject under test, the real implementation, the caller, the source module)? If yes — read those files too. Grep/Glob for related code — same approach as Step 2 in normal workflow.
+For each remaining `[open]` issue, read the files it references. Before writing the fix step, ask: does the correct fix require knowledge of any file NOT referenced in the issue (the subject under test, the real implementation, the caller, the source module, or other files that apply the same fix pattern for this diagnostic class)? If yes — read those files too. Grep/Glob for related code — same approach as Step 2 in normal workflow.
 
 ## F4. Write Fix Plan
 

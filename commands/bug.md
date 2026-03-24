@@ -65,6 +65,10 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
        If fix direction introduces a new API endpoint or resource, verify the access
        requirements are met by all user roles/actors named in the reported issue — flag
        any potential mismatch.
+       After identifying root cause: scan for other instances of the same bug class in
+       the codebase — find all code paths that implement the same logic and check
+       whether they have the same defect. Include all additional instances found in
+       Affected Files and Fix Direction.
 
 3. If the probable root cause can be confirmed empirically (DB query error, API call, pure function): write a minimal reproduction script in the project's test directory, run it against the local environment, capture the actual error. Confirms or refutes the hypothesis. Delete the script after.
 4. If root cause claims a library API is used incorrectly: load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.

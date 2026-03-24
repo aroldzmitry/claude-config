@@ -94,6 +94,7 @@ Do all of this in a single message:
    - **Interface completeness** — all components have clear contracts (who calls what, format, response)
    - **Testability** — for each decision, it's clear how to test it
    - **Ambiguity check** — no "handle appropriately", "if needed", "etc." — everything is concrete
+   - **Redirect coverage** — if feature adds or changes a redirect rule (when condition X → go to screen Y): check whether the same situation can arise from other places in the app (other screens, launch flows, notifications, links) — if yes, verify those places apply the same rule
 3. Note any gaps.
 4. Show summary and Key Decisions. If gaps — list them. If none — note verification passed.
 
@@ -271,7 +272,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 # Start
 
-If `$ARGUMENTS` matches an existing `temp/*/` folder with `business-requirements.md` — load it silently, start Phase 1 from the first relevant category.
+If `temp/$ARGUMENTS/business-requirements.md` exists (attempt Read) — load it silently, start Phase 1 from the first relevant category.
 
 If `$ARGUMENTS` is provided but no matching folder — treat as feature description, ask the first technical question directly. Do not repeat or rephrase the argument back to the user.
 

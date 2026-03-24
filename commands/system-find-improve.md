@@ -15,6 +15,7 @@ disable-model-invocation: true
 - **Target files** — `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`. Can also propose creating NEW command/agent files. Never application code.
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.
+- **Language-agnostic rules only** — every fix proposed for `~/.claude/` files must apply to any language, technology, or framework. Tech-specific fixes belong in project-level docs (ARCHITECTURE.md, CLAUDE.md, etc.) — identify the right project doc and target it instead. Verify before presenting in Phase 2 and before applying in Phase 3.
 - **Current session only** — Claude Code doesn't persist conversation history across sessions. This command analyzes the current session.
 - **Language** — match the user's language.
 - **Decisions** — AskUserQuestion for structured choices. Plain text for open-ended discussion.
@@ -106,7 +107,7 @@ For each finding, one per message:
    - **Signal:** category (S1–S6) + one-line summary
    - **Evidence:** quote/paraphrase from conversation. If cross-session pattern: note "seen in N previous sessions"
    - **Root cause:** file path + section + type (for new files: `NEW: commands/proposed-name.md` + type `MISSING_COMMAND`)
-   - **Proposed change:** concrete action with context from current file content. Before writing: if combining with adjacent content yields a more compact result per DOC_PRINCIPLES, propose that form. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
+   - **Proposed change:** concrete action with context from current file content. Before writing: (1) verify rule is language-agnostic — no stack/framework-specific terms; abstract to language-agnostic form if needed. (2) If combining with adjacent content yields a more compact result per DOC_PRINCIPLES, propose that form. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
    - **Alternative:** at least one, including "do nothing"
    - Multi-file findings: present as one item with primary target. List all affected files. Accept/reject as a unit.
 

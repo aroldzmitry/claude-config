@@ -26,7 +26,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 ## Phase 0: Load Context
 
 Before asking questions, silently:
-1. Determine feature name from `$ARGUMENTS`. If no exact match in `temp/` — list existing `temp/*/` folders, show them to the user via AskUserQuestion, ask which one to use.
+1. Determine feature name from `$ARGUMENTS`. If `temp/$ARGUMENTS/business-requirements.md` not found — list feature folders (Glob `temp/*/business-requirements.md`), show them to the user via AskUserQuestion, ask which one to use.
 2. Read `temp/<feature-name>/business-requirements.md` if exists
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
 4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
@@ -194,13 +194,13 @@ Per-page subsections — include only those relevant to the layout type:
 
 # Start
 
-If `$ARGUMENTS` matches an existing `temp/*/` folder:
-1. If `ui-requirements.md` already exists — ask user via AskUserQuestion:
+If `temp/$ARGUMENTS/business-requirements.md` exists (attempt Read):
+1. If `ui-requirements.md` already exists in same folder — ask user via AskUserQuestion:
    - **Edit existing** — load as starting point, go to Phase 1 asking only about gaps or changes
    - **Redo from scratch** — ignore existing, proceed with full Phase 0
    - **Skip to /feature-tech** — UI requirements are done, suggest `/feature-tech <feature-name>`
 2. If no `ui-requirements.md` — proceed to Phase 0.
 
-If `$ARGUMENTS` is provided but no matching folder — create folder, proceed to Phase 0.
+If `$ARGUMENTS` is provided but no matching folder (Read fails) — create folder, proceed to Phase 0.
 
 If no arguments — ask what feature the user wants to design UI for. Once user responds, use the response as the feature name and proceed to Phase 0.

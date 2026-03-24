@@ -20,7 +20,7 @@ Received via `prompt` from orchestrator in key-value format:
 
 # Workflow
 
-1. `mkdir -p {spec_dir}/validation/`
+1. `mkdir -p {spec_dir}/validation/` && `rm -f {spec_dir}/validation/aggregated.md`
 
 2. Launch 2 Tasks in parallel:
    - `static-checker` with `error_file: <absolute path to {spec_dir}/validation/static.txt>`
@@ -33,15 +33,13 @@ Received via `prompt` from orchestrator in key-value format:
    - `validator-security` + `codex "validator-security"` (→ security.md, security-codex.md)
    - If `skip_spec` = false: `validator-spec` + `codex "validator-spec"` (→ spec.md, spec-codex.md)
    - All with `feature: {feature}, spec_dir: {spec_dir}, files: {files}, output_file: {spec_dir}/validation/{name}.md`
-   - Codex FAIL → skip, record `"{name}-codex: SKIPPED — {reason}"`
+   - Codex crash/timeout → skip, record `"{name}-codex: SKIPPED — {reason}"`
 
 5. Launch `aggregator` Task with:
    ```
    feature: {feature}
    spec_dir: {spec_dir}
    ```
-   Aggregator reads AI reports from `{spec_dir}/validation/` + auto-Globs step-*/false-positives.md.
-
 6. Return aggregator's status.
 
 # Output

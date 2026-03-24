@@ -133,6 +133,8 @@ If `temp/<feature-name>/technical-requirements.md` already exists → ask user: 
 
 Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
 
+**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. These are the coder's decisions.
+
 ```markdown
 # Technical Specification: <human-readable name>
 
@@ -260,7 +262,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 6. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1 (Launch validators).
 
-7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining findings in Open Questions section of `technical-requirements.md`, proceed to Step 5.
+7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining genuinely unresolved findings in Open Questions section of `technical-requirements.md`, proceed to Step 5.
 
 ### Step 5: Present
 

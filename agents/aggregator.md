@@ -52,6 +52,7 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
    - **Has file, no line** → read the file, confirm the described issue applies.
    - **No file reference** → trust (can't verify without re-doing the validator's work).
    - Finding doesn't match actual code → mark as false positive.
+   - Finding describes a hardcoded literal as inconsistent with a computed/dynamic value elsewhere → Grep for the same constant in sibling files of the same type. If the constant appears consistently across multiple similar files → classify as FP (codebase convention).
 
 5. Deduplicate verified findings:
    - Same file, same line (±2), same concept → merge regardless of source (Claude or Codex). Keep more specific description and higher severity.

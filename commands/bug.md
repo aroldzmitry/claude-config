@@ -51,7 +51,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
        Investigate bug based on these symptoms:
        <all gathered info from Phase 1>
 
-       Project context: <relevant architecture info from Phase 0>
+       Project context: <tech stack and layer/import constraints from Phase 0 architecture docs>
 
        Task: trace the code path that produces the reported behavior.
        Find root cause: what code is responsible, why does it behave this way.

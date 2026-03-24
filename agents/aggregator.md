@@ -74,7 +74,8 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 8. Update `{spec_dir}/validation/issues.md` (create if missing):
    - Read existing issues.md (if exists)
    - For each verified finding from step 6 (format: `[error|warning] file:line — description`): if issues.md does NOT contain `[open] {finding}` → append `[open] {finding}`. A `[fixed]` entry with the same text is NOT a match — still append `[open]`.
-   - Do not modify existing `[open]` or `[fixed]` lines.
+   - For each pre-existing `[open]` line in issues.md with a `file:line` reference that does NOT appear in the current run's verified findings from step 6: read that file and line. If the issue described is no longer present at that location → replace `[open]` with `[fixed]`.
+   - Do not modify existing `[fixed]` lines.
 
 9. Delete raw validator files from `{spec_dir}/validation/`:
    `rm -f {spec_dir}/validation/structural.md {spec_dir}/validation/spec.md {spec_dir}/validation/security.md {spec_dir}/validation/structural-codex.md {spec_dir}/validation/spec-codex.md {spec_dir}/validation/security-codex.md`

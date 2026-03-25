@@ -57,7 +57,7 @@ After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "P
 
 1. `mkdir -p SPEC_DIR/validation/plan/`
 
-2. Launch 2 validators in parallel (same response):
+2. Launch 2 validators in parallel (same response, foreground only — both results needed before step 3):
    - **Claude Task**: spawn `plan-validator` with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR, output_file: SPEC_DIR/validation/plan/claude.md`
    - **Codex Task**: spawn `codex` with prompt:
      ```
@@ -141,7 +141,7 @@ Check global-validator status:
    - Already-staged deletions (first char `D`, second char ` `): skip.
    - Everything else: `git add`.
 2. `git diff --cached --stat` → stats.
-3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "feat: {description}"`. On hook failure: write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`feature: $ARGUMENTS`), re-stage (step 1), retry commit. Max 2 fix attempts.
+3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "feat: {description}"`. On hook failure: write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`mode: fix-ai, feature: $ARGUMENTS, spec_dir: SPEC_DIR, report_file: validation/issues.md`), re-stage (step 1), retry commit. Max 2 fix attempts.
 4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`

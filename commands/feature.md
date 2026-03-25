@@ -81,7 +81,7 @@ End the message with ONE question only if a gap exists (ask about the first gap)
 
 ### Step 2: Clarify
 
-If gaps were found → after user responds, re-check remaining gaps. Ask about the next one (still one at a time). Maximum 3 rounds. After that — record remaining uncertainties in "Open Questions" section.
+If gaps were found → after user responds, re-check remaining gaps. Ask about the next one (still one at a time). Continue until all user-answerable gaps are resolved. Record in "Open Questions" only items that cannot be answered without technical investigation or external input — never user-answerable policy decisions.
 
 ### Step 3: Quality Gate
 

@@ -71,7 +71,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
        Affected Files and Fix Direction.
 
 3. If the probable root cause can be confirmed empirically (DB query error, API call, pure function): write a minimal reproduction script in the project's test directory, run it against the local environment, capture the actual error. Confirms or refutes the hypothesis. Delete the script after.
-4. If root cause claims a library API is used incorrectly: load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.
+4. If root cause claims a library API is used incorrectly, or fix direction proposes a specific property or method on an external library type: load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.
 5. Analyze findings.
 
 ## Phase 3: Present Diagnosis

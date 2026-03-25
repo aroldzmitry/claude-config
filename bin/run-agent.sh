@@ -49,6 +49,7 @@ case "$BACKEND" in
 
     ~/.claude/bin/supervised-run.sh \
       --done-pattern '"type":"result"' \
+      --stall-timeout 600 \
       -- env -u CLAUDECODE claude -p \
       --verbose --output-format stream-json \
       --append-system-prompt "$INSTRUCTIONS" \

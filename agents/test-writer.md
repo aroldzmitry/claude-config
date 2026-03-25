@@ -80,7 +80,7 @@ Never duplicate test constants or stub classes across files written in the same 
 
 Write ALL test cases regardless of priority. Map each to a concrete test.
 
-After writing all tests, verify coverage: for each item in test-cases.md, confirm a corresponding test exists — search both newly created files and existing test files referenced in implementation-plan.md steps. If an item is not covered anywhere, add it to the most appropriate of those files. If a single test-cases.md item lists multiple fields/scenarios (e.g. 'sorting by A, B, C'), each must have its own test case or parameterized variant.
+After writing all tests, verify coverage: for each item in test-cases.md, confirm a test exists that specifically asserts the described behavior — field presence or absence, computed value, exact error condition, or state transition — not just a test that exercises the same function. Search both newly created files and existing test files referenced in implementation-plan.md steps. If no such test exists anywhere, add it to the most appropriate of those files. If a single test-cases.md item lists multiple fields/scenarios (e.g. 'sorting by A, B, C'), each must have its own test case or parameterized variant.
 
 For each testable unit:
 

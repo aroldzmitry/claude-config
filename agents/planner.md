@@ -55,6 +55,7 @@ Based on specs, identify affected parts of the codebase:
 - Read only files that Glob confirms exist: existing interfaces, types, modules that will be extended or consumed
 - When a step creates a new file, read 1–2 existing files from its target directory to capture export style, sync vs async pattern, and naming conventions — plan descriptions must match
 - When the spec prescribes a specific inline expression for an existing file, check that file for an equivalent named variable or constant — use the named form in the step description rather than the inline expression
+- When a step replicates logic from another file (phrases like "matching the pattern in X", "same approach as Y", "same as Z"), search for an existing shared utility implementing that pattern before writing the step. If found, instruct the step to import it. If not found and the logic is non-trivial (more than a single expression), add a shared-utility extraction step before the replicating step.
 
 ## 3. Decide Test Strategy
 

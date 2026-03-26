@@ -34,3 +34,4 @@ stats-cache.json
 /backups/
 /mcp-needs-auth-cache.json
 /memory/
+/sessions/

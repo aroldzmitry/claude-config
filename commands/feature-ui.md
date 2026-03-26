@@ -26,7 +26,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 ## Phase 0: Load Context
 
 Before asking questions, silently:
-1. Determine feature name from `$ARGUMENTS`. If `temp/$ARGUMENTS/business-requirements.md` not found — list feature folders (Glob `temp/*/business-requirements.md`), show them to the user via AskUserQuestion, ask which one to use.
+1. Feature name = `$ARGUMENTS` (all routing resolved by Start section below).
 2. Read `temp/<feature-name>/business-requirements.md` if exists
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
 4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
@@ -40,11 +40,11 @@ Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
 
 Go through categories in order.
 
-**Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. When 2+ consecutive categories follow established patterns without requiring user input, present them together in a single message and ask to confirm or flag changes.
+**Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. When 2+ consecutive categories follow established patterns without requiring user input, present them together in a single message. Add "Confirm or flag?" only if at least one item is a pattern the user could plausibly override; if all items are standard conventions or consequences of earlier decisions — state and proceed.
 
 **Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature, OR (c) Figma mockups already define it fully, OR (d) the established codebase pattern fully defines it — state the pattern being followed. State when skipping: `[skipping Filters — not a list page]`.
 
-**Ambiguity check:** after each user answer — are there ambiguities that would affect UI? Yes → ask before moving on. No → next category.
+**Ambiguity check:** after each user answer — are there ambiguities that would affect UI? Yes → ask before moving on (max 2 follow-ups per ambiguity; if still unresolved — record in Open Questions and move on). No → next category.
 
 ### Categories
 

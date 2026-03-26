@@ -56,7 +56,7 @@ After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "P
 
 1. `mkdir -p SPEC_DIR/validation/plan/`
 
-2. Launch 2 validators in parallel (same response, foreground only — both results needed before step 3):
+2. Launch 2 validators in parallel (same response):
    - **Claude Task**: spawn `plan-validator` with prompt: `feature: _fix, spec_dir: SPEC_DIR, output_file: SPEC_DIR/validation/plan/claude.md`
    - **Codex Task**: spawn `codex` with prompt:
      ```
@@ -66,7 +66,7 @@ After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "P
      output_file: SPEC_DIR/validation/plan/codex.md
      ```
 
-3. Check: if Claude returned `NO_ISSUES` AND Codex returned `NO_ISSUES` (or `NO_OUTPUT`) → log `[Plan validation: clean]`, go to Phase 2.
+3. Collect each validator status: direct return `NO_ISSUES`/`HAS_ISSUES` if available; otherwise read its `output_file` (non-empty = `HAS_ISSUES`, empty/missing = `NO_ISSUES`). Both clean (Codex also accepts `NO_OUTPUT`) → log `[Plan validation: clean]`, go to Phase 2.
 
 4. Otherwise → re-spawn `planner` with prompt:
 
@@ -131,7 +131,7 @@ Check global-validator status:
         issues_file: validation/issues.md
 
   Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
-  Increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
+  Increment `ai_iter`. If fix-plan.md had 0 steps → Phase 5. Otherwise recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 

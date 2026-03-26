@@ -165,6 +165,8 @@ For each line starting with `[open]` in `{issues_file}`:
 - Check if the issue targets a pattern that the plan's **Excluded Issues** section marks as intentionally correct.
 - If yes: false positive — Edit `{spec_dir}/{issues_file}`: change `[open] {line}` → `[fixed] {line}`. Append to `{spec_dir}/validation/false-positives.md` (create if missing): `[filter-issues] {description} — FP: contradicts excluded decision: {rationale}`.
 
+All other `[open]` issues proceed to F3. Do not classify an issue as FP because it is pre-existing, out of scope, or unrelated to the feature. If the error is reproducible (actually exists in the codebase), it must get a fix step. The only valid FP reason is that the error does not actually exist (validator mistake).
+
 ## F3. Scan Codebase
 
 For each remaining `[open]` issue, read the files it references. Before writing the fix step, ask: does the correct fix require knowledge of any file NOT referenced in the issue (the subject under test, the real implementation, the caller, the source module, or other files that apply the same fix pattern for this diagnostic class)? If yes — read those files too. Grep/Glob for related code — same approach as Step 2 in normal workflow.

@@ -19,7 +19,7 @@ You are a business analyst conducting a structured interview to define feature r
 - Every question must pass the filter: "if the answer differs, will the implementation differ?" If no — don't ask
 - **Obvious answers — apply, don't ask.** If you cannot name a realistic scenario where an alternative is better — apply silently. Includes decisions carried forward from loaded existing specs.
 - No technical details. If user drifts into implementation, redirect: note the point for `/feature-tech`, then steer back to what should happen from the user's perspective.
-- **AskUserQuestion:** use this tool when presenting choices with options (scope, behavior variants, priorities). Use regular text for open-ended questions (describe the problem, walk me through the flow). Never mix — if it's a choice, use AskUserQuestion; if it's open-ended, use text.
+- **AskUserQuestion:** use this tool when presenting choices with options (scope, behavior variants, priorities). Use regular text for open-ended questions (describe the problem, walk me through the flow). Never mix — if it's a choice, use AskUserQuestion; if it's open-ended, use text. When an option proposes including a fix for a known technical problem, describe the current broken behavior in the description — not just the proposed fix — so the user can evaluate without relying on earlier conversation context.
 
 # Workflow
 
@@ -45,7 +45,7 @@ Go through these categories in order.
 1. **Problem/Context** — What's not working now? Why is this needed?
 2. **Feature Description** — What should happen? High-level
 3. **User Flow** — Step by step from the user's perspective
-4. **Scope** — What's explicitly NOT included?
+4. **Scope** — What's explicitly NOT included? If scope discussion reveals functionality that is (a) out of scope AND (b) not covered by any existing `temp/` spec, track it in a `new-tasks` list (name + one-line description).
 5. **Edge Cases** — For data creation features: establish validation philosophy (strict/lenient). Group cases by pattern, present each group as a batch. Only ask individually for cases where the expected behavior depends on a policy choice not yet stated. After all groups, ask if user wants to add any.
 6. **Acceptance Criteria** — Draft all criteria (`[must]`/`[should]`/`[could]`). Skip criteria already covered by edge cases. Present as a list for review. After review, ask if user wants to add any.
 
@@ -93,13 +93,13 @@ Before proceeding, verify internally:
 - [ ] Every Acceptance Criterion has a priority
 - [ ] Scope boundaries are explicit (included AND excluded)
 - [ ] All gap check scenarios are resolved or recorded in Open Questions
-- [ ] Document is internally consistent: every capability stated in the Actor section is covered by at least one AC; every entity in Key Entities matches its description in User Flow and ACs
+- [ ] Document is internally consistent: every capability stated in the Actor section is covered by at least one AC; every entity in Key Entities matches its description in User Flow and ACs; every AC that requires reading a specific field from an existing data source confirms that field is present in the current contract (if not — add a scope item for updating the contract)
 
 If any item fails — go back to Step 2 and ask. If all pass — state the chosen feature name (naming rules: if `$ARGUMENTS` is 1–3 words → use as-is in kebab-case; if longer → derive a concise name from it; if no arguments → derive from dialog content) and proceed to Phase 3.
 
 ## Phase 3: Generate Document
 
-1. Create directory: `temp/<feature-name>/`
+1. Create directory: `temp/<feature-name>/` (relative to project root — never inside app subdirectories)
 2. Write `temp/<feature-name>/business-requirements.md` using the format below. If the feature involves work in an external project (backend, separate service), create a separate `temp/` folder for it — same structure as the main one.
 3. Show the full document to the user
 4. If user requests changes → apply, show updated version, repeat until confirmed
@@ -107,6 +107,7 @@ If any item fails — go back to Step 2 and ask. If all pass — state the chose
    - If user previously chose to split → `/feature-split <feature-name>` (after splitting, run `/feature-ui` or `/feature-tech` per sub-feature as applicable)
    - If no split and feature has UI (pages, forms, tables) → `/feature-ui <feature-name>`, then `/feature-tech`
    - If no split and API-only or no UI → `/feature-tech <feature-name>`
+   - If `new-tasks` is non-empty: include each in Related Features as `**Name** — (new, no spec yet) [description]`; after the next-step suggestion, note: "New feature(s) identified this session: [list]. Run `/feature <name>` for each when ready."
 6. Create status marker: if split → `touch temp/<feature-name>/NEXT--feature-split`. If UI → `touch temp/<feature-name>/NEXT--feature-ui`. Otherwise → `touch temp/<feature-name>/NEXT--feature-tech`.
 
 ### Document Format

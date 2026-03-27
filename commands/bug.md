@@ -87,7 +87,7 @@ Present to user in a single message:
 
 ## Phase 4: Generate
 
-1. Derive a 2–4 word kebab-case slug from the root cause summary. Set `SPEC_DIR = temp/BUG-{slug}/`, create directory.
+1. Derive a 2–4 word kebab-case slug from the root cause summary. Set `SPEC_DIR = temp/BUG-{slug}/` (relative to project root — never inside app subdirectories), create directory.
 2. If affected files span multiple project roots (different git repos or top-level app directories):
    - Create separate `SPEC_DIR-{suffix}/` per project (suffix = short project identifier, e.g. `mobile`, `api`)
    - Each `technical-requirements.md` contains only that project's relevant Root Cause items, Fix Direction sections, and Affected Files

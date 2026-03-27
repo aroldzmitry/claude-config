@@ -24,7 +24,7 @@ You are a software architect conducting a structured interview to define technic
   Skip questions entirely if the answer won't affect implementation. Present silently-decided items as brief statements between questions, not as questions.
 - **AskUserQuestion:** use for choices with options (architecture approach, library, pattern). Regular text for open-ended questions. Never mix.
 - **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If the answer is clearly implied by an existing BRD principle (e.g., "Admin has full control" implies no restriction), apply it and document in Business Clarifications without asking. If the resolution requires updating external documents (business-requirements.md, architecture docs) — inform the user which documents are affected before proceeding. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
-- **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself. If research results conflict with codebase evidence — surface the discrepancy: present both, explain which is concretely better and why, ask the user. Do not auto-select either side.
+- **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself. When a design decision requires knowing the current behavior of an existing system, include that behavior in the question context — do not make the user ask for it separately. If research results conflict with codebase evidence — surface the discrepancy: present both, explain which is concretely better and why, ask the user. Do not auto-select either side.
 
 # Workflow
 
@@ -95,6 +95,8 @@ Do all of this in a single message:
    - **Testability** — for each decision, it's clear how to test it
    - **Ambiguity check** — no "handle appropriately", "if needed", "etc." — everything is concrete
    - **Redirect coverage** — if feature adds or changes a redirect rule (when condition X → go to screen Y): check whether the same situation can arise from other places in the app (other screens, launch flows, notifications, links) — if yes, verify those places apply the same rule
+   - **Override coverage** — every spec section that intentionally deviates from a BRD acceptance criterion has a corresponding § Business Clarifications entry citing the AC by name
+   - **Migration integrity** — if spec includes a migration that (1) creates new table B from old table A, then (2) updates a FK in a third table from A.id → B.id: verify B is populated with the same ID values as A (source IDs reused), OR that an explicit mapping column exists; a migration step that joins on B.id without establishing this invariant has no valid join key
 3. Note any gaps.
 4. Show summary and Key Decisions. If gaps — list them. If none — note verification passed.
 
@@ -133,7 +135,7 @@ If `temp/<feature-name>/technical-requirements.md` already exists → ask user: 
 
 Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
 
-**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. These are the coder's decisions. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context.
+**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. These are the coder's decisions. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X".
 
 ```markdown
 # Technical Specification: <human-readable name>

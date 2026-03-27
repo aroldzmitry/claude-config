@@ -82,7 +82,7 @@ One at a time, present the discrepancy and ask via AskUserQuestion:
 ### Step 3: Apply
 
 After all discrepancies for a document are resolved:
-1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document.
+1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document. When removing a section: (a) grep other docs for links to that section's anchor and fix broken references; (b) check if the section contains unique non-derivable rules — migrate before deleting.
 2. **Validate** — loop (max 10 cycles). Initialize `cycle = 0`.
    a. Read the edited file, then spawn `validator-doc` with prompt:
 
@@ -106,68 +106,8 @@ Move to next document with discrepancies.
 ### Missing documents
 
 After all existing docs are synced, if missing documents were detected:
-1. For each missing doc, ask user: **Create** (full interview, docs-init pattern) / **Skip**
-2. If Create — go through the categories defined below for that document type, one question at a time. Generate → validate via `validator-doc` (loop, max 10 — same as Step 3) → show to user → confirm → write.
-
-### Document Types & Categories
-
-#### ARCHITECTURE.md
-
-Categories:
-1. **System Overview** — How system components connect and interact
-2. **Project Structure** — Directory tree with one-line descriptions per folder
-3. **Tech Stack** — Table: component | stack
-4. **Core Rules** — 3-5 fundamental architectural constraints (e.g., "Admin never accesses DB directly")
-5. **Data Flow** — Request lifecycle or state flow (only if non-trivial)
-6. **External Dependencies** — Services, APIs, databases (only if not obvious from tech stack)
-
-#### CODE_RULES.md
-
-Categories:
-1. **General rules** — Project-wide coding conventions (naming suffixes, file organization, SRP, etc.)
-2. **Linter-enforced rules** — Brief list of non-obvious linter rules that affect how code is written
-3. **Error Handling** — Error propagation pattern, where to catch, error types
-4. **State Management** — Where state lives, patterns used (only if applicable)
-5. **Testing** — What to test, how, file organization
-
-#### CONVENTIONS.md
-
-Categories:
-1. **File Naming** — Patterns for different file types (components, hooks, utils, types, etc.)
-2. **Naming** — Variables, functions, classes, constants naming patterns
-3. **Domain Naming** — Naming patterns per domain/module (pages, hooks, forms, routes, etc.)
-4. **Imports** — Organization, grouping rules
-5. **Git** — Branch naming, commit messages (only if project has conventions)
-
-#### DESIGN_SYSTEM.md
-
-Categories:
-1. **Stack** — Component library, icon library, font, styling approach
-2. **Colors** — Table: scale/semantic | purpose. Rule: use tokens, not hex
-3. **Layout** — Spacing, breakpoints, border radius (only non-default values)
-4. **Rules** — Bullet list of constraints (e.g., "Tailwind only, no inline styles", "compose via className, don't fork components")
-
-#### WORKFLOW.md
-
-Categories:
-1. **Setup** — Numbered steps to get running
-2. **Commands** — Table: command | scope | description
-3. **Pre-commit / CI** — What runs automatically
-4. **Environment** — Table: variable | description (only if non-trivial)
-
-#### ARCHITECTURE_<module>.md
-
-Categories:
-1. **Folder Structure** — Bullet list: folder → purpose
-2. **Layer Rules** — What can import/depend on what, boundaries
-3. **Key Patterns** — Module-specific patterns (state management, routing, error handling, etc.)
-4. **Testing** — Table: layer | test type | what to mock
-
-Start with context line if relevant. Only document what's specific to this module.
-
-#### CODE_RULES_<module>.md
-
-Start with: `Common rules: [CODE_RULES.md](CODE_RULES.md)`. Only document rules that differ from or extend the parent. If no differences — state that explicitly (1 line).
+1. For each missing doc, ask user: **Create** / **Skip**
+2. If Create — follow the categories and interview flow in [docs-init.md](docs-init.md) for that document type, one question at a time. Generate → validate via `validator-doc` (loop, max 10 — same as Step 3) → show to user → confirm → write.
 
 ## Phase 3: Wrap Up
 
@@ -180,9 +120,3 @@ Show summary:
 - ARCHITECTURE_analytics.md — created (new)
 - CONVENTIONS.md — no changes needed
 ```
-
-# Start
-
-If no `docs/` exists — tell user and suggest `/docs-init`.
-
-Otherwise — begin Phase 0 immediately, then proceed to Phase 1.

@@ -40,7 +40,7 @@ Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
 
 Go through categories in order.
 
-**Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. When 2+ consecutive categories follow established patterns without requiring user input, present them together in a single message. Add "Confirm or flag?" only if at least one item is a pattern the user could plausibly override; if all items are standard conventions or consequences of earlier decisions — state and proceed.
+**Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. When 2+ consecutive categories follow established patterns without requiring user input, present them together in a single message. Add "Confirm or flag?" only if at least one item is a pattern the user could plausibly override; if all items are standard conventions or consequences of earlier decisions — state and proceed. When confirming a user's answer or recommendation acceptance, state only what the question covered — do not introduce new UI elements or attributes beyond those in the original question; if the accepted answer implies further choices, surface them as the next question or state the design-system default without asking.
 
 **Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature, OR (c) Figma mockups already define it fully, OR (d) the established codebase pattern fully defines it — state the pattern being followed. State when skipping: `[skipping Filters — not a list page]`.
 
@@ -97,7 +97,7 @@ Do all of this in a single message:
    - Permission-denied: user lacks permission for an action
    - High-volume: page with many items (pagination)
 3. Check each scenario against the summary: is the UI behavior described? Note any gaps.
-4. Check against `business-requirements.md` (if exists): every user flow step has UI coverage?
+4. Check against `business-requirements.md` (if exists): every user flow step has UI coverage? Also scan any Acceptance Criteria section: each `[must]` criterion that implies a change to an existing page (field renamed, conditional display added, page removed) must be covered in the spec or recorded in Open Questions.
 5. Show summary and Key UI Decisions. If gaps — list them. If none — note verification passed.
 
 End with ONE question only if a gap exists. If no gaps — note verification passed and proceed directly to Phase 3 without asking.
@@ -112,7 +112,7 @@ Before proceeding, verify internally:
 
 - [ ] All relevant categories from Phase 1 are covered
 - [ ] Every page has: layout, data display, states, actions defined
-- [ ] Every user flow step from business-requirements.md has UI coverage
+- [ ] Every user flow step and `[must]` acceptance criterion from business-requirements.md has UI coverage or is recorded in Open Questions
 - [ ] All actions have feedback defined (loading, success, error)
 - [ ] Each list page has: columns, sort, filters, row actions, empty state
 - [ ] Each form has: fields, validation UX, submit behavior

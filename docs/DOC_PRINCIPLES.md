@@ -1,7 +1,5 @@
 # Documentation Principles
 
-Project docs (`docs/`) are loaded into agent context as working instructions. Every token in a doc displaces space for the actual task.
-
 ## Principles
 
 1. **Only what can't be inferred from code.** Agents read source files. The doc adds what reading 3-5 files won't reveal — project-wide patterns, boundaries, constraints.
@@ -14,6 +12,6 @@ Project docs (`docs/`) are loaded into agent context as working instructions. Ev
 ## Applying the principles
 
 - No prose, no explanations of "why", no introductory sentences, no edge cases
-- No code examples unless the pattern can't be expressed as a rule
+- No code examples unless the pattern can't be expressed as a rule; no naming examples (specific identifiers in example columns) — the pattern is sufficient
 - Format follows content — pick what's most compact (table, bullets, diagram)
 - Submodule docs start with a link to parent: `Common rules: [CODE_RULES.md](CODE_RULES.md)` and document **only differences**

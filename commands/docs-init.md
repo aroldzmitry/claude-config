@@ -103,14 +103,12 @@ For each document:
 4. **Update mode:** if user chose "Update" for this doc, read the existing doc, identify gaps vs current codebase (gap = a section the doc should have per document categories but doesn't, OR content that contradicts current code; skip style/wording improvements), ask only about gaps/outdated sections. Skip categories that are already well-covered.
 5. After all categories → generate full document draft
 6. **Validate:** spawn `validator-doc` agent with the draft (see Validation below)
-7. Show validated draft to user
-8. User confirms or requests changes → apply changes via Edit → re-validate (always, regardless of change size) → show result → repeat until confirmed
-9. Write file to `docs/` (create `docs/` directory if it doesn't exist)
-10. Move to next document
+7. Write file to `docs/` immediately (create `docs/` directory if it doesn't exist)
+8. Move to next document
 
 ### Validation
 
-After generating a draft, before showing to user — validation loop (max 10 cycles). Initialize `cycle = 0`.
+After generating a draft, before writing to disk — validation loop (max 10 cycles). Initialize `cycle = 0`.
 
 1. Spawn `validator-doc` with prompt:
 
@@ -208,17 +206,9 @@ Initialize `cross_cycle = 0`.
 
 After all documents are written:
 
-1. Show summary:
-```
-**Documentation created:**
-- docs/ARCHITECTURE.md
-- docs/CODE_RULES.md
-- docs/CONVENTIONS.md
-- docs/WORKFLOW.md
-(4 documents)
-```
-
-2. Suggest next steps:
+1. Show summary — for each doc: file name + 2-3 bullet key changes made.
+2. Offer: "Request changes to any document?" If user requests changes → Edit affected sections + re-validate (same validation loop, max 10 cycles) for that doc only. Max 3 change rounds total.
+3. Suggest next steps:
    - `/feature <name>` — if user has a feature to build
    - `/docs-sync` — after significant code changes, to keep docs current
 

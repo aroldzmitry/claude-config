@@ -28,7 +28,9 @@ Received via `prompt` from orchestrator in key-value format:
 
 3. Both complete → check statuses. Any FAIL (including crash without parseable status) → collect errors from ALL failed checks, write to `{spec_dir}/validation/aggregated.md` in format `[error] file:line — description` (or `[error] category — description` without file reference). Update `{spec_dir}/validation/issues.md`: for each error, if issues.md does not already contain `[open] {line}` → append `[open] {line}` (create if missing; a `[fixed]` entry with same text is NOT a match). Return `HAS_ISSUES: N errors (static/test)`.
 
-4. Both clean → launch AI validators in parallel:
+4. Both clean → read `{spec_dir}/validation/issues.md` (if exists). For each `[open]` item that does not contain a `file:line` reference (no `:\d+` immediately before ` —`) → mark it `[fixed]`. These were written by step 3 in a prior run and are now resolved since both checks passed. Any that are still actual issues will be re-added as `[open]` by the aggregator.
+
+   Launch AI validators in parallel:
    - `validator-structural` + `codex "validator-structural"` (→ structural.md, structural-codex.md)
    - `validator-security` + `codex "validator-security"` (→ security.md, security-codex.md)
    - If `skip_spec` = false: `validator-spec` + `codex "validator-spec"` (→ spec.md, spec-codex.md)

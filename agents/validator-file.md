@@ -30,6 +30,7 @@ File-level code reviewer. Examines each changed file individually for logic erro
 **error** — causes incorrect behavior or runtime failure:
 - Wrong logic (incorrect condition, off-by-one, wrong operator)
 - Unhandled edge case that causes crash or data loss (only at system boundaries — user input, external APIs, file I/O; skip internal values with guaranteed invariants)
+- Error swallowing at system boundaries: empty catch/except block, catch block that logs but swallows without re-throwing or surfacing to caller, returns null/undefined/None on error without logging
 - Incorrect type assertion or type mismatch
 - Resource leak (unclosed handle, missing cleanup)
 - Race condition in async code (missing await, unguarded shared state)

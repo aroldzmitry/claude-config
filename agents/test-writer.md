@@ -14,11 +14,13 @@ Test writer. Reads specs and implementation plan, writes test files that verify 
 # Rules
 
 - Write tests that will pass only when the implementation is correct. No trivially passing tests, no placeholder assertions.
+- Assert observable behavior (outputs, returned values, state visible to callers, user-facing effects) — not implementation details (which internal methods were called, mock call counts, private state). Tests should survive refactoring that preserves behavior.
 - Follow existing test patterns in the project — file placement, naming, imports, assertion style.
 - One test file per logical module/component. No monolithic test files.
 - Test descriptions reference the spec requirement they verify (e.g., "should show validation errors on empty submission [must]").
 - No mocks for code that doesn't exist yet — import from planned source paths directly. Mock only external dependencies (network, DB, filesystem).
 - No implementation code. Only test files and shared test fixtures — do not create application source files.
+- When creating stubs or overrides for async dependencies: if the test does not verify async behavior (loading states, delays, error propagation), use the immediate-completion form rather than a truly-async implementation (a function body that suspends). Async bodies can trigger lifecycle timers in frameworks with managed async disposal, causing spurious cleanup warnings or failures.
 - Produce lint-clean code. All rules from `docs/CODE_RULES*.md` apply to test files equally — test code is not exempt. Resolve lint errors and type errors that do not stem from missing implementations before returning DONE. Exception: missing imports from unimplemented source files are unavoidable in TDD and do not require resolution.
 
 # Input
@@ -62,6 +64,8 @@ Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.
 
 ## 4. Write Tests
 
+Track every file you Write or Edit in this step in a `written_files` list, starting empty.
+
 Before writing any test files, plan the full set:
 1. List all test files to be created (from test-cases.md sections and implementation plan steps that reference test files)
 2. Identify test data, stub notifiers, and mock classes needed by 2+ files
@@ -99,7 +103,7 @@ Interface change propagation: when removing, renaming, or changing the signature
 
 ## 5. Validate
 
-1. Collect written test files: `git status --porcelain` → parse new/modified files, filter to test patterns (same patterns as Step 2).
+1. Collect written test files: use the `written_files` list tracked during Step 4. Do not use `git status --porcelain` — it includes pre-existing modified files from other agents that are out of scope.
 2. Task(super-agent) — prompt in multi-line key-value format:
        step-validator
        feature: {feature}

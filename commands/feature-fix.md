@@ -56,7 +56,7 @@ After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "P
 
 1. `mkdir -p SPEC_DIR/validation/plan/`
 
-2. Launch 2 validators in parallel (same response):
+2. Launch 2 validators in parallel (same response, foreground — no `run_in_background`; parallelism from same-response launch):
    - **Claude Task**: spawn `plan-validator` with prompt: `feature: _fix, spec_dir: SPEC_DIR, output_file: SPEC_DIR/validation/plan/claude.md`
    - **Codex Task**: spawn `codex` with prompt:
      ```
@@ -108,7 +108,7 @@ If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, 
 
 ## Phase 4: Validation Cycle
 
-Initialize `ai_iter = 0` before starting.
+Initialize `ai_iter = 0`, `static_iter = 0` before starting.
 
 `git status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → `CHANGED_FILES` (newline-separated).
 
@@ -123,15 +123,16 @@ Spawn `global-validator` via Task(super-agent) with prompt:
 
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
-- `HAS_ISSUES` + `ai_iter >= 2` → append "AI: HAS_ISSUES after {ai_iter} fix cycles" to unresolved_steps, Phase 5.
-- `HAS_ISSUES` + `ai_iter < 2` → spawn `planner` with prompt:
+- `HAS_ISSUES` → categorize by status text: `(static/test)` = **static** (`static_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Static errors are deterministic and must pass before commit — fix them without consuming the AI budget.
+  - Counter >= limit → append "{Static|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
+  - Counter < limit → spawn `planner` with prompt:
 
         feature: _fix
         spec_dir: SPEC_DIR
         issues_file: validation/issues.md
 
-  Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
-  Increment `ai_iter`. If fix-plan.md had 0 steps → Phase 5. Otherwise recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
+    Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
+    Increment the category's counter. If fix-plan.md had 0 steps → Phase 5. Otherwise recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 
@@ -148,7 +149,7 @@ Check global-validator status:
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
-   Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; if `ai_iter = 0`, describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+   Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `static_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
@@ -168,7 +169,7 @@ Check global-validator status:
 **Description:** <fix description>
 **Files changed:** N
 **Tests:** M passed (or "skipped")
-**Validation:** {len(unresolved_steps)} unresolved, Post-all AI {ai_iter}/2
+**Validation:** {len(unresolved_steps)} unresolved, Static {static_iter}/5, AI {ai_iter}/2
 
 ### Unresolved Issues
 - [error|warning] file:line — description

@@ -1,5 +1,5 @@
 ---
-description: "Interactive dialog to define technical specification and test cases for a feature. Asks targeted questions, verifies completeness, generates technical-requirements.md and test-cases.md"
+description: "Interactive dialog to define technical specification for a feature. Asks targeted questions, verifies completeness, generates technical-requirements.md and test-cases.md, then runs dual-LLM spec validation (6 validators, up to 2 iterations) with auto-fix before presenting"
 model: sonnet
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
 allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, Bash, WebSearch, WebFetch"
@@ -204,29 +204,12 @@ Create `temp/<feature-name>/technical-requirements.md` using the template below.
 
 ### Step 3: Write test-cases.md
 
-Create `temp/<feature-name>/test-cases.md`:
+Spawn `test-planner` via Task with prompt:
 
-```markdown
-# Test Cases: <human-readable name>
+    feature: <feature-name>
+    spec_dir: temp/<feature-name>/
 
-## Test Strategy
-
-<approach: what levels of testing, what's excluded and why>
-
-## Test Cases
-
-- [ ] [must] <scenario — expected behavior>
-- [ ] [should] <scenario — expected behavior>
-- [ ] [could] <scenario — expected behavior>
-```
-
-Test cases are derived from:
-- Acceptance criteria from business-requirements.md (if exists)
-- Tech edge cases from Phase 1
-- Error handling scenarios
-- Interface contracts (happy path + error responses)
-
-Each test case must describe the scenario clearly enough for a test-writer agent to identify what to test and what behavior to verify without guessing. If `business-requirements.md` exists, verify every `[must]` AC maps to at least one test case before writing the file; add any missing ones. Also verify every error response explicitly enumerated in § Error Handling and every HTTP status code listed under each API endpoint has at least one corresponding test case; add missing ones.
+test-planner returns ERROR → show error to user, skip Step 4, proceed to Step 5 (show only `technical-requirements.md`).
 
 ### Step 4: Dual-LLM Spec Validation
 
@@ -270,9 +253,9 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 1. Show both documents + one-line validation summary (N items auto-fixed, if any)
 2. If user requests changes → apply, show updated
-3. If prerequisite tasks were recorded in Business Clarifications → suggest `/feature-tech <prerequisite-name>` for each, to be done before `/feature-implement`
-4. Suggest next step: `/feature-implement <feature-name>`
-5. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-implement`
+3. If prerequisite tasks were recorded in Business Clarifications → for each: create `temp/<prerequisite-name>/business-requirements.md` with a brief description (problem, required change, consumer, acceptance criteria); then suggest `/feature-tech <prerequisite-name>` to be done before `/feature-planner`
+4. Suggest next step: `/feature-planner <feature-name>`
+5. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-planner`
 
 # Start
 

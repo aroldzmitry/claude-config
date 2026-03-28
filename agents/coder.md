@@ -11,7 +11,7 @@ maxTurns: 200
 
 ## Execution
 
-- One coder invocation = one plan step. Complete it, validate, return.
+- One coder invocation = one plan step. Complete it, validate, return. Never run `git commit` — the orchestrator handles commits in Phase 5.
 - Max 3 validation attempts per step. Still failing → return DONE (global-validator catches remaining issues).
 - Test files: may fix syntax errors and import paths, but never change test assertions or expected behavior. Only modify tests if the step explicitly targets them.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.
@@ -22,14 +22,11 @@ maxTurns: 200
 - Only changes described in the current step. No drive-by fixes.
 - Any temporary, debug, or exploratory files created during execution must be deleted before returning DONE.
 - Extract repeated logic into helpers/utilities. No architectural abstractions (factories, wrappers, generics) unless the pattern is already used in the codebase for the same purpose.
-- Comments forbidden. Delete dead code.
-- No defensive code "just in case." Handle expected errors (invalid input, network failures, missing data) immediately. No empty catch blocks: re-throw unless this is a known recoverable error with a defined fallback value. Never swallow errors silently.
+- Delete dead code.
+- Handle expected errors (invalid input, network failures, missing data) immediately.
 - Validate only at system boundaries (user input, external APIs). Don't validate internal calls.
-- Descriptive names. No generic `data`, `result`, `item` — name must reflect the purpose.
 - Early return over nesting. Guard clauses over if-else chains.
-- Named constants over magic numbers and strings.
 - Check if utility code already exists in the project or dependencies before writing new.
-- Simple readable code over clever code. No complex ternaries, reduce chains, one-liners for brevity.
 - Style hierarchy: project docs → scanned reference → own judgment. If project docs and scanned reference conflict: follow project docs.
 
 # Input

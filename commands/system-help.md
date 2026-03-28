@@ -29,7 +29,8 @@ Output this reference (translated to user's language):
 /docs-init                    → project onboarding, create docs/
 /feature [name]               → business requirements dialog
 /feature-ui [name]            → UI/UX requirements dialog (optional, for features with admin UI)
-/feature-tech [name]          → technical spec + test cases
+/feature-tech [name]          → technical spec
+/feature-planner [name]       → test plan (test-cases.md) from all spec documents
 /feature-implement [name]     → autonomous: plan → code → [test] → validate → stage
 
 ### Additional commands
@@ -49,7 +50,8 @@ Output this reference (translated to user's language):
 | `/feature` | `temp/<name>/business-requirements.md` | — |
 | `/feature-ui` | `temp/<name>/ui-requirements.md` | Optional: `business-requirements.md` |
 | `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
-| `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
+| `/feature-tech` | `temp/<name>/technical-requirements.md` + initial `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
+| `/feature-planner` | `temp/<name>/test-cases.md` (comprehensive — enriches or generates) | `technical-requirements.md` |
 | `/feature-implement` | Staged git diff | `technical-requirements.md`, clean git |
 | `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
 | `/feature-fix` | Staged git diff | — (or `/bug` output folder) |
@@ -60,11 +62,11 @@ Output this reference (translated to user's language):
 
 **New project:** `/docs-init`
 
-**New feature (API-only):** `/feature` → `/feature-tech` → `/feature-implement`
+**New feature (API-only):** `/feature` → `/feature-tech` → `/feature-planner` → `/feature-implement`
 
-**New feature (with UI):** `/feature` → `/feature-ui` → `/feature-tech` → `/feature-implement`
+**New feature (with UI):** `/feature` → `/feature-ui` → `/feature-tech` → `/feature-planner` → `/feature-implement`
 
-**Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
+**Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-planner` (per part) → `/feature-implement` (per part)
 
 **Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix BUG-409-create-user`
 
@@ -77,7 +79,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: planner → plan-validator + Codex → planner revision → coder (per step) → [test-writer] → validators + Codex (6 for feature-implement / 4 for feature-fix) → planner (filter-issues) → AI fix loop (max 2)
+- Implementation is fully autonomous: planner → plan-validator + Codex → planner revision → coder (per step) → [test-writer] → validators + Codex → planner (fix-plan) → AI fix loop (max 2)
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

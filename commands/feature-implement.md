@@ -100,7 +100,14 @@ For each step in order:
 
 Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
 
-Otherwise spawn `test-writer` with prompt:
+If `SPEC_DIR/test-cases.md` absent → spawn `test-planner` with prompt:
+
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+
+test-planner returns ERROR → log `[Tests: planner error — {reason}]`, continue to Phase 4 (tests skipped).
+
+Spawn `test-writer` with prompt:
 
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR

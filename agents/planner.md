@@ -51,6 +51,7 @@ Based on specs, identify affected parts of the codebase:
 - When the spec prescribes a specific inline expression for an existing file, check that file for an equivalent named variable or constant — use the named form in the step description rather than the inline expression
 - When a step replicates logic from another file (phrases like "matching the pattern in X", "same approach as Y", "same as Z"), search for an existing shared utility implementing that pattern before writing the step. If found, instruct the step to import it. If not found and the logic is non-trivial (more than a single expression), add a shared-utility extraction step before the replicating step.
 - When a step deletes a file or removes exported symbols, Grep for all remaining references to the deleted paths/symbols across the codebase. For each unhandled reference — confirm it is covered by an existing step (modified, deleted, or replaced); if not, add a step to handle it.
+- When a step changes a function's implementation so it no longer calls a previously-called function, Grep for other callers of that function across the codebase. If none remain, add a step to remove it along with its associated types and exports.
 
 ## 3. Decide Test Strategy
 
@@ -170,7 +171,7 @@ When a fix step prescribes calling a specific method or property on an external 
 
 ## F4. Write Fix Plan
 
-Write `{spec_dir}/validation/fix-plan.md` using the same structure, Rules, and depth as the main implementation plan (`## Steps`, `### Step N` format, **Files**/**Action** fields, step-size limits, ordering rules, test-breakage checks). Plan only the changes needed for `[open]` issues. If no issues remain after FP filtering, write `## Steps` with no steps listed.
+Write `{spec_dir}/validation/fix-plan.md` using the same structure, Rules, and depth as the main implementation plan (`## Steps`, `### Step N` format, **Files**/**Action** fields, step-size limits, ordering rules, test-breakage checks). Plan only the changes needed for `[open]` issues — skip lines starting with `[fixed]`, they are already resolved. If no issues remain after FP filtering, write `## Steps` with no steps listed.
 
 After writing the file, re-read `{spec_dir}/{issues_file}`. For each `[open]` line that has no corresponding fix step in fix-plan.md and no entry in `{spec_dir}/validation/false-positives.md` — add a fix step for it now.
 

@@ -20,8 +20,9 @@ Test writer. Reads specs and implementation plan, writes test files that verify 
 - Test descriptions reference the spec requirement they verify (e.g., "should show validation errors on empty submission [must]").
 - No mocks for code that doesn't exist yet — import from planned source paths directly. Mock only external dependencies (network, DB, filesystem) — if `docs/TESTING*.md` was loaded, its mock strategy supersedes this default.
 - No implementation code. Only test files and shared test fixtures — do not create application source files.
-- When creating stubs or overrides for async dependencies: if the test does not verify async behavior (loading states, delays, error propagation), use the immediate-completion form rather than a truly-async implementation (a function body that suspends). Async bodies can trigger lifecycle timers in frameworks with managed async disposal, causing spurious cleanup warnings or failures.
+- When creating stubs or overrides for async dependencies: if the test does not verify async behavior (loading states, delays, error propagation), use the immediate-completion form rather than a truly-async implementation (a function body that suspends).
 - Produce lint-clean code. All rules from `docs/CODE_RULES*.md` apply to test files equally — test code is not exempt. Resolve lint errors and type errors that do not stem from missing implementations before returning DONE. Exception: missing imports from unimplemented source files are unavoidable in TDD and do not require resolution.
+- Never run `git commit` — the orchestrator handles commits in Phase 5.
 
 # Input
 
@@ -38,14 +39,14 @@ Read in parallel:
 - `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/ARCHITECTURE*.md`, `docs/TESTING*.md` — skip if missing
 - `{spec_dir}/technical-requirements.md` — **required**
 - `{spec_dir}/business-requirements.md` — skip if missing
-- `{spec_dir}/test-cases.md` — optional — derive from specs if missing
+- `{spec_dir}/test-cases.md` — **required**
 - `{spec_dir}/implementation-plan.md` — **required**
 
 If `technical-requirements.md` is missing → return `ERROR: technical-requirements.md not found in {spec_dir}`.
 
 If `implementation-plan.md` is missing → return `ERROR: implementation-plan.md not found in {spec_dir}`.
 
-If `test-cases.md` is missing or empty → derive test cases from specs: extract function inputs/outputs, API contracts, error conditions, edge cases, and state transitions from `technical-requirements.md` (and `business-requirements.md` if it was loaded). Use the alternate DONE format from Output section.
+If `test-cases.md` is missing → return `ERROR: test-cases.md not found in {spec_dir}. Run /feature-tech or /feature-planner first.`
 
 ## 2. Scan Test Patterns
 
@@ -76,11 +77,9 @@ If only 1 test file is needed, skip sub-steps 2–3.
 
 Never duplicate test constants or stub classes across files written in the same run.
 
-**If `test-cases.md` exists** — parse its format:
+Parse test-cases.md format:
 - `## Test Strategy` — respect test levels (unit/integration/e2e) and exclusions
 - `## Test Cases` — each item is `- [ ] [must|should|could] <scenario — expected behavior>`
-
-**If deriving from specs** (test-cases.md was missing) — use test cases extracted in workflow Step 1 (Load Context). Default to unit tests for all testable logic.
 
 Write ALL test cases regardless of priority. Map each to a concrete test.
 
@@ -122,7 +121,3 @@ Interface change propagation: when removing, renaming, or changing the signature
 # Output
 
     DONE: {N} test files created
-
-or, if test-cases.md was missing:
-
-    DONE: {N} test files created (tests derived from spec — test-cases.md missing)

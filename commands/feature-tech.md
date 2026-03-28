@@ -91,7 +91,7 @@ Do all of this in a single message:
 1. Write a compact summary of all technical decisions — all categories, 1-2 sentences each. Include a **Key Decisions** block — non-obvious architecture choices that could have gone differently.
 2. Run completeness checks:
    - **Requirement coverage** — every business requirement and acceptance criterion from `business-requirements.md` (if exists) has a technical solution
-   - **Interface completeness** — all components have clear contracts (who calls what, format, response)
+   - **Interface completeness** — all components have clear contracts (who calls what, format, response); when multiple endpoints return the same entity, verify their response shapes are consistent — any field absent in one response but present in others must be explicitly documented in the spec with rationale
    - **Testability** — for each decision, it's clear how to test it
    - **Ambiguity check** — no "handle appropriately", "if needed", "etc." — everything is concrete
    - **Redirect coverage** — if feature adds or changes a redirect rule (when condition X → go to screen Y): check whether the same situation can arise from other places in the app (other screens, launch flows, notifications, links) — if yes, verify those places apply the same rule
@@ -135,7 +135,7 @@ If `temp/<feature-name>/technical-requirements.md` already exists → ask user: 
 
 Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
 
-**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. These are the coder's decisions. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X".
+**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). A behavioral contract is complete only when it covers both the initiating condition and the resulting state change — for any named interaction (event, endpoint, action, hook). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. These are the coder's decisions. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X". When any spec section references an existing event or endpoint by name without modifying it, declare it in § API / Interfaces with its contract marked "unchanged".
 
 ```markdown
 # Technical Specification: <human-readable name>
@@ -226,7 +226,7 @@ Test cases are derived from:
 - Error handling scenarios
 - Interface contracts (happy path + error responses)
 
-Each test case must describe the scenario clearly enough for a test-writer agent to identify what to test and what behavior to verify without guessing. If `business-requirements.md` exists, verify every `[must]` AC maps to at least one test case before writing the file; add any missing ones.
+Each test case must describe the scenario clearly enough for a test-writer agent to identify what to test and what behavior to verify without guessing. If `business-requirements.md` exists, verify every `[must]` AC maps to at least one test case before writing the file; add any missing ones. Also verify every error response explicitly enumerated in § Error Handling and every HTTP status code listed under each API endpoint has at least one corresponding test case; add missing ones.
 
 ### Step 4: Dual-LLM Spec Validation
 

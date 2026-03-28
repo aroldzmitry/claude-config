@@ -18,7 +18,7 @@ Test writer. Reads specs and implementation plan, writes test files that verify 
 - Follow existing test patterns in the project — file placement, naming, imports, assertion style.
 - One test file per logical module/component. No monolithic test files.
 - Test descriptions reference the spec requirement they verify (e.g., "should show validation errors on empty submission [must]").
-- No mocks for code that doesn't exist yet — import from planned source paths directly. Mock only external dependencies (network, DB, filesystem).
+- No mocks for code that doesn't exist yet — import from planned source paths directly. Mock only external dependencies (network, DB, filesystem) — if `docs/TESTING*.md` was loaded, its mock strategy supersedes this default.
 - No implementation code. Only test files and shared test fixtures — do not create application source files.
 - When creating stubs or overrides for async dependencies: if the test does not verify async behavior (loading states, delays, error propagation), use the immediate-completion form rather than a truly-async implementation (a function body that suspends). Async bodies can trigger lifecycle timers in frameworks with managed async disposal, causing spurious cleanup warnings or failures.
 - Produce lint-clean code. All rules from `docs/CODE_RULES*.md` apply to test files equally — test code is not exempt. Resolve lint errors and type errors that do not stem from missing implementations before returning DONE. Exception: missing imports from unimplemented source files are unavoidable in TDD and do not require resolution.
@@ -35,7 +35,7 @@ Received via `prompt` from orchestrator:
 ## 1. Load Context
 
 Read in parallel:
-- `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/ARCHITECTURE*.md` — skip if missing
+- `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/ARCHITECTURE*.md`, `docs/TESTING*.md` — skip if missing
 - `{spec_dir}/technical-requirements.md` — **required**
 - `{spec_dir}/business-requirements.md` — skip if missing
 - `{spec_dir}/test-cases.md` — optional — derive from specs if missing
@@ -51,7 +51,7 @@ If `test-cases.md` is missing or empty → derive test cases from specs: extract
 
 Discover existing test conventions:
 - Glob for test files: `**/*.test.*`, `**/*.spec.*`, `**/*_test.*`, `**/test_*.*`, `**/tests/**`, `**/__tests__/**`
-- Read 2-3 representative test files
+- Read 2-3 test files — prefer the most recently modified
 - Extract: framework, assertion style, file naming, directory placement, import patterns, setup/teardown conventions
 
 No existing tests → detect framework from project config (package.json, pyproject.toml, Cargo.toml, etc.). Use co-located test files with `.test.<ext>` naming as default placement.

@@ -1,7 +1,7 @@
 ---
 name: planner
-description: "Creates or revises implementation plan from technical spec and architecture docs. In fix-plan mode (triggered when issues_file param is provided), produces validation/fix-plan.md targeting open validation issues instead of implementation-plan.md."
-tools: Read, Glob, Grep, Write
+description: "Creates implementation plan from technical spec and architecture docs. Revision mode (revision_dir param): revises existing plan from plan-validator findings. Fix-Plan mode (issues_file param): produces validation/fix-plan.md targeting open validation issues."
+tools: Read, Glob, Grep, Write, mcp__context7__resolve-library-id, mcp__context7__query-docs
 model: opus
 permissionMode: acceptEdits
 maxTurns: 200
@@ -53,10 +53,11 @@ If `docs/` is missing or empty — proceed without it, rely on code scanning.
 Based on specs, identify affected parts of the codebase:
 - Glob relevant directories and files first — never guess file paths
 - Read only files that Glob confirms exist: existing interfaces, types, modules that will be extended or consumed
-- When a step creates a new file, read 1–2 existing files from its target directory to capture export style, sync vs async pattern, and naming conventions — plan descriptions must match
+- When a step creates a new file or adds new named exports to an existing file, read that file's existing exports to capture export style, sync vs async pattern, and naming conventions — plan descriptions must match; do not derive names mechanically from removed items if the existing file uses a different pattern
 - When specifying imports for a new file, verify each one is permitted by the layer rules from ARCHITECTURE*.md for that file's directory.
 - When the spec prescribes a specific inline expression for an existing file, check that file for an equivalent named variable or constant — use the named form in the step description rather than the inline expression
 - When a step replicates logic from another file (phrases like "matching the pattern in X", "same approach as Y", "same as Z"), search for an existing shared utility implementing that pattern before writing the step. If found, instruct the step to import it. If not found and the logic is non-trivial (more than a single expression), add a shared-utility extraction step before the replicating step.
+- When a step deletes a file or removes exported symbols, Grep for all remaining references to the deleted paths/symbols across the codebase. For each unhandled reference — confirm it is covered by an existing step (modified, deleted, or replaced); if not, add a step to handle it.
 
 ## 3. Decide Test Strategy
 
@@ -172,9 +173,13 @@ All other `[open]` issues proceed to F3. Do not classify an issue as FP because 
 
 For each remaining `[open]` issue, read the files it references. When the issue describes two files as structurally similar: after drafting the extraction step, mentally apply it and check if the remaining code in both files would still be substantially similar (same lifecycle setup, same event handlers, same top-level structure). If yes, extend the fix plan to cover the next layer of duplication in the same cycle — do not leave a partially-extracted state that surfaces the same class of issue in the next validation run. Before writing the fix step, ask: does the correct fix require knowledge of any file NOT referenced in the issue (the subject under test, the real implementation, the caller, the source module, or other files that apply the same fix pattern for this diagnostic class)? If yes — read those files too. Grep/Glob for related code — same approach as Step 2 in normal workflow.
 
+When a fix step prescribes calling a specific method or property on an external library, verify it exists in the project's installed version before writing the step: use `mcp__context7__resolve-library-id` + `mcp__context7__query-docs` to check the API for that version. If the method is absent, prescribe the closest available alternative.
+
 ## F4. Write Fix Plan
 
 Write `{spec_dir}/validation/fix-plan.md` using the same structure, Rules, and depth as the main implementation plan (`## Steps`, `### Step N` format, **Files**/**Action** fields, step-size limits, ordering rules, test-breakage checks). Plan only the changes needed for `[open]` issues. If no issues remain after FP filtering, write `## Steps` with no steps listed.
+
+After writing the file, re-read `{spec_dir}/{issues_file}`. For each `[open]` line that has no corresponding fix step in fix-plan.md and no entry in `{spec_dir}/validation/false-positives.md` — add a fix step for it now.
 
 ## F5. Output
 

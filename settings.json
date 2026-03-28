@@ -47,6 +47,7 @@
     "ask": [],
     "defaultMode": "default"
   },
+  "model": "claude-opus-4-6",
   "enabledMcpjsonServers": [
     "trello"
   ],
@@ -63,8 +64,6 @@
       }
     ]
   },
-  "effortLevel": "high",
   "autoUpdatesChannel": "stable",
-  "skipDangerousModePermissionPrompt": true,
-  "model": "claude-opus-4-6"
+  "skipDangerousModePermissionPrompt": true
 }

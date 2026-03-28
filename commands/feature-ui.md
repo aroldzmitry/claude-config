@@ -19,7 +19,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 - Every question must pass the filter: "if the answer differs, will the UI differ, AND are there multiple genuinely valid non-obvious options?" If either no — don't ask
 - **AskUserQuestion:** use for choices with options (layout pattern, component type, action behavior). Regular text for open-ended questions. Never mix. When options describe a component type, name the specific existing component or pattern found in Phase 0 (e.g., "project's existing searchable dropdown" not just "combobox") — helps the user recognize what's available without rejecting to clarify.
 - **No technical implementation details.** Focus on what the user sees and does, not on React components or hooks. If user drifts into code — redirect: note the point for `/feature-tech`, steer back to UI behavior.
-- **Design system compliance.** All proposals must align with `docs/DESIGN_SYSTEM.md`. If user requests something outside the design system — flag it, discuss, resolve. If the resolution overrides a statement in `business-requirements.md`, update that statement before moving to the next question.
+- **Design system compliance.** All proposals must align with `docs/DESIGN_SYSTEM.md`. If user requests something outside the design system — flag it, discuss, resolve. If the resolution overrides a statement in `business-requirements.md`, or introduces a new entity/scope item absent from it, flag the discrepancy and update `business-requirements.md` before moving to the next question.
 
 # Workflow
 
@@ -50,11 +50,7 @@ Go through categories in order.
 
 1. **Pages/Views** — what distinct screens are needed? For each: route path, purpose, who accesses it (permission). If business-requirements.md has a User Flow — map each step to a page.
 
-2. **Page Layout** — structure of each page. Map to existing patterns from codebase exploration:
-   - List page (table + filters + actions toolbar)
-   - Detail page (read-only data display, grouped sections)
-   - Form page (create/edit form with validation)
-   - Custom (describe layout)
+2. **Page Layout** — structure of each page. First check existing codebase patterns. Then propose the optimal layout based on: data density per item, item count, whether items are categorized or homogeneous, primary user action (browse, edit, compare). Present recommended pattern with reasoning — do not limit to a fixed menu of options.
 
 3. **Data Display** — for list pages: table columns (label, field, sortable?, format). Default sort column and direction. For detail pages: what fields shown, how grouped, what format (dates, currencies, statuses, enums).
 

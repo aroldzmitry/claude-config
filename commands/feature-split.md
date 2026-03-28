@@ -25,7 +25,7 @@ Each sub-feature must:
 - Not break existing functionality when implemented alone
 - Have unidirectional dependencies — part N may depend on part N-1, never the reverse
 
-Estimation formula (same as `/feature`):
+Estimation formula:
 ```
 steps_estimate = user_flows × 3 + new_entities × 2 + must_criteria + error_edges
 ```
@@ -85,72 +85,9 @@ Maximum 2 rounds of refinement per part. After each refinement response, show co
 
 ### Document Format
 
-```markdown
-# Feature: <human-readable name>
+Use the document format and CONDITIONAL sections rules from `~/.claude/commands/feature.md` (### Document Format section).
 
-## Problem
-
-<why this feature is needed, what's currently broken or inconvenient>
-
-## Description
-
-<what the feature does, concise>
-
-## User Flow
-
-1. ...
-2. ...
-
-## Scope
-
-### Included
-
-- ...
-
-### Excluded
-
-- ...
-
-## Key Entities
-
-- **EntityName** — what it is, role in the feature
-
-## Actor
-
-- **RoleName** — who they are, what they can do in this feature
-
-## Edge Cases
-
-- [error] <situation> → <expected behavior>
-- [warning] <situation> → <expected behavior>
-
-## Acceptance Criteria
-
-- [ ] [must] ...
-- [ ] [should] ...
-- [ ] [could] ...
-
-## Key Decisions
-
-- <decision> — <why this was chosen over alternatives>
-
-## Related Features
-
-- **FeatureName** — how it connects to this feature (shares data, triggers, depends on)
-
-## Open Questions
-
-- <unresolved question that needs to be decided during tech spec phase>
-```
-
-**CONDITIONAL sections** (include only if relevant to this sub-feature):
-- **Key Entities** — only if the sub-feature introduces or significantly interacts with domain entities
-- **Actor** — only if multiple user roles are relevant to this sub-feature
-- **Key Decisions** — only if non-obvious choices were made that need to be remembered
-- **Related Features** — only if there's a real dependency on another sub-feature or existing feature
-- **Open Questions** — only if there are genuinely unresolved questions
-
-2. For each sub-feature folder: `touch temp/<sub-name>/NEXT--feature-tech`
+2. For each sub-feature folder: if sub-feature has UI (pages, forms, tables) → `touch temp/<sub-name>/NEXT--feature-ui`; otherwise → `touch temp/<sub-name>/NEXT--feature-tech`
 3. Output summary:
 
 ```
@@ -166,7 +103,7 @@ Maximum 2 rounds of refinement per part. After each refinement response, show co
 
 ### Next Steps
 - Verify generated specs, then delete the original folder manually after verifying specs
-- `/feature-tech <first-part-name>`
+- `/feature-ui <first-part-name>` (if has UI) or `/feature-tech <first-part-name>` (API-only)
 ```
 
 # Start

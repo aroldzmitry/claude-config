@@ -75,9 +75,9 @@ Do all of this in a single message:
 3. Check each scenario against the summary: is the expected behavior described? Note any gaps.
 4. Show the summary and Key Decisions to the user. If gaps were found — list only the scenarios where gaps exist (not all scenarios). If no gaps — note that verification passed.
 
-5. **Scope estimate** — count distinct user flows, new entities, `[must]` acceptance criteria, and `[error]` edge cases. Formula: `user_flows × 3 + new_entities × 2 + must_criteria + error_edges`. If estimate > 25 → ask user BEFORE generating: "Feature is large (estimate: N). Generate full doc now, or run `/feature-split` first?" Only generate if user chooses to proceed.
+5. **Scope estimate** — evaluate whether sub-features are logically independent: can they be built and shipped separately, each delivering standalone value? If yes → before generating, ask whether to generate as one doc or run `/feature-split` first; briefly note that splitting helps when parts can be shipped independently. If sub-features are tightly coupled — proceed without asking.
 
-End the message with ONE question only if a gap exists (ask about the first gap) or if estimate > 25 (ask about splitting). If no gaps and estimate ≤ 25 — note that verification passed and proceed directly to Phase 3 without asking.
+End the message with ONE question only if a gap exists (ask about the first gap) or if feature has logically independent parts (ask about splitting). If no gaps and feature is cohesive — note that verification passed and proceed directly to Phase 3 without asking.
 
 ### Step 2: Clarify
 

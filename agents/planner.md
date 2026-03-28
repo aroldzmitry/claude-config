@@ -17,14 +17,7 @@ maxTurns: 200
 - Each step must target at most 2–3 public functions/methods. Classes with code generation (freezed, json_serializable, built_value) count as 2 public methods each toward this limit. If a step requires implementing more, split into multiple sub-steps (e.g., "Step 8a: add createDraft, getActive, updateDeceased", "Step 8b: add updateVisit, updateFuneral"). Large rewrites of entire files must be broken into logical sub-steps.
 - When describing data structures, use plain language: "nullable string", "array of order items with id and name". Do not use TypeScript or code syntax.
 - When a step requires persisting data, use explicit DB operation language: "persist to DB", "write to table", "call repository.update". Avoid ambiguous verbs like "update" or "set" without specifying the target (variable vs database).
-- When a step risks breaking tests, find and include affected test files:
-
-  | Trigger | Search | Action |
-  |---|---|---|
-  | Modifies exported symbol | Glob: test importers | Include test updates in same/next step |
-  | Adds dependency without changing exports | Glob: module's own tests | Add to **Files**, mock new dependency |
-  | Changes asserted value (error code, constant) | Grep tests: old value | Add to **Files**, update assertion |
-  | Modifies method parameter list | Grep tests: method name | Add to **Files**, update call-argument assertions |
+- When a step modifies an existing file, Glob for test files that import it; read each importer; check whether the step's changes (structural, value, or signature) would break any assertion, test input, or mock setup; if yes, add the importer to **Files** and include the necessary updates.
 - When a step adds new exported symbols (helpers, getters, constants) to an existing file, verify at least one subsequent step or existing code consumes them. If none do, remove the step or inline the symbols into the consuming step.
 - Architecture docs take precedence over tech spec for structural decisions (file placement, layer boundaries). When the spec's description contains a suggested implementation approach (e.g., "create file X that imports from Y", "wrap module Z"), treat it as a hint — verify it against architecture layer rules before adopting it; if it violates a constraint, implement the nearest valid alternative. When a new file doesn't fit any documented directory's stated purpose, add a plan step to create the directory and update `docs/ARCHITECTURE*.md` — do not place files in ill-fitting existing directories. When a step deviates from spec for any reason (architecture conflict, nonexistent API, framework limitation, runtime constraint) — add `[spec-deviation]: <reason>` inline in that step's description in the plan file.
 - Plan steps must present only the final decided approach. Remove research narrative, discovery trails ("actually...", "Revised approach:"), and discarded alternatives discovered during codebase scanning. If the approach changed during research, rewrite the step from scratch with only the final approach.

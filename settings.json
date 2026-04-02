@@ -19,7 +19,9 @@
       "Bash(git:*)",
       "Bash(cat /Users/dmitry/WebstormProjects/**)",
       "Bash(cat /Users/dmitry/farevio_app/**)",
-      "Bash(python3 *figma_mcp.py*)"
+      "Bash(python3 *figma_mcp.py*)",
+      "Bash(chmod:*)",
+      "Bash(bash -n:*)"
     ],
     "deny": [
       "Read(**/.env*)",

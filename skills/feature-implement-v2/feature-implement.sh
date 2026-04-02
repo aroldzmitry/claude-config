@@ -3,13 +3,26 @@ set -euo pipefail
 
 # Feature implementation orchestrator — script-based.
 # Replaces the LLM-orchestrated feature-implement.md command.
-# Usage: feature-implement.sh <feature-name>
+# Usage: feature-implement.sh [--no-commit] [--validator-model MODEL] <feature-name>
+
+# ── Parse flags ────────────────────────────────────────────────────────────────
+
+NO_COMMIT=false
+MODEL_OVERRIDE=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --no-commit) NO_COMMIT=true; shift ;;
+    --model) MODEL_OVERRIDE="$2"; shift 2 ;;
+    *) break ;;
+  esac
+done
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BIN_DIR="$HOME/.claude/bin"
-FEATURE="${1:?Usage: feature-implement.sh <feature-name>}"
+FEATURE="${1:?Usage: feature-implement.sh [--no-commit] [--model MODEL] <feature-name>}"
 SPEC_DIR="temp/$FEATURE"
 
 # ── State ──────────────────────────────────────────────────────────────────────
@@ -18,6 +31,8 @@ unresolved_steps=()
 test_decision=""
 ai_iter=0
 test_iter=0
+model_flag=""
+[[ -n "$MODEL_OVERRIDE" ]] && model_flag="--model $MODEL_OVERRIDE"
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -175,7 +190,7 @@ stage_files() {
 
 phase_0() {
   local dirty
-  dirty=$(git status --porcelain)
+  dirty=$(git diff --stat HEAD 2>/dev/null)
   [[ -n "$dirty" ]] && die "Working tree has uncommitted changes. Commit or stash first."
 
   [[ ! -f "$SPEC_DIR/technical-requirements.md" ]] && die "Run /feature-tech $FEATURE first."
@@ -196,7 +211,7 @@ phase_1() {
   # Create plan
   log "[Creating implementation plan...]"
   local planner_response
-  planner_response=$(run_agent planner "feature: $FEATURE
+  planner_response=$(run_agent $model_flag planner "feature: $FEATURE
 spec_dir: $SPEC_DIR")
 
   [[ ! -f "$SPEC_DIR/implementation-plan.md" ]] && die "Planner failed to produce implementation plan. Re-run."
@@ -210,7 +225,7 @@ spec_dir: $SPEC_DIR")
 
   log "[Validating plan (Claude + Codex)...]"
   local claude_session codex_session
-  claude_session=$("$BIN_DIR/launch-agent.sh" launch --model opus plan-validator \
+  claude_session=$("$BIN_DIR/launch-agent.sh" launch $model_flag plan-validator \
     "feature: $FEATURE
 spec_dir: $SPEC_DIR
 output_file: $SPEC_DIR/validation/plan/claude.md")
@@ -231,7 +246,7 @@ output_file: $SPEC_DIR/validation/plan/codex.md")
 
   if $needs_revision; then
     log "[Plan has issues — revising...]"
-    planner_response=$(run_agent planner "feature: $FEATURE
+    planner_response=$(run_agent $model_flag planner "feature: $FEATURE
 spec_dir: $SPEC_DIR
 revision_dir: $SPEC_DIR/validation/plan/")
 
@@ -266,7 +281,7 @@ phase_2() {
     log "[Step $n/$total: $title]"
 
     local response
-    response=$(run_agent coder "mode: implement
+    response=$(run_agent $model_flag coder "mode: implement
 feature: $FEATURE
 spec_dir: $SPEC_DIR
 step_number: $n
@@ -302,7 +317,7 @@ phase_3() {
   if [[ ! -f "$SPEC_DIR/test-cases.md" ]]; then
     log "[Generating test cases...]"
     local tp_response
-    tp_response=$(run_agent test-planner "feature: $FEATURE
+    tp_response=$(run_agent $model_flag test-planner "feature: $FEATURE
 spec_dir: $SPEC_DIR") || true
 
     if [[ "$tp_response" == *"ERROR"* ]]; then
@@ -313,7 +328,7 @@ spec_dir: $SPEC_DIR") || true
 
   log "[Writing tests...]"
   local tw_response
-  tw_response=$(run_agent test-writer "feature: $FEATURE
+  tw_response=$(run_agent $model_flag test-writer "feature: $FEATURE
 spec_dir: $SPEC_DIR") || true
 
   if [[ "$tw_response" == *"ERROR"* ]]; then
@@ -342,7 +357,7 @@ phase_4() {
     log "[Running global validation (iter: test=$test_iter ai=$ai_iter)...]"
 
     local gv_response
-    gv_response=$(run_agent --model opus global-validator "feature: $FEATURE
+    gv_response=$(run_agent $model_flag global-validator "feature: $FEATURE
 spec_dir: $SPEC_DIR
 skip_spec: false
 files:
@@ -388,7 +403,7 @@ $files_formatted") || {
     # Generate fix plan
     log "[Generating fix plan...]"
     local planner_fix_response
-    planner_fix_response=$(run_agent planner "feature: $FEATURE
+    planner_fix_response=$(run_agent $model_flag planner "feature: $FEATURE
 spec_dir: $SPEC_DIR
 issues_file: validation/issues.md") || {
       unresolved_steps+=("Validation: fix planner crashed")
@@ -420,7 +435,7 @@ issues_file: validation/issues.md") || {
 
       log "[Fix step $n/$fix_total: $title]"
       local response
-      response=$(run_agent coder "mode: implement
+      response=$(run_agent $model_flag coder "mode: implement
 feature: $FEATURE
 spec_dir: $SPEC_DIR
 step_number: $n
@@ -450,6 +465,13 @@ step_body: $body") || {
 
 phase_5() {
   log_phase 5 "Finalize"
+
+  if $NO_COMMIT; then
+    log "[--no-commit: skipping stage/commit. Changed files:]"
+    git diff --stat HEAD 2>/dev/null || true
+    print_report
+    return
+  fi
 
   # Stage files
   stage_files
@@ -501,7 +523,7 @@ else:
       } >> "$SPEC_DIR/validation/issues.md"
 
       # Call coder fix-ai
-      run_agent coder "mode: fix-ai
+      run_agent $model_flag coder "mode: fix-ai
 feature: $FEATURE
 spec_dir: $SPEC_DIR
 report_file: validation/issues.md" || true

@@ -13,10 +13,14 @@ shift
 case "$MODE" in
   launch)
     BACKEND="claude"
-    if [[ "${1:-}" == "--backend" ]]; then
-      BACKEND="${2:?--backend requires a value}"
-      shift 2
-    fi
+    MODEL_FLAG=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --backend) BACKEND="${2:?--backend requires a value}"; shift 2 ;;
+        --model) MODEL_FLAG="--model $2"; shift 2 ;;
+        *) break ;;
+      esac
+    done
 
     AGENT_NAME="${1:?agent name required}"
     TASK_BODY="${2:-}"
@@ -34,7 +38,7 @@ case "$MODE" in
     # Background: run agent, extract response, write .done marker
     (
       EXIT_CODE=0
-      "$SCRIPT_DIR/run-agent.sh" --backend "$BACKEND" "$AGENT_NAME" "$TASK_BODY" \
+      "$SCRIPT_DIR/run-agent.sh" --backend "$BACKEND" $MODEL_FLAG "$AGENT_NAME" "$TASK_BODY" \
         > "$SESSION_DIR/output.txt" 2>"$SESSION_DIR/error.txt" \
         || EXIT_CODE=$?
 

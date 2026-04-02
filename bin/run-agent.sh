@@ -2,17 +2,20 @@
 set -euo pipefail
 
 # Runs an agent's instructions through Claude CLI or Codex CLI via supervised-run.sh.
-# Usage: run-agent.sh [--backend claude|codex] <agent-name> [task-body]
+# Usage: run-agent.sh [--backend claude|codex] [--model MODEL] <agent-name> [task-body]
 #
 # Reads ~/.claude/agents/<agent-name>.md, strips YAML frontmatter,
 # extracts model/tools, calls supervised-run.sh with the chosen backend.
+# --model overrides the model from agent frontmatter (claude backend only).
 # Returns the agent's JSON result line on stdout.
 
 BACKEND="claude"
+MODEL_OVERRIDE=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --backend) BACKEND="$2"; shift 2 ;;
+    --model) MODEL_OVERRIDE="$2"; shift 2 ;;
     *) break ;;
   esac
 done
@@ -39,9 +42,9 @@ INSTRUCTIONS=$(awk '/^---$/{n++; next} n>=2{print}' "$AGENT_FILE")
 
 case "$BACKEND" in
   claude)
-    # Parse model from frontmatter (default: sonnet)
+    # Parse model from frontmatter (default: sonnet), allow override
     MODEL=$(echo "$FRONTMATTER" | awk -F': *' '/^model:/{gsub(/"/, "", $2); print $2}')
-    MODEL="${MODEL:-sonnet}"
+    MODEL="${MODEL_OVERRIDE:-${MODEL:-sonnet}}"
 
     # Parse tools from frontmatter (default: Read,Glob,Grep,Write,Edit,Bash)
     TOOLS=$(echo "$FRONTMATTER" | awk -F': *' '/^tools:/{gsub(/"/, "", $2); print $2}')

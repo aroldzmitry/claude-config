@@ -1,14 +1,14 @@
 ---
 name: step-validator
-description: "Per-step validation dispatcher. Runs static-checker + AI validators in parallel, aggregates findings."
-tools: Task, Read, Write, Glob, Grep, Bash
+description: "Per-step static validation. Runs static-checker only, reports errors."
+tools: Task, Read, Write, Bash
 model: sonnet
-maxTurns: 200
+maxTurns: 50
 ---
 
 # Role
 
-Per-step validation dispatcher. Launches static-checker and AI validators in parallel, aggregates and verifies findings.
+Per-step static validator. Runs only static-checker (lint + typecheck).
 
 # Input
 
@@ -23,22 +23,9 @@ Received via `prompt` from orchestrator (coder or test-writer) in key-value form
 
 1. `mkdir -p {spec_dir}/validation/step-{step_number}/`
 
-2. Launch 4 Tasks in parallel:
-   - `static-checker` with `error_file: {spec_dir}/validation/step-{step_number}/static.txt`
-   - `validator-file` with `feature: {feature}, spec_dir: {spec_dir}, files: {files}, output_file: {spec_dir}/validation/step-{step_number}/file.md`
-   - `validator-structural` with `feature: {feature}, spec_dir: {spec_dir}, files: {files}, output_file: {spec_dir}/validation/step-{step_number}/structural.md`
-   - `validator-security` with `feature: {feature}, spec_dir: {spec_dir}, files: {files}, output_file: {spec_dir}/validation/step-{step_number}/security.md`
+2. Launch `static-checker` Task with `error_file: {spec_dir}/validation/step-{step_number}/static.txt`
 
-3. Read all reports. Agent crash → skip that agent's findings, continue with remaining.
-
-4. Inline aggregate:
-   - For each finding with file:line → read code at that location, check if the described pattern/violation is actually present. Mismatch → FP.
-   - Deduplicate: same file+line(±2)+concept → merge, keep higher severity.
-   - Write FP to `{spec_dir}/validation/step-{step_number}/false-positives.md`.
-   - Write verified findings to `{spec_dir}/validation/step-{step_number}/aggregated.md`. Sort errors first.
-   - On repeated calls: FP recalculated fresh, files overwritten.
-
-5. Return status line.
+3. Read `{spec_dir}/validation/step-{step_number}/static.txt`. If non-empty → write each error line to `{spec_dir}/validation/step-{step_number}/aggregated.md` prefixed with `[error] `. Return `HAS_ISSUES: N errors`. If empty or missing → return `NO_ISSUES`.
 
 # Output
 
@@ -46,4 +33,4 @@ Received via `prompt` from orchestrator (coder or test-writer) in key-value form
 
 or
 
-    HAS_ISSUES: N errors, M warnings
+    HAS_ISSUES: N errors

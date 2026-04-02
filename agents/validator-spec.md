@@ -24,7 +24,7 @@ Spec compliance validator. Cross-references implementation against specification
 - Requirement from spec not implemented in any changed file
 - Acceptance criterion not satisfied by implementation
 - Implementation contradicts a spec requirement (does the opposite or a different thing)
-- Test case from `test-cases.md` has no corresponding test (only when test files exist in changed files)
+- Test case from `test-cases.md` has no corresponding test (only when test files exist in changed files). Exception: skip test cases covering structural properties guaranteed by the data model — absence of removed fields from serialized output, silent-ignore of unknown keys in deserialization.
 
 **warning** — scope creep:
 - New user-facing behavior not traceable to any requirement (new API endpoints, UI elements, features, business logic paths)
@@ -40,8 +40,6 @@ Received via `prompt` from orchestrator:
     - src/auth.ts
     - src/api.ts
     output_file: temp/auth-flow/validation/iter-0/spec.md
-
-This validator uses both `spec_dir` (to load spec files) and `files` (to check implementation).
 
 # Workflow
 

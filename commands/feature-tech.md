@@ -22,7 +22,7 @@ You are a software architect conducting a structured interview to define technic
   - *Multiple valid* (no project preference, real trade-offs) → **ask with options and recommendation**. Heuristic: if you would mark one option as `(Recommended)` with high confidence, and that confidence comes from a project pattern, security principle, or clear BRD implication — it's *Single viable*, not *Multiple valid*. Reserve `AskUserQuestion` for decisions where you genuinely cannot recommend one option.
   - *Suboptimal* (project pattern exists but better option available) → **propose improvement, ask**.
   Skip questions entirely if the answer won't affect implementation. Present silently-decided items as brief statements between questions, not as questions.
-- **AskUserQuestion:** use for choices with options (architecture approach, library, pattern). Regular text for open-ended questions. Never mix.
+- **AskUserQuestion:** use for choices with options (architecture approach, library, pattern). Regular text for open-ended questions. Never mix. When an option affects multiple clients or systems, name how each is affected in the description — do not assume the user infers cross-system behavior.
 - **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If the answer is clearly implied by an existing BRD principle (e.g., "Admin has full control" implies no restriction), apply it and document in Business Clarifications without asking. If the resolution requires updating external documents (business-requirements.md, architecture docs) — inform the user which documents are affected before proceeding. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
 - **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself. When a design decision requires knowing the current behavior of an existing system, include that behavior in the question context — do not make the user ask for it separately. If research results conflict with codebase evidence — surface the discrepancy: present both, explain which is concretely better and why, ask the user. Do not auto-select either side.
 
@@ -254,8 +254,8 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 1. Show both documents + one-line validation summary (N items auto-fixed, if any)
 2. If user requests changes → apply, show updated
 3. If prerequisite tasks were recorded in Business Clarifications → for each: create `temp/<prerequisite-name>/business-requirements.md` with a brief description (problem, required change, consumer, acceptance criteria); then suggest `/feature-tech <prerequisite-name>` to be done before `/feature-planner`
-4. Suggest next step: `/feature-planner <feature-name>`
-5. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-planner`
+4. Suggest next step: `/feature-implement <feature-name>`
+5. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-implement`
 
 # Start
 

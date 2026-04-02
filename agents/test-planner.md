@@ -22,6 +22,7 @@ Test planner. Reads all available spec documents and project testing rules, writ
   - Database schema shape (migrations, column definitions)
   - Configuration files
   - Generated code (`*.generated.*`, `*.d.ts`)
+  - Structural properties guaranteed by the data model: absence of a removed field in serialized output (a field not defined on the class cannot be serialized into it), silent-ignore of unknown keys during deserialization (framework-guaranteed, not custom logic)
 - Test type assignment:
   - Isolated business logic, utilities, validators, transformers → unit
   - API endpoints, WebSocket message handlers, service+DB interactions → integration
@@ -65,7 +66,7 @@ Apply exclusions from `docs/TESTING*.md` first, then global defaults.
 
 ## 4. Write test-cases.md
 
-If `{spec_dir}/test-cases.md` exists and has `## Test Strategy` section plus cases covering happy path, errors, and edge cases → return `DONE: test-cases.md already comprehensive`.
+If `{spec_dir}/test-cases.md` exists and has `## Test Strategy` section and at least one `[must]`-priority test case → return `DONE: test-cases.md already comprehensive`.
 
 Write `{spec_dir}/test-cases.md`:
 

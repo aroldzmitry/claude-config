@@ -55,6 +55,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
 
        Task: trace the code path that produces the reported behavior.
        Find root cause: what code is responsible, why does it behave this way.
+       Before proceeding: verify the proposed cause produces the exact observed symptom — if the symptom is "no results", the cause must explain why there are no results, not why there would be wrong results. If it doesn't match, continue tracing.
        Identify all affected files.
        If fix direction requires changes to a shared API or backend service, also check
        which other clients (admin apps, other frontends) consume the affected endpoints

@@ -27,8 +27,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
-  - Step FP → `SPEC_DIR/validation/step-{N}/false-positives.md`
-  - Step raw → `SPEC_DIR/validation/step-{N}/*.md, *.txt`
+  - Step raw → `SPEC_DIR/validation/step-{N}/static.txt`
   - Plan validation findings → `SPEC_DIR/validation/plan/{source}.md`
   - Validator reports → `SPEC_DIR/validation/{name}.md` (flat, overwritten each iteration)
   - Aggregated findings → `SPEC_DIR/validation/aggregated.md`
@@ -115,7 +114,7 @@ If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, 
 
 ## Phase 4: Validation Cycle
 
-Initialize `ai_iter = 0`, `static_iter = 0` before starting.
+Initialize `ai_iter = 0`, `test_iter = 0` before starting.
 
 `git status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → `CHANGED_FILES` (newline-separated).
 
@@ -130,8 +129,8 @@ Spawn `global-validator` via Task(super-agent) with prompt:
 
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
-- `HAS_ISSUES` → categorize by status text: `(static/test)` = **static** (`static_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Static errors are deterministic and must pass before commit — fix them without consuming the AI budget.
-  - Counter >= limit → append "{Static|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
+- `HAS_ISSUES` → categorize by status text: `(test)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without consuming the AI budget.
+  - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
   - Counter < limit → spawn `planner` with prompt:
 
         feature: _fix
@@ -156,7 +155,7 @@ Check global-validator status:
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
-   Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `static_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+   Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `test_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
@@ -176,7 +175,7 @@ Check global-validator status:
 **Description:** <fix description>
 **Files changed:** N
 **Tests:** M passed (or "skipped")
-**Validation:** {len(unresolved_steps)} unresolved, Static {static_iter}/5, AI {ai_iter}/2
+**Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2
 
 ### Unresolved Issues
 - [error|warning] file:line — description

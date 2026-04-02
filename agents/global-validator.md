@@ -1,6 +1,6 @@
 ---
 name: global-validator
-description: "Post-implementation validation dispatcher. Runs static/test checks, AI validators + Codex, aggregates findings."
+description: "Post-implementation validation dispatcher. Runs test-runner (gate), then AI validators + Codex, aggregates findings."
 tools: Task, Read, Write, Glob, Grep, Bash
 model: sonnet
 maxTurns: 200
@@ -8,7 +8,7 @@ maxTurns: 200
 
 # Role
 
-Post-implementation validation dispatcher. Runs static-checker + test-runner first (hard gate), then AI validators + Codex, then aggregator.
+Post-implementation validation dispatcher. Runs test-runner first (hard gate), then AI validators + Codex, then aggregator.
 
 # Input
 
@@ -22,15 +22,14 @@ Received via `prompt` from orchestrator in key-value format:
 
 1. `mkdir -p {spec_dir}/validation/` && `rm -f {spec_dir}/validation/aggregated.md`
 
-2. Launch 2 Tasks in parallel:
-   - `static-checker` with `error_file: <absolute path to {spec_dir}/validation/static.txt>`
-   - `test-runner` with `error_file: <absolute path to {spec_dir}/validation/tests.txt>`
+2. Launch `test-runner` Task with `error_file: <absolute path to {spec_dir}/validation/tests.txt>`
 
-3. Both complete → check statuses. Any FAIL (including crash without parseable status) → collect errors from ALL failed checks, write to `{spec_dir}/validation/aggregated.md` in format `[error] file:line — description` (or `[error] category — description` without file reference). Update `{spec_dir}/validation/issues.md`: for each error, if issues.md does not already contain `[open] {line}` → append `[open] {line}` (create if missing; a `[fixed]` entry with same text is NOT a match). Return `HAS_ISSUES: N errors (static/test)`.
+3. FAIL (including crash without parseable status) → collect errors from tests.txt, write to `{spec_dir}/validation/aggregated.md` in format `[error] file:line — description` (or `[error] category — description` without file reference). Update `{spec_dir}/validation/issues.md`: for each error, if issues.md does not already contain `[open] {line}` → append `[open] {line}` (create if missing; a `[fixed]` entry with same text is NOT a match). Return `HAS_ISSUES: N errors (test)`.
 
-4. Both clean → read `{spec_dir}/validation/issues.md` (if exists). For each `[open]` item that does not contain a `file:line` reference (no `:\d+` immediately before ` —`) → mark it `[fixed]`. These were written by step 3 in a prior run and are now resolved since both checks passed. Any that are still actual issues will be re-added as `[open]` by the aggregator.
+4. Tests clean → read `{spec_dir}/validation/issues.md` (if exists). For each `[open]` item that does not contain a `file:line` reference (no `:\d+` immediately before ` —`) → mark it `[fixed]`. These were written by step 3 in a prior run and are now resolved since tests passed. Any that are still actual issues will be re-added as `[open]` by the aggregator.
 
    Launch AI validators in parallel:
+   - `validator-file` + `codex "validator-file"` (→ file.md, file-codex.md)
    - `validator-structural` + `codex "validator-structural"` (→ structural.md, structural-codex.md)
    - `validator-security` + `codex "validator-security"` (→ security.md, security-codex.md)
    - If `skip_spec` = false: `validator-spec` + `codex "validator-spec"` (→ spec.md, spec-codex.md)
@@ -50,12 +49,12 @@ Received via `prompt` from orchestrator in key-value format:
 
 or
 
-    HAS_ISSUES: N errors (static/test)       — from step 3
-    HAS_ISSUES: N open                       — from step 6 (aggregator)
+    HAS_ISSUES: N errors (test)       — from step 3
+    HAS_ISSUES: N open                — from step 6 (aggregator)
 
 # Error Handling
 
-- static-checker/test-runner crash → treat as FAIL
+- test-runner crash → treat as FAIL
 - Codex crash/timeout → skip, record SKIPPED
 - AI validator crash → aggregator handles missing files
 - aggregator crash → return `HAS_ISSUES: aggregator failed`

@@ -15,7 +15,7 @@ Validation report judge. Verifies each finding against actual code, filters fals
 
 - One finding = one line. Format: `[error|warning] file:line — description`
 - No prose, no commentary, no statistics in the verified section.
-- False positive prefix = report filename without `.md` extension (`[structural]`, `[spec]`, `[security]`, `[structural-codex]`, etc.) or `[aggregated]` for entries from coder fix-ai.
+- False positive prefix = report filename without `.md` extension (`[file]`, `[structural]`, `[spec]`, `[security]`, `[file-codex]`, `[structural-codex]`, etc.) or `[aggregated]` for entries from coder fix-ai.
 
 # Input
 
@@ -25,9 +25,11 @@ Received via `prompt` from orchestrator in key-value format:
     spec_dir: temp/auth-flow/
 
 Reads validator report files from `{spec_dir}/validation/`:
+- `file.md` — File Validator output (Claude)
 - `structural.md` — Structural Validator output (Claude)
 - `spec.md` — Spec Validator output (Claude, optional — only from feature-implement pipeline)
 - `security.md` — Security Validator output (Claude)
+- `file-codex.md` — File Validator output (Codex, optional)
 - `structural-codex.md` — Structural Validator output (Codex, optional)
 - `spec-codex.md` — Spec Validator output (Codex, optional)
 - `security-codex.md` — Security Validator output (Codex, optional)
@@ -36,11 +38,10 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 
 # Workflow
 
-1. Read validator report files from `{spec_dir}/validation/` (structural.md, spec.md, security.md, structural-codex.md, spec-codex.md, security-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
+1. Read validator report files from `{spec_dir}/validation/` (file.md, structural.md, spec.md, security.md, file-codex.md, structural-codex.md, spec-codex.md, security-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
 2. Load existing false positive context (skip missing files):
    - Read `{spec_dir}/validation/false-positives.md`. When a new finding matches a previous false positive (same file, same issue pattern), re-read the file at that path:line. If the line content is identical → carry forward to false-positives.md (do not include in aggregated.md). If different → re-evaluate as a fresh finding. After processing all current findings, copy previous FP entries not re-raised by any validator in this run.
-   - Glob `{spec_dir}/validation/step-*/false-positives.md`. For each match → carry forward entries as FP, reason: "step-N FP: {original reason}".
 
 3. Read `{spec_dir}/implementation-plan.md` if it exists. Extract two things:
    - **Excluded issues** (`## Excluded Issues` section): if a finding matches (same concept, same or nearby code location) → classify as FP immediately, reason `"excluded from plan: {rationale}"`.
@@ -79,7 +80,7 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
    - Do not modify existing `[fixed]` lines.
 
 9. Delete raw validator files from `{spec_dir}/validation/`:
-   `rm -f {spec_dir}/validation/structural.md {spec_dir}/validation/spec.md {spec_dir}/validation/security.md {spec_dir}/validation/structural-codex.md {spec_dir}/validation/spec-codex.md {spec_dir}/validation/security-codex.md`
+   `rm -f {spec_dir}/validation/file.md {spec_dir}/validation/structural.md {spec_dir}/validation/spec.md {spec_dir}/validation/security.md {spec_dir}/validation/file-codex.md {spec_dir}/validation/structural-codex.md {spec_dir}/validation/spec-codex.md {spec_dir}/validation/security-codex.md`
 
 # Output
 

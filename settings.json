@@ -21,7 +21,11 @@
       "Bash(cat /Users/dmitry/farevio_app/**)",
       "Bash(python3 *figma_mcp.py*)",
       "Bash(chmod:*)",
-      "Bash(bash -n:*)"
+      "Bash(bash -n:*)",
+      "Bash",
+      "Write",
+      "Edit",
+      "Read"
     ],
     "deny": [
       "Read(**/.env*)",
@@ -49,6 +53,7 @@
     "ask": [],
     "defaultMode": "bypassPermissions"
   },
+  "model": "sonnet",
   "enabledMcpjsonServers": [
     "trello",
     "playwright"
@@ -70,7 +75,6 @@
     "type": "command",
     "command": "input=$(cat); used=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); model=$(echo \"$input\" | jq -r '.model.display_name // empty'); out=\"\"; [ -n \"$used\" ] && out=\"$(printf '%.0f' \"$used\")% used\"; [ -n \"$model\" ] && out=\"$out | $model\"; echo \"${out# | }\""
   },
-  "model": "claude-opus-4-6",
   "autoUpdatesChannel": "stable",
   "skipDangerousModePermissionPrompt": true
 }

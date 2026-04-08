@@ -128,7 +128,7 @@ If any item fails — go back to Step 2. If all pass — proceed directly to Pha
 
 ### Step 2: Write ui-requirements.md
 
-Create `temp/<feature-name>/ui-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
+Create `temp/<feature-name>/ui-requirements.md` using the template below. Include only sections that were discussed and have at least one decision or field to document.
 
 Per-page subsections — include only those relevant to the layout type:
 - **List pages:** Data (columns, sort), Filters, Actions (row + page-level), States
@@ -181,12 +181,10 @@ Per-page subsections — include only those relevant to the layout type:
 - **Design References** — only if Figma URLs were provided
 - **Open Questions** — only if genuinely unresolved questions remain
 
-### Step 3: Present and confirm
+### Step 3: Finalize
 
-1. Show the document to the user
-2. If user requests changes → apply, show updated, repeat until confirmed
-3. After final confirmation, suggest next step: `/feature-tech <feature-name>`
-4. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-tech`
+1. Suggest next step: `/feature-tech <feature-name>`
+2. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-tech`
 
 # Start
 

@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → global-validator → fix loop), produces staged git diff."
+description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → coder → test-runner + static-checker → fix attempt → commit), produces staged git diff."
 model: sonnet
 argument-hint: "<folder>: spec folder name (e.g. BUG-phone-field-required)"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
@@ -28,9 +28,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
   - Step raw → `SPEC_DIR/validation/step-{N}/static.txt`
-  - Plan validation findings → `SPEC_DIR/validation/plan/{source}.md`
   - Validator reports → `SPEC_DIR/validation/{name}.md` (flat, overwritten each iteration)
-  - Aggregated findings → `SPEC_DIR/validation/aggregated.md`
   - Open/fixed issue tracking → `SPEC_DIR/validation/issues.md`
   - False positives → `SPEC_DIR/validation/false-positives.md`
 
@@ -42,38 +40,12 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 1: Planning
 
-### Create Plan
-
 Spawn `planner` with prompt:
 
     feature: _fix
     spec_dir: SPEC_DIR
 
-After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-fix`." Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`).
-
-### Dual-LLM Plan Validation
-
-1. `mkdir -p SPEC_DIR/validation/plan/`
-
-2. Launch 2 validators in parallel (same response, foreground — no `run_in_background`; parallelism from same-response launch):
-   - **Claude Task**: spawn `plan-validator` with prompt: `feature: _fix, spec_dir: SPEC_DIR, output_file: SPEC_DIR/validation/plan/claude.md`
-   - **Codex Task**: spawn `codex` with prompt:
-     ```
-     plan-validator
-     feature: _fix
-     spec_dir: SPEC_DIR
-     output_file: SPEC_DIR/validation/plan/codex.md
-     ```
-
-3. Collect each validator status: direct return `NO_ISSUES`/`HAS_ISSUES` if available; otherwise read its `output_file` (non-empty = `HAS_ISSUES`, empty/missing = `NO_ISSUES`). Both clean (Codex also accepts `NO_OUTPUT`) → log `[Plan validation: clean]`, go to Phase 2.
-
-4. Otherwise → re-spawn `planner` with prompt:
-
-       feature: _fix
-       spec_dir: SPEC_DIR
-       revision_dir: SPEC_DIR/validation/plan/
-
-   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue. Extract test decision from planner return value before Phase 3 (tests).
+After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-fix`."
 
 ## Phase 2: Implementation
 
@@ -94,27 +66,7 @@ For each step in order:
 
 3. `DONE` → next step. `UNRESOLVED` → record.
 
-## Phase 3: Test Writing (optional)
-
-Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
-
-If `SPEC_DIR/test-cases.md` absent → spawn `test-planner` with prompt:
-
-    feature: _fix
-    spec_dir: SPEC_DIR
-
-test-planner returns ERROR → log `[Tests: planner error — {reason}]`, continue to Phase 4 (tests skipped).
-
-Spawn `test-writer` with prompt:
-
-    feature: _fix
-    spec_dir: SPEC_DIR
-
-If test-writer returns ERROR → log `[Tests: error — {reason}]`, skip tests, continue to Phase 4.
-
-## Phase 4: Validation Cycle
-
-Initialize `ai_iter = 0`, `test_iter = 0` before starting.
+## Phase 3: Validation
 
 `git status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → `CHANGED_FILES` (newline-separated).
 
@@ -123,26 +75,29 @@ Spawn `global-validator` via Task(super-agent) with prompt:
     global-validator
     feature: _fix
     spec_dir: SPEC_DIR
+    skip_ai: true
     skip_spec: true
     files:
     - {CHANGED_FILES, each on own line with "- " prefix}
 
 Check global-validator status:
-- `NO_ISSUES` → Phase 5.
-- `HAS_ISSUES` → categorize by status text: `(test)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without consuming the AI budget.
-  - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
-  - Counter < limit → spawn `planner` with prompt:
+- `NO_ISSUES` → Phase 4.
+- `HAS_ISSUES` →
+  1. Spawn `coder` via Task(super-agent) with prompt:
 
-        feature: _fix
-        spec_dir: SPEC_DIR
-        issues_file: validation/issues.md
+         coder
+         mode: fix-ai
+         feature: _fix
+         spec_dir: SPEC_DIR
+         report_file: validation/issues.md
 
-    Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
-    Increment the category's counter. If fix-plan.md had 0 steps → Phase 5. Otherwise recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
+     `UNRESOLVED` → record in `unresolved_steps`.
+  2. Recompute `CHANGED_FILES` (same filtering rules). Re-run `global-validator` once with updated `CHANGED_FILES`.
+  3. `NO_ISSUES` → Phase 4. `HAS_ISSUES` → append `"Validation: HAS_ISSUES after fix attempt"` to `unresolved_steps`, Phase 4.
 
-## Phase 5: Finalize
+## Phase 4: Finalize
 
-1. `git status --porcelain` → parse entries, exclude non-source files (same list as Phase 4). Stage by status:
+1. `git status --porcelain` → parse entries, exclude non-source files (same list as Phase 3). Stage by status:
    - Working-tree deletions (second char `D`): `git rm --cached`.
    - Already-staged deletions (first char `D`, second char ` `): skip.
    - Everything else: `git add`.
@@ -155,7 +110,7 @@ Check global-validator status:
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
-   Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `test_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+   Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
@@ -174,8 +129,7 @@ Check global-validator status:
 
 **Description:** <fix description>
 **Files changed:** N
-**Tests:** M passed (or "skipped")
-**Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2
+**Validation:** {len(unresolved_steps)} unresolved
 
 ### Unresolved Issues
 - [error|warning] file:line — description

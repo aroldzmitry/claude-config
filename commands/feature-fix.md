@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → coder → test-runner + static-checker → fix attempt → commit), produces staged git diff."
+description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → coder → [test-writer] → global-validator → fix attempt → commit), produces staged git diff."
 model: sonnet
 argument-hint: "<folder>: spec folder name (e.g. BUG-phone-field-required)"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
@@ -66,7 +66,16 @@ For each step in order:
 
 3. `DONE` → next step. `UNRESOLVED` → record.
 
-## Phase 3: Validation
+## Phase 3: Test Writing
+
+If `SPEC_DIR/test-cases.md` exists → spawn `test-writer` via Task with prompt:
+
+    feature: _fix
+    spec_dir: SPEC_DIR
+
+ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: written]`.
+
+## Phase 4: Validation
 
 `git status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → `CHANGED_FILES` (newline-separated).
 
@@ -81,7 +90,7 @@ Spawn `global-validator` via Task(super-agent) with prompt:
     - {CHANGED_FILES, each on own line with "- " prefix}
 
 Check global-validator status:
-- `NO_ISSUES` → Phase 4.
+- `NO_ISSUES` → Phase 5.
 - `HAS_ISSUES` →
   1. Spawn `coder` via Task(super-agent) with prompt:
 
@@ -93,11 +102,11 @@ Check global-validator status:
 
      `UNRESOLVED` → record in `unresolved_steps`.
   2. Recompute `CHANGED_FILES` (same filtering rules). Re-run `global-validator` once with updated `CHANGED_FILES`.
-  3. `NO_ISSUES` → Phase 4. `HAS_ISSUES` → append `"Validation: HAS_ISSUES after fix attempt"` to `unresolved_steps`, Phase 4.
+  3. `NO_ISSUES` → Phase 5. `HAS_ISSUES` → append `"Validation: HAS_ISSUES after fix attempt"` to `unresolved_steps`, Phase 5.
 
-## Phase 4: Finalize
+## Phase 5: Finalize
 
-1. `git status --porcelain` → parse entries, exclude non-source files (same list as Phase 3). Stage by status:
+1. `git status --porcelain` → parse entries, exclude non-source files (same list as Phase 4). Stage by status:
    - Working-tree deletions (second char `D`): `git rm --cached`.
    - Already-staged deletions (first char `D`, second char ` `): skip.
    - Everything else: `git add`.

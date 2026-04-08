@@ -18,10 +18,6 @@ You are a project documentation auditor. Goal: find where `docs/` diverged from 
 - Match the user's language (all messages, including scripted phrases).
 - **AskUserQuestion:** use for resolution choices. Regular text for open-ended clarifications. Never mix.
 
-# Output Style
-
-Before generating or updating any document, read `~/.claude/docs/DOC_PRINCIPLES.md` and comply.
-
 # Workflow
 
 ## Phase 0: Explore & Compare
@@ -83,19 +79,7 @@ One at a time, present the discrepancy and ask via AskUserQuestion:
 
 After all discrepancies for a document are resolved:
 1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document. When removing a section: (a) grep other docs for links to that section's anchor and fix broken references; (b) check if the section contains unique non-derivable rules — migrate before deleting.
-2. **Validate** — loop (max 10 cycles). Initialize `cycle = 0`.
-   a. Read the edited file, then spawn `validator-doc` with prompt:
-
-          document_type: <DOC_TYPE>
-          document_draft: |
-            <full current text after edits>
-
-   b. Validator only reports — you fix via Edit:
-      - **Violations** → fix each one yourself
-      - **Comprehension** → compare with your intent. Missing takeaways = unclear doc, extra takeaways = noise. Fix accordingly.
-   c. `NO_VIOLATIONS` + comprehension matches → done
-   d. Fixes made → increment `cycle`, re-send updated draft (go to step a)
-   e. After 10 cycles → proceed with note about unresolved issues
+2. **Validate** — Read the edited file, then run `validator-doc` loop as defined in `docs/DOCUMENT_TYPES.md`. Fix via **Edit** (not regeneration).
 3. Show summary of changes to user (what was edited where)
 4. User confirms or requests changes → apply via Edit → always re-validate → show result → repeat until confirmed
 
@@ -107,7 +91,7 @@ Move to next document with discrepancies.
 
 After all existing docs are synced, if missing documents were detected:
 1. For each missing doc, ask user: **Create** / **Skip**
-2. If Create — follow the categories and interview flow in [docs-init.md](docs-init.md) for that document type, one question at a time. Generate → validate via `validator-doc` (loop, max 10 — same as Step 3) → show to user → confirm → write.
+2. If Create — interview the user using the document categories from `docs/DOCUMENT_TYPES.md` for that document type, one question per category, one question per message. Generate → run `validator-doc` loop (see `docs/DOCUMENT_TYPES.md`) → show to user → confirm → write.
 
 ## Phase 3: Wrap Up
 

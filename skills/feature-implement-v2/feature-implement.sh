@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Feature implementation orchestrator — script-based.
 # Replaces the LLM-orchestrated feature-implement.md command.
-# Usage: feature-implement.sh [--no-commit] [--validator-model MODEL] <feature-name>
+# Usage: feature-implement.sh [--no-commit] [--model MODEL] <feature-name>
 
 # ── Parse flags ────────────────────────────────────────────────────────────────
 
@@ -190,7 +190,7 @@ stage_files() {
 
 phase_0() {
   local dirty
-  dirty=$(git diff --stat HEAD 2>/dev/null)
+  dirty=$(git status --porcelain 2>/dev/null)
   [[ -n "$dirty" ]] && die "Working tree has uncommitted changes. Commit or stash first."
 
   [[ ! -f "$SPEC_DIR/technical-requirements.md" ]] && die "Run /feature-tech $FEATURE first."
@@ -238,11 +238,18 @@ output_file: $SPEC_DIR/validation/plan/codex.md")
   claude_response=$(wait_session "$claude_session")
   codex_response=$(wait_session "$codex_session")
 
-  # Check results
+  # Check results — direct status check, fallback to output_file (non-empty = HAS_ISSUES)
   local needs_revision=false
-  [[ "$claude_response" == *"HAS_ISSUES"* ]] && needs_revision=true
-  [[ "$codex_response" == *"HAS_ISSUES"* ]] && needs_revision=true
-  # Codex NO_OUTPUT = clean
+  if [[ "$claude_response" == *"HAS_ISSUES"* ]]; then
+    needs_revision=true
+  elif [[ "$claude_response" != *"NO_ISSUES"* ]]; then
+    [[ -s "$SPEC_DIR/validation/plan/claude.md" ]] && needs_revision=true
+  fi
+  if [[ "$codex_response" == *"HAS_ISSUES"* ]]; then
+    needs_revision=true
+  elif [[ "$codex_response" != *"NO_ISSUES"* && "$codex_response" != "NO_OUTPUT" ]]; then
+    [[ -s "$SPEC_DIR/validation/plan/codex.md" ]] && needs_revision=true
+  fi
 
   if $needs_revision; then
     log "[Plan has issues — revising...]"
@@ -315,15 +322,8 @@ phase_3() {
   fi
 
   if [[ ! -f "$SPEC_DIR/test-cases.md" ]]; then
-    log "[Generating test cases...]"
-    local tp_response
-    tp_response=$(run_agent $model_flag test-planner "feature: $FEATURE
-spec_dir: $SPEC_DIR") || true
-
-    if [[ "$tp_response" == *"ERROR"* ]]; then
-      log "[Tests: planner error — $tp_response]"
-      return
-    fi
+    log "[Tests: skipped — run /feature-tech first]"
+    return
   fi
 
   log "[Writing tests...]"
@@ -573,7 +573,7 @@ report_file: validation/issues.md" || true
 
 print_report() {
   local file_count
-  file_count=$(git diff --stat HEAD~1 2>/dev/null | tail -1 | grep -o '[0-9]* file' | grep -o '[0-9]*' || echo "?")
+  file_count=$(git diff --stat HEAD 2>/dev/null | tail -1 | grep -o '[0-9]* file' | grep -o '[0-9]*' || git diff --cached --stat 2>/dev/null | tail -1 | grep -o '[0-9]* file' | grep -o '[0-9]*' || echo "?")
 
   local test_status="written"
   [[ "$test_decision" == *"skip"* ]] && test_status="skipped"

@@ -117,8 +117,14 @@ Present to user in a single message:
    - path/to/file2.ts — what needs to change
    ```
 
-4. Create status marker: `touch SPEC_DIR/NEXT--feature-fix` (and for each per-project dir from step 2)
-5. Output: "Diagnosis written to `SPEC_DIR/`. Next: `/feature-fix BUG-{slug}`" (list all directories if multi-project)
+4. Spawn `test-planner` via Task with prompt:
+
+       feature: BUG-{slug}
+       spec_dir: SPEC_DIR
+
+   ERROR → log, continue. (For multi-project: spawn one test-planner per SPEC_DIR.)
+5. Create status marker: `touch SPEC_DIR/NEXT--feature-fix` (and for each per-project dir from step 2)
+6. Output: "Diagnosis written to `SPEC_DIR/`. Next: `/feature-fix BUG-{slug}`" (list all directories if multi-project)
 
 # Start
 

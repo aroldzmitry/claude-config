@@ -80,6 +80,7 @@ Never duplicate test constants or stub classes across files written in the same 
 Parse test-cases.md format:
 - `## Test Strategy` — respect test levels (unit/integration/e2e) and exclusions
 - `## Test Cases` — each item is `- [ ] [must|should|could] <scenario — expected behavior>`
+- `## Tests to Update` — each item is `- [ ] [priority] \`path:NN\` — currently asserts X; after fix should assert Y`. For each: read the referenced test file, locate the test at the given line, update its assertion to match the expected post-fix behavior.
 
 Write ALL test cases regardless of priority. Map each to a concrete test.
 

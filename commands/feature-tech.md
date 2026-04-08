@@ -112,10 +112,8 @@ Before proceeding, verify internally:
 
 - [ ] All relevant categories from Phase 1 are covered
 - [ ] Every business requirement has a technical solution (if business-requirements.md exists)
-- [ ] All interfaces/contracts are explicit
 - [ ] Every tech edge case has an expected behavior
 - [ ] Test strategy covers key scenarios
-- [ ] No vague instructions remain
 - [ ] All gaps resolved or recorded in Open Questions
 
 If any item fails — go back to Step 2. If all pass — proceed directly to Phase 3.

@@ -30,6 +30,7 @@ Received via `prompt` from orchestrator:
 
 - `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
+с- `worktree_dir` — (optional) absolute path to worktree; when set, test files are written at `{worktree_dir}/{relative_path}` and test file search is scoped to `{worktree_dir}/`
 
 # Workflow
 
@@ -51,7 +52,7 @@ If `test-cases.md` is missing → return `ERROR: test-cases.md not found in {spe
 ## 2. Scan Test Patterns
 
 Discover existing test conventions:
-- Glob for test files: `**/*.test.*`, `**/*.spec.*`, `**/*_test.*`, `**/test_*.*`, `**/tests/**`, `**/__tests__/**`
+- Glob for test files: if `worktree_dir` is set, use patterns rooted at `{worktree_dir}/` (e.g. `{worktree_dir}/**/*.test.*`); otherwise search project-wide with `**/*.test.*`, `**/*.spec.*`, `**/*_test.*`, `**/test_*.*`, `**/tests/**`, `**/__tests__/**`
 - Read 2-3 test files — prefer the most recently modified
 - Extract: framework, assertion style, file naming, directory placement, import patterns, setup/teardown conventions
 
@@ -65,7 +66,7 @@ Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.
 
 ## 4. Write Tests
 
-Track every file you Write or Edit in this step in a `written_files` list, starting empty.
+Track every file you Write or Edit in this step in a `written_files` list, starting empty. If `worktree_dir` is set, write test files at `{worktree_dir}/{relative_path}`; spec_dir and docs/ files are read from project root. Record absolute paths in `written_files` when worktree_dir is set.
 
 Before writing any test files, plan the full set:
 1. List all test files to be created (from test-cases.md sections and implementation plan steps that reference test files)
@@ -110,9 +111,10 @@ Interface change propagation: when removing, renaming, or changing the signature
        step: test-writer
        spec_dir: {spec_dir}
        step_number: 0
+       [working_dir: {worktree_dir}]   ← include only if worktree_dir is set
        files:
-       - path/to/test1.ts
-       - path/to/test2.ts
+       - {absolute_path_or_relative}/test1.ts
+       - {absolute_path_or_relative}/test2.ts
 3. step-validator crash (no parseable status) → return DONE.
 4. NO_ISSUES → DONE.
 5. HAS_ISSUES → read `{spec_dir}/validation/step-0/aggregated.md`, fix (group by file, errors first).

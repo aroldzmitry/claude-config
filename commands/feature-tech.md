@@ -133,7 +133,7 @@ If `temp/<feature-name>/technical-requirements.md` already exists → ask user: 
 
 Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
 
-**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). A behavioral contract is complete only when it covers both the initiating condition and the resulting state change — for any named interaction (event, endpoint, action, hook). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. These are the coder's decisions. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X". When any spec section references an existing event or endpoint by name without modifying it, declare it in § API / Interfaces with its contract marked "unchanged".
+**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). A behavioral contract is complete only when it covers both the initiating condition and the resulting state change — for any named interaction (event, endpoint, action, hook). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X". When any spec section references an existing event or endpoint by name without modifying it, declare it in § API / Interfaces with its contract marked "unchanged".
 
 ```markdown
 # Technical Specification: <human-readable name>
@@ -205,7 +205,7 @@ Create `temp/<feature-name>/technical-requirements.md` using the template below.
 Spawn `test-planner` via Task with prompt:
 
     feature: <feature-name>
-    spec_dir: temp/<feature-name>/
+    spec_dir: temp/<feature-name>
 
 test-planner returns ERROR → show error to user, skip Step 4, proceed to Step 5 (show only `technical-requirements.md`).
 
@@ -216,7 +216,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 **Validation loop (max 2 iterations):**
 
 1. Launch 6 validators in parallel (same response):
-   - **Claude Tasks** — each with `feature: <name>, spec_dir: temp/<name>/, output_file: <path>`:
+   - **Claude Tasks** — each with `feature: <name>, spec_dir: temp/<name>, output_file: <path>`:
      - `validator-spec-contracts` → `output_file: temp/<name>/validation/spec/contracts.md`
      - `validator-spec-testability` → `output_file: temp/<name>/validation/spec/testability.md`
      - `validator-spec-consistency` → `output_file: temp/<name>/validation/spec/consistency.md`
@@ -224,7 +224,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
      ```
      validator-{V}
      feature: <name>
-     spec_dir: temp/<name>/
+     spec_dir: temp/<name>
      output_file: temp/<name>/validation/spec/{V-short}-codex.md
      ```
      short names: contracts, testability, consistency
@@ -232,7 +232,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 2. Spawn `aggregator-spec`:
 
        feature: <name>
-       spec_dir: temp/<name>/
+       spec_dir: temp/<name>
        context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs as false positives. References to existing production code artifacts (schemas, types, function names, component names, file paths already present in the codebase) are location context, not prescriptive implementation details — treat as non-findings. When § Business Clarifications documents a decision that overrides a BRD requirement, consistency findings about that specific BRD-vs-spec contradiction are false positives. When § Business Clarifications explicitly excludes a BRD requirement as already implemented, test coverage and consistency findings for that excluded scope are false positives. When the spec explicitly states that an existing endpoint's contract is unchanged, treat findings about missing response schema, missing error codes, or missing request body for that endpoint as false positives — the existing implementation is the authoritative contract.
 
 3. `NO_ISSUES` → proceed to **Step 5: Present**.
@@ -257,8 +257,4 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 # Start
 
-If `temp/$ARGUMENTS/business-requirements.md` exists (attempt Read) — load it silently, start Phase 1 from the first relevant category.
-
 If `$ARGUMENTS` is provided but no matching folder — treat as feature description, ask the first technical question directly. Do not repeat or rephrase the argument back to the user.
-
-If no arguments — ask what the user wants to specify technically.

@@ -50,9 +50,10 @@ If `technical-requirements.md` missing → return `ERROR: technical-requirements
 If `technical-requirements.md` contains an `## Affected Files` section:
 1. Extract all file paths listed
 2. For each file path: derive base name (without extension), Glob for test files matching that name: `**/*.test.*`, `**/*.spec.*`, `**/*_test.*`, `**/test_*.*`
-3. Read found test files
-4. For each test found: compare its assertions against `## Fix Direction` in `technical-requirements.md`. Mark tests that assert behavior that will change as a result of the fix.
-5. Collect as `tests_to_update`: file path + approximate line + what it currently asserts + what it should assert after fix
+3. For each affected file: also Grep all `**/*.test.*` and `**/*.spec.*` files for mock references (pattern: `[Mm]ock{BaseName}|createMock{BaseName}|{BaseName}[Mm]ock`). Add any found files not already in the scan set.
+4. Read all found test files
+5. For each test found: compare its assertions against `## Fix Direction` in `technical-requirements.md`. Mark tests that assert behavior that will change as a result of the fix.
+6. Collect as `tests_to_update`: file path + approximate line + what it currently asserts + what it should assert after fix
 
 If no `## Affected Files` section, or no matching test files found → `tests_to_update = []`, continue.
 

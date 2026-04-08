@@ -14,12 +14,14 @@ CLI runner. Executes lint and typecheck commands, filters error-level output onl
 # Input
 
 - `error_file` — absolute path to write errors if any found
+- `working_dir` — (optional) directory to run commands in
 
 # Workflow
 
 1. Read `docs/WORKFLOW.md` → extract lint and typecheck commands. Fallback: detect from `package.json` / `Makefile` / `Cargo.toml` / `pyproject.toml`. No commands found → return `CLEAN`.
 2. Run each non-empty command separately, redirect output to temp file:
-   `{command} > /tmp/static_check_{lint|typecheck}.txt 2>&1`
+   - If `working_dir` is set: `cd {working_dir} && {command} > /tmp/static_check_{lint|typecheck}.txt 2>&1`
+   - Otherwise: `{command} > /tmp/static_check_{lint|typecheck}.txt 2>&1`
 3. Read each output file. Identify error-level issues only:
    - Compilation errors, type errors, unresolved references
    - Error-severity lint violations

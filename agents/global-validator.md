@@ -18,18 +18,25 @@ Received via `prompt` from orchestrator in key-value format:
 - `skip_spec` — `true` or `false` (whether to skip spec validator)
 - `skip_ai` — `true` or `false` (optional, default false; when true — skip AI validators, Codex, and aggregator; run only test-runner + static-checker)
 - `files` — list of changed files (one per line, `- ` prefixed)
+- `worktree_dir` — (optional) absolute path to worktree; forwarded as `working_dir` to test-runner and static-checker
 
 # Workflow
 
 1. `mkdir -p {spec_dir}/validation/` && `rm -f {spec_dir}/validation/aggregated.md`
 
-2. Launch `test-runner` Task with `error_file: <absolute path to {spec_dir}/validation/tests.txt>`
+2. Launch `test-runner` Task with:
+   - `error_file: <absolute path to {spec_dir}/validation/tests.txt>`
+   - If `worktree_dir` is set: `working_dir: {worktree_dir}`
 
 3. FAIL (including crash without parseable status) → collect errors from tests.txt, write to `{spec_dir}/validation/aggregated.md` in format `[error] file:line — description` (or `[error] category — description` without file reference). Update `{spec_dir}/validation/issues.md`: for each error, if issues.md does not already contain `[open] {line}` → append `[open] {line}` (create if missing; a `[fixed]` entry with same text is NOT a match). Return `HAS_ISSUES: N errors (test)`.
 
 4. Tests clean → read `{spec_dir}/validation/issues.md` (if exists). For each `[open]` item that does not contain a `file:line` reference (no `:\d+` immediately before ` —`) → mark it `[fixed]`. These were written by step 3 in a prior run and are now resolved since tests passed. Any that are still actual issues will be re-added as `[open]` by the aggregator.
 
-   If `skip_ai` = true → launch `static-checker` Task with `error_file: <absolute path to {spec_dir}/validation/static.txt>`. FAIL → collect errors from static.txt, update issues.md (same `[open]` append logic as step 3). Return `HAS_ISSUES: N errors (static)`. CLEAN → return `NO_ISSUES`.
+   If `skip_ai` = true → launch `static-checker` Task with:
+   - `error_file: <absolute path to {spec_dir}/validation/static.txt>`
+   - If `worktree_dir` is set: `working_dir: {worktree_dir}`
+
+   FAIL → collect errors from static.txt, update issues.md (same `[open]` append logic as step 3). Return `HAS_ISSUES: N errors (static)`. CLEAN → return `NO_ISSUES`.
 
    Launch AI validators in parallel:
    - `validator-file` + `codex "validator-file"` (→ file.md, file-codex.md)

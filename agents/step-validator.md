@@ -18,12 +18,15 @@ Received via `prompt` from orchestrator (coder or test-writer) in key-value form
 - `spec_dir` — path to spec directory
 - `step_number` — current step number
 - `files` — list of modified files (one per line, `- ` prefixed)
+- `working_dir` — (optional) directory to run static-checker commands in
 
 # Workflow
 
 1. `mkdir -p {spec_dir}/validation/step-{step_number}/`
 
-2. Launch `static-checker` Task with `error_file: {spec_dir}/validation/step-{step_number}/static.txt`
+2. Launch `static-checker` Task with:
+   - `error_file: {spec_dir}/validation/step-{step_number}/static.txt`
+   - If `working_dir` is set: `working_dir: {working_dir}`
 
 3. Read `{spec_dir}/validation/step-{step_number}/static.txt`. If non-empty → write each error line to `{spec_dir}/validation/step-{step_number}/aggregated.md` prefixed with `[error] `. Return `HAS_ISSUES: N errors`. If empty or missing → return `NO_ISSUES`.
 

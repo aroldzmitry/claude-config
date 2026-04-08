@@ -40,17 +40,20 @@ Implementation orchestrator. Delegates to agents — never writes application co
 1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`"
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
+4. `REPO_ROOT = git rev-parse --show-toplevel`
 
 ## Phase 1: Planning
 
 ### Create Plan
 
-Spawn `planner` with prompt:
+Launch in parallel (same response):
+- Task: `planner` with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR`
+- Task: `setup-worktree` with prompt: `feature: $ARGUMENTS, repo_root: REPO_ROOT, spec_dir: SPEC_DIR`
 
-    feature: $ARGUMENTS
-    spec_dir: SPEC_DIR
-
-After: verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-implement`." Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`).
+Wait for both results:
+- From setup-worktree: parse `WORKTREE_DIR`, `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
+- Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-implement`."
+- Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`).
 
 ### Dual-LLM Plan Validation
 
@@ -91,6 +94,7 @@ For each step in order:
        spec_dir: SPEC_DIR
        step_number: N
        step_total: TOTAL
+       worktree_dir: WORKTREE_DIR
        step_body: <full step block text>
 
 3. `DONE` → next step. `UNRESOLVED` → record.
@@ -105,6 +109,7 @@ Spawn `test-writer` with prompt:
 
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
+    worktree_dir: WORKTREE_DIR
 
 If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to Phase 4 (tests skipped).
 
@@ -112,7 +117,7 @@ If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to 
 
 Initialize `ai_iter = 0`, `test_iter = 0` before starting.
 
-`git status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → `CHANGED_FILES` (newline-separated).
+`git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 
 Spawn `global-validator` via Task(super-agent) with prompt:
 
@@ -120,6 +125,7 @@ Spawn `global-validator` via Task(super-agent) with prompt:
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
     skip_spec: false
+    worktree_dir: WORKTREE_DIR
     files:
     - {CHANGED_FILES, each on own line with "- " prefix}
 
@@ -133,24 +139,31 @@ Check global-validator status:
         spec_dir: SPEC_DIR
         issues_file: validation/issues.md
 
-    Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
-    Increment the category's counter. If fix-plan.md had 0 steps → Phase 5. Otherwise recompute CHANGED_FILES (same filtering rules). Re-run global-validator with updated CHANGED_FILES → return to status check above.
+    Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
+    Increment the category's counter. If fix-plan.md had 0 steps → Phase 5. Otherwise recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 
-1. `git status --porcelain` → parse entries, exclude non-source files (same list as Phase 4). Stage by status:
-   - Working-tree deletions (second char `D`): `git rm --cached`.
+1. `git -C WORKTREE_DIR status --porcelain` → parse entries, exclude non-source files (same list as Phase 4). Stage by status:
+   - Working-tree deletions (second char `D`): `git -C WORKTREE_DIR rm --cached`.
    - Already-staged deletions (first char `D`, second char ` `): skip.
-   - Everything else: `git add`.
-2. `git diff --cached --stat` → stats.
-3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "feat: {description}"`. On hook failure: re-stage all currently-staged files from working tree to pick up any formatter output (`git diff --cached --name-only | xargs -r git add 2>/dev/null || true`), write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`mode: fix-ai, feature: $ARGUMENTS, spec_dir: SPEC_DIR, report_file: validation/issues.md`), re-stage (step 1), retry commit. Max 2 fix attempts.
-4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `test_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
-5. Folder status:
+   - Everything else: `git -C WORKTREE_DIR add`.
+2. `git -C WORKTREE_DIR diff --cached --stat` → stats.
+3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git -C WORKTREE_DIR commit -m "feat: {description}"`. On hook failure: re-stage all currently-staged files from working tree to pick up any formatter output (`git -C WORKTREE_DIR diff --cached --name-only | xargs -I{} git -C WORKTREE_DIR add {} 2>/dev/null || true`), write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`mode: fix-ai, feature: $ARGUMENTS, spec_dir: SPEC_DIR, worktree_dir: WORKTREE_DIR, report_file: validation/issues.md`), re-stage (step 1), retry commit. Max 2 fix attempts.
+4. Push and mark PR ready:
+   ```
+   git -C WORKTREE_DIR push
+   gh pr edit PR_URL --title "{commit description}"
+   gh pr ready PR_URL
+   ```
+   Log `[PR ready: PR_URL]`.
+5. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `test_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+6. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p temp/done && mv SPEC_DIR-done temp/done/`
-   - If `temp/$ARGUMENTS-warnings/` was created in step 4 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
-6. Output report
+   - If `temp/$ARGUMENTS-warnings/` was created in step 5 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
+7. Output report
 
 # Edge Cases
 
@@ -162,6 +175,7 @@ Check global-validator status:
 ## Implementation Complete
 
 **Feature:** <feature-name>
+**PR:** PR_URL
 **Files changed:** N
 **Tests:** written (or "skipped")
 **Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2

@@ -24,6 +24,10 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BIN_DIR="$HOME/.claude/bin"
 FEATURE="${1:?Usage: feature-implement.sh [--no-commit] [--model MODEL] <feature-name>}"
 SPEC_DIR="temp/$FEATURE"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+BRANCH="feat/$FEATURE"
+WORKTREE_DIR="$REPO_ROOT/.worktrees/$FEATURE"
+PR_URL=""
 
 # ── State ──────────────────────────────────────────────────────────────────────
 
@@ -33,6 +37,15 @@ ai_iter=0
 test_iter=0
 model_flag=""
 [[ -n "$MODEL_OVERRIDE" ]] && model_flag="--model $MODEL_OVERRIDE"
+
+# ── Cleanup trap ───────────────────────────────────────────────────────────────
+
+cleanup() {
+  if [[ -n "$WORKTREE_DIR" && -d "$WORKTREE_DIR" ]]; then
+    git -C "$REPO_ROOT" worktree remove "$WORKTREE_DIR" --force 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -132,8 +145,14 @@ PYEOF
 }
 
 # Compute changed files from git status, excluding deletions and non-source files.
+# Usage: compute_changed_files [dir]
+# If dir is given, runs git -C dir and outputs absolute paths.
 compute_changed_files() {
-  git status --porcelain | while IFS= read -r line; do
+  local dir="${1:-}"
+  local git_cmd=(git)
+  [[ -n "$dir" ]] && git_cmd=(git -C "$dir")
+
+  "${git_cmd[@]}" status --porcelain | while IFS= read -r line; do
     local xy="${line:0:2}"
     local file="${line:3}"
 
@@ -152,13 +171,24 @@ compute_changed_files() {
       dist/*|build/*|vendor/*|node_modules/*|temp/*) continue ;;
     esac
 
-    echo "$file"
+    # Output absolute path if dir given, relative otherwise
+    if [[ -n "$dir" ]]; then
+      echo "$dir/$file"
+    else
+      echo "$file"
+    fi
   done
 }
 
 # Stage files for commit, applying same exclusion filters.
+# Usage: stage_files [dir]
+# If dir is given, runs git -C dir.
 stage_files() {
-  git status --porcelain | while IFS= read -r line; do
+  local dir="${1:-}"
+  local git_cmd=(git)
+  [[ -n "$dir" ]] && git_cmd=(git -C "$dir")
+
+  "${git_cmd[@]}" status --porcelain | while IFS= read -r line; do
     local xy="${line:0:2}"
     local file="${line:3}"
 
@@ -174,7 +204,7 @@ stage_files() {
 
     # Working-tree deletion (second char D)
     if [[ "${xy:1:1}" == "D" ]]; then
-      git rm --cached "$file" 2>/dev/null || true
+      "${git_cmd[@]}" rm --cached "$file" 2>/dev/null || true
       continue
     fi
 
@@ -182,7 +212,7 @@ stage_files() {
     [[ "${xy:0:1}" == "D" && "${xy:1:1}" == " " ]] && continue
 
     # Everything else
-    git add "$file"
+    "${git_cmd[@]}" add "$file"
   done
 }
 
@@ -201,6 +231,42 @@ phase_0() {
   [[ -f "$SPEC_DIR/ui-requirements.md" ]] && specs+=("ui-requirements.md")
   [[ -f "$SPEC_DIR/test-cases.md" ]] && specs+=("test-cases.md")
   log "Spec files: ${specs[*]}"
+
+  # Worktree setup
+  git show-ref --quiet "refs/heads/$BRANCH" && die "Branch $BRANCH already exists."
+
+  # Add .worktrees/ to .gitignore if missing
+  if ! grep -qxF '.worktrees/' "$REPO_ROOT/.gitignore" 2>/dev/null; then
+    echo '.worktrees/' >> "$REPO_ROOT/.gitignore"
+    git -C "$REPO_ROOT" add "$REPO_ROOT/.gitignore"
+    git -C "$REPO_ROOT" commit -m "chore: add .worktrees/ to .gitignore"
+  fi
+
+  local default_branch
+  default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's/refs\/remotes\/origin\///')
+  [[ -z "$default_branch" ]] && default_branch="main"
+
+  mkdir -p "$REPO_ROOT/.worktrees"
+  git worktree add "$WORKTREE_DIR" -b "$BRANCH" "origin/$default_branch"
+
+  # Symlink dependency directories
+  for dir in node_modules vendor .venv __pycache__; do
+    [ -d "$REPO_ROOT/$dir" ] && ln -s "$REPO_ROOT/$dir" "$WORKTREE_DIR/$dir" 2>/dev/null || true
+  done
+
+  git -C "$WORKTREE_DIR" push -u origin "$BRANCH" \
+    || { git worktree remove "$WORKTREE_DIR" --force; git branch -D "$BRANCH"; die "Push failed."; }
+
+  # Create draft PR
+  local pr_title
+  pr_title=$(head -1 "$SPEC_DIR/technical-requirements.md" | sed 's/^#* //')
+  PR_URL=$(gh pr create --draft \
+    --title "[WIP] $pr_title" \
+    --body "Feature: $FEATURE" \
+    --head "$BRANCH" \
+    --base "$default_branch") \
+    || { git push origin --delete "$BRANCH" 2>/dev/null || true; git worktree remove "$WORKTREE_DIR" --force; git branch -D "$BRANCH"; die "Failed to create PR."; }
+  log "[PR created (draft): $PR_URL]"
 }
 
 # ── Phase 1: Planning ─────────────────────────────────────────────────────────
@@ -293,6 +359,7 @@ feature: $FEATURE
 spec_dir: $SPEC_DIR
 step_number: $n
 step_total: $total
+worktree_dir: $WORKTREE_DIR
 step_body: $body") || {
       unresolved_steps+=("Step $n: $title — agent crashed")
       continue
@@ -329,7 +396,8 @@ phase_3() {
   log "[Writing tests...]"
   local tw_response
   tw_response=$(run_agent $model_flag test-writer "feature: $FEATURE
-spec_dir: $SPEC_DIR") || true
+spec_dir: $SPEC_DIR
+worktree_dir: $WORKTREE_DIR") || true
 
   if [[ "$tw_response" == *"ERROR"* ]]; then
     log "[Tests: error — $tw_response]"
@@ -344,7 +412,7 @@ phase_4() {
   log_phase 4 "Validation"
 
   local changed_files
-  changed_files=$(compute_changed_files)
+  changed_files=$(compute_changed_files "$WORKTREE_DIR")
   if [[ -z "$changed_files" ]]; then
     log "[No changed files to validate]"
     return
@@ -360,6 +428,7 @@ phase_4() {
     gv_response=$(run_agent $model_flag global-validator "feature: $FEATURE
 spec_dir: $SPEC_DIR
 skip_spec: false
+worktree_dir: $WORKTREE_DIR
 files:
 $files_formatted") || {
       unresolved_steps+=("Validation: global-validator crashed")
@@ -440,6 +509,7 @@ feature: $FEATURE
 spec_dir: $SPEC_DIR
 step_number: $n
 step_total: $fix_total
+worktree_dir: $WORKTREE_DIR
 step_body: $body") || {
         continue  # coder crash → next step
       }
@@ -452,7 +522,7 @@ step_body: $body") || {
     done
 
     # Recompute changed files for next validation round
-    changed_files=$(compute_changed_files)
+    changed_files=$(compute_changed_files "$WORKTREE_DIR")
     if [[ -z "$changed_files" ]]; then
       log "[No changed files after fixes]"
       break
@@ -468,17 +538,24 @@ phase_5() {
 
   if $NO_COMMIT; then
     log "[--no-commit: skipping stage/commit. Changed files:]"
-    git diff --stat HEAD 2>/dev/null || true
-    print_report
+    git -C "$WORKTREE_DIR" diff --stat HEAD 2>/dev/null || true
+    local final_worktree="$WORKTREE_DIR"
+    WORKTREE_DIR=""
+    print_report "$final_worktree"
     return
   fi
 
+  # Check there are changes to commit
+  local changed_files
+  changed_files=$(compute_changed_files "$WORKTREE_DIR")
+  [[ -z "$changed_files" ]] && die "No changes produced — nothing to commit."
+
   # Stage files
-  stage_files
+  stage_files "$WORKTREE_DIR"
 
   # Check if there's anything staged
   local stats
-  stats=$(git diff --cached --stat)
+  stats=$(git -C "$WORKTREE_DIR" diff --cached --stat)
   if [[ -z "$stats" ]]; then
     log "[No files staged — nothing to commit]"
   else
@@ -498,7 +575,7 @@ else:
     # Attempt commit with hook failure retry
     local commit_attempts=0
     while (( commit_attempts < 3 )); do
-      if git commit -m "feat: $commit_desc" 2>/tmp/fi_commit_err.txt; then
+      if git -C "$WORKTREE_DIR" commit -m "feat: $commit_desc" 2>/tmp/fi_commit_err.txt; then
         log "[Committed: feat: $commit_desc]"
         break
       fi
@@ -512,8 +589,8 @@ else:
 
       log "[Commit hook failed (attempt $commit_attempts) — fixing...]"
 
-      # Re-stage after formatter changes (macOS xargs has no -r flag)
-      git diff --cached --name-only | xargs git add 2>/dev/null || true
+      # Re-stage after formatter changes
+      git -C "$WORKTREE_DIR" diff --cached --name-only | xargs -I{} git -C "$WORKTREE_DIR" add {} 2>/dev/null || true
 
       # Write hook errors to issues.md
       {
@@ -526,11 +603,18 @@ else:
       run_agent $model_flag coder "mode: fix-ai
 feature: $FEATURE
 spec_dir: $SPEC_DIR
+worktree_dir: $WORKTREE_DIR
 report_file: validation/issues.md" || true
 
       # Re-stage
-      stage_files
+      stage_files "$WORKTREE_DIR"
     done
+
+    # Push and mark PR ready
+    git -C "$WORKTREE_DIR" push
+    gh pr edit "$PR_URL" --title "$commit_desc"
+    gh pr ready "$PR_URL"
+    log "[PR ready: $PR_URL]"
   fi
 
   # Create warnings folder if unresolved
@@ -565,15 +649,20 @@ report_file: validation/issues.md" || true
   mkdir -p temp/done
   mv "${SPEC_DIR}-done" temp/done/
 
+  # Disable cleanup trap (worktree persists until /feature-merge)
+  local final_worktree="$WORKTREE_DIR"
+  WORKTREE_DIR=""
+
   # Print report
-  print_report
+  print_report "$final_worktree"
 }
 
 # ── Report ─────────────────────────────────────────────────────────────────────
 
 print_report() {
+  local worktree_dir="${1:-}"
   local file_count
-  file_count=$(git diff --stat HEAD 2>/dev/null | tail -1 | grep -o '[0-9]* file' | grep -o '[0-9]*' || git diff --cached --stat 2>/dev/null | tail -1 | grep -o '[0-9]* file' | grep -o '[0-9]*' || echo "?")
+  file_count=$(git -C "${worktree_dir:-.}" diff --stat HEAD 2>/dev/null | tail -1 | grep -o '[0-9]* file' | grep -o '[0-9]*' || echo "?")
 
   local test_status="written"
   [[ "$test_decision" == *"skip"* ]] && test_status="skipped"
@@ -582,6 +671,7 @@ print_report() {
   echo "## Implementation Complete"
   echo ""
   echo "**Feature:** $FEATURE"
+  echo "**PR:** $PR_URL"
   echo "**Files changed:** $file_count"
   echo "**Tests:** $test_status"
   echo "**Validation:** ${#unresolved_steps[@]} unresolved, Test $test_iter/5, AI $ai_iter/2"

@@ -54,6 +54,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
        Project context: <tech stack and layer/import constraints from Phase 0 architecture docs>
 
        Task: trace the code path that produces the reported behavior.
+       For visual/style consistency bugs, instead enumerate all affected UI components and search for the property definitions (tokens, size values, spacing classes) that differ across contexts — code path tracing does not apply.
        Find root cause: what code is responsible, why does it behave this way.
        Before proceeding: verify the proposed cause produces the exact observed symptom — if the symptom is "no results", the cause must explain why there are no results, not why there would be wrong results. If it doesn't match, continue tracing.
        Identify all affected files.

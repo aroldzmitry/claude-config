@@ -111,11 +111,11 @@ Check global-validator status:
    - Already-staged deletions (first char `D`, second char ` `): skip.
    - Everything else: `git add`.
 2. `git diff --cached --stat` → stats.
-3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "fix: {description}"`. On hook failure: re-stage all currently-staged files from working tree to pick up any formatter output (`git diff --cached --name-only | xargs -r git add 2>/dev/null || true`), write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`mode: fix-ai, feature: _fix, spec_dir: SPEC_DIR, report_file: validation/issues.md`), re-stage (step 1), retry commit. Max 2 fix attempts.
-4. If `unresolved_steps` is non-empty: compute `WARNINGS_DIR` from `SPEC_DIR_base` (SPEC_DIR path without trailing slash):
-   - If `SPEC_DIR_base` ends with `-warnings` (no digits) → `WARNINGS_DIR = {base}-warnings1` (where `base` = SPEC_DIR_base with `-warnings` stripped)
-   - If `SPEC_DIR_base` ends with `-warnings{N}` (N = integer) → `WARNINGS_DIR = {base}-warnings{N+1}`
-   - Otherwise → `WARNINGS_DIR = {SPEC_DIR_base}-warnings`
+3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git commit -m "fix: {description}"`. On hook failure: re-stage formatter output (`git diff --cached --name-only | xargs -r git add 2>/dev/null || true`), retry commit once. If commit still fails: write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`mode: fix-ai, feature: _fix, spec_dir: SPEC_DIR, report_file: validation/issues.md`), re-stage (step 1), retry commit. If commit still fails: spawn coder fix-ai once more, re-stage (step 1), retry commit. Stop after 2 coder fix-ai spawns.
+4. If `unresolved_steps` is non-empty: compute `WARNINGS_DIR` from `SPEC_DIR`:
+   - If `SPEC_DIR` ends with `-warnings` (no digits) → `WARNINGS_DIR = {base}-warnings1` (where `base` = SPEC_DIR with `-warnings` stripped)
+   - If `SPEC_DIR` ends with `-warnings{N}` (N = integer) → `WARNINGS_DIR = {base}-warnings{N+1}`
+   - Otherwise → `WARNINGS_DIR = {SPEC_DIR}-warnings`
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
@@ -126,10 +126,6 @@ Check global-validator status:
    - `mkdir -p temp/done && mv SPEC_DIR-done temp/done/`
    - If `WARNINGS_DIR/` was created in step 4 → `touch WARNINGS_DIR/NEXT--feature-fix`
 6. Output report
-
-# Edge Cases
-
-- Run interrupted mid-implementation → changes already applied to app files persist; re-run starts a new plan from scratch.
 
 # Report
 

@@ -134,7 +134,7 @@ Spawn `global-validator` via Task(super-agent) with prompt:
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
 - Response contains `"hit your limit"`, `"rate limit"`, or `"AUTH_ERROR"` → log `[Validation: skipped — rate limit or auth error]`, append `"Validation: skipped due to rate limit or auth error"` to `unresolved_steps`, Phase 5.
-- `HAS_ISSUES` → categorize by status text: `(test)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without consuming the AI budget.
+- `HAS_ISSUES` → categorize by status text: `(test)` or `(static)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without consuming the AI budget.
   - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
   - Counter < limit → spawn `planner` with prompt:
 

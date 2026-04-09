@@ -1,5 +1,5 @@
 ---
-description: "System audit: 6 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
+description: "System audit: 7 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
 model: sonnet
 argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'settings'"
 allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
@@ -29,7 +29,7 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 ## Phase 0: Load
 
 1. `mkdir -p ~/.claude/agent-memory/system-audit/reports/`
-2. `rm -f ~/.claude/agent-memory/system-audit/reports/*.md`
+2. `find ~/.claude/agent-memory/system-audit/reports/ -name "*.md" -delete`
 3. Build ALL_FILES via `git -C ~/.claude ls-files --cached` — only tracked files. This excludes internal Claude Code directories (cache/, debug/, plugins/, agent-memory/).
 4. SCOPE from `$ARGUMENTS`: `commands` / `agents` / `docs` / `settings` / `all` (default). Unrecognized → default `all` + warning.
 

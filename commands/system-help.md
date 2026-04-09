@@ -35,13 +35,12 @@ Output this reference (translated to user's language):
 ### Additional commands
 
 /bug [description]            → interactive bug diagnosis: gather symptoms → investigate code → produce fix requirements
-/feature-split [name]         → split large feature into independent sub-features
 /feature-fix <folder>         → autonomous: plan → code → [test] → validate → PR (accepts /bug output folder)
 /feature-merge [name]         → merge PR + cleanup worktree and branch (run after /feature-implement or /feature-fix)
 /patch [description]          → quick code fix without planning overhead (no spec needed)
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
-/system-audit [scope?]        → deep system audit: 6 validators → review → fix (scope: all/commands/agents/docs/settings)
+/system-audit [scope?]        → deep system audit: 7 validators → review → fix (scope: all/commands/agents/docs/settings)
 /system-help [command?]       → this help
 
 ### Command reference
@@ -51,7 +50,6 @@ Output this reference (translated to user's language):
 | `/docs-init` | `docs/*.md` | — |
 | `/feature` | `temp/<name>/business-requirements.md` | — |
 | `/feature-ui` | `temp/<name>/ui-requirements.md` | Optional: `business-requirements.md` |
-| `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
 | `/feature-implement` | Worktree + branch + draft PR (ready to merge) | `technical-requirements.md`, clean git |
 | `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
@@ -70,7 +68,7 @@ Output this reference (translated to user's language):
 
 **New feature (with UI):** `/feature` → `/feature-ui` → `/feature-tech` → `/feature-implement`
 
-**Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
+**Large feature:** `/feature` (offers to split large features) → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
 
 **Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix BUG-409-create-user` → `/feature-merge BUG-409-create-user`
 
@@ -87,8 +85,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: planner → plan-validator + Codex → planner revision → coder (per step) → [test-writer] → validators + Codex → planner (fix-plan) → AI fix loop (max 2)
-- Implementation runs in a git worktree (`.worktrees/<name>/`) on a `feat/<name>` branch, produces a draft PR; use `/feature-merge` to merge
+- Implementation is fully autonomous: runs in a git worktree (`.worktrees/<name>/`) on a `feat/<name>` branch, produces a draft PR; use `/feature-merge` to merge
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

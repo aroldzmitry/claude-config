@@ -249,7 +249,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 1. Show both documents + one-line validation summary (N items auto-fixed, if any)
 2. If user requests changes → apply, show updated
-3. If prerequisite tasks were recorded in Business Clarifications → for each: create `temp/<prerequisite-name>/business-requirements.md` with a brief description (problem, required change, consumer, acceptance criteria); then suggest `/feature-tech <prerequisite-name>` to be done before `/feature-planner`
+3. If prerequisite tasks were recorded in Business Clarifications → for each: create `temp/<prerequisite-name>/business-requirements.md` with a brief description (problem, required change, consumer, acceptance criteria); then suggest `/feature-tech <prerequisite-name>` to be done first
 4. Suggest next step: `/feature-implement <feature-name>`
 5. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-implement`
 

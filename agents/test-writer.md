@@ -47,7 +47,7 @@ If `technical-requirements.md` is missing → return `ERROR: technical-requireme
 
 If `implementation-plan.md` is missing → return `ERROR: implementation-plan.md not found in {spec_dir}`.
 
-If `test-cases.md` is missing → return `ERROR: test-cases.md not found in {spec_dir}. Run /feature-tech or /feature-planner first.`
+If `test-cases.md` is missing → return `ERROR: test-cases.md not found in {spec_dir}. Run /feature-tech first.`
 
 ## 2. Scan Test Patterns
 
@@ -111,7 +111,7 @@ Interface change propagation: when removing, renaming, or changing the signature
        step: test-writer
        spec_dir: {spec_dir}
        step_number: 0
-       [working_dir: {worktree_dir}]   ← include only if worktree_dir is set
+       working_dir: {worktree_dir}   (include this line only when worktree_dir is set)
        files:
        - {absolute_path_or_relative}/test1.ts
        - {absolute_path_or_relative}/test2.ts

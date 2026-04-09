@@ -41,7 +41,7 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 1. Read validator report files from `{spec_dir}/validation/` (file.md, structural.md, spec.md, security.md, file-codex.md, structural-codex.md, spec-codex.md, security-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
 2. Load existing false positive context (skip missing files):
-   - Read `{spec_dir}/validation/false-positives.md`. When a new finding matches a previous false positive (same file, same issue pattern), re-read the file at that path:line. If the line content is identical → carry forward to false-positives.md (do not include in aggregated.md). If different → re-evaluate as a fresh finding. After processing all current findings, copy previous FP entries not re-raised by any validator in this run.
+   - Read `{spec_dir}/validation/false-positives.md`. When a new finding matches a previous false positive (same file, same issue pattern), re-read the file at that path:line. If the line content is identical → carry forward to false-positives.md (do not include in aggregated.md). If different → treat as a new finding and proceed to step 4 verification (do not carry forward to false-positives.md). After processing all current findings, copy previous FP entries not re-raised by any validator in this run.
 
 3. Read `{spec_dir}/implementation-plan.md` if it exists. Extract two things:
    - **Excluded issues** (`## Excluded Issues` section): if a finding matches (same concept, same or nearby code location) → classify as FP immediately, reason `"excluded from plan: {rationale}"`.

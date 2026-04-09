@@ -30,16 +30,18 @@ Output this reference (translated to user's language):
 /feature [name]               → business requirements dialog
 /feature-ui [name]            → UI/UX requirements dialog (optional, for features with admin UI)
 /feature-tech [name]          → technical spec
-/feature-planner [name]       → test plan (test-cases.md) from all spec documents
 /feature-implement [name]     → autonomous: plan → code → [test] → validate → stage
 
 ### Additional commands
 
 /bug [description]            → interactive bug diagnosis: gather symptoms → investigate code → produce fix requirements
 /feature-split [name]         → split large feature into independent sub-features
-/feature-fix <folder>         → autonomous: plan → code → [test] → validate → stage (accepts /bug output folder)
+/feature-fix <folder>         → autonomous: plan → code → [test] → validate → PR (accepts /bug output folder)
+/feature-merge [name]         → merge PR + cleanup worktree and branch (run after /feature-implement or /feature-fix)
+/patch [description]          → quick code fix without planning overhead (no spec needed)
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
+/system-audit [scope?]        → deep system audit: 6 validators → review → fix (scope: all/commands/agents/docs/settings)
 /system-help [command?]       → this help
 
 ### Command reference
@@ -50,29 +52,35 @@ Output this reference (translated to user's language):
 | `/feature` | `temp/<name>/business-requirements.md` | — |
 | `/feature-ui` | `temp/<name>/ui-requirements.md` | Optional: `business-requirements.md` |
 | `/feature-split` | `temp/<sub-name>/business-requirements.md` per part | `business-requirements.md` |
-| `/feature-tech` | `temp/<name>/technical-requirements.md` + initial `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
-| `/feature-planner` | `temp/<name>/test-cases.md` (comprehensive — enriches or generates) | `technical-requirements.md` |
-| `/feature-implement` | Staged git diff | `technical-requirements.md`, clean git |
+| `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
+| `/feature-implement` | Worktree + branch + draft PR (ready to merge) | `technical-requirements.md`, clean git |
 | `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
-| `/feature-fix` | Staged git diff | — (or `/bug` output folder) |
+| `/feature-fix` | Worktree + branch + draft PR (ready to merge) | — (or `/bug` output folder) |
+| `/feature-merge` | Merged PR, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
+| `/patch` | Edited files (no commit) | — |
 | `/system-find-improve` | Updated system files + `agent-memory/system-find-improve/observations.md` | Any conversation |
+| `/system-audit` | Fixed system files + `agent-memory/system-audit/observations.md` | — |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
 
 ### Scenarios
 
 **New project:** `/docs-init`
 
-**New feature (API-only):** `/feature` → `/feature-tech` → `/feature-planner` → `/feature-implement`
+**New feature (API-only):** `/feature` → `/feature-tech` → `/feature-implement`
 
-**New feature (with UI):** `/feature` → `/feature-ui` → `/feature-tech` → `/feature-planner` → `/feature-implement`
+**New feature (with UI):** `/feature` → `/feature-ui` → `/feature-tech` → `/feature-implement`
 
-**Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-planner` (per part) → `/feature-implement` (per part)
+**Large feature:** `/feature` → `/feature-split` → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
 
-**Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix BUG-409-create-user`
+**Bug (unknown cause):** `/bug 409 при создании юзера` → `/feature-fix BUG-409-create-user` → `/feature-merge BUG-409-create-user`
 
-**Quick fix (known cause):** `/bug fix the login button` → `/feature-fix BUG-fix-login-button`
+**Quick fix (known cause):** `/bug fix the login button` → `/feature-fix BUG-fix-login-button` → `/feature-merge BUG-fix-login-button`
+
+**Tiny one-file fix (no planning):** `/patch fix the login button color`
 
 **After any session:** `/system-find-improve`
+
+**System self-audit:** `/system-audit`
 
 **Docs outdated:** `/docs-sync`
 
@@ -80,6 +88,7 @@ Output this reference (translated to user's language):
 
 - Each feature lives in `temp/<name>/` (gitignored)
 - Implementation is fully autonomous: planner → plan-validator + Codex → planner revision → coder (per step) → [test-writer] → validators + Codex → planner (fix-plan) → AI fix loop (max 2)
+- Implementation runs in a git worktree (`.worktrees/<name>/`) on a `feat/<name>` branch, produces a draft PR; use `/feature-merge` to merge
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

@@ -48,7 +48,6 @@ Launch in parallel (same response):
 Wait for both results:
 - From setup-worktree: parse `WORKTREE_DIR`, `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
 - Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-fix`."
-- If `SPEC_DIR/implementation-plan.md` § Test Strategy has `skip: false` AND `SPEC_DIR/test-cases.md` does not exist → spawn `test-planner` Task with `spec_dir: SPEC_DIR, worktree_dir: WORKTREE_DIR`. ERROR → log `[test-planner: error — {reason}]`, continue.
 
 ## Phase 2: Implementation
 

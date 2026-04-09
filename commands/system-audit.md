@@ -35,7 +35,7 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 
 ## Phase 1: Validate
 
-Spawn 6 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
+Spawn 7 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
 
 | Agent instructions | Output file |
 |---|---|
@@ -45,6 +45,7 @@ Spawn 6 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
 | `agents/audit-optimization.md` | `04-optimization.md` |
 | `agents/audit-architecture.md` | `05-architecture.md` |
 | `agents/audit-workflow.md` | `06-workflow.md` |
+| `agents/audit-generality.md` | `07-generality.md` |
 
 Each prompt:
 ```

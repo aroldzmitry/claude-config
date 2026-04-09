@@ -103,7 +103,10 @@ Step ordering:
 - Core logic before integration points
 - Data layer before UI layer
 
-When `skip: false`: do not include steps that write new tests — tests are delegated to test-writer by the orchestrator. Fixing existing incorrect tests (wrong assertion, broken mock, wrong callback path) is an implementation step; include it in the plan. Test fixture files are part of implementation and must be included.
+When `skip: false`, test-related steps follow these rules:
+- New test files → do NOT include (delegated to test-writer by the orchestrator)
+- Fixes to existing tests (wrong assertion, broken mock, wrong callback path) → include
+- Test fixture files → include (part of implementation)
 
 After writing the plan, return one-line test decision:
 

@@ -72,7 +72,7 @@ Implement only the step described in `step_body`:
        step: {title}
        spec_dir: {spec_dir}
        step_number: {step_number}
-       [working_dir: {worktree_dir}]   ← include only if worktree_dir is set
+       working_dir: {worktree_dir}   (include this line only when worktree_dir is set)
        files:
        - {absolute_path_or_relative}/file1.ts
        - {absolute_path_or_relative}/file2.ts

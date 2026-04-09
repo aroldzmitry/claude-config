@@ -78,7 +78,7 @@ Wait for both results:
        spec_dir: SPEC_DIR
        revision_dir: SPEC_DIR/validation/plan/
 
-   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES`, continue. Extract test decision from planner return value before Phase 3.
+   Log planner revision result. Max 1 fix cycle — if planner returns `NO_CHANGES` → keep existing test decision, continue to Phase 2. Otherwise → extract test decision from planner return value before Phase 3.
 
 ## Phase 2: Implementation
 
@@ -107,7 +107,7 @@ Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
 
 If `SPEC_DIR/test-cases.md` absent → `[Tests: skipped — run /feature-tech first]`, go to Phase 4.
 
-Spawn `test-writer` with prompt:
+Spawn `test-writer` via Task with prompt:
 
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
@@ -143,7 +143,7 @@ Check global-validator status:
         issues_file: validation/issues.md
 
     Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
-    Increment the category's counter. If fix-plan.md had 0 steps → Phase 5. Otherwise recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
+    If fix-plan.md had 0 steps → Phase 5. Increment the category's counter. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 
@@ -160,7 +160,7 @@ Check global-validator status:
    - `COMMITTED` → log `[PR ready: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
    - `NOTHING_STAGED` → log `[No files staged — nothing to commit]`.
-3. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `test_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+3. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 4. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`

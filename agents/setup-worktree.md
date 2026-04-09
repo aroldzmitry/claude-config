@@ -56,12 +56,13 @@ Received via `prompt` from orchestrator in key-value format:
 8. Create worktree on a new branch from origin's base:
    `git worktree add "{WORKTREE_DIR}" -b "{BRANCH}" "origin/{BASE}"`
 
-9. Symlink dependency directories from main tree into worktree (if they exist):
-   ```
-   for dir in node_modules vendor .venv __pycache__; do
-     [ -d "{repo_root}/$dir" ] && ln -s "{repo_root}/$dir" "{WORKTREE_DIR}/$dir"
-   done
-   ```
+9. Run project worktree setup commands (if defined):
+   - Export env vars: `export REPO_ROOT="{repo_root}" WORKTREE_DIR="{WORKTREE_DIR}"`
+   - If `{repo_root}/docs/WORKFLOW.md` exists:
+     - Extract the first bash code block under `## Worktree Setup` section
+     - For each command in the block: run it via Bash with `REPO_ROOT` and `WORKTREE_DIR` exported, cwd = `{WORKTREE_DIR}`
+     - If any command fails → log warning, continue (non-fatal)
+   - If section absent → skip
 
 10. Create empty commit so GitHub accepts the draft PR:
     `git -C "{WORKTREE_DIR}" commit --allow-empty -m "chore: init feat/{feature}"`

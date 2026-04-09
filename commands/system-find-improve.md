@@ -15,7 +15,7 @@ disable-model-invocation: true
 - **Target files** — `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`. Can also propose creating NEW command/agent files. Never application code.
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.
-- **Language-agnostic rules only** — every fix proposed for `~/.claude/` files must apply to any language, technology, or framework. Tech-specific fixes belong in project-level docs (ARCHITECTURE.md, CLAUDE.md, etc.) — identify the right project doc and target it instead. Verify before presenting in Phase 2 and before applying in Phase 3.
+- **Placement is bidirectional** — verify placement direction before presenting every fix: (1) if the pattern is universal (passes the 3-scenario test across different stacks) → fix must target `~/.claude/` system files, not project docs; (2) if the pattern is tech- or project-specific → fix must target project-level docs (ARCHITECTURE.md, CLAUDE.md, etc.), not `~/.claude/` system files. A general pattern placed in project docs is as wrong as a specific pattern placed in system files. Verify before presenting in Phase 2 and before applying in Phase 3.
 - **Current session only** — Claude Code doesn't persist conversation history across sessions. This command analyzes the current session.
 - **Language** — match the user's language.
 - **Decisions** — AskUserQuestion for structured choices. Plain text for open-ended discussion.
@@ -134,7 +134,7 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
    - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have a clear stopping condition — semantic ("until X") or numeric ("max N").
    - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections).
    - **DOC-compliant:** every added line changes agent behavior.
-   - **General:** no stack/framework-specific terms in general-purpose files (`~/.claude/commands/`). Specifics → project docs.
+   - **General:** placement is bidirectional — universal patterns must go to `~/.claude/` system files; tech/project-specific patterns must go to project docs. Neither direction is optional.
    - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows. Before Edit: show `CURRENT:` and `REPLACEMENT:` text in message — verify no original content unintentionally dropped.
    - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem? Verify the doc is better after the change — shorter, clearer, or more precise — than before.
    If any check fails → fix the change text before applying. If unfixable → report to user, skip that item.

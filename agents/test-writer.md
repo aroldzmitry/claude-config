@@ -30,7 +30,7 @@ Received via `prompt` from orchestrator:
 
 - `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
 - `spec_dir` — path to `temp/<feature>/`
-с- `worktree_dir` — (optional) absolute path to worktree; when set, test files are written at `{worktree_dir}/{relative_path}` and test file search is scoped to `{worktree_dir}/`
+- `worktree_dir` — (optional) absolute path to worktree; when set, test files are written at `{worktree_dir}/{relative_path}` and test file search is scoped to `{worktree_dir}/`
 
 # Workflow
 
@@ -117,9 +117,10 @@ Interface change propagation: when removing, renaming, or changing the signature
        - {absolute_path_or_relative}/test2.ts
 3. step-validator crash (no parseable status) → return DONE.
 4. NO_ISSUES → DONE.
-5. HAS_ISSUES → read `{spec_dir}/validation/step-0/aggregated.md`, fix (group by file, errors first).
-6. Re-call step-validator, max 3 total.
-7. Still issues after 3 → DONE (best-effort; global-validator catches remaining).
+5. HAS_ISSUES → read `{spec_dir}/validation/step-0/aggregated.md` into `prev_errors`, fix (group by file, errors first).
+6. Re-call step-validator. CLEAN → DONE. HAS_ISSUES → read aggregated.md into `curr_errors`:
+   - `curr_errors` identical to `prev_errors` (no progress) → DONE (unresolved static issues passed to global-validator)
+   - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 5)
 
 # Output
 

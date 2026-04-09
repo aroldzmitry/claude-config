@@ -78,7 +78,7 @@ One at a time, present the discrepancy and ask via AskUserQuestion:
 ### Step 3: Apply
 
 After all discrepancies for a document are resolved:
-1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document. When removing a section: (a) grep other docs for links to that section's anchor and fix broken references; (b) check if the section contains unique non-derivable rules — migrate before deleting.
+1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document. When removing a section: (a) grep other docs for links to that section's anchor and fix broken references; (b) check if the section contains unique non-derivable rules — migrate before deleting. Before writing: verify the edit matches the document's abstraction level — principles/patterns docs (UI_PATTERNS, ARCHITECTURE) get decision rules and patterns, not specific code identifiers; reference docs (CONVENTIONS, CODE_RULES) get specifics.
 2. **Validate** — Read the edited file, then run `validator-doc` loop as defined in `docs/DOCUMENT_TYPES.md`. Fix via **Edit** (not regeneration).
 3. Show summary of changes to user (what was edited where)
 4. User confirms or requests changes → apply via Edit → always re-validate → show result → repeat until confirmed

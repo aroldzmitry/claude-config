@@ -78,9 +78,10 @@ Implement only the step described in `step_body`:
        - {absolute_path_or_relative}/file2.ts
 7. step-validator crash (no parseable status) → return UNRESOLVED
 8. NO_ISSUES → DONE: modified
-9. HAS_ISSUES → read `{spec_dir}/validation/step-{step_number}/aggregated.md`, fix (group by file, errors first)
-10. Re-call step-validator, max 3 total
-11. Still issues after 3 → DONE: modified (best-effort: global-validator catches remaining)
+9. HAS_ISSUES → read `{spec_dir}/validation/step-{step_number}/aggregated.md` into `prev_errors`, fix (group by file, errors first)
+10. Re-call step-validator. CLEAN → DONE: modified. HAS_ISSUES → read aggregated.md into `curr_errors`:
+    - `curr_errors` identical to `prev_errors` (no progress) → UNRESOLVED: static errors unresolvable: {curr_errors summary}
+    - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 9)
 
 ### fix-ai
 

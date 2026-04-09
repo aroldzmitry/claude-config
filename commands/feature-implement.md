@@ -40,7 +40,8 @@ Implementation orchestrator. Delegates to agents — never writes application co
 1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`"
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
-4. `REPO_ROOT = git rev-parse --show-toplevel`
+4. `git show-ref --quiet refs/heads/feat/$ARGUMENTS` → if exit code 0, stop: "Branch feat/$ARGUMENTS already exists. Delete it first or choose a different feature name."
+5. `REPO_ROOT = git rev-parse --show-toplevel`
 
 ## Phase 1: Planning
 
@@ -132,6 +133,7 @@ Spawn `global-validator` via Task(super-agent) with prompt:
 
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
+- Response contains `"hit your limit"`, `"rate limit"`, or `"AUTH_ERROR"` → log `[Validation: skipped — rate limit or auth error]`, append `"Validation: skipped due to rate limit or auth error"` to `unresolved_steps`, Phase 5.
 - `HAS_ISSUES` → categorize by status text: `(test)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without consuming the AI budget.
   - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
   - Counter < limit → spawn `planner` with prompt:

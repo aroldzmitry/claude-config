@@ -34,11 +34,13 @@ Received via `prompt` from orchestrator in key-value format:
 
 5. Tests clean → read `{spec_dir}/validation/issues.md` (if exists). For each `[open]` item that does not contain a `file:line` reference (no `:\d+` immediately before ` —`) → mark it `[fixed]`. These were written by step 4 in a prior run and are now resolved since tests passed. Any that are still actual issues will be re-added as `[open]` by the aggregator.
 
-   If `skip_ai` = true → launch `static-checker` Task with:
+   Launch `static-checker` Task with:
    - `error_file: <absolute path to {spec_dir}/validation/static.txt>`
    - If `worktree_dir` is set: `working_dir: {worktree_dir}`
 
-   FAIL → collect errors from static.txt, update issues.md (same `[open]` append logic as step 4). Return `HAS_ISSUES: N errors (static)`. CLEAN → return `NO_ISSUES`.
+   FAIL → collect errors from static.txt, update issues.md (same `[open]` append logic as step 4). Return `HAS_ISSUES: N errors (static)`.
+
+   If `skip_ai` = true → return `NO_ISSUES`.
 
    Launch AI validators in parallel:
    - `validator-file` + `codex "validator-file"` (→ file.md, file-codex.md)
@@ -61,7 +63,8 @@ Received via `prompt` from orchestrator in key-value format:
 
 or
 
-    HAS_ISSUES: N errors (test)       — from step 3
+    HAS_ISSUES: N errors (test)       — from step 4
+    HAS_ISSUES: N errors (static)     — from step 5
     HAS_ISSUES: N open                — from step 6 (aggregator)
 
 # Error Handling

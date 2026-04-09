@@ -53,7 +53,7 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
-    output_file: temp/auth-flow/validation/iter-0/file.md
+    output_file: temp/auth-flow/validation/file.md
 
 # Workflow
 

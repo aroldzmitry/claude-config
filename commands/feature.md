@@ -75,7 +75,10 @@ Do all of this in a single message:
 3. Check each scenario against the summary: is the expected behavior described? Note any gaps.
 4. Show the summary and Key Decisions to the user. If gaps were found — list only the scenarios where gaps exist (not all scenarios). If no gaps — note that verification passed.
 
-5. **Scope estimate** — evaluate whether sub-features are logically independent: can they be built and shipped separately, each delivering standalone value? If yes → before generating, ask whether to generate as one doc or run `/feature-split` first; briefly note that splitting helps when parts can be shipped independently. If sub-features are tightly coupled — proceed without asking.
+5. **Scope estimate** — calculate: `steps_estimate = user_flows × 3 + new_entities × 2 + must_criteria + error_edges`.
+   - If estimate > 25: note the estimate and ask whether to split (even if sub-features aren't logically independent).
+   - If estimate ≤ 25 and sub-features are logically independent (can be built and shipped separately, each delivering standalone value): ask whether to split.
+   - If estimate ≤ 25 and sub-features are tightly coupled: proceed without asking.
 
 End the message with ONE question only if a gap exists (ask about the first gap) or if feature has logically independent parts (ask about splitting). If no gaps and feature is cohesive — note that verification passed and proceed directly to Phase 3 without asking.
 
@@ -103,12 +106,12 @@ If any item fails — go back to Step 2 and ask. If all pass — state the chose
 2. Write `temp/<feature-name>/business-requirements.md` using the format below. If the feature involves work in an external project (backend, separate service), create a separate `temp/` folder for it — same structure as the main one.
 3. Show the full document to the user
 4. If user requests changes → apply, show updated version, repeat until confirmed
-5. After final confirmation, suggest the next step:
-   - If user previously chose to split → `/feature-split <feature-name>` (after splitting, run `/feature-ui` or `/feature-tech` per sub-feature as applicable)
-   - If no split and feature has UI (pages, forms, tables) → `/feature-ui <feature-name>`, then `/feature-tech`
-   - If no split and API-only or no UI → `/feature-tech <feature-name>`
+5. After final confirmation:
+   - If user chose to split → spawn `agents/feature-split.md` via Task: `feature_name: <feature_name>`. Show the split summary from agent output. Ask user (AskUserQuestion): "Accept" / "Adjust" (text input → apply edits to generated BRD files directly, then confirm). On accept/after adjust: suggest `/feature-tech <sub-1>`, `/feature-tech <sub-2>`, etc. in order.
+   - If no split and feature has UI (pages, forms, tables) → suggest `/feature-ui <feature-name>`, then `/feature-tech`
+   - If no split and API-only or no UI → suggest `/feature-tech <feature-name>`
    - If `new-tasks` is non-empty: include each in Related Features as `**Name** — (new, no spec yet) [description]`; after the next-step suggestion, note: "New feature(s) identified this session: [list]. Run `/feature <name>` for each when ready."
-6. Create status marker: if split → `touch temp/<feature-name>/NEXT--feature-split`. If UI → `touch temp/<feature-name>/NEXT--feature-ui`. Otherwise → `touch temp/<feature-name>/NEXT--feature-tech`.
+6. Create status marker: if split → skip (feature-split already sets NEXT markers on each sub-feature folder). If UI → `touch temp/<feature-name>/NEXT--feature-ui`. Otherwise → `touch temp/<feature-name>/NEXT--feature-tech`.
 
 ### Document Format
 

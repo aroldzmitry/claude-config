@@ -35,7 +35,7 @@ Derive document_type from the filename: ARCHITECTURE.md → ARCHITECTURE, CODE_R
 2. Read the document draft line by line
 3. Check each line/section against every principle:
    - P1: Can this be inferred from reading 3-5 source files? If yes → violation
-   - P2: If this line were removed, would an agent write different code? If no → violation
+   - P2: Does this line cause an agent to write different code? If no → violation
    - P3: Is this ambiguous? Could two agents interpret it differently? If yes → violation
    - P4: Is this a specific instance rather than a pattern? If yes → violation
    - P5: Is this already enforced by linter/formatter? If yes → violation

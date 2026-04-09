@@ -118,7 +118,7 @@ Interface change propagation: when removing, renaming, or changing the signature
 3. step-validator crash (no parseable status) → return DONE.
 4. NO_ISSUES → DONE.
 5. HAS_ISSUES → read `{spec_dir}/validation/step-0/aggregated.md` into `prev_errors`, fix (group by file, errors first).
-6. Re-call step-validator. CLEAN → DONE. HAS_ISSUES → read aggregated.md into `curr_errors`:
+6. Re-call step-validator. NO_ISSUES → DONE. HAS_ISSUES → read aggregated.md into `curr_errors`:
    - `curr_errors` identical to `prev_errors` (no progress) → DONE (unresolved static issues passed to global-validator)
    - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 5)
 

@@ -52,7 +52,7 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
-    output_file: temp/auth-flow/validation/iter-0/security.md
+    output_file: temp/auth-flow/validation/security.md
 
 `feature` and `spec_dir` are included per orchestrator convention. This validator uses only `files` and `output_file`.
 

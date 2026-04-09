@@ -45,7 +45,7 @@ Received via `prompt` from orchestrator:
     files:
     - src/auth.ts
     - src/api.ts
-    output_file: temp/auth-flow/validation/iter-0/structural.md
+    output_file: temp/auth-flow/validation/structural.md
 
 `feature` is included per orchestrator convention and ignored. Convention docs (`docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`) are loaded independently from `docs/` and used in the duplication severity check. `files` is the primary input.
 

@@ -65,7 +65,7 @@ Do NOT report: cosmetic differences, defensive coding suggestions (missing limit
 
 Report progress as each finishes.
 
-Wait for all 6 validators to complete before proceeding to Phase 2.
+Wait for all 7 validators to complete before proceeding to Phase 2.
 
 ## Phase 2: Aggregate & Filter
 

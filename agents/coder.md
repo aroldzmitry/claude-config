@@ -79,7 +79,7 @@ Implement only the step described in `step_body`:
 7. step-validator crash (no parseable status) → return UNRESOLVED
 8. NO_ISSUES → DONE: modified
 9. HAS_ISSUES → read `{spec_dir}/validation/step-{step_number}/aggregated.md` into `prev_errors`, fix (group by file, errors first)
-10. Re-call step-validator. CLEAN → DONE: modified. HAS_ISSUES → read aggregated.md into `curr_errors`:
+10. Re-call step-validator. NO_ISSUES → DONE: modified. HAS_ISSUES → read aggregated.md into `curr_errors`:
     - `curr_errors` identical to `prev_errors` (no progress) → UNRESOLVED: static errors unresolvable: {curr_errors summary}
     - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 9)
 
@@ -87,7 +87,7 @@ Implement only the step described in `step_body`:
 
 1. Read `{spec_dir}/{report_file}` (= `validation/issues.md`). Filter lines starting with `[open]` — these are the items to fix. Group by file.
 2. For each file: read it, scan for similar code as reference
-3. Fix all `[open]` issues. Files in the report were pre-filtered to the session's changed set by the orchestrator — do not re-evaluate scope using git status. Fix every issue present in the current code. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them. When a fix adds or tightens a constraint on a value type (new required field, type narrowing, runtime validation check) — Grep test fixture and factory files for constructions of the constrained type and update them to satisfy the new constraint. Likewise, when a fix removes, relocates, or changes how a callback is invoked (argument count or types), Grep test files for assertions on that callback and update them to match.
+3. Fix all `[open]` issues. Files in the report were pre-filtered to the session's changed set by the orchestrator — do not re-evaluate scope using git status. Fix every `[open]` issue listed in the report. When fixes involve file consolidation, rename, or deletion — Glob for references to old filenames across git-changed files and update them. When a fix adds or tightens a constraint on a value type (new required field, type narrowing, runtime validation check) — Grep test fixture and factory files for constructions of the constrained type and update them to satisfy the new constraint. Likewise, when a fix removes, relocates, or changes how a callback is invoked (argument count or types), Grep test files for assertions on that callback and update them to match.
 4. Re-read each modified section. For each fixed issue, verify its description no longer applies to the current code. If resolved → mark as fixed in issues.md (Edit: change `[open] {line}` → `[fixed] {line}`). If still applies → move to REMAINING.
 5. Task(static-checker, error_file: absolute path to {spec_dir}/validation/static-recheck.txt[, working_dir: {worktree_dir} if set])
 6. FAIL → fix issues from error_file, re-run static-checker (max 3 total). Still FAIL after 3 → continue (report REMAINING, global-validator re-catches). CLEAN → continue.

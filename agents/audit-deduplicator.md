@@ -1,6 +1,6 @@
 ---
 name: audit-deduplicator
-description: "System audit pass 1: deduplicates findings across 6 validator reports and filters against user's rejected skip-list."
+description: "System audit pass 1: deduplicates findings across 7 validator reports and filters against user's rejected skip-list."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
@@ -26,7 +26,7 @@ Received via `prompt` from orchestrator:
 
 # Workflow
 
-1. Read all report files in `reports_dir` (01 through 06, skip missing).
+1. Read all report files in `reports_dir` (01 through 07, skip missing).
 2. Read `decisions_file` if it exists. Extract `## Rejected` section as skip-list. No file → empty skip-list.
 3. Parse all findings from all reports. Count raw total.
 4. Deduplicate: group findings from different reports that describe the same underlying issue (same file + same problem). Keep most detailed description, note all source report IDs.
@@ -39,7 +39,7 @@ Write to `{reports_dir}/08-deduplicated.md`:
 
 ```
 ## Statistics
-- Raw total: N findings across 6 reports
+- Raw total: N findings across 7 reports
 - After dedup: N unique findings
 - Filtered by skip-list: N
 - Remaining: N

@@ -37,8 +37,12 @@ Attempt: `git -C worktree_dir commit -m "{commit_prefix}: {commit_desc}" 2>/tmp/
 On success: go to Step 4.
 
 On failure (max 2 coder fix-ai spawns):
-1. Re-stage formatter output: `git -C worktree_dir diff --cached --name-only | xargs -I{} git -C worktree_dir add {} 2>/dev/null || true`
-2. Append to `spec_dir/validation/issues.md`: `\n[open] Commit hook failure:\n<content of /tmp/committer_err.txt>`
+1. Re-stage formatter output: `git -C worktree_dir add -u`
+2. Append to `spec_dir/validation/issues.md`:
+   ```
+   [open] Commit hook failure:
+   <content of /tmp/committer_err.txt>
+   ```
 3. Spawn `coder` via Task(super-agent): `coder mode: fix-ai\nfeature: {feature}\nspec_dir: {spec_dir}\nworktree_dir: {worktree_dir}\nreport_file: validation/issues.md`
 4. Re-stage (Step 1), retry commit.
 

@@ -30,7 +30,7 @@ Received via `prompt` from orchestrator:
 
 1. **Phase sequencing:** phases in logical order — no step depends on data produced by a later phase
 2. **Variable lifecycle:** all variables/placeholders initialized before first use, scoped correctly
-3. **Loop termination:** every loop, retry, or cycle has a maximum bound (max N iterations, timeout)
+3. **Loop termination:** flag loops with no exit condition of any kind — no termination check, no break, no counter. Do NOT report loops that terminate on a condition but lack a numeric upper bound; missing numeric bounds are excluded by calibration.
 4. **Agent prompt correctness:** spawned agent prompts reference the correct variable names from orchestrator context
 5. **Counter/state tracking:** counters increment at the right point (not before the action they count, not skipped on error)
 6. **File I/O consistency:** files are written before they're read by the next step, paths match between writer and reader

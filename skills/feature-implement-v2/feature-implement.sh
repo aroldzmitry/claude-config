@@ -22,12 +22,16 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BIN_DIR="$HOME/.claude/bin"
-FEATURE="${1:?Usage: feature-implement.sh [--no-commit] [--model MODEL] <feature-name>}"
-SPEC_DIR="temp/$FEATURE"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
+FEATURE="${1:?Usage: feature-implement.sh [--no-commit] [--model MODEL] <feature-name>}"
+SPEC_DIR="$REPO_ROOT/temp/$FEATURE"
 BRANCH="feat/$FEATURE"
 WORKTREE_DIR="$REPO_ROOT/.worktrees/$FEATURE"
 PR_URL=""
+
+# ── Logging ────────────────────────────────────────────────────────────────────
+
+exec > >(tee -a "$SPEC_DIR/script.log") 2>&1
 
 # ── State ──────────────────────────────────────────────────────────────────────
 
@@ -168,7 +172,7 @@ compute_changed_files() {
       *.mp4|*.webm|*.mov|*.avi) continue ;;
       *.min.*|*.map) continue ;;
       *.d.ts|*.generated.*|*.snap) continue ;;
-      dist/*|build/*|vendor/*|node_modules/*|temp/*) continue ;;
+      dist/*|build/*|vendor/*|node_modules|node_modules/*|.venv|__pycache__|temp/*) continue ;;
     esac
 
     # Output absolute path if dir given, relative otherwise
@@ -199,7 +203,7 @@ stage_files() {
       *.mp4|*.webm|*.mov|*.avi) continue ;;
       *.min.*|*.map) continue ;;
       *.d.ts|*.generated.*|*.snap) continue ;;
-      dist/*|build/*|vendor/*|node_modules/*|temp/*) continue ;;
+      dist/*|build/*|vendor/*|node_modules|node_modules/*|.venv|__pycache__|temp/*) continue ;;
     esac
 
     # Working-tree deletion (second char D)
@@ -243,8 +247,16 @@ phase_0() {
   fi
 
   local default_branch
-  default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's/refs\/remotes\/origin\///')
-  [[ -z "$default_branch" ]] && default_branch="main"
+  default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's/refs\/remotes\/origin\///' || true)
+  if [[ -z "$default_branch" ]]; then
+    if git show-ref --quiet "refs/remotes/origin/master"; then
+      default_branch="master"
+    elif git show-ref --quiet "refs/remotes/origin/main"; then
+      default_branch="main"
+    else
+      default_branch=$(git rev-parse --abbrev-ref HEAD)
+    fi
+  fi
 
   mkdir -p "$REPO_ROOT/.worktrees"
   git worktree add "$WORKTREE_DIR" -b "$BRANCH" "origin/$default_branch"
@@ -253,6 +265,8 @@ phase_0() {
   for dir in node_modules vendor .venv __pycache__; do
     [ -d "$REPO_ROOT/$dir" ] && ln -s "$REPO_ROOT/$dir" "$WORKTREE_DIR/$dir" 2>/dev/null || true
   done
+
+  git -C "$WORKTREE_DIR" commit --allow-empty -m "chore: init $BRANCH"
 
   git -C "$WORKTREE_DIR" push -u origin "$BRANCH" \
     || { git worktree remove "$WORKTREE_DIR" --force; git branch -D "$BRANCH"; die "Push failed."; }

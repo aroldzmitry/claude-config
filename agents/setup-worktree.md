@@ -63,14 +63,17 @@ Received via `prompt` from orchestrator in key-value format:
    done
    ```
 
-10. Push branch to remote:
+10. Create empty commit so GitHub accepts the draft PR:
+    `git -C "{WORKTREE_DIR}" commit --allow-empty -m "chore: init feat/{feature}"`
+
+11. Push branch to remote:
     `git -C "{WORKTREE_DIR}" push -u origin "{BRANCH}"`
     If push fails → cleanup: `git worktree remove "{WORKTREE_DIR}" --force && git branch -D "{BRANCH}"` → ERROR: `push failed: {error}`
 
-11. Read PR title from spec:
+12. Read PR title from spec:
     Read first line of `{spec_dir}/technical-requirements.md`, strip leading `#` and spaces → `TITLE`
 
-12. Create draft PR:
+13. Create draft PR:
     `gh pr create --draft --title "[WIP] {TITLE}" --body "Feature: {feature}" --head "{BRANCH}" --base "{BASE}"`
     If fails → cleanup: `git push origin --delete "{BRANCH}" 2>/dev/null || true && git worktree remove "{WORKTREE_DIR}" --force && git branch -D "{BRANCH}"` → ERROR: `gh pr create failed: {error}`
 

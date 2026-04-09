@@ -68,9 +68,9 @@ Go through categories in order.
 
 7. **Performance / Constraints** — Load expectations, latency requirements, size limits. Only if performance is a real concern for this feature.
 
-8. **Test Strategy** — What needs testing? Unit / integration / e2e? What's hard to test and how to handle it? What to explicitly NOT test?
+8. **Test Strategy** — Apply project test levels silently from loaded ARCHITECTURE*.md (established test types → state as fact, not a question). Ask only if the feature has non-obvious hard-to-test scenarios or explicit exclusions beyond project defaults. Do not propose test types covered by test-planner exclusion rules (framework validation, conditional rendering, compiler guarantees).
 
-9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases grouped by severity. Present all `[error]` cases together, then all `[warning]` cases (one batch per message, max). For each: situation → expected behavior. Verify expected behavior against codebase patterns first — apply silent decisions principle (see Rules). Only propose cases where the expected behavior requires a decision or explicit handling code; skip cases where the existing design already handles them. If all cases in the batch are single-viable (behavior verified against patterns) → apply silently and note it. Ask for confirmation only if at least one case has non-obvious expected behavior. After all batches, ask if user wants to add any.
+9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases grouped by severity. Present all `[error]` cases together, then all `[warning]` cases (one batch per message, max). For each: situation → expected behavior. Verify expected behavior against codebase patterns first — apply silent decisions principle (see Rules). Only propose cases where the expected behavior requires a decision or explicit handling code; skip cases where the existing design already handles them. If all cases in the batch are single-viable (behavior verified against patterns) → apply silently and note it. Ask for confirmation only if at least one case has non-obvious expected behavior.
 
 ### Conditional (only when relevant)
 
@@ -98,9 +98,7 @@ Do all of this in a single message:
    - **Override coverage** — every spec section that intentionally deviates from a BRD acceptance criterion has a corresponding § Business Clarifications entry citing the AC by name
    - **Migration integrity** — if spec includes a migration that (1) creates new table B from old table A, then (2) updates a FK in a third table from A.id → B.id: verify B is populated with the same ID values as A (source IDs reused), OR that an explicit mapping column exists; a migration step that joins on B.id without establishing this invariant has no valid join key
 3. Note any gaps.
-4. Show summary and Key Decisions. If gaps — list them. If none — note verification passed.
-
-End with ONE question only if a gap exists. If no gaps — note verification passed and proceed directly to Quality Gate (Step 3) then Phase 3 without asking.
+4. If gaps requiring user input exist — show compact summary + gap list, end with ONE question. If no gaps — proceed directly to Quality Gate (Step 3) then Phase 3 without showing the summary.
 
 ### Step 2: Clarify
 
@@ -133,7 +131,7 @@ If `temp/<feature-name>/technical-requirements.md` already exists → ask user: 
 
 Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
 
-**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). A behavioral contract is complete only when it covers both the initiating condition and the resulting state change — for any named interaction (event, endpoint, action, hook). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X". When any spec section references an existing event or endpoint by name without modifying it, declare it in § API / Interfaces with its contract marked "unchanged".
+**Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). A behavioral contract is complete only when it covers both the initiating condition and the resulting state change — for any named interaction (event, endpoint, action, hook). Do not include: CSS class values, internal variable names, framework-specific constructs (hooks, keys, reconciliation patterns), exact markup structure. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X". When any spec section references an existing event or endpoint by name without modifying it, declare it in § API / Interfaces with its contract marked "unchanged". If `ui-requirements.md` was loaded in Phase 0, cross-check each component's field visibility and constraints against it before writing — do not derive component behavior from `business-requirements.md` alone when `ui-requirements.md` covers the same component.
 
 ```markdown
 # Technical Specification: <human-readable name>

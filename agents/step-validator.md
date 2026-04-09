@@ -24,6 +24,8 @@ Received via `prompt` from orchestrator (coder or test-writer) in key-value form
 
 1. `mkdir -p {spec_dir}/validation/step-{step_number}/`
 
+1a. Read `docs/WORKFLOW.md` § Pre-Validation Build Steps in the working directory (working_dir if set, otherwise repo root). For each listed build command, run it via Bash. Build failure → log warning, continue.
+
 2. Launch `static-checker` Task with:
    - `error_file: {spec_dir}/validation/step-{step_number}/static.txt`
    - If `working_dir` is set: `working_dir: {working_dir}`

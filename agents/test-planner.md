@@ -23,6 +23,9 @@ Test planner. Reads all available spec documents and project testing rules, writ
   - Configuration files
   - Generated code (`*.generated.*`, `*.d.ts`)
   - Structural properties guaranteed by the data model: absence of a removed field in serialized output (a field not defined on the class cannot be serialized into it), silent-ignore of unknown keys during deserialization (framework-guaranteed, not custom logic)
+  - Framework-provided validation: whether a schema parser or validator (Zod, Pydantic, ActiveRecord, etc.) correctly rejects invalid input — test that it is configured and called correctly, not that the library works
+  - Conditional rendering / show-hide: whether a UI element appears or disappears based on a boolean flag or ternary — test the downstream effect of the state change, not the conditional itself
+  - Language/compiler guarantees: type errors caught at compile time, type coercion, runtime type constraints enforced by the language or compiler
 - Every test case must be specific enough for test-writer to implement without guessing: scenario + expected observable behavior.
 - Priority: `[must]` = core requirement / happy path / critical error; `[should]` = important edge case; `[could]` = nice-to-have coverage.
 

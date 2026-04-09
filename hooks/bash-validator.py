@@ -8,6 +8,7 @@ Exit code 0 = allow the command
 import json
 import sys
 import re
+import subprocess
 
 # Read input from Claude
 try:
@@ -15,6 +16,20 @@ try:
 except json.JSONDecodeError:
     sys.exit(2)
 command = input_data.get("tool_input", {}).get("command", "")
+
+
+def get_current_branch():
+    try:
+        result = subprocess.run(
+            ["git", "branch", "--show-current"],
+            capture_output=True, text=True, timeout=5
+        )
+        return result.stdout.strip()
+    except Exception:
+        return None
+
+
+MAIN_BRANCHES = {"main", "master", "develop", "dev"}
 
 # Dangerous patterns that should always be blocked
 BLOCKED_PATTERNS = [
@@ -52,12 +67,31 @@ BLOCKED_PATTERNS = [
     (r"\bgit\s+clean\s+.*-f", "git clean -f is forbidden - use explicit file removal"),
 ]
 
-# Check command against blocked patterns
+# Main-branch-only blocked patterns (merge, cherry-pick, amend, direct push)
+MAIN_BRANCH_BLOCKED_PATTERNS = [
+    (r"\bgit\s+merge\b", "git merge on main branch is forbidden - use PRs"),
+    (r"\bgit\s+cherry-pick\b", "git cherry-pick on main branch is forbidden - use PRs"),
+    (r"\bgit\s+commit\b.*--amend\b", "git commit --amend on main branch is forbidden - rewrites history"),
+    # Direct push: "git push", "git push origin", "git push origin master/main/develop/dev"
+    (r"\bgit\s+push(\s+(origin|upstream))?\s*(main|master|develop|dev)?\s*$", "direct push to main branch is forbidden - use PRs"),
+]
+
+# Check command against global blocked patterns
 for pattern, reason in BLOCKED_PATTERNS:
     if re.search(pattern, command, re.IGNORECASE):
         print(f"❌ BLOCKED: {reason}", file=sys.stderr)
         print(f"Command: {command}", file=sys.stderr)
-        sys.exit(2)  # Exit code 2 blocks the command
+        sys.exit(2)
+
+# Check main-branch-specific patterns
+if re.search(r"\bgit\b", command, re.IGNORECASE):
+    branch = get_current_branch()
+    if branch and branch in MAIN_BRANCHES:
+        for pattern, reason in MAIN_BRANCH_BLOCKED_PATTERNS:
+            if re.search(pattern, command, re.IGNORECASE):
+                print(f"❌ BLOCKED (main branch): {reason}", file=sys.stderr)
+                print(f"Command: {command}", file=sys.stderr)
+                sys.exit(2)
 
 # Allow the command
 sys.exit(0)

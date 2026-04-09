@@ -97,7 +97,8 @@ For each step in order:
        worktree_dir: WORKTREE_DIR
        step_body: <full step block text>
 
-3. `DONE` → next step. `UNRESOLVED` → record.
+3. If Task returns an error (agent crash, not UNRESOLVED) → re-spawn coder once with the same prompt. Second crash → record `"Step N: {title} — agent crashed"` in `unresolved_steps`, continue.
+4. `DONE` → next step. `UNRESOLVED` → record.
 
 ## Phase 3: Test Writing
 

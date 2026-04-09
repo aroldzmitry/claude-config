@@ -25,6 +25,7 @@ PR merge and cleanup orchestrator. Merges the feature PR and removes worktree + 
    - If `$ARGUMENTS` is empty:
      - Run: `gh pr list --state open --json number,title,headRefName,isDraft --jq '.[]'`
      - If result is empty → stop: "No open PRs found."
+     - If exactly 1 result → log "Only one open PR found — proceeding with #N title [branch]"; set `FEATURE = headRefName stripped of leading "feat/" prefix`; proceed to step 2.
      - Display numbered list (1-based):
        ```
        Open PRs:

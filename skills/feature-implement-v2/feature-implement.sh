@@ -133,12 +133,12 @@ extract_steps() {
 import re, json, sys
 
 text = open(sys.argv[1]).read()
-pattern = r'(### Step \d+:.*?)(?=### Step \d+:|$)'
+pattern = r'(### Step [\da-z]+:.*?)(?=### Step [\da-z]+:|$)'
 matches = re.findall(pattern, text, re.DOTALL)
 steps = []
 for m in matches:
     header = m.split('\n')[0]
-    num_match = re.search(r'Step (\d+)', header)
+    num_match = re.search(r'Step ([\da-z]+)', header)
     if not num_match:
         continue
     num = num_match.group(1)
@@ -375,8 +375,18 @@ step_number: $n
 step_total: $total
 worktree_dir: $WORKTREE_DIR
 step_body: $body") || {
-      unresolved_steps+=("Step $n: $title — agent crashed")
-      continue
+      log "[Step $n: crash — retrying once...]"
+      response=$(run_agent $model_flag coder "mode: implement
+feature: $FEATURE
+spec_dir: $SPEC_DIR
+step_number: $n
+step_total: $total
+worktree_dir: $WORKTREE_DIR
+step_body: $body") || {
+        unresolved_steps+=("Step $n: $title — agent crashed")
+        log "[Step $n: UNRESOLVED — agent crashed]"
+        continue
+      }
     }
 
     if [[ "$response" == *"UNRESOLVED"* ]]; then

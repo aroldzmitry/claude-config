@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → coder → [test-writer] → global-validator → fix attempt → commit), produces staged git diff."
+description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → coder → [test-writer] → global-validator → fix attempt → commit), commits and pushes to ready PR."
 model: sonnet
 argument-hint: "<folder>: spec folder name (e.g. BUG-phone-field-required)"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
@@ -112,20 +112,20 @@ Check global-validator status:
 
 ## Phase 5: Finalize
 
-1. `git -C WORKTREE_DIR status --porcelain` → parse entries, exclude non-source files (same list as Phase 4). Stage by status:
-   - Working-tree deletions (second char `D`): `git -C WORKTREE_DIR rm --cached`.
-   - Already-staged deletions (first char `D`, second char ` `): skip.
-   - Everything else: `git -C WORKTREE_DIR add`.
-2. `git -C WORKTREE_DIR diff --cached --stat` → stats.
-3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git -C WORKTREE_DIR commit -m "fix: {description}"`. On hook failure: re-stage formatter output (`git -C WORKTREE_DIR diff --cached --name-only | xargs -I{} git -C WORKTREE_DIR add {} 2>/dev/null || true`), retry commit once. If commit still fails: write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`mode: fix-ai, feature: _fix, spec_dir: SPEC_DIR, worktree_dir: WORKTREE_DIR, report_file: validation/issues.md`), re-stage (step 1), retry commit. If commit still fails: spawn coder fix-ai once more, re-stage (step 1), retry commit. Stop after 2 coder fix-ai spawns.
-4. Push and mark PR ready:
+1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
+2. Spawn `committer` via Task(super-agent):
    ```
-   git -C WORKTREE_DIR push
-   gh pr edit PR_URL --title "{commit description}"
-   gh pr ready PR_URL
+   worktree_dir: WORKTREE_DIR
+   spec_dir: SPEC_DIR
+   feature: _fix
+   commit_prefix: fix
+   commit_desc: {derived description}
+   pr_url: PR_URL
    ```
-   Log `[PR ready: PR_URL]`.
-5. If `unresolved_steps` is non-empty: compute `WARNINGS_DIR` from `SPEC_DIR`:
+   - `COMMITTED` → log `[PR ready: PR_URL]`.
+   - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
+   - `NOTHING_STAGED` → log `[No files staged — nothing to commit]`.
+3. If `unresolved_steps` is non-empty: compute `WARNINGS_DIR` from `SPEC_DIR`:
    - If `SPEC_DIR` ends with `-warnings` (no digits) → `WARNINGS_DIR = {base}-warnings1` (where `base` = SPEC_DIR with `-warnings` stripped)
    - If `SPEC_DIR` ends with `-warnings{N}` (N = integer) → `WARNINGS_DIR = {base}-warnings{N+1}`
    - Otherwise → `WARNINGS_DIR = {SPEC_DIR}-warnings`
@@ -133,12 +133,12 @@ Check global-validator status:
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
    Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
-6. Folder status:
+4. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p temp/done && mv SPEC_DIR-done temp/done/`
-   - If `WARNINGS_DIR/` was created in step 5 → `touch WARNINGS_DIR/NEXT--feature-fix`
-7. Output report
+   - If `WARNINGS_DIR/` was created in step 3 → `touch WARNINGS_DIR/NEXT--feature-fix`
+5. Output report
 
 # Report
 

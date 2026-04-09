@@ -564,18 +564,9 @@ phase_5() {
   changed_files=$(compute_changed_files "$WORKTREE_DIR")
   [[ -z "$changed_files" ]] && die "No changes produced — nothing to commit."
 
-  # Stage files
-  stage_files "$WORKTREE_DIR"
-
-  # Check if there's anything staged
-  local stats
-  stats=$(git -C "$WORKTREE_DIR" diff --cached --stat)
-  if [[ -z "$stats" ]]; then
-    log "[No files staged — nothing to commit]"
-  else
-    # Derive commit message from technical-requirements.md
-    local commit_desc
-    commit_desc=$(python3 -c "
+  # Derive commit description from technical-requirements.md
+  local commit_desc
+  commit_desc=$(python3 -c "
 import re, sys
 text = open(sys.argv[1]).read()
 m = re.search(r'^#{1,2}\s+(.+)', text, re.MULTILINE)
@@ -586,49 +577,22 @@ else:
     print(sys.argv[2])
 " "$SPEC_DIR/technical-requirements.md" "$FEATURE")
 
-    # Attempt commit with hook failure retry
-    local commit_attempts=0
-    while (( commit_attempts < 3 )); do
-      if git -C "$WORKTREE_DIR" commit -m "feat: $commit_desc" 2>/tmp/fi_commit_err.txt; then
-        log "[Committed: feat: $commit_desc]"
-        break
-      fi
-      ((commit_attempts++))
-
-      if (( commit_attempts >= 3 )); then
-        unresolved_steps+=("Commit hook failure after $commit_attempts attempts")
-        log "[Commit failed after $commit_attempts attempts]"
-        break
-      fi
-
-      log "[Commit hook failed (attempt $commit_attempts) — fixing...]"
-
-      # Re-stage after formatter changes
-      git -C "$WORKTREE_DIR" diff --cached --name-only | xargs -I{} git -C "$WORKTREE_DIR" add {} 2>/dev/null || true
-
-      # Write hook errors to issues.md
-      {
-        echo ""
-        echo "[open] Commit hook failure:"
-        cat /tmp/fi_commit_err.txt 2>/dev/null || true
-      } >> "$SPEC_DIR/validation/issues.md"
-
-      # Call coder fix-ai
-      run_agent $model_flag coder "mode: fix-ai
-feature: $FEATURE
+  # Delegate stage + commit + push to committer agent
+  local committer_response
+  committer_response=$(run_agent $model_flag committer "worktree_dir: $WORKTREE_DIR
 spec_dir: $SPEC_DIR
-worktree_dir: $WORKTREE_DIR
-report_file: validation/issues.md" || true
+feature: $FEATURE
+commit_prefix: feat
+commit_desc: $commit_desc
+pr_url: $PR_URL") || committer_response="COMMIT_FAILED"
 
-      # Re-stage
-      stage_files "$WORKTREE_DIR"
-    done
-
-    # Push and mark PR ready
-    git -C "$WORKTREE_DIR" push
-    gh pr edit "$PR_URL" --title "$commit_desc"
-    gh pr ready "$PR_URL"
+  if [[ "$committer_response" == *"COMMITTED"* ]]; then
     log "[PR ready: $PR_URL]"
+  elif [[ "$committer_response" == *"NOTHING_STAGED"* ]]; then
+    log "[No files staged — nothing to commit]"
+  else
+    unresolved_steps+=("Commit: hook failure unresolved")
+    log "[Commit failed — skipping push]"
   fi
 
   # Create warnings folder if unresolved

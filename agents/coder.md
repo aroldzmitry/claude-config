@@ -11,7 +11,7 @@ maxTurns: 200
 
 ## Execution
 
-- One coder invocation = one plan step. Complete it, validate, return. Never run `git commit` — the orchestrator handles commits in Phase 5.
+- One coder invocation = one plan step. Complete it, validate, return. Never run `git commit` (including with `--no-verify`) — the orchestrator handles commits in Phase 5.
 - Max 3 validation attempts per step. Still failing → return DONE (global-validator catches remaining issues).
 - Test files: may fix syntax errors and import paths, but never change test assertions or expected behavior. Only modify tests if the step explicitly targets them.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.

@@ -1,5 +1,5 @@
 ---
-description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → validators + Codex → fix loop), produces staged git diff."
+description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → validators + Codex → fix loop), commits and pushes to ready PR."
 model: sonnet
 argument-hint: "<feature-name>: folder name in temp/"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
@@ -144,26 +144,26 @@ Check global-validator status:
 
 ## Phase 5: Finalize
 
-1. `git -C WORKTREE_DIR status --porcelain` → parse entries, exclude non-source files (same list as Phase 4). Stage by status:
-   - Working-tree deletions (second char `D`): `git -C WORKTREE_DIR rm --cached`.
-   - Already-staged deletions (first char `D`, second char ` `): skip.
-   - Everything else: `git -C WORKTREE_DIR add`.
-2. `git -C WORKTREE_DIR diff --cached --stat` → stats.
-3. Read `SPEC_DIR/technical-requirements.md`, derive a concise commit description (max 72 chars). Run `git -C WORKTREE_DIR commit -m "feat: {description}"`. On hook failure: re-stage all currently-staged files from working tree to pick up any formatter output (`git -C WORKTREE_DIR diff --cached --name-only | xargs -I{} git -C WORKTREE_DIR add {} 2>/dev/null || true`), write errors to `SPEC_DIR/validation/issues.md` as `[open]` lines, spawn coder fix-ai (`mode: fix-ai, feature: $ARGUMENTS, spec_dir: SPEC_DIR, worktree_dir: WORKTREE_DIR, report_file: validation/issues.md`), re-stage (step 1), retry commit. Max 2 fix attempts.
-4. Push and mark PR ready:
+1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
+2. Spawn `committer` via Task(super-agent):
    ```
-   git -C WORKTREE_DIR push
-   gh pr edit PR_URL --title "{commit description}"
-   gh pr ready PR_URL
+   worktree_dir: WORKTREE_DIR
+   spec_dir: SPEC_DIR
+   feature: $ARGUMENTS
+   commit_prefix: feat
+   commit_desc: {derived description}
+   pr_url: PR_URL
    ```
-   Log `[PR ready: PR_URL]`.
-5. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `test_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
-6. Folder status:
+   - `COMMITTED` → log `[PR ready: PR_URL]`.
+   - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
+   - `NOTHING_STAGED` → log `[No files staged — nothing to commit]`.
+3. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `ai_iter > 0` or `test_iter > 0`, read `SPEC_DIR/validation/issues.md`, filter `[open]` lines, and include them as context; otherwise describe issues based on `unresolved_steps` entries only (no validation reports available). Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+4. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p temp/done && mv SPEC_DIR-done temp/done/`
-   - If `temp/$ARGUMENTS-warnings/` was created in step 5 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
-7. Output report
+   - If `temp/$ARGUMENTS-warnings/` was created in step 3 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
+5. Output report
 
 # Edge Cases
 

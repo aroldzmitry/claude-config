@@ -37,7 +37,6 @@ Before asking questions, silently:
 Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
 
 ## Phase 1: Gathering
-
 Go through categories in order.
 
 **Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. When 2+ consecutive categories follow established patterns without requiring user input, present them together in a single message. Add "Confirm or flag?" only if at least one item is a pattern the user could plausibly override; if all items are standard conventions or consequences of earlier decisions — state and proceed. When confirming a user's answer or recommendation acceptance, state only what the question covered — do not introduce new UI elements or attributes beyond those in the original question; if the accepted answer implies further choices, surface them as the next question or state the design-system default without asking.

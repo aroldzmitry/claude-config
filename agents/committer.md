@@ -24,7 +24,7 @@ Skip: `*.lock`, `*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.svg`, `*.ico`, `*.webp`,
 
 - Working-tree deletion (second char `D`): `git -C worktree_dir rm --cached <file>`
 - Already-staged deletion (first char `D`, second ` `): skip
-- Everything else: `git -C worktree_dir add <file>`
+- Everything else (including untracked `??` files): `git -C worktree_dir add <file>`
 
 ## Step 2: Check staged
 

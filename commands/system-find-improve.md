@@ -153,6 +153,10 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
    - `ISSUES` and `val_cycle < 3` → fix each reported issue using Edit, increment `val_cycle`, re-run step 9.
    - `ISSUES` and `val_cycle >= 3` → report remaining issues to user, Phase 4.
 10. Pre-existing issues: if validator reported any issues in files NOT in `CHANGED_MD` — collect them. Present as a batch: "Validator also found N issue(s) in untouched files:" + list each (file — description). Ask user: fix these too? If yes → apply with Edit, add fixed files to `CHANGED_MD`, do one validator pass on newly changed files only. If no → note for awareness, continue to Phase 4.
+11. If `CHANGED_MD` not empty: commit applied changes:
+    - `git add` each path in `CHANGED_MD`
+    - `git commit -m "retro: {N} change(s) — {comma-separated base filenames}"`
+    - Report: commit hash + message, or error if commit failed (continue to Phase 4 regardless).
 
 ## Phase 4: Record
 

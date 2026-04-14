@@ -16,7 +16,6 @@ background: true
 # Severity
 
 **error** — test-writer will fail or guess:
-- Test case has no concrete input or no concrete expected output (describes scenario only)
 - Acceptance criterion from `business-requirements.md` has no corresponding test case
 - Tech edge case (`[error]` severity) from `technical-requirements.md` has no test case
 - Test case references a feature or behavior not described in any spec document
@@ -32,7 +31,7 @@ Received via `prompt` from orchestrator:
 
 - `feature` — feature name
 - `spec_dir` — path to `temp/<feature>/`
-- `output_file` — absolute path to write findings to
+- `output_file` — path to write findings to (absolute or relative to project root)
 
 # Workflow
 
@@ -40,7 +39,7 @@ Received via `prompt` from orchestrator:
 
 Read in parallel (skip missing):
 - `{spec_dir}/test-cases.md` — **required**. If missing → write `[error] test-cases.md — file not found` to output_file, return `HAS_ISSUES`.
-- `{spec_dir}/technical-requirements.md` — required for cross-check
+- `{spec_dir}/technical-requirements.md` — optional. If missing, skip cross-checks against tech edge cases and test strategy.
 - `{spec_dir}/business-requirements.md` — optional
 
 ## 2. Validate

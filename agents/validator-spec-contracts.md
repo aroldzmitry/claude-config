@@ -19,7 +19,7 @@ background: true
 - API endpoint missing request format, response format, or error responses
 - Interface contract says "returns X" without specifying X's fields/shape
 - Business requirement from `business-requirements.md` has no technical solution in spec
-- Vague instruction: "handle appropriately", "if needed", "etc.", "and so on", "similar"
+- Vague instruction: "handle", "process" (without specifying how), "appropriately", "if needed", "etc.", "and so on", "similar", "similar to"
 
 **warning** — reduces quality:
 - Class name, method name, or file path present in spec (implementation detail)
@@ -32,7 +32,7 @@ Received via `prompt` from orchestrator:
 
 - `feature` — feature name
 - `spec_dir` — path to `temp/<feature>/`
-- `output_file` — absolute path to write findings to
+- `output_file` — path to write findings to (absolute or relative to project root)
 
 # Workflow
 
@@ -62,10 +62,10 @@ Scan all sections of technical-requirements.md:
 - Class names (PascalCase identifiers used as types/services, e.g., `OrderService`, `UserRepository`) → `[warning]`
 - File paths (`src/`, `.ts`, `.py`, etc.) → `[warning]`
 - Framework decorators or ORM constructs → `[warning]`
-- Function/method names that imply specific code structure → `[warning]`
+- Function/method names (camelCase/snake_case identifiers with action verbs, e.g., `createOrder`, `handlePayment`) → `[warning]`
 
 ### Vague language
-Scan for: "appropriately", "if needed", "etc.", "and so on", "handle", "process" (without specifying how), "similar to" → `[error]`
+Scan for: "handle", "process" (without specifying how), "appropriately", "if needed", "etc.", "and so on", "similar", "similar to" → `[error]`
 
 # Output
 

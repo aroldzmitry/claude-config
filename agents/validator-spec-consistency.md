@@ -32,7 +32,7 @@ Received via `prompt` from orchestrator:
 
 - `feature` — feature name
 - `spec_dir` — path to `temp/<feature>/`
-- `output_file` — absolute path to write findings to
+- `output_file` — path to write findings to (absolute or relative to project root)
 
 # Workflow
 
@@ -48,7 +48,7 @@ Read in parallel (skip missing):
 ### Data model vs API contracts
 Extract all fields from Data Model section. Extract all fields from API request/response schemas.
 - Field in API not in Data Model → `[error]`
-- Field in Data Model never appears in any API → `[warning]` (may be internal, but flag)
+- Field in Data Model never appears in any API → `[warning]`
 - Field with same semantic meaning but different name across sections → `[warning]`
 
 ### Error code consistency

@@ -104,6 +104,8 @@ Write `{spec_dir}/test-cases.md`:
 
 Omit `## Tests to Update` section if `tests_to_update` is empty.
 
+Before writing: cross-check every generated test case against the exclusion list in the Test Strategy section. If a test case tests an item listed as excluded — remove the test case (or remove the exclusion if it was added by mistake). No contradictions allowed between the exclusion list and the test cases.
+
 Coverage requirements:
 - Every `[must]` acceptance criterion from business-requirements maps to at least one test case
 - Every API endpoint: happy path + at least one error case

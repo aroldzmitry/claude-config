@@ -2,7 +2,7 @@
 description: "Merge PR + cleanup worktree and branch. Run from main project directory after /feature-fix or /feature-implement completes."
 model: sonnet
 argument-hint: "[feature-name]: feature name (e.g. BUG-foo). Omit to pick from open PRs."
-allowed-tools: "Bash, Read"
+allowed-tools: "Bash, Read, Task"
 disable-model-invocation: true
 ---
 
@@ -69,7 +69,16 @@ git checkout $DEFAULT_BRANCH
 git pull
 ```
 
-## Phase 3: Cleanup
+## Phase 3: Validate
+
+Spawn `post-merge-validator` via Task with prompt:
+
+    repo_root: REPO_ROOT
+
+- `CLEAN` → set `VALIDATE_RESULT = "clean"`, Phase 4.
+- `HAS_ISSUES: {folder}` → set `VALIDATE_RESULT = "FAILED"`, `VALIDATE_FOLDER = {folder}`, Phase 4.
+
+## Phase 4: Cleanup
 
 ```
 # Remove worktree
@@ -88,14 +97,20 @@ if [ -d "$REPO_ROOT/.worktrees" ] && [ -z "$(ls -A "$REPO_ROOT/.worktrees")" ]; 
 fi
 ```
 
-## Phase 4: Report
+## Phase 5: Report
 
 ```
 ## Merge Complete
 
 **Feature:** $FEATURE
 **PR:** #N — merged
+**Validate:** $VALIDATE_RESULT
 **Branch:** feat/$FEATURE — deleted
 **Worktree:** .worktrees/$FEATURE — removed
 **Now on:** $DEFAULT_BRANCH (updated)
+```
+
+If `VALIDATE_RESULT = "FAILED"`:
+```
+**Next:** `/feature-fix $VALIDATE_FOLDER`
 ```

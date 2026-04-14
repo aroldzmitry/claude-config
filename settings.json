@@ -53,7 +53,7 @@
     "ask": [],
     "defaultMode": "bypassPermissions"
   },
-  "model": "sonnet",
+  "model": "opus",
   "enabledMcpjsonServers": [
     "trello",
     "playwright"

@@ -39,8 +39,9 @@ PR merge and cleanup orchestrator. Merges the feature PR and removes worktree + 
      - `FEATURE = selected headRefName stripped of leading "feat/" prefix`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
 3. Check not running inside a worktree:
+   `GIT_DIR = git rev-parse --git-dir`
    `COMMON_DIR = git rev-parse --git-common-dir`
-   If `COMMON_DIR` starts with `/` → stop: "Run `/feature-merge` from the main project directory, not from a worktree."
+   If `GIT_DIR != COMMON_DIR` → stop: "Run `/feature-merge` from the main project directory, not from a worktree."
 4. Set derived variables:
    ```
    BRANCH = feat/$FEATURE

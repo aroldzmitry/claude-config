@@ -1,5 +1,5 @@
 ---
-description: "Sync project documentation with changed codebase. Explores code, compares with docs/, discusses discrepancies with user, updates documents"
+description: "Sync project documentation with changed codebase. Explores code, compares with docs/, applies discrepancies automatically, commits changes"
 model: sonnet
 argument-hint: "[doc-name?]: optional document name to sync (e.g., ARCHITECTURE). Without argument — sync all docs"
 disable-model-invocation: true
@@ -58,7 +58,7 @@ Show a grouped summary of all findings:
 
 If no discrepancies found — tell the user docs are in sync and stop.
 
-End with one question: ask user to confirm the list and proceed to resolution, or point out anything incorrect.
+Proceed directly to Phase 2.
 
 ## Phase 2: Resolve
 
@@ -68,20 +68,16 @@ Process documents in order. For each document with discrepancies:
 
 `[Document 1/3: ARCHITECTURE.md — 2 discrepancies]`
 
-### Step 2: Discuss each discrepancy
+### Step 2: Apply each discrepancy
 
-One at a time, present the discrepancy and ask via AskUserQuestion:
-- **Update doc** — code is correct, update documentation to match
-- **Keep doc** — documentation is correct, this is a code issue (noted for user, doc unchanged)
-- **Skip** — not important now
+Code is authoritative — apply all discrepancies as Update doc. Proceed to Step 3.
 
 ### Step 3: Apply
 
 After all discrepancies for a document are resolved:
 1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document. When removing a section: (a) grep other docs for links to that section's anchor and fix broken references; (b) check if the section contains unique non-derivable rules — migrate before deleting. Before writing: verify the edit matches the document's abstraction level — principles/patterns docs (UI_PATTERNS, ARCHITECTURE) get decision rules and patterns, not specific code identifiers; reference docs (CONVENTIONS, CODE_RULES) get specifics.
-2. **Validate** — Read the edited file, then run `validator-doc` loop as defined in `docs/DOCUMENT_TYPES.md`. Fix via **Edit** (not regeneration).
+2. **Validate** — Read the edited file, then run `validator-doc` loop as defined in `~/.claude/docs/DOCUMENT_TYPES.md`. Fix via **Edit** (not regeneration).
 3. Show summary of changes to user (what was edited where)
-4. User confirms or requests changes → apply via Edit → always re-validate → show result → repeat until confirmed
 
 ### Step 4: Next document
 
@@ -91,7 +87,7 @@ Move to next document with discrepancies.
 
 After all existing docs are synced, if missing documents were detected:
 1. For each missing doc, ask user: **Create** / **Skip**
-2. If Create — interview the user using the document categories from `docs/DOCUMENT_TYPES.md` for that document type, one question per category, one question per message. Generate → run `validator-doc` loop (see `docs/DOCUMENT_TYPES.md`) → show to user → confirm → write.
+2. If Create — interview the user using the document categories from `~/.claude/docs/DOCUMENT_TYPES.md` for that document type, one question per category, one question per message. Generate → run `validator-doc` loop (see `~/.claude/docs/DOCUMENT_TYPES.md`) → show to user → confirm → write.
 
 ## Phase 3: Wrap Up
 
@@ -104,3 +100,7 @@ Show summary:
 - ARCHITECTURE_analytics.md — created (new)
 - CONVENTIONS.md — no changes needed
 ```
+
+If any files were edited: `git add` each changed file, then:
+`git commit -m "docs: sync <comma-separated base filenames>"`
+Report commit hash. If no files changed — skip commit.

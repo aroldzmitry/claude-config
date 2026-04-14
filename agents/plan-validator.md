@@ -48,6 +48,9 @@ Check the plan against these criteria:
 - Any business requirement not reflected in tech spec → [warning] report as spec-gap
 
 ### Structural checks
+
+When Grepping for consumers, references, or call sites in any structural check below, exclude non-source directories (node_modules, dist, build, vendor, cache, coverage) and generated files.
+
 - Each functional requirement addressed by at least one step
 - Each step traces back to a requirement
 - File paths for modify/delete actions exist (Glob check)
@@ -62,6 +65,7 @@ Check the plan against these criteria:
 - When a step creates a consumer (UI element, handler, or call site) that passes specific values to an internal function, endpoint, or constructor defined in another step or existing code, read the callee's parameter validation or schema and verify all required parameters are provided and constraints are satisfied. Missing required argument or violated constraint → [error] report.
 - When a step adds a new field to a params/filter type AND another step adds logic that reads that field in a downstream layer (repository, handler), Grep for intermediate sites that construct a concrete instance of that type (object literals, explicit field assignments). Any such site not included in a plan step that would propagate the new field → [error] report as missing propagation step.
 - When a step adds a new definition (type, schema, constant) to a cross-package shared directory, Grep for consumers across all packages that directory is meant to bridge. Consumers found on only one side → [warning] report; the definition belongs in the package that uses it.
+- When a step has a `[spec-deviation]` note describing a compile or build error due to a missing symbol, constant, or type expected from another PR or branch, check whether the missing element can be duplicated within this PR without violating architecture rules (a standalone constant, a type alias, or an enum variant with no cross-PR dependencies). If yes → [error]: the plan must include a step providing the missing element rather than relying on merge order to restore the compilable-state invariant.
 
 # Output
 

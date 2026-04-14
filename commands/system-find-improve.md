@@ -16,7 +16,7 @@ disable-model-invocation: true
 - **No duplicates** — check decisions.md before presenting, skip already-decided items.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.
 - **Placement is bidirectional** — verify placement direction before presenting every fix: (1) if the pattern is universal (passes the 3-scenario test across different stacks) → fix must target `~/.claude/` system files, not project docs; (2) if the pattern is tech- or project-specific → fix must target project-level docs (ARCHITECTURE.md, CLAUDE.md, etc.), not `~/.claude/` system files. A general pattern placed in project docs is as wrong as a specific pattern placed in system files. Verify before presenting in Phase 2 and before applying in Phase 3.
-- **Current session only** — Claude Code doesn't persist conversation history across sessions. This command analyzes the current session.
+- **Current session only** — Claude Code doesn't persist conversation history across sessions.
 - **Language** — match the user's language.
 - **Decisions** — AskUserQuestion for structured choices. Plain text for open-ended discussion.
 
@@ -83,7 +83,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 1. Analyze full conversation using S1–S6 categories.
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
-4. Read target files for surviving findings — verify root cause exists in current file content. Then validate each proposed fix is genuinely general using all 3 mechanical tests (a fix that fails any test is too specific — either abstract further or discard):
+4. Read target files for findings that passed filtering in steps 2–3 — verify root cause exists in current file content. Then validate each proposed fix is genuinely general using all 3 mechanical tests (a fix that fails any test is too specific — either abstract further or discard):
    - **Strip test:** remove all session-specific identifiers (filenames, function names, library names, error messages) from the proposed rule. If the rule becomes incoherent or meaningless → it's a specific fix, not a general rule.
    - **3-scenario test:** name 3 structurally different situations where this rule applies (different language, framework, or problem domain). If you cannot → it's too narrow.
    - **Subsumption test:** check whether existing rules in the target file already cover this case. If they do → don't add a duplicate; if partial coverage → extend the existing rule instead of adding a new one.
@@ -109,7 +109,7 @@ For each finding, one per message:
    - **Signal:** category (S1–S6) + one-line summary
    - **Evidence:** quote/paraphrase from conversation. If cross-session pattern: note "seen in N previous sessions"
    - **Root cause:** file path + section + type (for new files: `NEW: commands/proposed-name.md` + type `MISSING_COMMAND`)
-   - **Proposed change:** concrete action with context from current file content. Before writing: (1) verify rule is language-agnostic — no stack/framework-specific terms; abstract to language-agnostic form if needed. (2) If combining with adjacent content yields a more compact result per DOC_PRINCIPLES, propose that form. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
+   - **Proposed change:** concrete action with context from current file content. Before writing: verify rule is language-agnostic — no stack/framework-specific terms; abstract to language-agnostic form if needed. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
    - **Alternative:** at least one, including "do nothing"
    - Multi-file findings: present as one item with primary target. List all affected files. Accept/reject as a unit.
 
@@ -150,7 +150,7 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
        changed_files: <newline-separated paths from CHANGED_MD>
 
    - `CLEAN` → Phase 4.
-   - `ISSUES` and `val_cycle < 3` → fix each reported issue using Edit, increment `val_cycle`, re-run step 9.
+   - `ISSUES` and `val_cycle < 3` → for each reported issue: if the issue concerns a cross-reference to a project file in a `~/.claude/` system file and the reference already has an existence guard (`if exists`, `if they exist`) — check whether the referenced file exists in at least one other project by running Glob on 2–3 other project roots (check ~/.claude/projects/ for known paths); if found in any, skip that finding. Fix remaining issues using Edit, increment `val_cycle`, re-run step 9.
    - `ISSUES` and `val_cycle >= 3` → report remaining issues to user, Phase 4.
 10. Pre-existing issues: if validator reported any issues in files NOT in `CHANGED_MD` — collect them. Present as a batch: "Validator also found N issue(s) in untouched files:" + list each (file — description). Ask user: fix these too? If yes → apply with Edit, add fixed files to `CHANGED_MD`, do one validator pass on newly changed files only. If no → note for awareness, continue to Phase 4.
 11. If `CHANGED_MD` not empty: commit applied changes:

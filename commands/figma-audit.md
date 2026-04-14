@@ -1,7 +1,7 @@
 ---
 description: "Figma design audit: scout Figma project → per-screen comparison with codebase → aggregated action plan"
 model: opus
-argument-hint: "<figma-file-url> [project-path?]: Figma file URL, optional project path (defaults to cwd)"
+argument-hint: "[--scope 'описание что проверять'] [figma-file-url?] [project-path?]"
 allowed-tools: "Task, Read, Glob, Grep, Write, Bash, Agent, AskUserQuestion"
 disable-model-invocation: true
 ---
@@ -16,6 +16,7 @@ Orchestrator for Figma-to-code audit. You never call Figma MCP tools directly �
 - Never read Figma data yourself — always delegate to agents.
 - All agent outputs go to files in `REPORTS_DIR` — never rely on agent return values for detailed data.
 - AskUserQuestion for decisions that block progress. Plain text for status updates.
+- **CRITICAL: Figma access method.** All agents that interact with Figma MUST use the `figma-local` MCP server tools (tool names prefixed with `mcp__figma_local__` or `mcp__figma-local__`). NEVER use the old Python script `figma_mcp.py`, NEVER use the `/figma` skill, NEVER run `python3 ~/.claude/skills/figma/figma_mcp.py`. The old skill takes screenshots — we need structured data from the official Figma MCP server. Explicitly tell each subagent in its prompt: "Use figma-local MCP tools. Do NOT use the /figma skill or figma_mcp.py script."
 
 # Conventions
 
@@ -28,25 +29,39 @@ Orchestrator for Figma-to-code audit. You never call Figma MCP tools directly �
 
 ## Phase 0: Setup
 
-1. Parse `$ARGUMENTS`: first arg = Figma file URL (required), second arg = project path (optional, defaults to cwd).
-2. If no Figma URL provided — ask user via AskUserQuestion.
-3. `mkdir -p temp/figma-audit/reports/`
-4. Clean previous run: `find temp/figma-audit/reports/ -name "*.md" -delete 2>/dev/null; rm -f temp/figma-audit/catalog.md temp/figma-audit/action-plan.md`
-5. Verify project path exists and has source code.
+1. Parse `$ARGUMENTS`:
+   - `--scope '...'` = free-text description of what to audit. Examples:
+     - `--scope 'только мобильное приложение'`
+     - `--scope 'всё кроме landing page и маркетинговых страниц'`
+     - `--scope 'admin panel screens only'`
+   - Figma file URL (optional) = if provided, Scout will open this specific file. If omitted, Scout works with whatever file is currently open in Figma Desktop.
+   - Project path (optional, defaults to cwd)
+2. If no `--scope` provided — ask user: "В Figma файле могут быть страницы, которые не нужно проверять (лендинги, маркетинг и т.д.). Опиши своими словами, что именно проверять, или скажи 'всё'."
+3. Store scope description as `SCOPE_DESCRIPTION` (free text, passed verbatim to Scout agent).
+5. `mkdir -p temp/figma-audit/reports/`
+6. Clean previous run: `find temp/figma-audit/reports/ -name "*.md" -delete 2>/dev/null; rm -f temp/figma-audit/catalog.md temp/figma-audit/action-plan.md`
+7. Verify project path exists and has source code.
 
 ## Phase 1: Scout Figma
 
 Spawn ONE agent (general-purpose, model: sonnet) — the **Scout**.
 
 Prompt must include:
-- The Figma file URL
+- The Figma file URL (if provided) OR instruction to work with the currently open file
 - Instruction to use Figma MCP tools to explore the file
+- Scope description: `SCOPE_DESCRIPTION` (user's free-text intent for what to audit)
 - Output file: `{CATALOG_FILE}`
 
 **Scout task:**
-1. Connect to Figma via MCP tools (figma-local). Open/read the provided Figma file.
+1. Connect to Figma via `figma-local` MCP tools (NOT the old figma_mcp.py script, NOT the /figma skill). If a URL was provided — open that file. Otherwise — read the currently open file in Figma Desktop.
 2. List ALL top-level pages and frames (screens).
-3. For each screen: record name, node ID, brief description of what it shows.
+3. Apply semantic filter based on `SCOPE_DESCRIPTION`:
+   - Read the scope description (e.g. "только мобильное приложение", "всё кроме лендинга").
+   - For each page/frame, judge by its name, content, and structure whether it matches the user's intent.
+   - Include/exclude based on your understanding of the scope.
+   - At the top of the catalog, log your filtering decisions: which pages/frames included, which excluded and why.
+   - If ambiguous — include rather than exclude (user can refine later).
+4. For each included screen: record name, node ID, brief description of what it shows.
 4. Extract design tokens: colors, typography styles, spacing values, border radii — anything defined as variables or styles.
 5. List reusable components and their variants.
 6. Write structured catalog to `{CATALOG_FILE}` in this format:
@@ -84,7 +99,26 @@ Prompt must include:
 - **Description:** <what it does>
 ```
 
-**After Scout completes:** Read `{CATALOG_FILE}`. If empty or missing — report failure, stop. Otherwise proceed to Phase 2.
+**After Scout completes:** Read `{CATALOG_FILE}`. If empty or missing — report failure, stop.
+
+## Phase 1.5: Confirm scope with user
+
+Present a concise summary to the user via AskUserQuestion:
+
+1. How many screens found, list each by name (one line per screen).
+2. How many tokens found (colors: N, typography: N, spacing: N).
+3. How many components found.
+4. What was excluded by the scope filter and why.
+
+Ask: "Это то, что нужно проверить? Можешь убрать ненужное или добавить что-то."
+
+Options:
+- **Всё верно, поехали** → proceed to Phase 2 with full catalog
+- **User removes items** (e.g. "убери экран Settings и компонент Footer") → remove from catalog, save updated `{CATALOG_FILE}`, proceed
+- **User adds items** (e.g. "добавь ещё страницу Landing — Pricing") → re-run Scout for those specific items, append to catalog, re-confirm
+- **Не то, начни сначала** → back to Phase 1 with updated scope
+
+Do NOT proceed to Phase 2 until user confirms.
 
 ## Phase 2: Compare
 
@@ -128,12 +162,13 @@ For each screen in the catalog, spawn an agent (general-purpose, model: sonnet) 
 
 Each agent prompt must include:
 - Screen name, node ID, description, key components from catalog
-- The Figma file URL (so agent can fetch detailed data via MCP)
+- The Figma file URL if available (so agent can fetch detailed data via MCP)
 - Project path
 - Output file: `{REPORTS_DIR}/screen-<screen-name-kebab>.md`
+- **Explicit instruction: "Use figma-local MCP tools to read Figma data. Do NOT use the /figma skill or figma_mcp.py script."**
 
 **Screen Comparator task:**
-1. Use Figma MCP tools to read the specific screen node in detail (layout, styles, components used, spacing, text content).
+1. Use `figma-local` MCP tools to read the specific screen node in detail (layout, styles, components used, spacing, text content).
 2. Find the corresponding page/component in the codebase (search by route, component name, page name).
 3. Compare: layout structure, components used, styles applied, text content, spacing, responsive behavior.
 4. Write report to output file:

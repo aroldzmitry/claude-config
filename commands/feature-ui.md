@@ -31,7 +31,7 @@ Before asking questions, silently:
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
 4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
 5. Ask user if they have Figma mockups for this feature (is Figma open with the relevant file?):
-   - If yes → call `mcp__figma-local__get_metadata` (no nodeId — reads currently open file). If the response is too large, use the Agent tool to parse it and identify relevant screen node IDs. For each relevant screen, call `mcp__figma-local__get_design_context` + `mcp__figma-local__get_screenshot`. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered. If MCP returns error → inform user, fall back to text-based gathering in Phase 1.
+   - If yes → call `mcp__figma-local__get_metadata` (no nodeId — reads currently open file). If the tool result indicates the output was saved to a file (e.g., contains a file path), use the Agent tool to parse that file and identify relevant screen node IDs. For each relevant screen, call `mcp__figma-local__get_design_context` + `mcp__figma-local__get_screenshot`. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered. If MCP returns error → inform user, fall back to text-based gathering in Phase 1.
    - If no Figma → proceed with text-based gathering in Phase 1.
 
 Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
@@ -157,6 +157,10 @@ Per-page subsections — include only those relevant to the layout type:
   - Empty: <message, CTA if any>
   - Error: <how errors displayed>
 
+## Global Changes
+
+- <change to shared layout component or cross-cutting visual rule affecting all/most pages>
+
 ## Navigation
 
 - Primary: <navigation structure and entry points>
@@ -177,7 +181,8 @@ Per-page subsections — include only those relevant to the layout type:
 ```
 
 **CONDITIONAL sections:**
-- **Design References** — only if Figma URLs were provided
+- **Global Changes** — only if changes apply to shared components or affect all/most pages simultaneously
+- **Design References** — only if Figma design data was used (URL or MCP node IDs)
 - **Open Questions** — only if genuinely unresolved questions remain
 
 ### Step 3: Finalize

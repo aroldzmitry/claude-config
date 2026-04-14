@@ -41,6 +41,11 @@ BLOCKED_PATTERNS = [
     (r"\bgit\s+rebase\b", "git rebase rewrites history - use merge instead"),
     (r"\bgit\s+filter-branch\b", "git filter-branch rewrites entire history"),
 
+    # --no-verify bypasses hooks — never allowed
+    (r"\bgit\b.*--no-verify\b", "--no-verify is forbidden - hooks must not be skipped"),
+    (r"\bgit\b.*-n\b.*\b(commit|push)\b", "git -n (no-verify shorthand) is forbidden"),
+    (r"\bgit\s+(commit|push)\b.*-n\b", "git -n (no-verify shorthand) is forbidden"),
+
     # Dangerous file operations
     (r"\brm\s+-rf\s+/", "rm -rf on root paths is forbidden"),
     (r"\brm\s+-r\s+/", "rm -r on root paths is forbidden"),
@@ -67,13 +72,9 @@ BLOCKED_PATTERNS = [
     (r"\bgit\s+clean\s+.*-f", "git clean -f is forbidden - use explicit file removal"),
 ]
 
-# Main-branch-only blocked patterns (merge, cherry-pick, amend, direct push)
+# Main-branch-only blocked patterns (history rewriting)
 MAIN_BRANCH_BLOCKED_PATTERNS = [
-    (r"\bgit\s+merge\b", "git merge on main branch is forbidden - use PRs"),
-    (r"\bgit\s+cherry-pick\b", "git cherry-pick on main branch is forbidden - use PRs"),
     (r"\bgit\s+commit\b.*--amend\b", "git commit --amend on main branch is forbidden - rewrites history"),
-    # Direct push: "git push", "git push origin", "git push origin master/main/develop/dev"
-    (r"\bgit\s+push(\s+(origin|upstream))?\s*(main|master|develop|dev)?\s*$", "direct push to main branch is forbidden - use PRs"),
 ]
 
 # Check command against global blocked patterns

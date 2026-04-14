@@ -28,7 +28,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 Before asking questions, silently:
 1. Feature name = `$ARGUMENTS` (all routing resolved by Start section below).
 2. Read `temp/<feature-name>/business-requirements.md` if exists
-3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md` if they exist
+3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
 4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
 5. Ask user if they have Figma mockups for this feature (is Figma open with the relevant file?):
    - If yes → call `mcp__figma-local__get_metadata` (no nodeId — reads currently open file). If the response is too large, use the Agent tool to parse it and identify relevant screen node IDs. For each relevant screen, call `mcp__figma-local__get_design_context` + `mcp__figma-local__get_screenshot`. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered. If MCP returns error → inform user, fall back to text-based gathering in Phase 1.

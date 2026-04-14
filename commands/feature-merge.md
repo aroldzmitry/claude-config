@@ -1,5 +1,5 @@
 ---
-description: "Merge PR + cleanup worktree and branch. Run from main project directory after /feature-fix or /feature-implement completes."
+description: "Merge PR + validate + cleanup worktree and branch."
 model: sonnet
 argument-hint: "[feature-name]: feature name (e.g. BUG-foo). Omit to pick from open PRs."
 allowed-tools: "Bash, Read, Task"
@@ -14,7 +14,6 @@ PR merge and cleanup orchestrator. Merges the feature PR and removes worktree + 
 
 - If `$ARGUMENTS` is empty — show open PR picker (see Phase 0 step 1). Otherwise use `$ARGUMENTS` as feature name.
 - Must run from main project directory, not from inside a worktree.
-- Fully autonomous — no user questions except PR picker when no argument given.
 
 # Workflow
 
@@ -34,9 +33,21 @@ PR merge and cleanup orchestrator. Merges the feature PR and removes worktree + 
        ...
        ```
        Show `(draft)` suffix if `isDraft = true`.
-     - Ask user: "Which PR to merge? Enter number:"
-     - Wait for user input → select PR by number.
-     - `FEATURE = selected headRefName stripped of leading "feat/" prefix`
+     - Ask user: "Which PR to merge? Enter number or 'all' to merge all sequentially:"
+     - Wait for user input.
+     - If response is "all" or equivalent:
+       1. Set `MERGE_ALL = true`, `PR_LIST = all listed PRs in order`, `MERGE_RESULTS = []`.
+       2. Run Phase 0 steps 2–3 once (set REPO_ROOT, check not in worktree).
+       3. For each PR in `PR_LIST`:
+          a. Set `FEATURE = headRefName stripped of leading "feat/" prefix`.
+          b. Run Phase 0 steps 4–5 (derive `BRANCH`, `WORKTREE_DIR`, `PR`).
+          c. Run Phase 1. On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
+          d. Run Phase 2.
+          e. Run Phase 4.
+          f. Append `feat/$FEATURE — #$PR.number — merged` to `MERGE_RESULTS`.
+       4. Run Phase 3 (Validate) once.
+       5. Run Phase 5 (see MERGE_ALL branch in Phase 5).
+     - Otherwise → select PR by number. `FEATURE = selected headRefName stripped of leading "feat/" prefix`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
 3. Check not running inside a worktree:
    `GIT_DIR = git rev-parse --git-dir`
@@ -76,8 +87,8 @@ Spawn `post-merge-validator` via Task with prompt:
 
     repo_root: REPO_ROOT
 
-- `CLEAN` → set `VALIDATE_RESULT = "clean"`, Phase 4.
-- `HAS_ISSUES: {folder}` → set `VALIDATE_RESULT = "FAILED"`, `VALIDATE_FOLDER = {folder}`, Phase 4.
+- `CLEAN` → set `VALIDATE_RESULT = "clean"`. If `MERGE_ALL = true` → Phase 5. Otherwise → Phase 4.
+- `HAS_ISSUES: {folder}` → set `VALIDATE_RESULT = "FAILED"`, `VALIDATE_FOLDER = {folder}` (folder is a basename, e.g. `post-merge-fix`). If `MERGE_ALL = true` → Phase 5. Otherwise → Phase 4.
 
 ## Phase 4: Cleanup
 
@@ -100,6 +111,18 @@ fi
 
 ## Phase 5: Report
 
+If `MERGE_ALL = true`:
+```
+## Merge Complete
+
+**Features:** (each entry from MERGE_RESULTS)
+- feat/NAME — #N — merged
+...
+**Validate:** $VALIDATE_RESULT
+**Now on:** $DEFAULT_BRANCH (updated)
+```
+
+Otherwise:
 ```
 ## Merge Complete
 

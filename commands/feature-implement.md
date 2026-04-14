@@ -70,7 +70,7 @@ Wait for both results:
      output_file: SPEC_DIR/validation/plan/codex.md
      ```
 
-3. Collect each validator status: direct return `NO_ISSUES`/`HAS_ISSUES` if available; otherwise read its `output_file` (non-empty = `HAS_ISSUES`, empty/missing = `NO_ISSUES`). Both clean (Codex also accepts `NO_OUTPUT`) → log `[Plan validation: clean]`, go to Phase 2.
+3. Collect each validator status: direct return `NO_ISSUES`/`HAS_ISSUES` if available; otherwise read its `output_file` (non-empty = `HAS_ISSUES`, empty/missing = `NO_ISSUES`). Both clean → log `[Plan validation: clean]`, go to Phase 2.
 
 4. Otherwise → re-spawn `planner` with prompt:
 
@@ -134,6 +134,7 @@ Spawn `global-validator` via Task(super-agent) with prompt:
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
 - Response contains `"hit your limit"`, `"rate limit"`, or `"AUTH_ERROR"` → log `[Validation: skipped — rate limit or auth error]`, append `"Validation: skipped due to rate limit or auth error"` to `unresolved_steps`, Phase 5.
+- Response contains `"aggregator failed"` → append `"Validation: aggregator failed"` to `unresolved_steps`, Phase 5.
 - `HAS_ISSUES` → categorize by status text: `(test)` or `(static)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without consuming the AI budget.
   - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
   - Counter < limit → spawn `planner` with prompt:
@@ -142,8 +143,8 @@ Check global-validator status:
         spec_dir: SPEC_DIR
         issues_file: validation/issues.md
 
-    Read `SPEC_DIR/validation/fix-plan.md`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number, step_total, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
-    If fix-plan.md had 0 steps → Phase 5. Increment the category's counter. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
+    Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
+    If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 
@@ -159,7 +160,7 @@ Check global-validator status:
    ```
    - `COMMITTED` → log `[PR ready: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
-   - `NOTHING_STAGED` → log `[No files staged — nothing to commit]`.
+   - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
 3. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 4. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
@@ -168,17 +169,13 @@ Check global-validator status:
    - If `temp/$ARGUMENTS-warnings/` was created in step 3 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
 5. Output report
 
-# Edge Cases
-
-- Run interrupted mid-implementation → changes already applied to app files persist; re-run starts a new plan from scratch.
-
 # Report
 
 ```
 ## Implementation Complete
 
 **Feature:** <feature-name>
-**PR:** PR_URL
+**PR:** PR_URL  ← omit if committer returned NOTHING_STAGED
 **Files changed:** N
 **Tests:** written (or "skipped")
 **Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2

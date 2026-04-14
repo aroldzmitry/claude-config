@@ -2,7 +2,7 @@
 description: "Interactive dialog to define UI/UX requirements for a feature. Analyzes Figma mockups or gathers requirements via text. Generates ui-requirements.md"
 model: sonnet
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
-allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion, Skill"
+allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion, Agent, mcp__figma-local__get_design_context, mcp__figma-local__get_variable_defs, mcp__figma-local__get_screenshot, mcp__figma-local__get_metadata"
 disable-model-invocation: true
 ---
 
@@ -28,10 +28,10 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 Before asking questions, silently:
 1. Feature name = `$ARGUMENTS` (all routing resolved by Start section below).
 2. Read `temp/<feature-name>/business-requirements.md` if exists
-3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
+3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md` if they exist
 4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
-5. Ask user if they have Figma mockups for this feature:
-   - If user provides Figma URL(s) → invoke Skill tool with `skill: "figma"` to extract design data. If Skill returns error or empty output → inform user, fall back to text-based UI description gathering in Phase 1. Otherwise use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered.
+5. Ask user if they have Figma mockups for this feature (is Figma open with the relevant file?):
+   - If yes → call `mcp__figma-local__get_metadata` (no nodeId — reads currently open file). If the response is too large, use the Agent tool to parse it and identify relevant screen node IDs. For each relevant screen, call `mcp__figma-local__get_design_context` + `mcp__figma-local__get_screenshot`. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered. If MCP returns error → inform user, fall back to text-based gathering in Phase 1.
    - If no Figma → proceed with text-based gathering in Phase 1.
 
 Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
@@ -169,7 +169,7 @@ Per-page subsections — include only those relevant to the layout type:
 
 ## Design References
 
-- <Figma URLs and notes on which screens they cover>
+- <Figma node IDs and notes on which screens they cover>
 
 ## Open Questions
 

@@ -16,7 +16,7 @@ Orchestrator for Figma-to-code audit. You never call Figma MCP tools directly �
 - Never read Figma data yourself — always delegate to agents.
 - All agent outputs go to files in `REPORTS_DIR` — never rely on agent return values for detailed data.
 - AskUserQuestion for decisions that block progress. Plain text for status updates.
-- **CRITICAL: Figma access method.** All agents that interact with Figma MUST use the `figma-local` MCP server tools (tool names prefixed with `mcp__figma_local__` or `mcp__figma-local__`). NEVER use the old Python script `figma_mcp.py`, NEVER use the `/figma` skill, NEVER run `python3 ~/.claude/skills/figma/figma_mcp.py`. The old skill takes screenshots — we need structured data from the official Figma MCP server. Explicitly tell each subagent in its prompt: "Use figma-local MCP tools. Do NOT use the /figma skill or figma_mcp.py script."
+- **CRITICAL: Figma access method.** All agents that interact with Figma MUST use the `figma-local` MCP server tools (tool names prefixed with `mcp__figma-local__`). Explicitly tell each subagent in its prompt: "Use figma-local MCP tools."
 
 # Conventions
 
@@ -38,9 +38,9 @@ Orchestrator for Figma-to-code audit. You never call Figma MCP tools directly �
    - Project path (optional, defaults to cwd)
 2. If no `--scope` provided — ask user: "В Figma файле могут быть страницы, которые не нужно проверять (лендинги, маркетинг и т.д.). Опиши своими словами, что именно проверять, или скажи 'всё'."
 3. Store scope description as `SCOPE_DESCRIPTION` (free text, passed verbatim to Scout agent).
-5. `mkdir -p temp/figma-audit/reports/`
-6. Clean previous run: `find temp/figma-audit/reports/ -name "*.md" -delete 2>/dev/null; rm -f temp/figma-audit/catalog.md temp/figma-audit/action-plan.md`
-7. Verify project path exists and has source code.
+4. `mkdir -p temp/figma-audit/reports/`
+5. Clean previous run: `find temp/figma-audit/reports/ -name "*.md" -delete 2>/dev/null; rm -f temp/figma-audit/catalog.md temp/figma-audit/action-plan.md`
+6. Verify project path exists and has source code.
 
 ## Phase 1: Scout Figma
 
@@ -53,7 +53,7 @@ Prompt must include:
 - Output file: `{CATALOG_FILE}`
 
 **Scout task:**
-1. Connect to Figma via `figma-local` MCP tools (NOT the old figma_mcp.py script, NOT the /figma skill). If a URL was provided — open that file. Otherwise — read the currently open file in Figma Desktop.
+1. Connect to Figma via `figma-local` MCP tools. If a URL was provided — open that file. Otherwise — read the currently open file in Figma Desktop.
 2. List ALL top-level pages and frames (screens).
 3. Apply semantic filter based on `SCOPE_DESCRIPTION`:
    - Read the scope description (e.g. "только мобильное приложение", "всё кроме лендинга").
@@ -62,9 +62,9 @@ Prompt must include:
    - At the top of the catalog, log your filtering decisions: which pages/frames included, which excluded and why.
    - If ambiguous — include rather than exclude (user can refine later).
 4. For each included screen: record name, node ID, brief description of what it shows.
-4. Extract design tokens: colors, typography styles, spacing values, border radii — anything defined as variables or styles.
-5. List reusable components and their variants.
-6. Write structured catalog to `{CATALOG_FILE}` in this format:
+5. Extract design tokens: colors, typography styles, spacing values, border radii — anything defined as variables or styles.
+6. List reusable components and their variants.
+7. Write structured catalog to `{CATALOG_FILE}` in this format:
 
 ```markdown
 # Figma Catalog
@@ -101,7 +101,7 @@ Prompt must include:
 
 **After Scout completes:** Read `{CATALOG_FILE}`. If empty or missing — report failure, stop.
 
-## Phase 1.5: Confirm scope with user
+## Scope Confirmation
 
 Present a concise summary to the user via AskUserQuestion:
 
@@ -165,7 +165,7 @@ Each agent prompt must include:
 - The Figma file URL if available (so agent can fetch detailed data via MCP)
 - Project path
 - Output file: `{REPORTS_DIR}/screen-<screen-name-kebab>.md`
-- **Explicit instruction: "Use figma-local MCP tools to read Figma data. Do NOT use the /figma skill or figma_mcp.py script."**
+- **Explicit instruction: "Use figma-local MCP tools to read Figma data."**
 
 **Screen Comparator task:**
 1. Use `figma-local` MCP tools to read the specific screen node in detail (layout, styles, components used, spacing, text content).

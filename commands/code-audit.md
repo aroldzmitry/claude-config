@@ -25,7 +25,7 @@ Orchestrator for code consistency and code-to-Figma audit. You never call Figma 
 - Never read Figma data yourself — always delegate to agents.
 - All agent outputs go to files in `REPORTS_DIR` — never rely on agent return values for detailed data.
 - AskUserQuestion for decisions that block progress. Plain text for status updates.
-- **CRITICAL: Figma access method.** All agents that interact with Figma MUST use the `figma-local` MCP server tools (tool names prefixed with `mcp__figma_local__` or `mcp__figma-local__`). NEVER use the old Python script `figma_mcp.py`, NEVER use the `/figma` skill, NEVER run `python3 ~/.claude/skills/figma/figma_mcp.py`. Explicitly tell each subagent in its prompt: "Use figma-local MCP tools. Do NOT use the /figma skill or figma_mcp.py script."
+- **CRITICAL: Figma access method.** All agents that interact with Figma MUST use the `figma-local` MCP server tools (tool names prefixed with `mcp__figma-local__`). Explicitly tell each subagent in its prompt: "Use figma-local MCP tools."
 
 # Conventions
 
@@ -140,7 +140,7 @@ Prompt must include:
 
 **After Code Scout completes:** Read `{CATALOG_FILE}`. If empty or missing — report failure, stop.
 
-## Phase 1.5: Confirm scope with user
+## Scope Confirmation
 
 Present a concise summary to the user via AskUserQuestion:
 
@@ -171,10 +171,10 @@ Prompt must include:
 - Full content of the Design Tokens section from catalog
 - The Figma file URL (if provided) OR instruction to work with the currently open file
 - Output file: `{REPORTS_DIR}/tokens.md`
-- **Explicit instruction: "Use figma-local MCP tools to read Figma data. Do NOT use the /figma skill or figma_mcp.py script."**
+- **Explicit instruction: "Use figma-local MCP tools to read Figma data."**
 
 **Token Comparator task:**
-1. Use `figma-local` MCP tools to extract design tokens from Figma: colors, typography styles, spacing, border-radius values — anything defined as variables or styles.
+1. If a Figma file URL was provided OR a file is currently open in Figma Desktop: use `figma-local` MCP tools to extract design tokens (colors, typography styles, spacing, border-radius — anything defined as variables or styles). If MCP returns error or no file is open: write a report with only the "No Figma Data" section and stop.
 2. Compare each code token with what exists in Figma.
 3. Write report to output file:
 
@@ -205,7 +205,7 @@ Each agent prompt must include:
 - The Figma file URL if available (so agent can search for matching designs via MCP)
 - Project path
 - Output file: `{REPORTS_DIR}/page-<page-name-kebab>.md`
-- **Explicit instruction: "Use figma-local MCP tools to read Figma data. Do NOT use the /figma skill or figma_mcp.py script."**
+- **Explicit instruction: "Use figma-local MCP tools to read Figma data."**
 
 **Page Comparator task:**
 1. Read the code for this page thoroughly — understand layout, components, styles, text content, responsive behavior.
@@ -255,7 +255,7 @@ Each agent searches for matching Figma component and compares. If no Figma count
 
 Spawn ONE agent (general-purpose, model: sonnet) — **Consistency Auditor**.
 
-This is the most important step of this audit. It catches issues that neither figma-audit nor per-page comparison can find.
+This is the most important step of this audit. It catches issues that per-page and token comparisons cannot find.
 
 Prompt must include:
 - Full content of `{CATALOG_FILE}` (especially the component usage details per page and potential duplicates)

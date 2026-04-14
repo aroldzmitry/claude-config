@@ -39,8 +39,6 @@ Output this reference (translated to user's language):
 /feature-merge [name]         → merge PR + validate master + cleanup worktree and branch
 /patch [description]          → quick code fix without planning overhead (no spec needed)
 /docs-sync [doc-name?]        → sync docs/ with code changes
-/figma-audit [--scope '...'] [figma-url?] [path?]  → Figma design audit: per-screen comparison with codebase
-/code-audit [--scope '...'] [figma-url?] [path?]   → code consistency + Figma audit: cross-page consistency check + per-screen comparison
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
 /system-audit [scope?]        → deep system audit: 7 validators → review → fix (scope: all/commands/agents/docs/settings)
 /system-help [command?]       → this help
@@ -58,8 +56,6 @@ Output this reference (translated to user's language):
 | `/feature-fix` | Worktree + branch + draft PR (ready to merge) | — (or `/bug` output folder) |
 | `/feature-merge` | Merged PR, validated master, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
 | `/patch` | Edited files (no commit) | — |
-| `/figma-audit` | Action plan with design deviations | Figma MCP server |
-| `/code-audit` | Action plan: consistency issues + design deviations | Figma MCP server (optional) |
 | `/system-find-improve` | Updated system files + `agent-memory/system-find-improve/observations.md` | Any conversation |
 | `/system-audit` | Fixed system files + `agent-memory/system-audit/observations.md` | — |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |

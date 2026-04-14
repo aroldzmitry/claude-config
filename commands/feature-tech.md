@@ -34,7 +34,7 @@ Before asking questions, silently:
 1. Determine feature name from `$ARGUMENTS`
 2. Check if `temp/<feature-name>/business-requirements.md` exists — read it if yes. Also read `temp/<feature-name>/ui-requirements.md` if exists — use as context for API contracts and component architecture. If `business-requirements.md` has a "Related Features" section — also read `technical-requirements.md` from each referenced feature's `temp/<related-feature>/` folder (if exists), as these contain architectural decisions and API contracts that may answer interview questions.
 3. Read `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md` if they exist
-4. If feature modifies existing code — explore affected modules, data flow, and contracts to understand current state before asking questions (max 5 tool calls)
+4. If feature modifies existing code — explore affected modules, data flow, and contracts to understand current state before asking questions (max 5 tool calls). To verify inline usage counts: grep for the inline pattern, not the extracted symbol (extracted symbols may have 0 usages if replacements haven't happened yet).
 5. If `business-requirements.md` loaded — cross-reference its explicit claims (auth model, response format, pagination, public/private access) against project patterns observed in steps 3–4. Also cross-check: every capability stated in the Actor section has a corresponding UI component or API endpoint in the solution approach; capability with no technical counterpart → raise as business clarification. Contradictions → raise as business clarifications at the start of Phase 1, before category questions
 6. If no `$ARGUMENTS` — ask the user what they want to specify technically
 
@@ -68,7 +68,7 @@ Go through categories in order.
 
 7. **Performance / Constraints** — Load expectations, latency requirements, size limits. Only if performance is a real concern for this feature.
 
-8. **Test Strategy** — Apply project test levels silently from loaded ARCHITECTURE*.md (established test types → state as fact, not a question). Ask only if the feature has non-obvious hard-to-test scenarios or explicit exclusions beyond project defaults. Do not propose test types covered by test-planner exclusion rules (framework validation, conditional rendering, compiler guarantees).
+8. **Test Strategy** — Apply project test levels silently from loaded ARCHITECTURE*.md (established test types → state as fact, not a question). Ask only if the feature has non-obvious hard-to-test scenarios or explicit exclusions beyond project defaults. Do not propose test types covered by test-planner exclusion rules.
 
 9. **Tech Edge Cases** — Based on technical decisions above, YOU propose edge cases grouped by severity. Present all `[error]` cases together, then all `[warning]` cases (one batch per message, max). For each: situation → expected behavior. Verify expected behavior against codebase patterns first — apply silent decisions principle (see Rules). Only propose cases where the expected behavior requires a decision or explicit handling code; skip cases where the existing design already handles them. If all cases in the batch are single-viable (behavior verified against patterns) → apply silently and note it. Ask for confirmation only if at least one case has non-obvious expected behavior.
 
@@ -102,6 +102,8 @@ Do all of this in a single message:
 
 ### Step 2: Clarify
 
+Skip this step if Step 1 found no gaps requiring user input.
+
 If gaps → after user responds, re-check remaining gaps. Ask about the next one (one at a time). Maximum 3 rounds. After that — record remaining uncertainties in Open Questions.
 
 ### Step 3: Quality Gate
@@ -129,7 +131,7 @@ If any item fails — go back to Step 2. If all pass — proceed directly to Pha
 
 If `temp/<feature-name>/technical-requirements.md` already exists → ask user: "Previous tech spec found. Overwrite / Edit existing?" If edit — read and use as starting point for generation.
 
-Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed and are non-trivial.
+Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed; omit sections whose CONDITIONAL condition (see below) is not met.
 
 **Abstraction level:** spec sections describe WHAT and WHY, not HOW. Include: component names, file locations, prop types, behavioral contracts, architecture decisions (which existing component to use). A behavioral contract is complete only when it covers both the initiating condition and the resulting state change — for any named interaction (event, endpoint, action, hook). Do not include: source file line numbers, internal variable names, platform-specific styling primitives, framework internals (hooks, keys, reconciliation patterns), exact markup structure. When spec maps data fields from existing external library functions, verify field semantics match the new use case — do not assume fields from an existing implementation transfer correctly to a different context. When two or more entities share parallel contract shapes, enumerate each entity's fields explicitly — do not abbreviate one as "same as X" or "same set as X". When any spec section references an existing event or endpoint by name without modifying it, declare it in § API / Interfaces with its contract marked "unchanged". If `ui-requirements.md` was loaded in Phase 0, cross-check each component's field visibility and constraints against it before writing — do not derive component behavior from `business-requirements.md` alone when `ui-requirements.md` covers the same component.
 
@@ -218,14 +220,13 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
      - `validator-spec-contracts` → `output_file: temp/<name>/validation/spec/contracts.md`
      - `validator-spec-testability` → `output_file: temp/<name>/validation/spec/testability.md`
      - `validator-spec-consistency` → `output_file: temp/<name>/validation/spec/consistency.md`
-   - **Codex Tasks** — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency]:
+   - **Codex Tasks** — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency] (short names for `{V-short}`: contracts, testability, consistency):
      ```
      validator-{V}
      feature: <name>
      spec_dir: temp/<name>
      output_file: temp/<name>/validation/spec/{V-short}-codex.md
      ```
-     short names: contracts, testability, consistency
 
 2. Spawn `aggregator-spec`:
 
@@ -247,7 +248,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 ### Step 5: Present
 
-1. Show both documents + one-line validation summary (N items auto-fixed, if any)
+1. Show available documents (both if test-cases.md was generated; only `technical-requirements.md` if test-planner returned ERROR) + one-line validation summary (N items auto-fixed, if any)
 2. If user requests changes → apply, show updated
 3. If prerequisite tasks were recorded in Business Clarifications → for each: create `temp/<prerequisite-name>/business-requirements.md` with a brief description (problem, required change, consumer, acceptance criteria); then suggest `/feature-tech <prerequisite-name>` to be done first
 4. Suggest next step: `/feature-implement <feature-name>`

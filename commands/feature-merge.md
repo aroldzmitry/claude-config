@@ -30,7 +30,7 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
        Show `(draft)` suffix if `isDraft = true`.
      - Ask user: "Which PR to merge? Enter number or 'all' to merge all sequentially:"
      - Wait for user input.
-     - If response is "all" or equivalent:
+     - If response is `all`:
        1. Set `MERGE_ALL = true`, `PR_LIST = all listed PRs in order`, `MERGE_RESULTS = []`, `SKIPPED_LIST = []`.
        2. Run Phase 0 steps 2–3 once (set REPO_ROOT, DEFAULT_BRANCH, check not in worktree).
        3. For each PR in `PR_LIST`:
@@ -75,13 +75,15 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
    - If merge has conflicts → stop: "Branch $BRANCH has conflicts with $DEFAULT_BRANCH. Resolve conflicts manually and re-run `/feature-merge $FEATURE`."
    - `git push origin $BRANCH`
 
-2. Spawn in parallel via Task:
+2. If `$VALIDATE_ROOT/docs/WORKFLOW.md` exists, read it. If it has a "Pre-Validation Build Steps" section (or equivalent), run each command from `$VALIDATE_ROOT`.
+
+3. Spawn in parallel via Task:
    - `static-checker` with prompt: `error_file: /tmp/premerge_static.txt\nworking_dir: $VALIDATE_ROOT`
    - `test-runner` with prompt: `error_file: /tmp/premerge_tests.txt\nworking_dir: $VALIDATE_ROOT`
 
-3. If `static-checker` returns `CLEAN` and `test-runner` returns `PASS` → proceed to Phase 2.
+4. If `static-checker` returns `CLEAN` and `test-runner` returns `PASS` → proceed to Phase 2.
 
-4. If any failures:
+5. If any failures:
    - If `PREMERGE_CYCLE >= 3` → stop: "Pre-merge validation failed after 3 fix attempts. Fix manually and re-run `/feature-merge $FEATURE`."
    - Read errors from `/tmp/premerge_static.txt` and `/tmp/premerge_tests.txt` (whichever exist). Write them to `/tmp/premerge_fix/$FEATURE/validation/issues.md` as `[open]` entries (one entry per distinct logical error; group related lines belonging to the same failure into one entry).
    - Spawn `coder` via Task(super-agent) with prompt:
@@ -97,7 +99,7 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
      - `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: pre-merge validation (attempt $((PREMERGE_CYCLE+1)))" && git push origin $BRANCH`
      - Increment `PREMERGE_CYCLE`; reset `NO_OP_CYCLES = 0`
    - Else: increment `NO_OP_CYCLES`; if `NO_OP_CYCLES >= 2` → stop: "Tests failing but no fixes identified after 2 no-op attempts. Tests may be flaky — re-run `/feature-merge $FEATURE` or fix manually."
-   - Go to step 2.
+   - Go to step 3.
 
 ## Phase 2: Merge
 

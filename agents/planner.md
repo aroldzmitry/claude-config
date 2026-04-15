@@ -53,6 +53,7 @@ Based on specs, identify affected parts of the codebase:
 - When a step replicates logic from another file (phrases like "matching the pattern in X", "same approach as Y", "same as Z"), search for an existing shared utility implementing that pattern before writing the step. If found, instruct the step to import it. If not found and the logic is non-trivial (more than a single expression), add a shared-utility extraction step before the replicating step.
 - When a step deletes a file or removes exported symbols, Grep for all remaining references to the deleted paths/symbols across the codebase. For each unhandled reference — confirm it is covered by an existing step (modified, deleted, or replaced); if not, add a step to handle it.
 - When a step changes a function's implementation so it no longer calls a previously-called function, Grep for other callers of that function across the codebase. If none remain, add a step to remove it along with its associated types and exports.
+- When a step references a named constant, member, or method from an external library (not defined in the project codebase), verify it exists in the installed version: Grep for any existing usage of that identifier in the codebase. If no usage exists, use `mcp__context7__resolve-library-id` + `mcp__context7__query-docs` to verify availability. If absent → prescribe the nearest available alternative and add a `[spec-deviation]` note.
 
 ## 3. Decide Test Strategy
 

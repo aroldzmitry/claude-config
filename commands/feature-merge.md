@@ -65,7 +65,7 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
 Skip entirely if `PR.state != open` or `PR.isDraft = true`.
 
 Set `VALIDATE_ROOT = $WORKTREE_DIR` if it exists, otherwise `VALIDATE_ROOT = $REPO_ROOT`.
-Set `PREMERGE_CYCLE = 0`.
+Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 
 1. Update branch with latest `$DEFAULT_BRANCH`:
    - If `$WORKTREE_DIR` exists:
@@ -79,22 +79,25 @@ Set `PREMERGE_CYCLE = 0`.
    - `static-checker` with prompt: `error_file: /tmp/premerge_static.txt\nworking_dir: $VALIDATE_ROOT`
    - `test-runner` with prompt: `error_file: /tmp/premerge_tests.txt\nworking_dir: $VALIDATE_ROOT`
 
-3. If both return `CLEAN` / `PASS` → proceed to Phase 2.
+3. If `static-checker` returns `CLEAN` and `test-runner` returns `PASS` → proceed to Phase 2.
 
 4. If any failures:
    - If `PREMERGE_CYCLE >= 3` → stop: "Pre-merge validation failed after 3 fix attempts. Fix manually and re-run `/feature-merge $FEATURE`."
-   - Read errors from `/tmp/premerge_static.txt` and `/tmp/premerge_tests.txt` (whichever exist). Write them to `/tmp/premerge_fix/validation/issues.md` as `[open]` entries (one per error line).
+   - Read errors from `/tmp/premerge_static.txt` and `/tmp/premerge_tests.txt` (whichever exist). Write them to `/tmp/premerge_fix/$FEATURE/validation/issues.md` as `[open]` entries (one entry per distinct logical error; group related lines belonging to the same failure into one entry).
    - Spawn `coder` via Task(super-agent) with prompt:
      ```
      coder
      mode: fix-ai
      feature: $FEATURE
-     spec_dir: /tmp/premerge_fix
+     spec_dir: /tmp/premerge_fix/$FEATURE
      worktree_dir: $VALIDATE_ROOT
      report_file: validation/issues.md
      ```
-   - Commit fixes: `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: pre-merge validation (attempt $((PREMERGE_CYCLE+1)))" && git push origin $BRANCH`
-   - Increment `PREMERGE_CYCLE` → go to step 2.
+   - Run `git -C $VALIDATE_ROOT status --short`. If output is non-empty:
+     - `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: pre-merge validation (attempt $((PREMERGE_CYCLE+1)))" && git push origin $BRANCH`
+     - Increment `PREMERGE_CYCLE`; reset `NO_OP_CYCLES = 0`
+   - Else: increment `NO_OP_CYCLES`; if `NO_OP_CYCLES >= 2` → stop: "Tests failing but no fixes identified after 2 no-op attempts. Tests may be flaky — re-run `/feature-merge $FEATURE` or fix manually."
+   - Go to step 2.
 
 ## Phase 2: Merge
 
@@ -116,23 +119,19 @@ git pull
 ## Phase 4: Cleanup
 
 ```
-# Remove worktree
 if [ -d "$WORKTREE_DIR" ]; then
   git worktree remove "$WORKTREE_DIR" --force
 fi
 
-# Remove local branch
 git branch -d $BRANCH 2>/dev/null || git branch -D $BRANCH 2>/dev/null || true
-# Remove remote branch
 git push origin --delete $BRANCH 2>/dev/null || true
 
-# Remove .worktrees/ dir if empty
 if [ -d "$REPO_ROOT/.worktrees" ] && [ -z "$(ls -A "$REPO_ROOT/.worktrees")" ]; then
   rmdir "$REPO_ROOT/.worktrees"
 fi
 ```
 
-If not in `MERGE_ALL` loop → proceed to Phase 5.
+If `MERGE_ALL != true` → proceed to Phase 5.
 
 ## Phase 5: Report
 

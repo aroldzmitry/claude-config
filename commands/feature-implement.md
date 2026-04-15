@@ -114,6 +114,7 @@ Spawn `test-writer` via Task with prompt:
     worktree_dir: WORKTREE_DIR
 
 If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to Phase 4 (tests skipped).
+Any other return value → treat as success; proceed immediately to Phase 4 in the same response.
 
 ## Phase 4: Validation Cycle
 

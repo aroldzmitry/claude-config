@@ -36,7 +36,7 @@ Before any user interaction, silently:
    - **Outdated** — doc says X, code shows Y (e.g., library version, directory name, pattern)
    - **Missing** — code has something the doc should cover but doesn't (new module, new pattern)
    - **Removed** — doc describes something no longer in code (deleted folder, removed dependency)
-6. Check if project needs docs that don't exist yet (new submodule → ARCHITECTURE_<module>.md, added frontend → DESIGN_SYSTEM.md)
+6. Read `~/.claude/docs/DOCUMENT_TYPES.md` for the list of standard doc types. Based on codebase analysis from step 3, determine which types this project needs. Flag each needed type absent from `docs/` as a missing-doc candidate.
 
 If `$ARGUMENTS` is provided — filter to only the matching document(s). Match by prefix: `ARCHITECTURE` matches `ARCHITECTURE.md` and all `ARCHITECTURE_*.md`.
 

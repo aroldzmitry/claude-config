@@ -72,6 +72,14 @@ Use after generating or editing any document. Initialize `cycle = 0`, max 10 cyc
 
 Start with a one-line description of the module's purpose if the module name alone does not convey its scope. Only document what's specific to this module.
 
+### UI_PATTERNS.md
+
+1. **Page type selection** — When to use each page pattern (flow, standalone, modal, etc.)
+2. **Loading states** — Loading level types and when to use each
+3. **Error handling** — How errors surface in UI (snackbar, inline, redirect)
+4. **Form patterns** — Validation, submission, and input patterns
+5. **Navigation** — Forward/back/swipe navigation patterns and state restoration
+
 ### CODE_RULES_\<module\>.md
 
 Start with: `Common rules: [CODE_RULES.md](CODE_RULES.md)`. Only document rules that differ from or extend the parent. If no differences — state that explicitly (1 line).

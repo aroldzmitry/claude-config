@@ -58,17 +58,7 @@ For **empty projects** — state that no code was found, ask user to describe th
 
 ### Step 2: Recommend Documents
 
-Based on the profile, recommend which docs to create with reasoning:
-
-| Document | When to recommend |
-|----------|-------------------|
-| `ARCHITECTURE.md` | Always (if project has structure) |
-| `ARCHITECTURE_<module>.md` | If distinct submodules detected |
-| `CODE_RULES.md` | Always (if project has code) |
-| `CODE_RULES_<module>.md` | If submodules have distinct patterns |
-| `CONVENTIONS.md` | Always |
-| `DESIGN_SYSTEM.md` | Only if frontend with UI components |
-| `WORKFLOW.md` | Always (if project has build/test commands) |
+Read `~/.claude/docs/DOCUMENT_TYPES.md` for the list of standard doc types. Based on the profile and codebase analysis, determine which types this project needs.
 
 Present as a multi-select checklist via AskUserQuestion. User confirms, removes, or adds.
 
@@ -104,11 +94,11 @@ For each document:
 
 ### Validation
 
-Run `validator-doc` loop as defined in `docs/DOCUMENT_TYPES.md`. Fix violations yourself (in the draft text, not via Edit).
+Run `validator-doc` loop as defined in `~/.claude/docs/DOCUMENT_TYPES.md`. Fix violations yourself (in the draft text, not via Edit).
 
 ### Document Types & Categories
 
-See `docs/DOCUMENT_TYPES.md`.
+See `~/.claude/docs/DOCUMENT_TYPES.md`.
 
 ## Phase 2.5: Cross-Document Validation
 
@@ -124,7 +114,7 @@ Initialize `cross_cycle = 0`.
        document_draft: |
          <full current text>
 
-4. Apply fixes. Increment `cross_cycle`. Show user a summary of fixes applied (if any). After 3 cycles with remaining issues — proceed and note unresolved.
+4. Apply fixes via **Edit** (not regeneration). Increment `cross_cycle`. Show user a summary of fixes applied (if any). After 3 cycles with remaining issues — proceed and note unresolved.
 
 ## Phase 3: Wrap Up
 

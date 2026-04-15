@@ -34,7 +34,7 @@ Before asking questions, silently:
    - If yes → call `mcp__figma-local__get_metadata` (no nodeId — reads currently open file). If the tool result indicates the output was saved to a file (e.g., contains a file path), use the Agent tool to parse that file and identify relevant screen node IDs. For each relevant screen, call `mcp__figma-local__get_design_context` + `mcp__figma-local__get_screenshot`. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered. If MCP returns error → inform user, fall back to text-based gathering in Phase 1.
    - If no Figma → proceed with text-based gathering in Phase 1.
 
-Do NOT mention steps 1-4 to the user. Step 5 is the first user-visible message.
+Do NOT mention steps 1-4 to the user.
 
 ## Phase 1: Gathering
 Go through categories in order.
@@ -85,7 +85,7 @@ When all categories are covered, DO NOT generate the document yet.
 Do all of this in a single message:
 
 1. Write a compact summary of all UI decisions — all categories, 1-2 sentences each. Include a **Key UI Decisions** block.
-2. Walk through user scenarios end-to-end:
+2. Walk through user scenarios end-to-end (at minimum; add others if relevant to the feature):
    - Happy path: user completes the primary flow
    - Empty state: user opens page with no data
    - Error: action fails, what does user see
@@ -115,7 +115,7 @@ Before proceeding, verify internally:
 - [ ] Every page mentioned in Navigation exists in Pages section
 - [ ] All gaps resolved or recorded in Open Questions
 
-If any item fails — go back to Step 2. If all pass — proceed directly to Phase 3.
+If any item fails — go back to Step 2. If still failing after Step 2's 3-round cap — record remaining gaps in Open Questions and proceed to Phase 3. If all pass — proceed directly to Phase 3.
 
 ## Phase 3: Generate Document
 
@@ -161,6 +161,14 @@ Per-page subsections — include only those relevant to the layout type:
 
 - <change to shared layout component or cross-cutting visual rule affecting all/most pages>
 
+## Component: <ComponentName>
+
+- **Scope:** <which page it appears on; conditional visibility rule if any>
+- **Container:** <border, radius, padding, internal gap>
+- **Children (top to bottom):**
+  - <child 1: content + style>
+  - <child 2: content + style>
+
 ## Navigation
 
 - Primary: <navigation structure and entry points>
@@ -182,6 +190,7 @@ Per-page subsections — include only those relevant to the layout type:
 
 **CONDITIONAL sections:**
 - **Global Changes** — only if changes apply to shared components or affect all/most pages simultaneously
+- **Component** — only if feature adds a new non-shared widget to an existing page; one section per component
 - **Design References** — only if Figma design data was used (URL or MCP node IDs)
 - **Open Questions** — only if genuinely unresolved questions remain
 

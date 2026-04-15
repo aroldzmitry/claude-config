@@ -1,6 +1,6 @@
 ---
 name: committer
-description: "Stages changed files, commits with hook retry (spawns coder fix-ai on failure), pushes branch, marks PR ready. Returns COMMITTED / COMMIT_FAILED / NOTHING_STAGED."
+description: "Stages changed files, commits with hook retry (spawns coder fix-ai on failure), pushes branch, updates PR title, marks PR ready. Returns COMMITTED / COMMIT_FAILED / NOTHING_STAGED."
 tools: Bash, Task
 model: sonnet
 ---
@@ -18,10 +18,11 @@ model: sonnet
 
 ## Step 1: Stage files
 
-`git -C worktree_dir status --porcelain`. For each entry:
+`git -C worktree_dir status --porcelain`. For each entry: check skip list first (glob-matched against the relative file path); if matched, do nothing and move to next entry.
 
-Skip: `*.lock`, `*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.svg`, `*.ico`, `*.webp`, `*.woff`, `*.woff2`, `*.ttf`, `*.eot`, `*.otf`, `*.mp4`, `*.webm`, `*.mov`, `*.avi`, `*.min.*`, `*.map`, `*.d.ts`, `*.generated.*`, `*.snap`, `dist/*`, `build/*`, `vendor/*`, `node_modules`, `node_modules/*`, `.venv`, `__pycache__`, `temp/*`
+Skip: `*.lock`, `*.min.*`, `*.map`, `*.d.ts`, `*.generated.*`, `dist/*`, `build/*`, `vendor/*`, `node_modules`, `node_modules/*`, `.venv`, `__pycache__`, `temp/*`
 
+Otherwise apply:
 - Working-tree deletion (second char `D`): `git -C worktree_dir rm --cached <file>`
 - Already-staged deletion (first char `D`, second ` `): skip
 - Everything else (including untracked `??` files): `git -C worktree_dir add <file>`

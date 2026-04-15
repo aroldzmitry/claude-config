@@ -72,7 +72,7 @@ Process documents in order. For each document with discrepancies:
 
 Code is authoritative — apply all discrepancies as Update doc. Proceed to Step 3.
 
-### Step 3: Apply
+### Step 3: Edit & Validate
 
 After all discrepancies for a document are resolved:
 1. Apply changes via **Edit** — one Edit per discrepancy on the specific section. Never regenerate the full document. When removing a section: (a) grep other docs for links to that section's anchor and fix broken references; (b) check if the section contains unique non-derivable rules — migrate before deleting. Before writing: verify the edit matches the document's abstraction level — principles/patterns docs (UI_PATTERNS, ARCHITECTURE) get decision rules and patterns, not specific code identifiers; reference docs (CONVENTIONS, CODE_RULES) get specifics.
@@ -87,7 +87,7 @@ Move to next document with discrepancies.
 
 After all existing docs are synced, if missing documents were detected:
 1. For each missing doc, ask user: **Create** / **Skip**
-2. If Create — interview the user using the document categories from `~/.claude/docs/DOCUMENT_TYPES.md` for that document type, one question per category, one question per message. Generate → run `validator-doc` loop (see `~/.claude/docs/DOCUMENT_TYPES.md`) → show to user → confirm → write.
+2. If Create — explore the codebase using categories from `~/.claude/docs/DOCUMENT_TYPES.md` for that doc type to derive content; interview user only for content that cannot be inferred from source files. Generate → run `validator-doc` loop (see `~/.claude/docs/DOCUMENT_TYPES.md`) → write.
 
 ## Phase 3: Wrap Up
 

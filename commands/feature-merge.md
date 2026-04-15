@@ -37,8 +37,8 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
           a. Set `FEATURE = headRefName stripped of leading "feat/" prefix`.
           b. Run Phase 0 steps 4–5 (derive `BRANCH`, `WORKTREE_DIR`, `PR`).
           c. If `PR.isDraft = true` → append `feat/$FEATURE — #$PR.number — skipped (draft, in progress)` to `SKIPPED_LIST`; continue to next PR.
-          d. Run Phase 1 (Pre-Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
-          e. Run Phase 2 (Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
+          d. Run Phase 1 (Pre-Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; if `SKIPPED_LIST` is not empty output "Skipped:\n{SKIPPED_LIST entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
+          e. Run Phase 2 (Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; if `SKIPPED_LIST` is not empty output "Skipped:\n{SKIPPED_LIST entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
           f. Run Phase 3 (Sync).
           g. Run Phase 4 (Cleanup).
           h. Append `feat/$FEATURE — #$PR.number — merged` to `MERGE_RESULTS`.

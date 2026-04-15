@@ -37,16 +37,17 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 1. `$ARGUMENTS` is required. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /bug first to create a spec."`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
+3. Parent feature check: derive `PARENT_FEATURE` by stripping trailing `-warnings` or `-warnings{N}` (N = integer) from `$ARGUMENTS`. If a match is found and `git show-ref --quiet refs/heads/feat/{PARENT_FEATURE}` exits 0, check that `{REPO_ROOT}/.worktrees/{PARENT_FEATURE}` exists as a directory. If yes: set `WORKTREE_DIR = {REPO_ROOT}/.worktrees/{PARENT_FEATURE}`, `BRANCH = feat/{PARENT_FEATURE}`, `PR_URL = $(gh pr list --head feat/{PARENT_FEATURE} --json url -q '.[0].url')`, `USE_PARENT_WORKTREE = true`. Log `[Using parent worktree: WORKTREE_DIR]`. Otherwise: `USE_PARENT_WORKTREE = false`.
 
 ## Phase 1: Planning
 
-Launch in parallel (same response):
-- Task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR`
-- Task: `setup-worktree` with prompt: `feature: $ARGUMENTS, repo_root: REPO_ROOT, spec_dir: SPEC_DIR`
+- If `USE_PARENT_WORKTREE = true`: launch `planner` only (task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR`). WORKTREE_DIR, BRANCH, PR_URL already set in Phase 0.
+- Else: launch in parallel (same response):
+  - Task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR`
+  - Task: `setup-worktree` with prompt: `feature: $ARGUMENTS, repo_root: REPO_ROOT, spec_dir: SPEC_DIR`
+  - From setup-worktree: parse `WORKTREE_DIR`, `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
 
-Wait for both results:
-- From setup-worktree: parse `WORKTREE_DIR`, `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
-- Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-fix $ARGUMENTS`."
+Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-fix $ARGUMENTS`."
 
 ## Phase 2: Implementation
 

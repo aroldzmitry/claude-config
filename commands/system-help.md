@@ -36,7 +36,7 @@ Output this reference (translated to user's language):
 
 /bug [description]            → interactive bug diagnosis: gather symptoms → investigate code → produce fix requirements
 /feature-fix <folder>         → autonomous: plan → code → [test] → validate → PR (accepts /bug output folder)
-/feature-merge [name]         → update branch + pre-merge validate + merge PR + validate master + cleanup worktree and branch
+/feature-merge [name]         → update branch + pre-merge validate + merge PR + cleanup worktree and branch
 /patch [description]          → quick code fix without planning overhead (no spec needed)
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
@@ -54,7 +54,7 @@ Output this reference (translated to user's language):
 | `/feature-implement` | Worktree + branch + draft PR (ready to merge) | `technical-requirements.md`, clean git |
 | `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
 | `/feature-fix` | Worktree + branch + draft PR (ready to merge) | — (or `/bug` output folder) |
-| `/feature-merge` | Merged PR, validated pre+post, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
+| `/feature-merge` | Merged PR, validated pre-merge, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
 | `/patch` | Edited files (no commit) | — |
 | `/system-find-improve` | Updated system files + `agent-memory/system-find-improve/observations.md` | Any conversation |
 | `/system-audit` | Fixed system files + `agent-memory/system-audit/observations.md` | — |

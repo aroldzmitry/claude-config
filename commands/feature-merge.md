@@ -1,5 +1,5 @@
 ---
-description: "Update branch with default branch, pre-merge validate, merge PR, post-merge validate + cleanup worktree and branch."
+description: "Update branch with default branch, pre-merge validate, merge PR, cleanup worktree and branch."
 model: sonnet
 argument-hint: "[feature-name]: feature name (e.g. BUG-foo). Omit to pick from open PRs."
 allowed-tools: "Bash, Read, Task"
@@ -40,10 +40,9 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
           d. Run Phase 1 (Pre-Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
           e. Run Phase 2 (Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
           f. Run Phase 3 (Sync).
-          g. Run Phase 5 (Cleanup).
+          g. Run Phase 4 (Cleanup).
           h. Append `feat/$FEATURE — #$PR.number — merged` to `MERGE_RESULTS`.
-       4. Run Phase 4 (Validate) once. Note: Phase 5 (Cleanup) runs per-PR inside the loop above; Phase 4 (Validate) runs once after all merges.
-       5. Run Phase 6 (see MERGE_ALL branch in Phase 6).
+       4. Run Phase 5 (see MERGE_ALL branch in Phase 5).
      - Otherwise → select PR by number. `FEATURE = selected headRefName stripped of leading "feat/" prefix`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
    `DEFAULT_BRANCH = git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's/refs\/remotes\/origin\///'`
@@ -114,16 +113,7 @@ git checkout $DEFAULT_BRANCH
 git pull
 ```
 
-## Phase 4: Validate
-
-Spawn `post-merge-validator` via Task with prompt:
-
-    repo_root: $REPO_ROOT
-
-- `CLEAN` → set `VALIDATE_RESULT = "clean"`. If `MERGE_ALL = true` → Phase 6. Otherwise → Phase 5.
-- `HAS_ISSUES: {folder}` → set `VALIDATE_RESULT = "FAILED"`, `VALIDATE_FOLDER = {folder}`. If `MERGE_ALL = true` → Phase 6. Otherwise → Phase 5.
-
-## Phase 5: Cleanup
+## Phase 4: Cleanup
 
 ```
 # Remove worktree
@@ -142,9 +132,9 @@ if [ -d "$REPO_ROOT/.worktrees" ] && [ -z "$(ls -A "$REPO_ROOT/.worktrees")" ]; 
 fi
 ```
 
-If not in `MERGE_ALL` loop → proceed to Phase 6.
+If not in `MERGE_ALL` loop → proceed to Phase 5.
 
-## Phase 6: Report
+## Phase 5: Report
 
 If `MERGE_ALL = true`:
 ```
@@ -156,13 +146,7 @@ If `MERGE_ALL = true`:
 **Skipped:** (each entry from SKIPPED_LIST, omit section if empty)
 - feat/NAME — #N — skipped (draft, in progress)
 ...
-**Validate:** $VALIDATE_RESULT
 **Now on:** $DEFAULT_BRANCH (updated)
-```
-
-If `VALIDATE_RESULT = "FAILED"`:
-```
-**Next:** `/feature-fix $VALIDATE_FOLDER`
 ```
 
 Otherwise:
@@ -171,13 +155,7 @@ Otherwise:
 
 **Feature:** $FEATURE
 **PR:** #$PR.number — merged
-**Validate:** $VALIDATE_RESULT
 **Branch:** feat/$FEATURE — deleted
 **Worktree:** .worktrees/$FEATURE — removed
 **Now on:** $DEFAULT_BRANCH (updated)
-```
-
-If `VALIDATE_RESULT = "FAILED"`:
-```
-**Next:** `/feature-fix $VALIDATE_FOLDER`
 ```

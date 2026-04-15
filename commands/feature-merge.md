@@ -10,10 +10,6 @@ disable-model-invocation: true
 
 PR merge and cleanup orchestrator. Updates feature branch with master, validates, merges the PR, and removes worktree + branch.
 
-# Rules
-
-- If `$ARGUMENTS` is empty — show open PR picker (see Phase 0 step 1). Otherwise use `$ARGUMENTS` as feature name.
-
 # Workflow
 
 ## Phase 0: Resolve
@@ -35,16 +31,17 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
      - Ask user: "Which PR to merge? Enter number or 'all' to merge all sequentially:"
      - Wait for user input.
      - If response is "all" or equivalent:
-       1. Set `MERGE_ALL = true`, `PR_LIST = all listed PRs in order`, `MERGE_RESULTS = []`.
+       1. Set `MERGE_ALL = true`, `PR_LIST = all listed PRs in order`, `MERGE_RESULTS = []`, `SKIPPED_LIST = []`.
        2. Run Phase 0 steps 2–3 once (set REPO_ROOT, DEFAULT_BRANCH, check not in worktree).
        3. For each PR in `PR_LIST`:
           a. Set `FEATURE = headRefName stripped of leading "feat/" prefix`.
           b. Run Phase 0 steps 4–5 (derive `BRANCH`, `WORKTREE_DIR`, `PR`).
-          c. Run Phase 1 (Pre-Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
-          d. Run Phase 2 (Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
-          e. Run Phase 3 (Sync).
-          f. Run Phase 5 (Cleanup).
-          g. Append `feat/$FEATURE — #$PR.number — merged` to `MERGE_RESULTS`.
+          c. If `PR.isDraft = true` → append `feat/$FEATURE — #$PR.number — skipped (draft, in progress)` to `SKIPPED_LIST`; continue to next PR.
+          d. Run Phase 1 (Pre-Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
+          e. Run Phase 2 (Merge). On any stop condition: if `MERGE_RESULTS` is not empty output "Merged so far:\n{MERGE_RESULTS entries, one per line}\n"; output "Stopped on feat/$FEATURE: {stop reason}" then stop.
+          f. Run Phase 3 (Sync).
+          g. Run Phase 5 (Cleanup).
+          h. Append `feat/$FEATURE — #$PR.number — merged` to `MERGE_RESULTS`.
        4. Run Phase 4 (Validate) once. Note: Phase 5 (Cleanup) runs per-PR inside the loop above; Phase 4 (Validate) runs once after all merges.
        5. Run Phase 6 (see MERGE_ALL branch in Phase 6).
      - Otherwise → select PR by number. `FEATURE = selected headRefName stripped of leading "feat/" prefix`
@@ -69,6 +66,7 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
 Skip entirely if `PR.state != open` or `PR.isDraft = true`.
 
 Set `VALIDATE_ROOT = $WORKTREE_DIR` if it exists, otherwise `VALIDATE_ROOT = $REPO_ROOT`.
+Set `PREMERGE_CYCLE = 0`.
 
 1. Update branch with latest `$DEFAULT_BRANCH`:
    - If `$WORKTREE_DIR` exists:
@@ -78,20 +76,26 @@ Set `VALIDATE_ROOT = $WORKTREE_DIR` if it exists, otherwise `VALIDATE_ROOT = $RE
    - If merge has conflicts → stop: "Branch $BRANCH has conflicts with $DEFAULT_BRANCH. Resolve conflicts manually and re-run `/feature-merge $FEATURE`."
    - `git push origin $BRANCH`
 
-2. Set `PREMERGE_CYCLE = 0`.
-
-3. Spawn in parallel via Task:
+2. Spawn in parallel via Task:
    - `static-checker` with prompt: `error_file: /tmp/premerge_static.txt\nworking_dir: $VALIDATE_ROOT`
    - `test-runner` with prompt: `error_file: /tmp/premerge_tests.txt\nworking_dir: $VALIDATE_ROOT`
 
-4. If both return `CLEAN` / `PASS` → proceed to Phase 2.
+3. If both return `CLEAN` / `PASS` → proceed to Phase 2.
 
-5. If any failures:
+4. If any failures:
    - If `PREMERGE_CYCLE >= 3` → stop: "Pre-merge validation failed after 3 fix attempts. Fix manually and re-run `/feature-merge $FEATURE`."
-   - Read errors from `/tmp/premerge_static.txt` and `/tmp/premerge_tests.txt` (whichever exist).
-   - Spawn `coder` via Task with prompt: `fix pre-merge validation errors in $VALIDATE_ROOT for branch feat/$FEATURE:\n{errors}`
+   - Read errors from `/tmp/premerge_static.txt` and `/tmp/premerge_tests.txt` (whichever exist). Write them to `/tmp/premerge_fix/validation/issues.md` as `[open]` entries (one per error line).
+   - Spawn `coder` via Task(super-agent) with prompt:
+     ```
+     coder
+     mode: fix-ai
+     feature: $FEATURE
+     spec_dir: /tmp/premerge_fix
+     worktree_dir: $VALIDATE_ROOT
+     report_file: validation/issues.md
+     ```
    - Commit fixes: `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: pre-merge validation (attempt $((PREMERGE_CYCLE+1)))" && git push origin $BRANCH`
-   - Increment `PREMERGE_CYCLE` → go to step 3.
+   - Increment `PREMERGE_CYCLE` → go to step 2.
 
 ## Phase 2: Merge
 
@@ -117,7 +121,7 @@ Spawn `post-merge-validator` via Task with prompt:
     repo_root: $REPO_ROOT
 
 - `CLEAN` → set `VALIDATE_RESULT = "clean"`. If `MERGE_ALL = true` → Phase 6. Otherwise → Phase 5.
-- `HAS_ISSUES: {folder}` → set `VALIDATE_RESULT = "FAILED"`, `VALIDATE_FOLDER = {folder}` (folder is a basename, e.g. `post-merge-fix`). If `MERGE_ALL = true` → Phase 6. Otherwise → Phase 5.
+- `HAS_ISSUES: {folder}` → set `VALIDATE_RESULT = "FAILED"`, `VALIDATE_FOLDER = {folder}`. If `MERGE_ALL = true` → Phase 6. Otherwise → Phase 5.
 
 ## Phase 5: Cleanup
 
@@ -149,8 +153,16 @@ If `MERGE_ALL = true`:
 **Features:** (each entry from MERGE_RESULTS)
 - feat/NAME — #N — merged
 ...
+**Skipped:** (each entry from SKIPPED_LIST, omit section if empty)
+- feat/NAME — #N — skipped (draft, in progress)
+...
 **Validate:** $VALIDATE_RESULT
 **Now on:** $DEFAULT_BRANCH (updated)
+```
+
+If `VALIDATE_RESULT = "FAILED"`:
+```
+**Next:** `/feature-fix $VALIDATE_FOLDER`
 ```
 
 Otherwise:
@@ -158,7 +170,7 @@ Otherwise:
 ## Merge Complete
 
 **Feature:** $FEATURE
-**PR:** #N — merged
+**PR:** #$PR.number — merged
 **Validate:** $VALIDATE_RESULT
 **Branch:** feat/$FEATURE — deleted
 **Worktree:** .worktrees/$FEATURE — removed

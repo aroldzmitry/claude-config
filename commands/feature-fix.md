@@ -22,7 +22,6 @@ Fix orchestrator. Delegates to agents — never writes application code.
 # Conventions
 
 - `SPEC_DIR` — directory containing `technical-requirements.md`, resolved in Phase 0.
-- Every agent prompt includes: `feature: _fix`, `spec_dir: SPEC_DIR`.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
@@ -47,7 +46,7 @@ Launch in parallel (same response):
 
 Wait for both results:
 - From setup-worktree: parse `WORKTREE_DIR`, `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
-- Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-fix`."
+- Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-fix $ARGUMENTS`."
 
 ## Phase 2: Implementation
 
@@ -125,7 +124,7 @@ Check global-validator status:
    ```
    - `COMMITTED` → log `[PR ready: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
-   - `NOTHING_STAGED` → log `[No files staged — nothing to commit]`.
+   - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
 3. If `unresolved_steps` is non-empty: compute `WARNINGS_DIR` from `SPEC_DIR`:
    - If `SPEC_DIR` ends with `-warnings` (no digits) → `WARNINGS_DIR = {base}-warnings1` (where `base` = SPEC_DIR with `-warnings` stripped)
    - If `SPEC_DIR` ends with `-warnings{N}` (N = integer) → `WARNINGS_DIR = {base}-warnings{N+1}`
@@ -133,7 +132,7 @@ Check global-validator status:
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
-   Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+   `mkdir -p WARNINGS_DIR`. Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names).
 4. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`

@@ -1,5 +1,5 @@
 ---
-description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → coder → [test-writer] → global-validator → fix attempt → commit), commits and pushes to ready PR."
+description: "Quick fix orchestrator. Takes a spec folder name, coordinates agents (planner → coder → [test-planner → test-writer] → global-validator → fix attempt → commit), commits and pushes to ready PR."
 model: sonnet
 argument-hint: "<folder>: spec folder name (e.g. BUG-phone-field-required)"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
@@ -71,6 +71,14 @@ For each step in order:
 4. `DONE` → next step. `UNRESOLVED` → record.
 
 ## Phase 3: Test Writing
+
+Read `SPEC_DIR/implementation-plan.md` Test Strategy section. If `skip: false` AND `SPEC_DIR/test-cases.md` does not exist → spawn `test-planner` via Task with prompt:
+
+    feature: _fix
+    spec_dir: SPEC_DIR
+    worktree_dir: WORKTREE_DIR
+
+ERROR → log `[Tests: test-planner error — {reason}]`, continue.
 
 If `SPEC_DIR/test-cases.md` exists → spawn `test-writer` via Task with prompt:
 

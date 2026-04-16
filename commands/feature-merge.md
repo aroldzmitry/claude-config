@@ -67,6 +67,8 @@ Skip entirely if `PR.state != open` or `PR.isDraft = true`.
 Set `VALIDATE_ROOT = $WORKTREE_DIR` if it exists, otherwise `VALIDATE_ROOT = $REPO_ROOT`.
 Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 
+**BUILD_SETUP(DIR):** If `<DIR>/docs/WORKFLOW.md` exists, read it. Find the first section whose heading contains "Setup" or "Worktree" (case-insensitive); if no such section exists, skip. Run each shell command listed in that section from `<DIR>`.
+
 1. Update branch with latest `$DEFAULT_BRANCH`:
    - If `$WORKTREE_DIR` exists:
      `git -C $WORKTREE_DIR fetch origin && git -C $WORKTREE_DIR merge origin/$DEFAULT_BRANCH --no-edit`
@@ -75,7 +77,7 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
    - If merge has conflicts → stop: "Branch $BRANCH has conflicts with $DEFAULT_BRANCH. Resolve conflicts manually and re-run `/feature-merge $FEATURE`."
    - `git push origin $BRANCH`
 
-2. If `$VALIDATE_ROOT/docs/WORKFLOW.md` exists, read it. If it has a "Pre-Validation Build Steps" section (or equivalent), run each command from `$VALIDATE_ROOT`.
+2. Run BUILD_SETUP($VALIDATE_ROOT).
 
 3. Spawn in parallel via Task:
    - `static-checker` with prompt: `error_file: /tmp/premerge_static.txt\nworking_dir: $VALIDATE_ROOT`
@@ -117,6 +119,8 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 git checkout $DEFAULT_BRANCH
 git pull
 ```
+
+Run BUILD_SETUP($REPO_ROOT).
 
 ## Phase 4: Cleanup
 

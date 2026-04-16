@@ -30,6 +30,7 @@ Received via prompt from orchestrator:
 - `spec_dir` — path to `temp/<feature>/`
 - `revision_dir` — (optional) path to directory with plan validation findings (e.g., `temp/<feature>/validation/plan/`)
 - `issues_file` — (optional) path relative to `spec_dir` to an issues file; triggers Fix-Plan Mode
+- `aggregated_file` — (optional) path relative to `spec_dir` to the latest aggregated validation output; when provided in Fix-Plan Mode, used to filter stale issues from `issues_file`
 
 # Workflow
 
@@ -158,11 +159,14 @@ Triggered when `issues_file` is provided. Filters false positives, then produces
 Read in parallel:
 - `{spec_dir}/implementation-plan.md` — **required**
 - `{spec_dir}/{issues_file}` — **required**
+- `{spec_dir}/{aggregated_file}` — if provided; contains only issues confirmed failing in the latest validation run
 - `docs/ARCHITECTURE*.md`, `docs/CONVENTIONS.md` — for placement and structural decisions
 
 ## F2. Filter FPs
 
-For each line starting with `[open]` in `{issues_file}`:
+If `aggregated_file` is provided: mark every `[open]` line in `{issues_file}` that does not appear (by description match) in `aggregated_file` as stale — treat it as `[fixed]` for the purpose of fix-plan generation (do not write a step for it, do not add to false-positives). Only issues present in both `{issues_file}` and `aggregated_file` proceed to F3. Use `{issues_file}` for historical descriptions and prior-fix context; use `aggregated_file` as the authoritative list of what is currently failing.
+
+For each line starting with `[open]` in `{issues_file}` that is not stale:
 - Check if the issue targets a pattern that the plan's **Excluded Issues** section marks as intentionally correct.
 - If yes: false positive — Edit `{spec_dir}/{issues_file}`: change `[open] {line}` → `[fixed] {line}`. Append to `{spec_dir}/validation/false-positives.md` (create if missing): `[filter-issues] {description} — FP: contradicts excluded decision: {rationale}`.
 

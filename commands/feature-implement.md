@@ -137,13 +137,14 @@ Check global-validator status:
 - Response contains `"hit your limit"`, `"rate limit"`, or `"AUTH_ERROR"` → log `[Validation: skipped — rate limit or auth error]`, append `"Validation: skipped due to rate limit or auth error"` to `unresolved_steps`, Phase 5.
 - Response contains `"aggregator failed"` → append `"Validation: aggregator failed"` to `unresolved_steps`, Phase 5.
 - Response is a general crash (contains `"encountered an error"` or `"crashed"`, does not match the above patterns) → retry global-validator once with the same inputs. If second attempt also fails → append `"Validation: validator crashed"` to `unresolved_steps`, Phase 5.
-- `HAS_ISSUES` → categorize by status text: `(test)` or `(static)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without consuming the AI budget.
+- `HAS_ISSUES` → categorize by status text: `(test)` or `(static)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without incrementing `ai_iter`.
   - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
   - Counter < limit → spawn `planner` with prompt:
 
         feature: $ARGUMENTS
         spec_dir: SPEC_DIR
         issues_file: validation/issues.md
+        aggregated_file: validation/aggregated.md
 
     Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
     If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
@@ -165,10 +166,10 @@ Check global-validator status:
    - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
 3. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 4. Folder status:
-   - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
-   - `mv SPEC_DIR SPEC_DIR-done`
-   - `mkdir -p temp/done && mv SPEC_DIR-done temp/done/`
-   - If `temp/$ARGUMENTS-warnings/` was created in step 3 → `touch temp/$ARGUMENTS-warnings/NEXT--feature-fix`
+   - `rm -f $REPO_ROOT/SPEC_DIR/NEXT--* 2>/dev/null || true`
+   - `mv $REPO_ROOT/SPEC_DIR $REPO_ROOT/SPEC_DIR-done`
+   - `mkdir -p $REPO_ROOT/temp/done && mv $REPO_ROOT/SPEC_DIR-done $REPO_ROOT/temp/done/`
+   - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 3 → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
 5. Output report
 
 # Report

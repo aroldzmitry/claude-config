@@ -2,7 +2,7 @@
 description: "Session analysis: reviews conversation to find improvements for commands, agents, and instructions. Can propose modifications and new system files."
 model: sonnet
 argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'claude-md'"
-allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
+allowed-tools: "Task, Agent, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
 ---
 
@@ -46,7 +46,7 @@ INCLUDE only if ALL true:
 - Problem actually occurred in this session (cite the moment)
 - Fix targets specific file + section + action (or specific new file to create)
 - Fix would prevent the problem in future similar sessions
-- Net positive: benefit > added complexity
+- Passes independent validation (Phase 1 step 5)
 - Not already in decisions.md
 
 EXCLUDE if ANY true:
@@ -89,16 +89,17 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
    - **Subsumption test:** check whether existing rules in the target file already cover this case. If they do → don't add a duplicate; if partial coverage → extend the existing rule instead of adding a new one.
 
    Mechanical test results are internal filtering only — do not include them in Phase 2 finding presentations.
-5. Check observations.md for cross-session patterns — boost priority if signal repeats (see Cross-Session Pattern Boosting).
-6. Apply scope filter if `$ARGUMENTS` specified:
+5. **Independent validation.** For each finding that passed step 4: spawn `system-improve-validator` agent with prompt containing: finding summary, evidence, target file path, proposed change (CURRENT and REPLACEMENT text). If the agent returns `DISCARD` → remove from finding list silently. If `VALUABLE` → keep. Run validators in parallel for all findings.
+6. Check observations.md for cross-session patterns — boost priority if signal repeats (see Cross-Session Pattern Boosting).
+7. Apply scope filter if `$ARGUMENTS` specified:
    - `commands` → only `commands/*.md` targets
    - `agents` → only `agents/*.md` targets
    - `docs` → only `docs/*.md` targets
    - `claude-md` → only `CLAUDE.md` targets
    - `all` or empty → no filter
-7. Sort: high → medium → low.
-8. If 0 findings → "No actionable improvements found — system performed well in this session." Record observation per Phase 4 format (findings: 0) → stop.
-9. Show overview: finding count by priority + target files list.
+8. Sort: high → medium → low.
+9. If 0 findings → "No actionable improvements found — system performed well in this session." Record observation per Phase 4 format (findings: 0) → stop.
+10. Show overview: finding count by priority + target files list.
 
 ## Phase 2: Discussion
 
@@ -152,7 +153,7 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
    - `CLEAN` → Phase 4.
    - `ISSUES` and `val_cycle < 3` → for each reported issue: if the issue concerns a cross-reference to a project file in a `~/.claude/` system file and the reference already has an existence guard (`if exists`, `if they exist`) — check whether the referenced file exists in at least one other project by running Glob on 2–3 other project roots (check ~/.claude/projects/ for known paths); if found in any, skip that finding. Fix remaining issues using Edit, increment `val_cycle`, re-run step 9.
    - `ISSUES` and `val_cycle >= 3` → report remaining issues to user, Phase 4.
-10. Pre-existing issues: if validator reported any issues in files NOT in `CHANGED_MD` — collect them. Present as a batch: "Validator also found N issue(s) in untouched files:" + list each (file — description). Ask user: fix these too? If yes → apply with Edit, add fixed files to `CHANGED_MD`, do one validator pass on newly changed files only. If no → note for awareness, continue to Phase 4.
+10. Pre-existing issues: if validator reported any issues in files NOT in `CHANGED_MD` — collect them. Only escalate issues where the instruction would cause an agent to fail or make a wrong decision; skip wording improvements where intent is clear from context. Present qualifying issues as a batch: "Validator also found N issue(s) in untouched files:" + list each (file — description). Ask user: fix these too? If yes → apply with Edit, add fixed files to `CHANGED_MD`, do one validator pass on newly changed files only. If no → note for awareness, continue to Phase 4.
 11. If `CHANGED_MD` not empty: commit applied changes:
     - `git add` each path in `CHANGED_MD`
     - `git commit -m "retro: {N} change(s) — {comma-separated base filenames}"`

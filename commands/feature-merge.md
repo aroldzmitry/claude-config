@@ -68,7 +68,7 @@ Skip entirely if `PR.state != open` or `PR.isDraft = true`.
 Set `VALIDATE_ROOT = $WORKTREE_DIR` if it exists, otherwise `VALIDATE_ROOT = $REPO_ROOT`.
 Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 
-**BUILD_SETUP(DIR):** If `<DIR>/docs/WORKFLOW.md` exists, read it. Find the first section whose heading contains "Setup" or "Worktree" (case-insensitive); if no such section exists, skip. Run each shell command listed in that section from `<DIR>`.
+**BUILD_SETUP(DIR):** If `<DIR>/docs/WORKFLOW.md` exists, read it. Find the first section whose heading contains "Setup" or "Worktree" (case-insensitive); if no such section exists, skip. Run each shell command in a subshell: `(cd <DIR> && <command>)`. Using a subshell preserves the shell CWD after BUILD_SETUP returns.
 
 1. Update branch with latest `$DEFAULT_BRANCH`:
    - If `$WORKTREE_DIR` exists:
@@ -141,8 +141,8 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 ## Phase 3: Sync
 
 ```
-git checkout $DEFAULT_BRANCH
-git pull
+[ "$(git -C $REPO_ROOT rev-parse --abbrev-ref HEAD)" != "$DEFAULT_BRANCH" ] && git -C $REPO_ROOT checkout $DEFAULT_BRANCH
+git -C $REPO_ROOT pull origin $DEFAULT_BRANCH
 ```
 
 Run BUILD_SETUP($REPO_ROOT).
@@ -154,8 +154,8 @@ if [ -d "$WORKTREE_DIR" ]; then
   git worktree remove "$WORKTREE_DIR" --force
 fi
 
-git branch -d $BRANCH 2>/dev/null || git branch -D $BRANCH 2>/dev/null || true
-git push origin --delete $BRANCH 2>/dev/null || true
+git -C $REPO_ROOT branch -D $BRANCH 2>/dev/null || true
+git -C $REPO_ROOT push origin --delete $BRANCH 2>/dev/null || true
 
 if [ -d "$REPO_ROOT/.worktrees" ] && [ -z "$(ls -A "$REPO_ROOT/.worktrees")" ]; then
   rmdir "$REPO_ROOT/.worktrees"

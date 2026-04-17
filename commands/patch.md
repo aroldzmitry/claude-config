@@ -23,7 +23,7 @@ Quick fixer. Read project coding docs, locate the relevant code, apply the minim
 
 1. **Load coding docs** — silently read `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md`, `docs/DESIGN_SYSTEM.md` if they exist
 2. **Find the code** — search for the relevant component, element, or logic described in `$ARGUMENTS`
-3. **Apply the fix** — make the minimal change following project patterns
+3. **Apply the fix** — make the minimal change following project patterns. When the fix deletes a file or removes a named symbol, grep for all remaining imports and references to the deleted entity and remove them as part of the same patch.
 4. **Report** — list changed files with a one-line summary of what changed per file
 
 # Start

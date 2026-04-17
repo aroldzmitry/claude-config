@@ -76,6 +76,12 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
    - Else:
      `git fetch origin && git checkout $BRANCH && git merge origin/$DEFAULT_BRANCH --no-edit`
    - If merge has conflicts:
+     - Resolve modify/delete conflicts (deleted in `$BRANCH`, modified in `$DEFAULT_BRANCH`):
+       `MD_FILES = git -C $VALIDATE_ROOT status --short | grep "^DU " | awk '{print $2}'`
+       For each file in `MD_FILES`: `git -C $VALIDATE_ROOT rm {file}`
+     - If no remaining conflicts (`git -C $VALIDATE_ROOT diff --name-only --diff-filter=U` is empty):
+       - `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: resolve merge conflicts with $DEFAULT_BRANCH" && git push origin $BRANCH`
+       - Proceed to step 2.
      - Set `CONFLICT_CYCLE = 0`.
      - While `CONFLICT_CYCLE < 2`:
        - Collect conflicted files: `git -C $VALIDATE_ROOT diff --name-only --diff-filter=U`

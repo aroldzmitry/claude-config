@@ -45,7 +45,8 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
        4. Run Phase 5 (see MERGE_ALL branch in Phase 5).
      - Otherwise → select PR by number. `FEATURE = selected headRefName stripped of leading "feat/" prefix`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
-   `DEFAULT_BRANCH = git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's/refs\/remotes\/origin\///'`
+   `DEFAULT_BRANCH = gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null`
+   `[[ -z "$DEFAULT_BRANCH" ]] && DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's/refs\/remotes\/origin\///')`
    `[[ -z "$DEFAULT_BRANCH" ]] && DEFAULT_BRANCH="main"`
 3. Check not running inside a worktree:
    `GIT_DIR = git rev-parse --git-dir`

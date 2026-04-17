@@ -2,7 +2,7 @@
 description: "Interactive bug diagnosis. Gathers symptoms via dialog, investigates codebase, produces technical-requirements.md with root cause and fix direction."
 model: sonnet
 argument-hint: "[description?]: bug symptoms or error description"
-allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion, Task, ToolSearch, WebSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs"
+allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, Agent, AskUserQuestion, Task, ToolSearch, WebSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs"
 disable-model-invocation: true
 ---
 
@@ -46,35 +46,26 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
 ## Phase 2: Investigate
 
 1. Summarize gathered info to user: "Investigating: <1-2 sentence summary>"
-2. Spawn `Explore` agent (thoroughness: very thorough) with prompt:
 
-       Investigate bug based on these symptoms:
-       <all gathered info from Phase 1>
+2. **Locate entry point.** Use Grep/Glob to find the file where the user action is handled (button handler, API endpoint, event listener). If entry point is unclear from symptoms, spawn `Explore` agent (thoroughness: quick) to locate it — Explore only finds files, does not analyze root cause.
 
-       Project context: <tech stack and layer/import constraints from Phase 0 architecture docs>
+3. **Trace the call chain.** Read the entry point file. Follow the execution path step by step:
+   - Read each file in the chain: handler → provider/controller → service/repository → datasource/external call
+   - At each level: "Does this code explain the reported symptom? If so, how exactly?"
+   - Continue until reaching the code that directly produces the observed behavior
+   - For visual/style bugs: instead of call chain, enumerate all affected UI components and compare their property definitions (tokens, sizes, spacing)
 
-       Task: trace the code path that produces the reported behavior.
-       For visual/style consistency bugs, instead enumerate all affected UI components and search for the property definitions (tokens, size values, spacing classes) that differ across contexts — code path tracing does not apply.
-       Find root cause: what code is responsible, why does it behave this way.
-       Before proceeding: verify the proposed cause produces the exact observed symptom — if the symptom is "no results", the cause must explain why there are no results, not why there would be wrong results. If it doesn't match, continue tracing.
-       Identify all affected files.
-       If fix direction requires changes to a shared API or backend service, also check
-       which other clients (admin apps, other frontends) consume the affected endpoints
-       and include their required changes in fix direction and affected files.
-       Suggest fix direction (what code changes would resolve this).
-       Prefer general fixes over specific ones: if a flag/parameter controls behavior,
-       question whether the flag itself is necessary rather than adding it where missing.
-       If fix direction introduces a new API endpoint or resource, verify the access
-       requirements are met by all user roles/actors named in the reported issue — flag
-       any potential mismatch.
-       After identifying root cause: scan for other instances of the same bug class in
-       the codebase — find all code paths that implement the same logic and check
-       whether they have the same defect. Include all additional instances found in
-       Affected Files and Fix Direction.
+4. **Form and eliminate hypotheses.** Based on the traced code:
+   - List 1–3 candidate causes
+   - For each: verify it produces the *exact* observed symptom (not a similar one). Check timing, execution order, async boundaries
+   - Eliminate candidates that don't match
+   - One survivor → confident. Multiple survivors → uncertain (Phase 3 will handle)
 
-3. If the probable root cause can be confirmed empirically (DB query error, API call, pure function): write a minimal reproduction script in the project's test directory, run it against the local environment, capture the actual error. Confirms or refutes the hypothesis. Delete the script after.
-4. If root cause claims a library API is used incorrectly, or fix direction proposes a specific property or method on an external library type: load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.
-5. Analyze findings.
+5. **Scan for same bug class.** Grep for other instances of the same pattern in the codebase. Include all found instances in affected files and fix direction. If fix direction requires changes to a shared API or backend service, check which other clients consume the affected endpoints.
+
+6. **Verify external library assumptions.** If root cause claims a library API is used incorrectly, fix direction proposes a specific property or method on an external library type, or fix direction depends on an assumption about a library's internal behavior (timing, initialization order, callback sequence): load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.
+
+7. **Empirical confirmation.** If the probable root cause can be confirmed empirically (DB query error, API call, pure function): write a minimal reproduction script in the project's test directory, run it against the local environment, capture the actual error. Delete the script after.
 
 ## Phase 3: Present Diagnosis
 

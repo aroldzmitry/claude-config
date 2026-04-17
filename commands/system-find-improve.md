@@ -130,7 +130,7 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
 2. 0 accepted → Phase 4.
 3. Ask user to confirm before applying.
 4. Quality gate — verify each accepted change before applying:
-   - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions — except when combining with adjacent content yields a more compact result per DOC_PRINCIPLES.
+   - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions.
    - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have a clear stopping condition — semantic ("until X") or numeric ("max N").
    - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections).
    - **DOC-compliant:** every added line changes agent behavior.
@@ -164,19 +164,19 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
 
 Read `DECISIONS_FILE`. Missing → create directory and file with `## Accepted` and `## Rejected` headers.
 
-Append accepted items to `## Accepted`:
+Edit `DECISIONS_FILE` to append accepted items under `## Accepted`:
 `- [YYYY-MM-DD] [retro] {target}: {action description}`
 
 For new files: `- [YYYY-MM-DD] [retro] NEW {target}: created — {description}`
 
-Append rejected items to `## Rejected`:
+Edit `DECISIONS_FILE` to append rejected items under `## Rejected`:
 `- [YYYY-MM-DD] [retro] {target}: {action description} — reason: "{user's reason}"`
 
 Skipped items: not recorded (can be suggested again next run).
 
 ### Observations
 
-Append to `OBSERVATIONS_FILE` (create if missing):
+Edit `OBSERVATIONS_FILE` to append a new entry (create with Write if missing):
 
 ```
 ## YYYY-MM-DD — {session context}
@@ -188,7 +188,7 @@ Append to `OBSERVATIONS_FILE` (create if missing):
 - notes: {cross-session trend if detected, or notable observation}
 ```
 
-On each write: count entries. If > 30, remove oldest until 30 remain, then append new entry.
+On each append: count entries. If > 30, remove oldest until 30 remain, then append new entry.
 
 Final report: "Applied N changes, recorded N decisions (N accepted, N rejected). Observation logged."
 

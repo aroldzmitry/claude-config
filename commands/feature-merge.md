@@ -74,7 +74,25 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
      `git -C $WORKTREE_DIR fetch origin && git -C $WORKTREE_DIR merge origin/$DEFAULT_BRANCH --no-edit`
    - Else:
      `git fetch origin && git checkout $BRANCH && git merge origin/$DEFAULT_BRANCH --no-edit`
-   - If merge has conflicts → stop: "Branch $BRANCH has conflicts with $DEFAULT_BRANCH. Resolve conflicts manually and re-run `/feature-merge $FEATURE`."
+   - If merge has conflicts:
+     - Set `CONFLICT_CYCLE = 0`.
+     - While `CONFLICT_CYCLE < 2`:
+       - Collect conflicted files: `git -C $VALIDATE_ROOT diff --name-only --diff-filter=U`
+       - Write `/tmp/premerge_fix/$FEATURE/conflicts/issues.md` — one `[open]` entry per conflicted file: path + "resolve git merge conflict markers; prefer $BRANCH version for deleted/refactored code."
+       - Spawn `coder` via Task(super-agent):
+         ```
+         coder
+         mode: fix-ai
+         feature: $FEATURE
+         spec_dir: /tmp/premerge_fix/$FEATURE/conflicts
+         worktree_dir: $VALIDATE_ROOT
+         report_file: issues.md
+         ```
+       - If `git -C $VALIDATE_ROOT diff --name-only --diff-filter=U` is empty:
+         - `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: resolve merge conflicts with $DEFAULT_BRANCH" && git push origin $BRANCH`
+         - Break loop; proceed to step 2.
+       - Increment `CONFLICT_CYCLE`.
+     - Stop: "Branch $BRANCH has unresolved conflicts after 2 attempts. Resolve manually and re-run `/feature-merge $FEATURE`."
    - `git push origin $BRANCH`
 
 2. Run BUILD_SETUP($VALIDATE_ROOT).

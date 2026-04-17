@@ -12,7 +12,7 @@ maxTurns: 200
 - Descriptions must be precise — no "handle appropriately" or "implement as needed".
 - Step descriptions must not contain code blocks (fenced multi-line code). Describe changes in prose. Function signatures and type contracts may appear inline using pseudocode notation — not TypeScript syntax: `processOrder(orderId) → OrderResult`, not `processOrder(orderId: string): Promise<OrderResult>`.
 - Each step = one logical change. A type and its usage can be one step. "Add import" is not a separate step.
-- Merge adjacent steps that touch the same 1-2 files and introduce no new public APIs into one step (e.g., add field + update usage + adjust import). The merged step must stay within the 2-3 file limit and remain implementable in a single coder invocation.
+- Merge adjacent steps that touch the same 1-2 files and introduce no new public APIs into one step (e.g., add field + update usage + adjust import). The merged step must list at most 3 files total and remain implementable in a single coder invocation.
 - Each step must list at most 5 files in **Files**. If the same mechanical change applies to more than 5 files (e.g., adding a prop to all filter components), split into sub-steps by group (e.g., Step 5a: first 4 files, Step 5b: remaining files).
 - Each step must leave the codebase in a compilable/lintable state.
 - Each step must target at most 2–3 public functions/methods. Classes with code generation (freezed, json_serializable, built_value) count as 2 public methods each toward this limit. If a step requires implementing more, split into multiple sub-steps (e.g., "Step 8a: add createDraft, getActive, updateDeceased", "Step 8b: add updateVisit, updateFuneral"). Large rewrites of entire files must be broken into logical sub-steps.
@@ -34,7 +34,7 @@ Received via prompt from orchestrator:
 
 # Workflow
 
-If `issues_file` is provided → go to **Fix-Plan Mode** below. If `revision_dir` is provided → go to **Revision Mode** below. Otherwise proceed with normal workflow.
+If `issues_file` is provided → go to **Fix-Plan Mode** below (takes precedence over `revision_dir`). Else if `revision_dir` is provided → go to **Revision Mode** below. Otherwise proceed with normal workflow.
 
 ## 1. Load Context
 
@@ -54,7 +54,7 @@ Based on specs, identify affected parts of the codebase:
 - When a step replicates logic from another file (phrases like "matching the pattern in X", "same approach as Y", "same as Z"), search for an existing shared utility implementing that pattern before writing the step. If found, instruct the step to import it. If not found and the logic is non-trivial (more than a single expression), add a shared-utility extraction step before the replicating step.
 - When a step deletes a file or removes exported symbols, Grep for all remaining references to the deleted paths/symbols across the codebase. For each unhandled reference — confirm it is covered by an existing step (modified, deleted, or replaced); if not, add a step to handle it.
 - When a step changes a function's implementation so it no longer calls a previously-called function, Grep for other callers of that function across the codebase. If none remain, add a step to remove it along with its associated types and exports.
-- When a step references a named constant, member, or method from an external library (not defined in the project codebase), verify it exists in the installed version: Grep for any existing usage of that identifier in the codebase. If no usage exists, use `mcp__context7__resolve-library-id` + `mcp__context7__query-docs` to verify availability. If absent → prescribe the nearest available alternative and add a `[spec-deviation]` note.
+- When a step references a named constant, member, or method from any dependency not defined in the project codebase — including SDK and framework members (e.g., icon identifiers, platform APIs, built-in class members) — verify it exists in the installed version: Grep for any existing usage of that identifier in the codebase. If no usage exists, use `mcp__context7__resolve-library-id` + `mcp__context7__query-docs` to verify availability. If absent → prescribe the nearest available alternative and add a `[spec-deviation]` note.
 
 ## 3. Decide Test Strategy
 

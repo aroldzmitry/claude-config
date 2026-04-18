@@ -44,7 +44,7 @@ Do NOT mention this step to the user. Just use the knowledge.
 
 Go through categories in order.
 
-**Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature. State the reason when skipping: `[skipping <category> — <reason>]`.
+**Skip rule:** skip a category ONLY if (a) the user's own words or the loaded BRD explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature. State the reason when skipping: `[skipping <category> — <reason>]`.
 
 **Ambiguity check:** after each user answer — are there ambiguities that would affect implementation? Yes → ask before moving on. No → next category.
 

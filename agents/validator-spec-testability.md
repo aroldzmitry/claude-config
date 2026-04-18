@@ -58,22 +58,21 @@ For each test case in test-cases.md:
 
 ### Acceptance criterion coverage
 For each acceptance criterion in business-requirements.md (if loaded):
-- Check if the AC's primary concern matches any exclusion category listed in test-cases.md § Test Strategy (look for an "exclusions" block or bullet list of excluded areas) or in `~/.claude/docs/TESTING_STRATEGY.md` § Default Exclusions. If yes → skip, do not report.
-- Is there at least one test case that covers it?
-- Missing → `[error]`
+- Apply `~/.claude/docs/TESTING_STRATEGY.md` § Explicit Exclusions Principle — if the AC's primary concern falls under an exclusion category, skip.
+- Is there at least one test case that covers it? Missing → `[error]`
 
 ### Tech edge case coverage
 For each `[error]` edge case in technical-requirements.md Tech Edge Cases section:
-- Check if the edge case's primary concern matches any exclusion category listed in test-cases.md § Test Strategy or in TESTING_STRATEGY.md § Default Exclusions. If yes → skip.
+- Apply `~/.claude/docs/TESTING_STRATEGY.md` § Explicit Exclusions Principle. If excluded → skip.
 - Is there at least one test case covering it? Missing → `[error]`
 For each `[warning]` edge case:
-- Apply same exclusion check (test-cases.md § Test Strategy + TESTING_STRATEGY.md). If excluded → skip.
+- Apply `~/.claude/docs/TESTING_STRATEGY.md` § Explicit Exclusions Principle. If excluded → skip.
 - Is there at least one test case covering it? Missing → `[warning]`
 
 ### Test strategy consistency
 Read Test Strategy section in test-cases.md:
 - If strategy excludes an area (e.g., "no e2e tests", "no admin UI tests") — do test cases for that area exist? → `[warning]`
-- If strategy states a level (unit/integration/e2e) but no test cases reflect it — note if relevant
+- If strategy states a level (unit/integration/e2e) but zero test cases reflect it → `[warning]`
 
 # Output
 

@@ -21,8 +21,8 @@ Received via `prompt` from orchestrator:
 1. Read `temp/<feature_name>/business-requirements.md`.
 2. Read `docs/ARCHITECTURE*.md` if any exist — for project context.
 3. Calculate estimate:
-   - `steps_estimate = user_flows × 3 + new_entities × 2 + must_criteria + error_edges`
-   - Count: user_flows = steps in User Flow section; new_entities = items in Key Entities; must_criteria = `[must]` items in Acceptance Criteria; error_edges = `[error]` items in Edge Cases
+   - `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges`
+   - Count: user_flows = steps in User Flow section; key_entities = items in Key Entities; must_criteria = `[must]` items in Acceptance Criteria; error_edges = `[error]` items in Edge Cases
 4. Determine optimal number of parts: `ceil(steps_estimate / 20)`. Each part target ≤ 20 steps.
 5. Determine split boundaries in priority order:
    - User flow phases (setup → core action → view/report)

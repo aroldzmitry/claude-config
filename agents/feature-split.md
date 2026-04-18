@@ -32,6 +32,8 @@ Received via `prompt` from orchestrator:
 7. For each sub-feature:
    a. Create `temp/<sub-name>/business-requirements.md` using the Document Format below.
    b. If has UI (pages, forms, tables) → `touch temp/<sub-name>/NEXT--feature-ui`; otherwise → `touch temp/<sub-name>/NEXT--feature-tech`
+8. Delete parent: `rm temp/<feature_name>/business-requirements.md`, then `rmdir temp/<feature_name>/` (only if the directory is now empty).
+9. Write execution plan: create `temp/<FEATURE_NAME_UPPER>_PLAN.md` (hyphens → underscores, uppercased) containing: a title line, the dependency/execution-order table from the Output section, and a Status column initialized to ⏳ for all rows.
 
 # Document Format
 
@@ -81,11 +83,11 @@ Each sub-feature BRD must use this format. All sections must be self-sufficient 
 
 # Output
 
-Summary table:
+Summary table (also written to `temp/<FEATURE_NAME_UPPER>_PLAN.md`):
 
 ```
-| # | Sub-feature | Estimate | Depends on |
-|---|-------------|----------|------------|
-| 1 | <name>      | ~N steps | —          |
-| 2 | <name>      | ~N steps | <name>     |
+| # | Sub-feature | Estimate | Depends on | Status |
+|---|-------------|----------|------------|--------|
+| 1 | <name>      | ~N steps | —          | ⏳     |
+| 2 | <name>      | ~N steps | <name>     | ⏳     |
 ```

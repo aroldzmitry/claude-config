@@ -64,7 +64,8 @@ Read all sections. Flag any pair of statements that:
 
 ### Business clarifications vs requirements
 If business-requirements.md loaded: for each Business Clarification in technical-requirements.md:
-- Does it contradict or override a requirement in business-requirements.md without noting it? → `[error]`
+- Does it contradict or override a requirement in business-requirements.md without a corresponding Business Clarifications entry that (1) names the BRD requirement being overridden and (2) provides a rationale for the override? → `[error]`
+- If a Business Clarifications entry names the BRD requirement and gives a rationale → do NOT flag; the override is intentional and documented.
 
 ### Orphaned test cases
 If test-cases.md loaded: for each test case, check that the scenario it describes is traceable to at least one requirement, edge case, or acceptance criterion.

@@ -228,23 +228,25 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
      output_file: temp/<name>/validation/spec/{V-short}-codex.md
      ```
 
-2. Spawn `aggregator-spec`:
+2. Verify all 6 output files exist (Glob `validation/spec/` dir). For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
+
+3. Spawn `aggregator-spec`:
 
        feature: <name>
        spec_dir: temp/<name>
        context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs in existing test cases as false positives — specifying I/O detail is the test-writer's responsibility. Do NOT treat findings about entirely missing test cases (scenarios with no coverage at all) as false positives. References to existing production code artifacts (schemas, types, function names, component names, file paths already present in the codebase) are location context, not prescriptive implementation details — treat as non-findings. When § Business Clarifications documents a decision that overrides a BRD requirement, consistency findings about that specific BRD-vs-spec contradiction are false positives. When § Business Clarifications explicitly excludes a BRD requirement as already implemented, test coverage and consistency findings for that excluded scope are false positives. When the spec explicitly states that an existing endpoint's contract is unchanged, treat findings about missing response schema, missing error codes, or missing request body for that endpoint as false positives — the existing implementation is the authoritative contract.
 
-3. `NO_ISSUES` → proceed to **Step 5: Present**.
+4. `NO_ISSUES` → proceed to **Step 5: Present**.
 
-4. `HAS_ISSUES` → read `temp/<name>/validation/spec/aggregated.md`. For each finding decide:
+5. `HAS_ISSUES` → read `temp/<name>/validation/spec/aggregated.md`. For each finding decide:
    - **Fix silently** if: the correct answer is unambiguous from spec context, existing contracts, or project patterns. Examples: remove class name, derive missing error code from other endpoints, add missing test case from existing edge case, replace vague word with concrete one from context.
    - **Ask user** only if: multiple valid options exist with real trade-offs, OR the required information is simply absent from all available context and cannot be derived. Collect all such findings first.
 
-5. Apply all silent fixes. Then show user a compact numbered list of what was fixed automatically (`Auto-fixed: N items` header, one line per fix stating what was changed and why). If user-input findings exist → ask about them one at a time (one question per message). After each answer — update documents.
+6. Apply all silent fixes. Then show user a compact numbered list of what was fixed automatically (`Auto-fixed: N items` header, one line per fix stating what was changed and why). If user-input findings exist → ask about them one at a time (one question per message). After each answer — update documents.
 
-6. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1 (Launch validators).
+7. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1 (Launch validators).
 
-7. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining genuinely unresolved findings in Open Questions section of `technical-requirements.md`, proceed to Step 5.
+8. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining genuinely unresolved findings in Open Questions section of `technical-requirements.md`, proceed to Step 5.
 
 ### Step 5: Present
 

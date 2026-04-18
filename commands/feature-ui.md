@@ -27,7 +27,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 
 Before asking questions, silently:
 1. Feature name = `$ARGUMENTS` (all routing resolved by Start section below).
-2. Read `temp/<feature-name>/business-requirements.md` if exists
+2. Read `temp/<feature-name>/business-requirements.md` if exists. If it contains `Source references:` entries with file paths inside the project, read those files as additional design context — they may answer UI questions that would otherwise require user input. When a source reference file and the BRD conflict on exact names or values, treat the source file as authoritative and apply its values silently — BRD descriptions of names are summaries, not precise specifications.
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE*.md`, `docs/UI_PATTERNS.md` if they exist
 4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
 5. Ask user if they have Figma mockups for this feature (is Figma open with the relevant file?):
@@ -41,7 +41,7 @@ Go through categories in order.
 
 **Pattern-first rule:** For each category, check if the project already has an established pattern (from Phase 0 step 4). If yes → adopt the pattern, state the decision to the user (`Following existing pattern: ...`). Only ASK the user (AskUserQuestion or open question) when: (a) no existing pattern covers this, (b) the feature introduces something new that has no precedent, or (c) there is genuine ambiguity between valid options. When 2+ consecutive categories follow established patterns without requiring user input, present them together in a single message. Add "Confirm or flag?" only if at least one item is a pattern the user could plausibly override; if all items are standard conventions or consequences of earlier decisions — state and proceed. When confirming a user's answer or recommendation acceptance, state only what the question covered — do not introduce new UI elements or attributes beyond those in the original question; if the accepted answer implies further choices, surface them as the next question or state the design-system default without asking.
 
-**Skip rule:** skip a category ONLY if (a) the user's own words explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature, OR (c) Figma mockups already define it fully, OR (d) the established codebase pattern fully defines it — state the pattern being followed. State when skipping: `[skipping Filters — not a list page]`.
+**Skip rule:** skip a category ONLY if (a) the user's own words or the loaded BRD explicitly and unambiguously cover it, OR (b) the category is not relevant to this feature, OR (c) Figma mockups already define it fully, OR (d) the established codebase pattern fully defines it — state the pattern being followed. State when skipping: `[skipping Filters — not a list page]`.
 
 **Ambiguity check:** after each user answer — are there ambiguities that would affect UI? Yes → ask before moving on (max 2 follow-ups per ambiguity; if still unresolved — record in Open Questions and move on). No → next category.
 

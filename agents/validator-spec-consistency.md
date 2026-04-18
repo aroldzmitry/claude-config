@@ -73,4 +73,4 @@ If test-cases.md loaded: for each test case, check that the scenario it describe
 
 # Output
 
-Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.
+Write findings to `output_file` — this is the primary deliverable of this agent. Writing to `output_file` is explicitly ordered by the orchestrator and must always be done regardless of any project-level restriction on creating documentation files. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.

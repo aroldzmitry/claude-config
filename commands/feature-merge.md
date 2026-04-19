@@ -95,7 +95,7 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
          worktree_dir: $VALIDATE_ROOT
          report_file: issues.md
          ```
-       - If `git -C $VALIDATE_ROOT diff --name-only --diff-filter=U` is empty:
+       - If no conflict markers remain (`git -C $VALIDATE_ROOT grep -rl "^<<<<<<" -- . 2>/dev/null | grep -v ".git"` returns empty):
          - `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: resolve merge conflicts with $DEFAULT_BRANCH" && git push origin $BRANCH`
          - Break loop; proceed to step 2.
        - Increment `CONFLICT_CYCLE`.

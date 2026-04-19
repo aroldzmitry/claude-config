@@ -87,7 +87,7 @@ Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract 
 For each step in order:
 
 1. `[Step {N}/{total}: {title}]`
-2. Spawn `coder` via Task(super-agent) with prompt:
+2. Spawn `coder` via Agent(subagent_type='coder') with prompt:
 
        coder
        mode: implement
@@ -122,7 +122,7 @@ Initialize `ai_iter = 0`, `test_iter = 0` before starting.
 
 `git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 
-Spawn `global-validator` via Task(super-agent) with prompt:
+Spawn `global-validator` via Agent(subagent_type='global-validator') with prompt:
 
     global-validator
     feature: $ARGUMENTS
@@ -146,13 +146,13 @@ Check global-validator status:
         issues_file: validation/issues.md
         aggregated_file: validation/aggregated.md
 
-    Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Task(super-agent) like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
+    Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Agent(subagent_type='coder') like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
     If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
-2. Spawn `committer` via Task(super-agent):
+2. Spawn `committer` via Agent(subagent_type='committer'):
    ```
    worktree_dir: WORKTREE_DIR
    spec_dir: SPEC_DIR

@@ -56,7 +56,7 @@ Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract 
 For each step in order:
 
 1. `[Step {N}/{total}: {title}]`
-2. Spawn `coder` via Task(super-agent) with prompt:
+2. Spawn `coder` via Agent(subagent_type='coder') with prompt:
 
        coder
        mode: implement
@@ -92,7 +92,7 @@ ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: wr
 
 `git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 
-Spawn `global-validator` via Task(super-agent) with prompt:
+Spawn `global-validator` via Agent(subagent_type='global-validator') with prompt:
 
     global-validator
     feature: _fix
@@ -106,7 +106,7 @@ Spawn `global-validator` via Task(super-agent) with prompt:
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
 - `HAS_ISSUES` →
-  1. Spawn `coder` via Task(super-agent) with prompt:
+  1. Spawn `coder` via Agent(subagent_type='coder') with prompt:
 
          coder
          mode: fix-ai
@@ -115,14 +115,14 @@ Check global-validator status:
          worktree_dir: WORKTREE_DIR
          report_file: validation/issues.md
 
-     `UNRESOLVED` → record in `unresolved_steps`.
+     `UNRESOLVED` → record in `unresolved_steps`. `ERROR` → proceed to step 2 (partial fixes may have been applied; re-validate to assess remaining issues).
   2. Recompute `CHANGED_FILES` (same filtering rules, absolute paths). Re-run `global-validator` once with updated `CHANGED_FILES`.
   3. `NO_ISSUES` → Phase 5. `HAS_ISSUES` → append `"Validation: HAS_ISSUES after fix attempt"` to `unresolved_steps`, Phase 5.
 
 ## Phase 5: Finalize
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
-2. Spawn `committer` via Task(super-agent):
+2. Spawn `committer` via Agent(subagent_type='committer'):
    ```
    worktree_dir: WORKTREE_DIR
    spec_dir: SPEC_DIR

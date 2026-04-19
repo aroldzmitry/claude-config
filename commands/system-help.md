@@ -69,7 +69,7 @@ Output this reference (translated to user's language):
 
 **New feature (with UI):** `/feature` → `/feature-ui` → `/feature-tech` → `/feature-implement`
 
-**Large feature:** `/feature` (offers to split large features) → `/feature-ui` (if UI) → `/feature-tech` (per part) → `/feature-implement` (per part)
+**Large feature:** `/feature` → `/feature-ui` (if UI) → `/feature-tech` (offers to split large features) → `/feature-implement` (per part)
 
 **Bug (unknown cause):** `/bug 409 on user creation` → `/feature-fix BUG-409-create-user` → `/feature-merge BUG-409-create-user`
 

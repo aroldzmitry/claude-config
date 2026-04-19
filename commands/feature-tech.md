@@ -253,8 +253,9 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 1. Show available documents (both if test-cases.md was generated; only `technical-requirements.md` if test-planner returned ERROR) + one-line validation summary (N items auto-fixed, if any)
 2. If user requests changes → apply, show updated
 3. If prerequisite tasks were recorded in Business Clarifications → for each: create `temp/<prerequisite-name>/business-requirements.md` with a brief description (problem, required change, consumer, acceptance criteria); then suggest `/feature-tech <prerequisite-name>` to be done first
-4. Suggest next step: `/feature-implement <feature-name>`
-5. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-implement`
+4. **Split check:** calculate the feature size estimate from `business-requirements.md` (same formula as `feature-split`). If estimate > 20: note the estimate and ask whether to split for implementation. If user wants to split → spawn `feature-split` via Agent(subagent_type='feature-split'): `feature_name: <feature_name>`. Show the split summary from agent output. Ask user via AskUserQuestion: "Accept". If user requests adjustments (Other/custom text) → apply edits to generated files directly, then re-confirm. On accept: suggest `/feature-implement <sub-1>`, `/feature-implement <sub-2>`, etc. in order. Skip step 5.
+5. If no split (or estimate ≤ 20): suggest next step: `/feature-implement <feature-name>`
+6. Update status marker: if split → skip (feature-split was called from feature-tech so TECH_MODE applies — it sets `NEXT--feature-implement` on each sub-feature folder). Otherwise: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-implement`
 
 # Start
 

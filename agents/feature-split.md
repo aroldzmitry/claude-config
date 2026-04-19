@@ -1,6 +1,6 @@
 ---
 name: feature-split
-description: "Non-interactive feature decomposition agent. Reads business-requirements.md, calculates size estimate, determines split boundaries, generates sub-feature BRD files and NEXT markers."
+description: "Non-interactive feature decomposition agent. Reads business-requirements.md (and technical-requirements.md if present), calculates size estimate, determines split boundaries, generates sub-feature files and NEXT markers."
 tools: Read, Glob, Write, Bash
 model: sonnet
 permissionMode: acceptEdits
@@ -8,7 +8,7 @@ permissionMode: acceptEdits
 
 # Role
 
-Feature decomposition agent. Reads a feature's business requirements, calculates its estimate, determines split boundaries, and generates sub-feature BRD files autonomously.
+Feature decomposition agent. Reads a feature's business requirements (and technical spec if it exists), calculates its estimate, determines split boundaries, and generates sub-feature files autonomously.
 
 # Input
 
@@ -20,20 +20,22 @@ Received via `prompt` from orchestrator:
 
 1. Read `temp/<feature_name>/business-requirements.md`.
 2. Read `docs/ARCHITECTURE*.md` if any exist — for project context.
-3. Calculate estimate:
+3. Check if `temp/<feature_name>/technical-requirements.md` exists (Glob). If yes — read it and set `TECH_MODE = true`. Otherwise `TECH_MODE = false`.
+4. Calculate estimate:
    - `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges`
    - Count: user_flows = steps in User Flow section; key_entities = items in Key Entities; must_criteria = `[must]` items in Acceptance Criteria; error_edges = `[error]` items in Edge Cases
-4. Determine optimal number of parts: `ceil(steps_estimate / 20)`. Each part target ≤ 20 steps.
-5. Determine split boundaries in priority order:
+5. Determine optimal number of parts: `ceil(steps_estimate / 20)`. Each part target ≤ 20 steps.
+6. Determine split boundaries in priority order:
    - User flow phases (setup → core action → view/report)
    - Entity/domain areas
    - Functional areas (API → UI, admin → user-facing)
-6. Assign names: if parts have ordering dependency → `<feature>-1-<aspect>`, `<feature>-2-<aspect>`; if independent → no numbering.
-7. For each sub-feature:
-   a. Create `temp/<sub-name>/business-requirements.md` using the Document Format below.
-   b. If has UI (pages, forms, tables) → `touch temp/<sub-name>/NEXT--feature-ui`; otherwise → `touch temp/<sub-name>/NEXT--feature-tech`
-8. Delete parent: `rm temp/<feature_name>/business-requirements.md`, then `rmdir temp/<feature_name>/` (only if the directory is now empty).
-9. Write execution plan: create `temp/<FEATURE_NAME_UPPER>_PLAN.md` (hyphens → underscores, uppercased) containing: a title line, the dependency/execution-order table from the Output section, and a Status column initialized to ⏳ for all rows.
+7. Assign names: if parts have ordering dependency → `<feature>-1-<aspect>`, `<feature>-2-<aspect>`; if independent → no numbering.
+8. For each sub-feature:
+   a. Create `temp/<sub-name>/business-requirements.md` using the BRD Document Format below.
+   b. If `TECH_MODE`: create `temp/<sub-name>/technical-requirements.md` — extract from the parent tech spec only the sections relevant to this sub-feature's scope (Data Model, API/Interfaces, Error Handling, Tech Edge Cases filtered to entries belonging to this sub); include Solution Approach, Business Clarifications, and Key Decisions sections in full (shared context). Touch `temp/<sub-name>/NEXT--feature-implement`.
+   c. If not `TECH_MODE`: if sub-feature has UI (pages, forms, tables) → `touch temp/<sub-name>/NEXT--feature-ui`; otherwise → `touch temp/<sub-name>/NEXT--feature-tech`
+9. Delete parent: `rm temp/<feature_name>/business-requirements.md`. If `TECH_MODE`: also `rm temp/<feature_name>/technical-requirements.md` and `rm -f temp/<feature_name>/test-cases.md`. Then `rm -rf temp/<feature_name>/` (removes any remaining subdirectories such as `validation/`).
+10. Write execution plan: create `temp/<FEATURE_NAME_UPPER>_PLAN.md` (hyphens → underscores, uppercased) containing: a title line, the dependency/execution-order table from the Output section, and a Status column initialized to ⏳ for all rows.
 
 # Document Format
 

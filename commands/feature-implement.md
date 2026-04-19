@@ -143,6 +143,7 @@ Check global-validator status:
 
         feature: $ARGUMENTS
         spec_dir: SPEC_DIR
+        worktree_dir: WORKTREE_DIR
         issues_file: validation/issues.md
         aggregated_file: validation/aggregated.md
 

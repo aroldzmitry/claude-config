@@ -84,7 +84,7 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 2. Apply filtering criteria, discard non-qualifying findings.
 3. If temp/ directories exist from session, read artifacts and cross-reference with conversation.
 4. Read target files for findings that passed filtering in steps 2–3 — verify root cause exists in current file content. Then validate each proposed fix is genuinely general using all 3 mechanical tests (a fix that fails any test is too specific — either abstract further or discard):
-   - **Strip test:** remove all session-specific identifiers (filenames, function names, library names, error messages) from the proposed rule. If the rule becomes incoherent or meaningless → it's a specific fix, not a general rule.
+   - **Strip test:** remove all session-specific and technology-specific terms (filenames, function names, library names, error messages, framework concepts, domain patterns) from the proposed rule. If the rule becomes incoherent or meaningless → it's a specific fix, not a general rule.
    - **3-scenario test:** name 3 structurally different situations where this rule applies (different language, framework, or problem domain). If you cannot → it's too narrow.
    - **Subsumption test:** check whether existing rules in the target file already cover this case. If they do → don't add a duplicate; if partial coverage → extend the existing rule instead of adding a new one.
 

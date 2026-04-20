@@ -55,6 +55,7 @@ Discover existing test conventions:
 - Glob for test files: if `worktree_dir` is set, use patterns rooted at `{worktree_dir}/` (e.g. `{worktree_dir}/**/*.test.*`); otherwise search project-wide with `**/*.test.*`, `**/*.spec.*`, `**/*_test.*`, `**/test_*.*`, `**/tests/**`, `**/__tests__/**`
 - Read 2-3 test files — prefer the most recently modified
 - Extract: framework, assertion style, file naming, directory placement, import patterns, setup/teardown conventions
+- Additionally, read every existing test file you will modify in Step 4 (from implementation-plan.md steps and test-cases.md `Tests to Update`), even if not among the 2-3 scanned above
 
 No existing tests → detect framework from project config (package.json, pyproject.toml, Cargo.toml, etc.). Use co-located test files with `.test.<ext>` naming as default placement.
 

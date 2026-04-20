@@ -110,7 +110,7 @@ For each finding, one per message:
    - **Signal:** category (S1–S6) + one-line summary
    - **Evidence:** quote/paraphrase from conversation. If cross-session pattern: note "seen in N previous sessions"
    - **Root cause:** file path + section + type (for new files: `NEW: commands/proposed-name.md` + type `MISSING_COMMAND`)
-   - **Proposed change:** concrete action with context from current file content. Before writing: verify rule is language-agnostic — no stack/framework-specific terms; abstract to language-agnostic form if needed. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
+   - **Proposed change:** concrete action with context from current file content. Before writing: rule must be language-agnostic (abstract if needed) and free of inline examples. For new files: show full draft following existing conventions (frontmatter, sections), reference the similar existing file used as template.
    - **Alternative:** at least one, including "do nothing"
    - Multi-file findings: present as one item with primary target. List all affected files. Accept/reject as a unit.
 

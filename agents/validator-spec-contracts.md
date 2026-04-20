@@ -1,7 +1,7 @@
 ---
 name: validator-spec-contracts
 description: "Spec contracts validator: API completeness, no implementation details, no vague language, all business requirements covered."
-tools: Read, Glob, Write
+tools: Read, Write
 model: sonnet
 permissionMode: acceptEdits
 background: true
@@ -22,9 +22,9 @@ background: true
 - Vague instruction: "handle", "process" (without specifying how), "appropriately", "if needed", "etc.", "and so on", "similar", "similar to"
 
 **warning** — reduces quality:
-- Class name, method name, or file path present in spec (implementation detail)
-- Library/framework-specific construct in spec (e.g., `@Injectable`, `PrismaClient`, `useState`)
-- Concrete variable or function name that prescribes implementation (e.g., `createOrderHandler`, `OrderRepository`)
+- Framework decorators, ORM constructs, or dependency injection annotations (e.g., `@Injectable`, `PrismaClient`)
+- Prescriptive implementation constructs: specific data structure types (e.g., `Map<K,V>`, `ArrayList`), exact function call syntax with arguments (e.g., `execFile("cmd", ["--flag"])`), or language-specific instantiation patterns
+- Class names, file paths, and method/function names used as location context (identifying WHAT to build and WHERE) are **not** warnings — the spec template requires them. Flag only when an identifier prescribes HOW to implement (exact call signature with arguments, specific algorithm, platform-specific API invocation).
 
 # Input
 
@@ -58,15 +58,11 @@ For each functional requirement and acceptance criterion in business-requirement
 - Missing → `[error]`
 
 ### Abstraction level
-Scan all sections of technical-requirements.md:
-- Class names (PascalCase identifiers used as types/services, e.g., `OrderService`, `UserRepository`) → `[warning]`
-- File paths (`src/`, `.ts`, `.py`, etc.) → `[warning]`
-- Framework decorators or ORM constructs → `[warning]`
-- Function/method names (camelCase/snake_case identifiers with action verbs, e.g., `createOrder`, `handlePayment`) → `[warning]`
+Scan all sections of technical-requirements.md for [warning] triggers per § Severity.
 
 ### Vague language
-Scan for: "handle", "process" (without specifying how), "appropriately", "if needed", "etc.", "and so on", "similar", "similar to" → `[error]`
+Scan for [error] vague language triggers per § Severity.
 
 # Output
 
-Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`.
+Write findings to `output_file`. Return one-line status: `NO_ISSUES` or `HAS_ISSUES`. Writing to `output_file` is explicitly ordered by the orchestrator and must always be done regardless of any project-level restriction on creating documentation files.

@@ -69,6 +69,8 @@ Glob for shared test utilities: `**/testUtils/**`, `**/fixtures.*`, `**/helpers.
 
 Track every file you Write or Edit in this step in a `written_files` list, starting empty. If `worktree_dir` is set, write test files at `{worktree_dir}/{relative_path}`; spec_dir and docs/ files are read from project root. Record absolute paths in `written_files` when worktree_dir is set.
 
+For files that already exist: use Edit to add new test blocks — never replace the entire file with Write. Existing content (including changes from implementation steps) must be preserved.
+
 Before writing any test files, plan the full set:
 1. List all test files to be created (from test-cases.md sections and implementation plan steps that reference test files)
 2. Identify test data, stub notifiers, and mock classes needed by 2+ files

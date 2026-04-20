@@ -7,6 +7,8 @@ The following categories are excluded from test coverage by default. Test cases 
 - CSS/visual appearance, layout, pixel-perfection, shadow values — require visual regression tooling; test at the behavioral outcome level instead. Includes programmatic style property assertions (reading computed style values from rendered elements) — implementation details that break on every design change
 - Intermediate UI states: loading spinners, disabled buttons during async operations — test the observable outcome (success/error result), not the transitional state
 - Animation and transition timing — fragile and environment-dependent
+- Widget/component tree structure — test observable behavior instead
+- UI element presence and positioning — require visual regression tooling
 - Database schema shape (migrations, column definitions)
 - Configuration files
 - Generated code (`*.generated.*`, `*.d.ts`)

@@ -18,7 +18,7 @@ disable-model-invocation: true
 - **Placement is bidirectional** — verify placement direction before presenting every fix: (1) if the pattern is universal (passes the 3-scenario test across different stacks) → fix must target `~/.claude/` system files, not project docs; within `~/.claude/`, prefer the most specific target — only target `CLAUDE.md` if the rule applies to ALL interaction types (coding, docs, analysis, planning, user questions), not only to coding/editing workflows; (2) if the pattern is tech- or project-specific → fix must target project-level docs (ARCHITECTURE.md, CLAUDE.md, etc.), not `~/.claude/` system files. A general pattern placed in project docs is as wrong as a specific pattern placed in system files. Verify before presenting in Phase 2 and before applying in Phase 3.
 - **Current session only** — Claude Code doesn't persist conversation history across sessions.
 - **Language** — match the user's language.
-- **Decisions** — AskUserQuestion for structured choices. Plain text for open-ended discussion.
+- **Decisions** — Phase 2 choices: plain numbered text (1–4). Open-ended discussion: plain text.
 
 # Signal Categories (S1–S6)
 
@@ -114,11 +114,11 @@ For each finding, one per message:
    - **Alternative:** at least one, including "do nothing"
    - Multi-file findings: present as one item with primary target. List all affected files. Accept/reject as a unit.
 
-2. Ask decision via AskUserQuestion:
-   - **Accept** — will apply after all items reviewed
-   - **Modify** — discuss an alternative approach
-   - **Reject** — won't be suggested again
-   - **Skip** — defer, no record
+2. Present choices as plain numbered text:
+   1. Accept — will apply after all items reviewed
+   2. Modify — discuss an alternative approach
+   3. Reject — won't be suggested again
+   4. Skip — defer, no record
 
 3. "Reject" → follow up: ask for a brief reason (one message). If the stated reason contradicts the mechanical tests already run (e.g., user says "too rare" but 3-scenario test passed with 3 distinct domains), present the counter-evidence in one message and ask once more. Accept the second rejection unconditionally. While recording the reason — also scan for signals of an alternative problem or a differently-framed root cause. If found → present it as a new finding immediately after closing this item: "You seem to be pointing at [X]. Should we discuss that?"
 4. "Modify" → discuss user's alternative. Once agreed → record as accepted with modified action. For new file proposals: discuss structure, scope, and conventions with user until agreed. If user decides against → re-ask (Accept / Reject / Skip).

@@ -4,7 +4,7 @@
 
 The following categories are excluded from test coverage by default. Test cases **must not** be written for these — their absence is correct, not a gap:
 
-- CSS/visual appearance, layout, pixel-perfection, shadow values — require visual regression tooling; test at the behavioral outcome level instead
+- CSS/visual appearance, layout, pixel-perfection, shadow values — require visual regression tooling; test at the behavioral outcome level instead. Includes programmatic style property assertions (reading computed style values from rendered elements) — implementation details that break on every design change
 - Intermediate UI states: loading spinners, disabled buttons during async operations — test the observable outcome (success/error result), not the transitional state
 - Animation and transition timing — fragile and environment-dependent
 - Database schema shape (migrations, column definitions)

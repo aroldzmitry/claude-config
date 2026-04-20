@@ -52,7 +52,8 @@ Launch in parallel (same response):
 - Task: `setup-worktree` with prompt: `feature: $ARGUMENTS, repo_root: REPO_ROOT, spec_dir: SPEC_DIR`
 
 Wait for both results:
-- From setup-worktree: parse `WORKTREE_DIR`, `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
+- From setup-worktree: parse `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
+- Derive `WORKTREE_DIR = REPO_ROOT/.worktrees/{feature}` — deterministic; derive (do not parse) so the value survives context compression in long sessions.
 - Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-implement`."
 - Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`).
 
@@ -137,7 +138,7 @@ Check global-validator status:
 - Response contains `"hit your limit"`, `"rate limit"`, or `"AUTH_ERROR"` → log `[Validation: skipped — rate limit or auth error]`, append `"Validation: skipped due to rate limit or auth error"` to `unresolved_steps`, Phase 5.
 - Response contains `"aggregator failed"` → append `"Validation: aggregator failed"` to `unresolved_steps`, Phase 5.
 - Response is a general crash (contains `"encountered an error"` or `"crashed"`, does not match the above patterns) → retry global-validator once with the same inputs. If second attempt also fails → append `"Validation: validator crashed"` to `unresolved_steps`, Phase 5.
-- `HAS_ISSUES` → categorize by status text: `(test)` or `(static)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without incrementing `ai_iter`.
+- `HAS_ISSUES` → read `SPEC_DIR/validation/issues.md`; categorize by line status text: `(test)` or `(static)` = **test** (`test_iter`, limit 5); `open` = **AI** (`ai_iter`, limit 2). Test failures are deterministic and must pass before commit — fix them without incrementing `ai_iter`.
   - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
   - Counter < limit → spawn `planner` with prompt:
 

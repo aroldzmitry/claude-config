@@ -142,7 +142,7 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 
 ```
 [ "$(git -C $REPO_ROOT rev-parse --abbrev-ref HEAD)" != "$DEFAULT_BRANCH" ] && git -C $REPO_ROOT checkout $DEFAULT_BRANCH
-git -C $REPO_ROOT pull origin $DEFAULT_BRANCH
+git -C $REPO_ROOT pull origin $DEFAULT_BRANCH --no-rebase
 ```
 
 Run BUILD_SETUP($REPO_ROOT).

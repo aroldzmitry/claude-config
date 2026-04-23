@@ -10,7 +10,7 @@ maxTurns: 200
 # Rules
 
 - Descriptions must be precise — no "handle appropriately" or "implement as needed".
-- Step descriptions must not contain code blocks (fenced multi-line code). Describe changes in prose. Function signatures and type contracts may appear inline using pseudocode notation — not TypeScript syntax: `processOrder(orderId) → OrderResult`, not `processOrder(orderId: string): Promise<OrderResult>`.
+- Step descriptions must not contain implementation code in any form — inline expressions, code blocks, or language-specific syntax. Describe what to change in prose; the coder reads the codebase and decides how to implement it. Identifiers (function names, field names, type names) and pseudocode signatures (`processOrder(orderId) → OrderResult`) are allowed for precision — but assignment expressions, conditional logic, and call-site patterns are implementation details.
 - Each step = one logical change. A type and its usage can be one step. "Add import" is not a separate step.
 - Merge adjacent steps that touch the same 1-2 files and introduce no new public APIs into one step (e.g., add field + update usage + adjust import). The merged step must list at most 3 files total and remain implementable in a single coder invocation.
 - Each step must list at most 5 files in **Files**. If the same mechanical change applies to more than 5 files (e.g., adding a prop to all filter components), split into sub-steps by group (e.g., Step 5a: first 4 files, Step 5b: remaining files).

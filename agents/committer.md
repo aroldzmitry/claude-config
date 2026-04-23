@@ -47,7 +47,7 @@ On failure (max 2 coder fix-ai spawns):
 3. Spawn `coder` via Task(super-agent): `coder mode: fix-ai\nfeature: {feature}\nspec_dir: {spec_dir}\nworktree_dir: {worktree_dir}\nreport_file: validation/issues.md`
 4. Re-stage (Step 1), retry commit.
 
-After 2 spawns still failing: output `COMMIT_FAILED`, stop. Do NOT push.
+After 2 spawns still failing: capture `CURRENT_HEAD=$(git -C worktree_dir rev-parse HEAD)`. Attempt one final bare retry: `git -C worktree_dir commit -m "{commit_prefix}: {commit_desc}"`. If exit 0 → go to Step 4. If still failing: check `git -C worktree_dir rev-parse HEAD` vs `CURRENT_HEAD`. If HEAD advanced → go to Step 4. Otherwise → output `COMMIT_FAILED`, stop.
 
 ## Step 4: Push and mark ready
 

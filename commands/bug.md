@@ -53,7 +53,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
    - Read each file in the chain: handler → provider/controller → service/repository → datasource/external call
    - At each level: "Does this code explain the reported symptom? If so, how exactly?"
    - Continue until reaching the code that directly produces the observed behavior
-   - For visual/style bugs: instead of call chain, enumerate all affected UI components and compare their property definitions (tokens, sizes, spacing)
+   - For visual/style bugs: instead of call chain, enumerate all affected UI components and compare their property definitions (tokens, sizes, spacing). List ALL differences found before proceeding to Phase 3 — do not stop at the first mismatch.
 
 4. **Form and eliminate hypotheses.** Based on the traced code:
    - List 1–3 candidate causes

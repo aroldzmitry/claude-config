@@ -39,6 +39,7 @@ Output this reference (translated to user's language):
 /feature-merge [name]         → update branch + pre-merge validate + merge PR + cleanup worktree and branch
 /patch [description]          → quick code fix without planning overhead (no spec needed)
 /docs-sync [doc-name?]        → sync docs/ with code changes
+/research <topic>              → deep project research: chunks → specialist agents → verify → TR (topic: performance/security/error-handling/code-quality)
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
 /system-audit [scope?]        → deep system audit: 7 validators → review → fix (scope: all/commands/agents/docs/settings)
 /system-help [command?]       → this help
@@ -56,6 +57,7 @@ Output this reference (translated to user's language):
 | `/feature-fix` | Worktree + branch + draft PR (ready to merge) | — (or `/bug` output folder) |
 | `/feature-merge` | Merged PR, validated pre-merge, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
 | `/patch` | Edited files (no commit) | — |
+| `/research` | `temp/RESEARCH-<topic>/technical-requirements.md` | — |
 | `/system-find-improve` | Updated system files + `agent-memory/system-find-improve/observations.md` | Any conversation |
 | `/system-audit` | Fixed system files + `agent-memory/system-audit/observations.md` | — |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
@@ -77,6 +79,8 @@ Output this reference (translated to user's language):
 
 **Tiny one-file fix (no planning):** `/patch fix the login button color`
 
+**Performance/security/quality audit:** `/research performance` → `/feature-implement RESEARCH-performance`
+
 **After any session:** `/system-find-improve`
 
 **System self-audit:** `/system-audit`
@@ -96,8 +100,9 @@ Output this reference (translated to user's language):
 
 1. Find command file: Glob `~/.claude/commands/$ARGUMENTS.md`
    - Not found → try `~/.claude/commands/*$ARGUMENTS*.md`
+   - Multiple matches → show numbered list of matching commands, ask user to pick one
    - Still not found → "Command `$ARGUMENTS` not found." + list available commands from Full Guide
-2. Read the file
+2. Read the matched file (or user-selected file if multiple)
 3. Present:
    - **Description** — from frontmatter `description`
    - **Usage** — `/command-name` + `argument-hint` from frontmatter

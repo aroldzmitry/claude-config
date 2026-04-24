@@ -159,8 +159,8 @@ Triggered when `issues_file` is provided. Filters false positives, then produces
 
 Read in parallel:
 - `{spec_dir}/implementation-plan.md` — **required**
-- `{spec_dir}/{issues_file}` — **required**
-- `{spec_dir}/{aggregated_file}` — if provided; contains only issues confirmed failing in the latest validation run
+- When `worktree_dir` is provided: `{worktree_dir}/{spec_dir}/{issues_file}` — **required**; `{worktree_dir}/{spec_dir}/{aggregated_file}` — if provided
+- When `worktree_dir` is not provided: `{spec_dir}/{issues_file}` — **required**; `{spec_dir}/{aggregated_file}` — if provided
 - `docs/ARCHITECTURE*.md`, `docs/CONVENTIONS.md` — for placement and structural decisions
 
 ## F2. Filter FPs
@@ -169,7 +169,7 @@ If `aggregated_file` is provided: mark every `[open]` line in `{issues_file}` th
 
 For each line starting with `[open]` in `{issues_file}` that is not stale:
 - Check if the issue targets a pattern that the plan's **Excluded Issues** section marks as intentionally correct.
-- If yes: false positive — Edit `{spec_dir}/{issues_file}`: change `[open] {line}` → `[fixed] {line}`. Append to `{spec_dir}/validation/false-positives.md` (create if missing): `[filter-issues] {description} — FP: contradicts excluded decision: {rationale}`.
+- If yes: false positive — Edit the issues file (same path resolved in F1): change `[open] {line}` → `[fixed] {line}`. Append to the same directory's `false-positives.md` (create if missing): `[filter-issues] {description} — FP: contradicts excluded decision: {rationale}`.
 
 All other `[open]` issues proceed to F3. Do not classify an issue as FP because it is pre-existing, out of scope, or unrelated to the feature. If the error is reproducible (actually exists in the codebase), it must get a fix step. The only valid FP reason is that the error does not actually exist (validator mistake).
 
@@ -187,7 +187,7 @@ When a fix step prescribes calling a specific method or property on an external 
 
 Write `{spec_dir}/validation/fix-plan.md` using the same structure, Rules, and depth as the main implementation plan (`## Steps`, `### Step N` format, **Files**/**Action** fields, step-size limits, ordering rules, test-breakage checks). Plan only the changes needed for `[open]` issues — skip lines starting with `[fixed]`, they are already resolved. Fix steps must target the actual source files in the worktree that contain the issue — never `implementation-plan.md`, spec documents, or documentation files. Do not generate a step that updates a spec file to "clarify" what the implementation should have done; fix the implementation directly. When an issue references a test file and describes a test-spec divergence: if the implementation already matches the spec, the fix step must target the test file (update assertions, fixture values, or fixture types). If the test is correct and the implementation diverges, the fix step targets the implementation. If no issues remain after FP filtering, write `## Steps` with no steps listed.
 
-After writing the file, re-read `{spec_dir}/{issues_file}`. For each `[open]` line that has no corresponding fix step in fix-plan.md and no entry in `{spec_dir}/validation/false-positives.md` — add a fix step for it now.
+After writing the file, re-read the issues file (same path resolved in F1). For each `[open]` line that has no corresponding fix step in fix-plan.md and no entry in the same directory's `false-positives.md` — add a fix step for it now.
 
 ## F5. Output
 

@@ -226,6 +226,8 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
      feature: <name>
      spec_dir: temp/<name>
      output_file: temp/<name>/validation/spec/{V-short}-codex.md
+
+     IMPORTANT: Write output to the EXACT file path specified above — do NOT use any other filename.
      ```
 
 2. Verify all 6 output files exist (Glob `validation/spec/` dir). For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.

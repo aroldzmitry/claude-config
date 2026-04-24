@@ -133,7 +133,10 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 - If `PR.state = merged` → skip to Phase 3.
 - If `PR.state = closed` → stop: "PR was closed without merging. Reopen it or clean up manually: `git push origin --delete feat/$FEATURE && git branch -D feat/$FEATURE`"
 - If `PR.state = open`:
-  - If `PR.isDraft = true` → stop: "PR is still draft — feature-fix or feature-implement did not complete. Finish the feature or close the PR manually."
+  - If `PR.isDraft = true`:
+    - Check if `$REPO_ROOT/temp/$FEATURE-warnings/NEXT--feature-fix` exists.
+    - If yes → stop: "Tests are failing. Run `/feature-fix $FEATURE-warnings` first, then re-run `/feature-merge $FEATURE`."
+    - Otherwise → stop: "PR is still draft — feature-fix or feature-implement did not complete. Finish the feature or close the PR manually."
   - Run: `gh pr merge $PR.url --merge`
   - If fails → stop: "PR merge failed: {error}. Resolve the issue and re-run `/feature-merge $FEATURE`."
   - Verify: `gh pr view $PR.url --json state` → must be `merged`.

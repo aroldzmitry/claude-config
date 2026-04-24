@@ -13,6 +13,7 @@ model: sonnet
 - `commit_prefix` — `feat` or `fix`
 - `commit_desc` — commit description, max 72 chars
 - `pr_url` — draft PR URL to mark ready
+- `mark_ready` — (optional, default: true) whether to mark PR as ready after push
 
 # Workflow
 
@@ -53,5 +54,5 @@ After 2 spawns still failing: capture `CURRENT_HEAD=$(git -C worktree_dir rev-pa
 
 - `git -C worktree_dir push`
 - `gh pr edit {pr_url} --title "{commit_desc}"`
-- `gh pr ready {pr_url}`
+- If `mark_ready` is true (or omitted): `gh pr ready {pr_url}`
 - Output `COMMITTED`

@@ -154,7 +154,8 @@ Check global-validator status:
 ## Phase 5: Finalize
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
-2. Spawn `committer` via Agent(subagent_type='committer'):
+2. Set `MARK_READY = true`. If `unresolved_steps` contains any entry starting with "Test:" → set `MARK_READY = false`.
+3. Spawn `committer` via Agent(subagent_type='committer'):
    ```
    worktree_dir: WORKTREE_DIR
    spec_dir: SPEC_DIR
@@ -162,17 +163,19 @@ Check global-validator status:
    commit_prefix: feat
    commit_desc: {derived description}
    pr_url: PR_URL
+   mark_ready: MARK_READY
    ```
-   - `COMMITTED` → log `[PR ready: PR_URL]`.
+   - `COMMITTED` + `MARK_READY = true` → log `[PR ready: PR_URL]`.
+   - `COMMITTED` + `MARK_READY = false` → log `[PR draft — tests failing: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
    - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
-3. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
-4. Folder status:
+4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+5. Folder status:
    - `rm -f $REPO_ROOT/SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv $REPO_ROOT/SPEC_DIR $REPO_ROOT/SPEC_DIR-done`
    - `mkdir -p $REPO_ROOT/temp/done && mv $REPO_ROOT/SPEC_DIR-done $REPO_ROOT/temp/done/`
-   - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 3 → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
-5. Output report
+   - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 4 → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
+6. Output report
 
 # Report
 

@@ -129,8 +129,7 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
 
 1. Show summary: N accepted, N rejected, N skipped. List each accepted item (target + action, one line each).
 2. 0 accepted → Phase 4.
-3. Ask user to confirm before applying.
-4. Quality gate — verify each accepted change before applying:
+3. Quality gate — verify each accepted change before applying:
    - **Minimal:** smallest diff that fixes the issue. No "while we're at it" additions.
    - **Precise:** no vague terms ("appropriately", "if needed", "etc."). Open-ended actions have a clear stopping condition — semantic ("until X") or numeric ("max N").
    - **Consistent:** matches file's formatting and style. No redundancy with existing content (frontmatter, other sections).
@@ -139,22 +138,22 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
    - **Safe:** no contradictions with other instructions in the file or related files. No side effects on unrelated workflows. Before Edit: show `CURRENT:` and `REPLACEMENT:` text in message — verify no original content unintentionally dropped.
    - **Verified:** re-read changed section in context. Mental replay: would this change have prevented the original problem? Verify the doc is better after the change — shorter, clearer, or more precise — than before.
    If any check fails → fix the change text before applying. If unfixable → report to user, skip that item.
-5. For each accepted item:
+4. For each accepted item:
    - Target file exists → Read fresh (previous edits may have changed it). Determine insert/modify location based on file structure. Apply using Edit.
    - Target file doesn't exist → create with Write (include appropriate structure for the file type — copy frontmatter structure from similar command/agent).
    - Report: file path + what changed (edited/created).
-6. Cross-reference update: if any command was created or renamed in step 5, Grep for references to the command name across `~/.claude/commands/` and `~/.claude/agents/`. Update found references (system-help.md command list, other commands' "next step" suggestions).
-7. Edit fails (section not found, file restructured) → report, skip that item, continue.
-8. Initialize `val_cycle = 0`. Collect paths of all .md files written/edited in steps 5–6 → `CHANGED_MD`.
-9. If `CHANGED_MD` not empty: spawn `validator-doc-system` with prompt:
+5. Cross-reference update: if any command was created or renamed in step 4, Grep for references to the command name across `~/.claude/commands/` and `~/.claude/agents/`. Update found references (system-help.md command list, other commands' "next step" suggestions).
+6. Edit fails (section not found, file restructured) → report, skip that item, continue.
+7. Initialize `val_cycle = 0`. Collect paths of all .md files written/edited in steps 4–5 → `CHANGED_MD`.
+8. If `CHANGED_MD` not empty: spawn `validator-doc-system` with prompt:
 
        changed_files: <newline-separated paths from CHANGED_MD>
 
    - `CLEAN` → Phase 4.
-   - `ISSUES` and `val_cycle < 3` → for each reported issue: if the issue concerns a cross-reference to a project file in a `~/.claude/` system file and the reference already has an existence guard (`if exists`, `if they exist`) — check whether the referenced file exists in at least one other project by running Glob on 2–3 other project roots (check ~/.claude/projects/ for known paths); if found in any, skip that finding. Fix remaining issues using Edit, increment `val_cycle`, re-run step 9.
+   - `ISSUES` and `val_cycle < 3` → for each reported issue: if the issue concerns a cross-reference to a project file in a `~/.claude/` system file and the reference already has an existence guard (`if exists`, `if they exist`) — check whether the referenced file exists in at least one other project by running Glob on 2–3 other project roots (check ~/.claude/projects/ for known paths); if found in any, skip that finding. Fix remaining issues using Edit, increment `val_cycle`, re-run step 8.
    - `ISSUES` and `val_cycle >= 3` → report remaining issues to user, Phase 4.
-10. Pre-existing issues: if validator reported any issues in files NOT in `CHANGED_MD` — collect them. Only escalate issues where the instruction would cause an agent to fail or make a wrong decision; skip wording improvements where intent is clear from context. Present qualifying issues as a batch: "Validator also found N issue(s) in untouched files:" + list each (file — description). Ask user: fix these too? If yes → apply with Edit, add fixed files to `CHANGED_MD`, do one validator pass on newly changed files only. If no → note for awareness, continue to Phase 4.
-11. If `CHANGED_MD` not empty: commit applied changes:
+9. Pre-existing issues: if validator reported any issues in files NOT in `CHANGED_MD` — collect them. Only escalate issues where the instruction would cause an agent to fail or make a wrong decision; skip wording improvements where intent is clear from context. Present qualifying issues as a batch: "Validator also found N issue(s) in untouched files:" + list each (file — description). Ask user: fix these too? If yes → apply with Edit, add fixed files to `CHANGED_MD`, do one validator pass on newly changed files only. If no → note for awareness, continue to Phase 4.
+10. If `CHANGED_MD` not empty: commit applied changes:
     - `git add` each path in `CHANGED_MD`
     - `git commit -m "retro: {N} change(s) — {comma-separated base filenames}"`
     - Report: commit hash + message, or error if commit failed (continue to Phase 4 regardless).
@@ -195,7 +194,7 @@ Final report: "Applied N changes, recorded N decisions (N accepted, N rejected).
 
 # Edge Cases
 
-- Very short session (0-1 user messages) → Phase 1 scan finds 0 signals → handled by Phase 1 step 8.
+- Very short session (0-1 user messages) → Phase 1 scan finds 0 signals → handled by Phase 1 step 9.
 - No commands used in session → still works, analyze general interaction quality. Common findings: things that should be commands (S6), missing conventions in CLAUDE.md.
 - Mid-session run → analyze what happened so far, note "partial" in observation.
 - No temp/ directories → skip artifact cross-referencing, proceed with conversation-only analysis.

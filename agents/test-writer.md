@@ -118,7 +118,7 @@ Interface change propagation: when removing, renaming, or changing the signature
        files:
        - {absolute_path_or_relative}/test1.ts
        - {absolute_path_or_relative}/test2.ts
-3. step-validator crash (no parseable status) → return DONE.
+3. step-validator crash (no parseable status) → read `docs/WORKFLOW.md` to find the project's lint/analyze command; run it via Bash scoped to written files; fix any errors found; then return DONE.
 4. NO_ISSUES → DONE.
 5. HAS_ISSUES → read `{spec_dir}/validation/step-0/aggregated.md` into `prev_errors`, fix (group by file, errors first).
 6. Re-call step-validator. NO_ISSUES → DONE. HAS_ISSUES → read aggregated.md into `curr_errors`:

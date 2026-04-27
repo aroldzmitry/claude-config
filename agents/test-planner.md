@@ -95,7 +95,7 @@ Write `{spec_dir}/test-cases.md`:
 Omit `## Tests to Update` section if `tests_to_update` is empty.
 
 Coverage requirements:
-- Every `[must]` acceptance criterion from business-requirements maps to at least one test case
+- Every `[must]` acceptance criterion from business-requirements maps to at least one test case; for criteria phrased as a prohibition ("never X", "must not Y") — include a test that directly asserts the prohibition (e.g., the forbidden code path is unreachable, the forbidden artifact is untouched after the operation, or a static check that the configured boundary excludes the prohibited target). Positive-behavior tests alone do not cover a prohibition AC.
 - Every API endpoint: happy path + at least one error case
 - Every error scenario from technical-requirements has a test case
 - Every user flow from ui/business requirements has an e2e test case (if e2e available)

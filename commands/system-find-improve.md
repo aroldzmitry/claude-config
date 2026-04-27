@@ -19,6 +19,7 @@ disable-model-invocation: true
 - **Current session only** — Claude Code doesn't persist conversation history across sessions.
 - **Language** — match the user's language.
 - **Decisions** — Phase 2 choices: plain numbered text (1–4). Open-ended discussion: plain text.
+- **First-pass correctness is the goal.** Safety nets (validators, CI, linters, reviewers) exist to catch what slips through, not as the primary quality mechanism. "A downstream catcher will fix it anyway" is not a valid reason to reject a finding or weaken a fix — the goal is to prevent the gap upstream so the safety net stays clean.
 
 # Signal Categories (S1–S6)
 

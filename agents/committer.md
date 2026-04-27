@@ -19,28 +19,28 @@ model: sonnet
 
 ## Step 1: Stage files
 
-`git -C worktree_dir status --porcelain`. For each entry: check skip list first (glob-matched against the relative file path); if matched, do nothing and move to next entry.
+`git -C {worktree_dir} status --porcelain`. For each entry: check skip list first (glob-matched against the relative file path); if matched, do nothing and move to next entry.
 
 Skip: `*.lock`, `*.min.*`, `*.map`, `*.d.ts`, `*.generated.*`, `dist/*`, `build/*`, `vendor/*`, `node_modules`, `node_modules/*`, `.venv`, `__pycache__`, `temp/*`
 
 Otherwise apply:
-- Working-tree deletion (second char `D`): `git -C worktree_dir rm --cached <file>`
+- Working-tree deletion (second char `D`): `git -C {worktree_dir} rm --cached <file>`
 - Already-staged deletion (first char `D`, second ` `): skip
-- Everything else (including untracked `??` files): `git -C worktree_dir add <file>`
+- Everything else (including untracked `??` files): `git -C {worktree_dir} add <file>`
 
 ## Step 2: Check staged
 
-`git -C worktree_dir diff --cached --stat` → if empty: output `NOTHING_STAGED`, stop.
+`git -C {worktree_dir} diff --cached --stat` → if empty: output `NOTHING_STAGED`, stop.
 
 ## Step 3: Commit with retry
 
-Attempt: `git -C worktree_dir commit -m "{commit_prefix}: {commit_desc}" 2>/tmp/committer_err.txt`
+Attempt: `git -C {worktree_dir} commit -m "{commit_prefix}: {commit_desc}" 2>/tmp/committer_err.txt`
 
 On success: go to Step 4.
 
 On failure (max 2 coder fix-ai spawns):
-1. Re-stage formatter output: `git -C worktree_dir add -u`
-2. Append to `spec_dir/validation/issues.md`:
+1. Re-stage formatter output: `git -C {worktree_dir} add -u`
+2. Append to `{spec_dir}/validation/issues.md`:
    ```
    [open] Commit hook failure:
    <content of /tmp/committer_err.txt>
@@ -48,11 +48,11 @@ On failure (max 2 coder fix-ai spawns):
 3. Spawn `coder` via Task(super-agent): `coder mode: fix-ai\nfeature: {feature}\nspec_dir: {spec_dir}\nworktree_dir: {worktree_dir}\nreport_file: validation/issues.md`
 4. Re-stage (Step 1), retry commit.
 
-After 2 spawns still failing: capture `CURRENT_HEAD=$(git -C worktree_dir rev-parse HEAD)`. Attempt one final bare retry: `git -C worktree_dir commit -m "{commit_prefix}: {commit_desc}"`. If exit 0 → go to Step 4. If still failing: check `git -C worktree_dir rev-parse HEAD` vs `CURRENT_HEAD`. If HEAD advanced → go to Step 4. Otherwise → output `COMMIT_FAILED`, stop.
+After 2 spawns still failing: capture `CURRENT_HEAD=$(git -C {worktree_dir} rev-parse HEAD)`. Attempt one final bare retry: `git -C {worktree_dir} commit -m "{commit_prefix}: {commit_desc}"`. If exit 0 → go to Step 4. If still failing: check `git -C {worktree_dir} rev-parse HEAD` vs `CURRENT_HEAD`. If HEAD advanced → go to Step 4. Otherwise → output `COMMIT_FAILED`, stop.
 
 ## Step 4: Push and mark ready
 
-- `git -C worktree_dir push`
+- `git -C {worktree_dir} push`
 - `gh pr edit {pr_url} --title "{commit_desc}"`
 - If `mark_ready` is true (or omitted): `gh pr ready {pr_url}`
 - Output `COMMITTED`

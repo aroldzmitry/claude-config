@@ -160,8 +160,8 @@ Triggered when `issues_file` is provided. Filters false positives, then produces
 
 Read in parallel:
 - `{spec_dir}/implementation-plan.md` — **required**
-- When `worktree_dir` is provided: `{worktree_dir}/{spec_dir}/{issues_file}` — **required**; `{worktree_dir}/{spec_dir}/{aggregated_file}` — if provided
-- When `worktree_dir` is not provided: `{spec_dir}/{issues_file}` — **required**; `{spec_dir}/{aggregated_file}` — if provided
+- `{spec_dir}/{issues_file}` — **required**
+- `{spec_dir}/{aggregated_file}` — if provided
 - `docs/ARCHITECTURE*.md`, `docs/CONVENTIONS.md` — for placement and structural decisions
 
 ## F2. Filter FPs

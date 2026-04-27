@@ -1,5 +1,5 @@
 ---
-description: "Deep project research by topic. Splits project into chunks, spawns specialized checker agents per chunk via super-agent, verifies findings, interactive review, generates technical-requirements.md for /feature-implement."
+description: "Deep project research by topic. Splits project into chunks, spawns specialized checker agents per chunk via super-agent, verifies findings, validates via Codex second opinion, generates technical-requirements.md for /feature-implement."
 model: sonnet
 argument-hint: "<topic>: performance | security | error-handling | code-quality"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, AskUserQuestion"
@@ -8,12 +8,11 @@ disable-model-invocation: true
 
 # Role
 
-Research orchestrator. Splits project into chunks, delegates investigation to specialist agents via super-agent, collects verified findings, presents to user for review, creates technical spec.
+Research orchestrator. Splits project into chunks, delegates investigation to specialist agents via super-agent, collects verified findings, validates via Codex second opinion, creates technical spec.
 
 # Rules
 
 - Match the user's language.
-- **ONE finding per message** in Phase 3 review.
 - Never write application code. Only orchestrate agents and manage files.
 - Log progress after each chunk completes.
 
@@ -143,7 +142,9 @@ Save as CHUNKS list. Report: `Chunking complete: {N} chunks from {M} files.`
 
 ## Phase 2: Investigation
 
-For each chunk in CHUNKS — sequentially:
+Spawn all chunk super-agents **in parallel** (single message with all Agent calls — one per chunk):
+
+For each chunk, prepare the prompt:
 
 1. Build the specialists YAML block from the topic's specialist list:
    ```
@@ -180,28 +181,30 @@ For each chunk in CHUNKS — sequentially:
 
 After all chunks complete, report: `Investigation complete: {total_chunks} chunks processed.`
 
-## Phase 3: Collect & Review
+## Phase 3: Collect & Validate
 
 1. Read all `chunk-*.md` files from `temp/RESEARCH-{TOPIC}/reports/`.
 2. Collect all `## Verified Findings` sections.
 3. Parse individual findings. Merge into one list sorted: critical → medium → low.
 4. Deduplicate: if same file:line and same problem appear from different chunks — keep one.
+5. If 0 verified findings total → report "Research complete — no actionable issues found." → Phase 5.
+6. Show overview: `Found {N} verified issues: {C} critical, {M} medium, {L} low.`
+7. Second-opinion validation — spawn codex agent:
 
-If 0 verified findings total → report "Research complete — no actionable issues found." → Phase 5.
+   ```
+   codex research-verifier
+   <all deduplicated findings in markdown format>
 
-Show overview: `Found {N} verified issues: {C} critical, {M} medium, {L} low.`
+   chunk_files:
+   <ALL_FILES list>
 
-For each finding (critical → medium → low):
+   output: temp/RESEARCH-{TOPIC}/reports/second-opinion.md
+   ```
 
-1. Present: severity, ID, file:line, description, evidence, impact, recommendation.
-
-2. Ask via AskUserQuestion: **Include** / **Skip**.
-   - Include → add to INCLUDED_FINDINGS list.
-   - Skip → discard.
-
-3. Progress: `[{i}/{N} | included: {count}]`
-
-If 0 included → "No findings selected." → Phase 5.
+8. Read `second-opinion.md`. Cross-reference: keep findings present in both the original verification AND the second opinion. Discard findings rejected by the second opinion.
+9. Report: `Validated {N} of {M} findings. {K} filtered by second opinion.`
+10. If 0 validated → "No findings survived validation." → Phase 5.
+11. Proceed to Phase 4 with all validated findings as INCLUDED_FINDINGS.
 
 ## Phase 4: Spec Creation
 
@@ -230,14 +233,14 @@ Verify output: read `temp/RESEARCH-{TOPIC}/technical-requirements.md` — confir
 - Files analyzed: {total_files} (in {total_chunks} chunks)
 - Specialists per chunk: {N_specialists} (for {TOPIC} topic)
 - Verified: {verified_count} (C:{c} M:{m} L:{l})
-- Included: {included_count}, Skipped: {skipped_count}
+- Validated (after second opinion): {validated_count}, Filtered: {filtered_count}
 
 ### Task Created
 RESEARCH-{TOPIC} → temp/RESEARCH-{TOPIC}/
 → /feature-implement RESEARCH-{TOPIC}
 ```
 
-If no findings were included (skipped all or none found), omit the "Task Created" section.
+If no findings were validated (all filtered or none found), omit the "Task Created" section.
 
 # Edge Cases
 
@@ -246,7 +249,7 @@ If no findings were included (skipped all or none found), omit the "Task Created
 - **Chunker returns 0 chunks** — same as empty project.
 - **All chunks return 0 findings** — "No issues found." → Phase 5.
 - **Super-agent fails for a chunk** — log warning with chunk label, continue with remaining chunks. Include warning count in final report.
-- **Very large number of findings (>50)** — still present all for review. User can skip quickly.
+- **Codex second-opinion fails** — log warning, include all originally verified findings (skip second-opinion step).
 
 # Start
 

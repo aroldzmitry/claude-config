@@ -42,7 +42,7 @@ PR merge and cleanup orchestrator. Updates feature branch with master, validates
           f. Run Phase 3 (Sync).
           g. Run Phase 4 (Cleanup).
           h. Append `feat/$FEATURE — #$PR.number — merged` to `MERGE_RESULTS`.
-       4. Run Phase 5 (see MERGE_ALL branch in Phase 5).
+       4. Run Phase 4.5 (on $REPO_ROOT), then run Phase 5 (see MERGE_ALL branch in Phase 5).
      - Otherwise → select PR by number. `FEATURE = selected headRefName stripped of leading "feat/" prefix`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
    `DEFAULT_BRANCH = gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null`
@@ -165,7 +165,14 @@ if [ -d "$REPO_ROOT/.worktrees" ] && [ -z "$(ls -A "$REPO_ROOT/.worktrees")" ]; 
 fi
 ```
 
-If `MERGE_ALL != true` → proceed to Phase 5.
+If `MERGE_ALL != true` → run Phase 4.5, then proceed to Phase 5.
+
+## Phase 4.5: Post-Merge Health Check
+
+Spawn `post-merge-validator` via Task with prompt: `repo_root: $REPO_ROOT`
+
+- If returns `CLEAN` → set `POST_MERGE_FIX = ""`.
+- If returns `HAS_ISSUES: {folder_name}` → set `POST_MERGE_FIX = {folder_name}`.
 
 ## Phase 5: Report
 
@@ -180,6 +187,7 @@ If `MERGE_ALL = true`:
 - feat/NAME — #N — skipped (draft, in progress)
 ...
 **Now on:** $DEFAULT_BRANCH (updated)
+**Post-merge check:** {if POST_MERGE_FIX is empty: "passed"; else: "FAILED — fix spec at temp/$POST_MERGE_FIX. Run `/feature-fix $POST_MERGE_FIX`"}
 ```
 
 Otherwise:
@@ -191,4 +199,5 @@ Otherwise:
 **Branch:** feat/$FEATURE — deleted
 **Worktree:** .worktrees/$FEATURE — removed
 **Now on:** $DEFAULT_BRANCH (updated)
+**Post-merge check:** {if POST_MERGE_FIX is empty: "passed"; else: "FAILED — fix spec at temp/$POST_MERGE_FIX. Run `/feature-fix $POST_MERGE_FIX`"}
 ```

@@ -98,7 +98,7 @@ Show overview: N verified (critical/medium/low), N low-impact, N false positives
 
 For each verified issue (critical → medium → low):
 
-1. Present: severity, ID, description, files, evidence, found-by, recommendation.
+1. Present: severity, ID, description, files, evidence, sources, recommendation.
    Read source files on-demand if user needs more context.
 
 2. Ask via AskUserQuestion: **Fix** / **Reject** / **Skip**.
@@ -111,14 +111,14 @@ For each verified issue (critical → medium → low):
    - **Context:** {discussion summary}
    ```
 
-4. Reject → ask brief reason. Append to DECISIONS_FILE:
+4. Reject → ask brief reason. If DECISIONS_FILE missing or has no `## Rejected` header, initialize it with `## Rejected\n` first. Then append to DECISIONS_FILE:
    `- [YYYY-MM-DD] [audit] {ID} {files}: {description} — reason: "{reason}"`
 
 5. Skip → nothing recorded.
 
 Progress: `[3/N | next: M-02 — description]`
 
-After all: if fix-plan.md exists → ask "Review fix-plan or apply directly?"
+After all: if fix-plan.md exists → Phase 4. Otherwise → Phase 5.
 
 ## Phase 4: Apply
 

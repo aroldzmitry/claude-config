@@ -41,7 +41,7 @@ Output this reference (translated to user's language):
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /research <topic>              → deep project research: chunks → specialist agents → verify → TR (topic: performance/security/error-handling/code-quality)
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
-/system-audit [scope?]        → deep system audit: 7 validators → review → fix (scope: all/commands/agents/docs/settings)
+/system-audit [scope?]        → deep system audit: 7 validators → review → fix (scope: all/commands/agents/docs/settings or filename substring)
 /system-help [command?]       → this help
 
 ### Command reference

@@ -1,7 +1,7 @@
 ---
 description: "System audit: 7 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
 model: sonnet
-argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'settings'"
+argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'settings', or filename substring (e.g. 'feature', 'planner')"
 allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
 ---
@@ -31,7 +31,9 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 1. `mkdir -p ~/.claude/agent-memory/system-audit/reports/`
 2. `find ~/.claude/agent-memory/system-audit/reports/ -name "*.md" -delete`
 3. Build ALL_FILES via `git -C ~/.claude ls-files --cached` — only tracked files. This excludes internal Claude Code directories (cache/, debug/, plugins/, agent-memory/).
-4. SCOPE from `$ARGUMENTS`: `commands` / `agents` / `docs` / `settings` / `all` (default). Unrecognized → default `all` + warning.
+4. SCOPE from `$ARGUMENTS`:
+   - Predefined scopes: `commands`, `agents`, `docs`, `settings`, `all` (default).
+   - Unrecognized → treat as filename substring filter: filter ALL_FILES to paths containing `$ARGUMENTS` as a substring (case-insensitive). Log: "Scoped to N files matching '$ARGUMENTS'.". Set SCOPE = `all`. If 0 files match → warn "No files match '$ARGUMENTS' — defaulting to all." and keep ALL_FILES unchanged.
 
 ## Phase 1: Validate
 

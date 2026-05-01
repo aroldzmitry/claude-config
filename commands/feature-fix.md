@@ -72,7 +72,11 @@ For each step in order:
 
 ## Phase 3: Test Writing
 
-Read `SPEC_DIR/implementation-plan.md` Test Strategy section. If `skip: false` AND `SPEC_DIR/test-cases.md` does not exist → spawn `test-planner` via Task with prompt:
+Read `SPEC_DIR/implementation-plan.md` Test Strategy section.
+
+If `skip: true` → `[Tests: skipped — {reason}]`, go to Phase 4.
+
+If `SPEC_DIR/test-cases.md` does not exist → spawn `test-planner` via Task with prompt:
 
     feature: _fix
     spec_dir: SPEC_DIR

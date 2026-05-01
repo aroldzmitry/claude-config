@@ -189,22 +189,24 @@ After all chunks complete, report: `Investigation complete: {total_chunks} chunk
 4. Deduplicate: if same file:line and same problem appear from different chunks — keep one.
 5. If 0 verified findings total → report "Research complete — no actionable issues found." → Phase 5.
 6. Show overview: `Found {N} verified issues: {C} critical, {M} medium, {L} low.`
-7. Second-opinion validation — spawn codex agent:
+7. Build `CITED_FILES` = unique file paths from all deduplicated findings (strip `:line` suffix, deduplicate).
+
+8. Second-opinion validation — spawn codex agent:
 
    ```
    codex research-verifier
    <all deduplicated findings in markdown format>
 
    chunk_files:
-   <ALL_FILES list>
+   <unique file paths extracted from the deduplicated findings (parse each finding's "File: path:line" — strip ":line" suffix, deduplicate, prefix each with "- ")>
 
    output: temp/RESEARCH-{TOPIC}/reports/second-opinion.md
    ```
 
-8. Read `second-opinion.md`. Cross-reference: keep findings present in both the original verification AND the second opinion. Discard findings rejected by the second opinion.
-9. Report: `Validated {N} of {M} findings. {K} filtered by second opinion.`
-10. If 0 validated → "No findings survived validation." → Phase 5.
-11. Proceed to Phase 4 with all validated findings as INCLUDED_FINDINGS.
+9. Read `second-opinion.md`. Cross-reference: keep findings present in both the original verification AND the second opinion. Discard findings rejected by the second opinion.
+10. Report: `Validated {N} of {M} findings. {K} filtered by second opinion.`
+11. If 0 validated → "No findings survived validation." → Phase 5.
+12. Proceed to Phase 4 with all validated findings as INCLUDED_FINDINGS.
 
 ## Phase 4: Spec Creation
 

@@ -2,7 +2,7 @@
 description: "Interactive dialog to define business requirements for a feature. Asks targeted questions, verifies completeness, generates business-requirements.md"
 model: sonnet
 argument-hint: "[name-or-description?]: optional feature name or brief description"
-allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion"
+allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, Bash"
 disable-model-invocation: true
 ---
 
@@ -18,7 +18,7 @@ You are a business analyst conducting a structured interview to define feature r
 - Match the user's language (all your messages, including scripted phrases, must be in the user's language)
 - Every question must pass the filter: "if the answer differs, will the implementation differ?" If no — don't ask
 - **Obvious answers — apply, don't ask.** If you cannot name a realistic scenario where an alternative is better — apply silently. Includes decisions carried forward from loaded existing specs.
-- No technical details. If user drifts into implementation, redirect: note the point for `/feature-tech`, then steer back to what should happen from the user's perspective.
+- **No technical details — applies to BOTH conversation and BRD content.** The BRD must describe business behavior only. Never write into the BRD: code identifiers (class names, file paths, function names, field names), API endpoint paths or HTTP details (verbs, status codes, query-parameter names tied to a wire format), library / framework / tool names, framework constructs, regex patterns, DB schema syntax, or any other implementation specifics — those belong to `/feature-tech`. If the user drifts into implementation: note the point for `/feature-tech`, then steer back to business perspective. Use proper-cased business names for entities ("Catalog Group", not `CatalogGroup`); reference public standards by name only ("ISO 639-1") without code-shape constraints; describe data flow at the business level ("the mobile app sends the chosen language when fetching the catalog"), not as HTTP calls.
 - **AskUserQuestion:** use this tool when presenting choices with options (scope, behavior variants, priorities). Use regular text for open-ended questions (describe the problem, walk me through the flow). Never mix — if it's a choice, use AskUserQuestion; if it's open-ended, use text. When an option proposes including a fix for a known technical problem, describe the current broken behavior in the description — not just the proposed fix — so the user can evaluate without relying on earlier conversation context.
 
 # Workflow
@@ -100,13 +100,6 @@ If any item fails — go back to Step 2 and ask. If all pass — state the chose
 1. Create directory: `temp/<feature-name>/` (relative to project root — never inside app subdirectories)
 2. If any external artifacts were fetched or downloaded during this session (design bundles, spec archives, exported files), copy them to `temp/design-source/` now. Never reference paths outside the project repo (e.g., `/tmp/`, system cache dirs) in BRD files.
 3. Write `temp/<feature-name>/business-requirements.md` using the format below. If the feature involves work in an external project (backend, separate service), create a separate `temp/` folder for it — same document format, same CONDITIONAL section rules.
-4. Show the full document to the user
-5. If user requests changes → apply, show updated version, repeat until confirmed
-6. After final confirmation:
-   - If feature has UI (pages, forms, tables) or design system changes (tokens, colors, typography, spacing, motion, or other visual constants) → suggest `/feature-ui <feature-name>`, then `/feature-tech`
-   - If API-only or no UI/design changes → suggest `/feature-tech <feature-name>`
-   - If `new-tasks` is non-empty: include each in Related Features as `**Name** — (new, no spec yet) [description]`; after the next-step suggestion, note: "New feature(s) identified this session: [list]. Run `/feature <name>` for each when ready."
-7. Create status marker: if UI or design system changes → `touch temp/<feature-name>/NEXT--feature-ui`. Otherwise → `touch temp/<feature-name>/NEXT--feature-tech`.
 
 ### Document Format
 
@@ -174,6 +167,61 @@ If any item fails — go back to Step 2 and ask. If all pass — state the chose
 - **Key Decisions** — only if non-obvious choices were made that need to be remembered
 - **Related Features** — only if connections with existing functionality were identified
 - **Open Questions** — only if there are genuinely unresolved questions after verification
+
+## Phase 4: BRD Validation Loop
+
+Validate all generated BRD files before presenting to the user.
+
+Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation directory by taking the BRD's parent directory and appending `validation/brd/` — e.g. for a BRD at `<root>/temp/<feature-name>/business-requirements.md` the validation dir is `<root>/temp/<feature-name>/validation/brd/`. For cross-repo features each BRD lives under its own project root, so each gets its own validation dir. Create each via `Bash: mkdir -p <validation-dir>`.
+
+**Validation loop (max 2 iterations):**
+
+1. For each BRD, launch validators in parallel:
+   - **Claude Tasks** — pass `feature`, `brd_path`, `output_file` to each:
+     - `validator-brd-purity` → `output_file: <validation-dir>/purity.md`
+     - `validator-brd-completeness` → `output_file: <validation-dir>/completeness.md`
+     - `validator-brd-consistency` → `output_file: <validation-dir>/consistency.md`
+   - **Codex Tasks** — spawn `codex` agent for each `V` in [brd-purity, brd-completeness, brd-consistency] (short names for `{V-short}`: purity, completeness, consistency):
+
+         validator-{V}
+         feature: <name>
+         brd_path: <brd-path>
+         output_file: <validation-dir>/{V-short}-codex.md
+
+         IMPORTANT: Write output to the EXACT file path specified above — do NOT use any other filename.
+
+2. For cross-repo features (more than one BRD generated): spawn one additional generic Claude Task (no dedicated validator agent) that reads all BRD files and writes cross-document consistency findings to one chosen primary validation directory's `cross-doc.md`. Prompt the task: compare BRDs section by section; flag any concept that one BRD treats differently than another, any cross-doc reference that doesn't resolve, and any obligation that lives in one BRD but should be in another. Output format: `[error|warning] <doc> § <section> — <description>`.
+
+3. Verify all expected output files exist (Glob each validation directory). Expected count per validation directory: 6 files (`purity.md`, `completeness.md`, `consistency.md`, and the three `-codex.md` counterparts). For the cross-repo primary validation directory (the one chosen for `cross-doc.md` in step 2): expect 7 files. For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
+
+4. For each validation directory, spawn `aggregator-brd`:
+
+       feature: <name>
+       validation_dir: <validation-dir>
+       brd_paths: <newline-separated list of all BRD paths in this feature>
+       context: This is a business requirements document. Treat any reference to specific code identifiers, API paths, library names, regex syntax, or DB constructs as a real `[error]` (purity leak) — NOT as anchor or location context. ACs that bundle related properties of one business behavior are acceptable; do not flag as compound. Open Questions about technical implementation choices belong to `/feature-tech` — flag OQs only if they are user-answerable policy decisions still unresolved. Findings about test cases, test strategy, or test coverage do not apply at the BRD stage.
+
+5. Collect all aggregator statuses. If every aggregator returns `NO_ISSUES` → exit loop, proceed to Phase 5.
+
+6. Any `HAS_ISSUES` → read each `aggregated.md`. For each finding decide:
+   - **Fix silently** if the correct answer is unambiguous from BRD context, prior answers in this session, or business conventions. Examples: replace a technical leak with business phrasing (`/api/v1/cities` → "city listing"), add a missing priority tag derived from importance signaled in dialog, add an explicit Excluded item when scope discussion already implied it, remove an Open Question already answered by an AC.
+   - **Ask user** only if multiple valid options exist with real trade-offs, OR the required information is absent from all available context. Collect all such findings first.
+
+7. Apply silent fixes (Edit on BRD files). Show user a compact summary: header `Auto-fixed: N items` followed by one line per fix stating what was changed and why. If user-input findings exist → ask one at a time (one question per message). After each answer, update the affected BRD.
+
+8. Increment `brd_iter`. If `brd_iter < 2` → re-run from step 1.
+
+9. If `brd_iter >= 2` and still `HAS_ISSUES` → record remaining unresolved findings in the `Open Questions` section of the affected BRD(s), proceed to Phase 5.
+
+## Phase 5: Present and Finalize
+
+1. Show the full BRD(s) to the user along with a one-line validation summary if Phase 4 made changes: `Auto-fixed N items, M deferred to Open Questions`.
+2. If user requests changes → apply, show updated version, repeat until confirmed.
+3. After final confirmation:
+   - If feature has UI (pages, forms, tables) or design system changes (tokens, colors, typography, spacing, motion, or other visual constants) → suggest `/feature-ui <feature-name>`, then `/feature-tech`
+   - If API-only or no UI/design changes → suggest `/feature-tech <feature-name>`
+   - If `new-tasks` is non-empty: include each in Related Features as `**Name** — (new, no spec yet) [description]`; after the next-step suggestion, note: "New feature(s) identified this session: [list]. Run `/feature <name>` for each when ready."
+4. Create status marker: if UI or design system changes → `touch temp/<feature-name>/NEXT--feature-ui`. Otherwise → `touch temp/<feature-name>/NEXT--feature-tech`.
 
 # Start
 

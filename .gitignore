@@ -34,3 +34,4 @@ stats-cache.json
 /mcp-needs-auth-cache.json
 /memory/
 /sessions/
+/.last-cleanup

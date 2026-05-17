@@ -52,7 +52,6 @@
     "ask": [],
     "defaultMode": "bypassPermissions"
   },
-  "model": "opus",
   "enabledMcpjsonServers": [
     "trello",
     "playwright"
@@ -75,5 +74,8 @@
     "command": "input=$(cat); used=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); model=$(echo \"$input\" | jq -r '.model.display_name // empty'); out=\"\"; [ -n \"$used\" ] && out=\"$(printf '%.0f' \"$used\")% used\"; [ -n \"$model\" ] && out=\"$out | $model\"; echo \"${out# | }\""
   },
   "autoUpdatesChannel": "stable",
-  "skipDangerousModePermissionPrompt": true
+  "autoMemoryEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-ansi",
+  "effortLevel": "medium"
 }

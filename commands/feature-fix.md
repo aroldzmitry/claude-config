@@ -132,6 +132,7 @@ Check global-validator status:
 2. Set `MARK_READY = true`. If `unresolved_steps` contains any entry starting with "Test:" → set `MARK_READY = false`.
 3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
+   committer
    worktree_dir: WORKTREE_DIR
    spec_dir: SPEC_DIR
    feature: _fix

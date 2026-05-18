@@ -165,12 +165,12 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
 
 Read `DECISIONS_FILE`. Missing → create directory and file with `## Accepted` and `## Rejected` headers.
 
-Edit `DECISIONS_FILE` to append accepted items under `## Accepted`:
+Use the Edit tool to insert each accepted item immediately before the `## Rejected` header (placing it as the last entry within `## Accepted`). Do NOT use bash append (`cat >>`, `echo >>`) — it writes to end of file, past the section boundary.
 `- [YYYY-MM-DD] [retro] {target}: {action description}`
 
 For new files: `- [YYYY-MM-DD] [retro] NEW {target}: created — {description}`
 
-Edit `DECISIONS_FILE` to append rejected items under `## Rejected`:
+Use the Edit tool to insert each rejected item at the end of the `## Rejected` section (append after the last existing entry).
 `- [YYYY-MM-DD] [retro] {target}: {action description} — reason: "{user's reason}"`
 
 Skipped items: not recorded (can be suggested again next run).

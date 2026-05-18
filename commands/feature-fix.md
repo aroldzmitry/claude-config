@@ -21,8 +21,9 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 # Conventions
 
-- `SPEC_DIR` — directory containing `technical-requirements.md`, resolved in Phase 0.
+- `SPEC_DIR` — directory containing `technical-requirements.md`, resolved in Phase 0. Stored as an absolute path (prefixed with `REPO_ROOT` if Phase 0 step 1 found a relative one) so subagents resolve it consistently regardless of their CWD.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
+- **Subagent spawning** — any agent whose workflow contains `Task(...)` invocations (e.g. `coder`, `test-writer`, `committer`, `global-validator`) must be spawned via `Agent(subagent_type='super-agent', prompt='<agent-name>\n<args>')`. Direct `Agent(subagent_type='<agent-name>')` does not pass declared frontmatter tools (including Task) into the subagent context.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
@@ -56,7 +57,7 @@ Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract 
 For each step in order:
 
 1. `[Step {N}/{total}: {title}]`
-2. Spawn `coder` via Agent(subagent_type='coder') with prompt:
+2. Spawn `coder` via Agent(subagent_type='super-agent') with prompt:
 
        coder
        mode: implement
@@ -76,16 +77,18 @@ Read `SPEC_DIR/implementation-plan.md` Test Strategy section.
 
 If `skip: true` → `[Tests: skipped — {reason}]`, go to Phase 4.
 
-If `SPEC_DIR/test-cases.md` does not exist → spawn `test-planner` via Task with prompt:
+If `SPEC_DIR/test-cases.md` does not exist → spawn `test-planner` via Agent(subagent_type='super-agent') with prompt:
 
+    test-planner
     feature: _fix
     spec_dir: SPEC_DIR
     worktree_dir: WORKTREE_DIR
 
 ERROR → log `[Tests: test-planner error — {reason}]`, continue.
 
-If `SPEC_DIR/test-cases.md` exists → spawn `test-writer` via Task with prompt:
+If `SPEC_DIR/test-cases.md` exists → spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
 
+    test-writer
     feature: _fix
     spec_dir: SPEC_DIR
     worktree_dir: WORKTREE_DIR
@@ -96,7 +99,7 @@ ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: wr
 
 `git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 
-Spawn `global-validator` via Agent(subagent_type='global-validator') with prompt:
+Spawn `global-validator` via Agent(subagent_type='super-agent') with prompt:
 
     global-validator
     feature: _fix
@@ -110,7 +113,7 @@ Spawn `global-validator` via Agent(subagent_type='global-validator') with prompt
 Check global-validator status:
 - `NO_ISSUES` → Phase 5.
 - `HAS_ISSUES` →
-  1. Spawn `coder` via Agent(subagent_type='coder') with prompt:
+  1. Spawn `coder` via Agent(subagent_type='super-agent') with prompt:
 
          coder
          mode: fix-ai
@@ -127,7 +130,7 @@ Check global-validator status:
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
 2. Set `MARK_READY = true`. If `unresolved_steps` contains any entry starting with "Test:" → set `MARK_READY = false`.
-3. Spawn `committer` via Agent(subagent_type='committer'):
+3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
    worktree_dir: WORKTREE_DIR
    spec_dir: SPEC_DIR

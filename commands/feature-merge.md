@@ -10,6 +10,10 @@ disable-model-invocation: true
 
 PR merge and cleanup orchestrator. Updates feature branch with master, validates, merges the PR, and removes worktree + branch.
 
+# Conventions
+
+- **Subagent spawning** — any agent whose workflow contains `Task(...)` invocations (e.g. `coder`) must be spawned via `Agent(subagent_type='super-agent', prompt='<agent-name>\n<args>')`. Direct `Agent(subagent_type='<agent-name>')` does not pass declared frontmatter tools (including Task) into the subagent context.
+
 # Workflow
 
 ## Phase 0: Resolve
@@ -86,7 +90,7 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
      - While `CONFLICT_CYCLE < 2`:
        - Collect conflicted files: `git -C $VALIDATE_ROOT diff --name-only --diff-filter=U`
        - Write `/tmp/premerge_fix/$FEATURE/conflicts/issues.md` — one `[open]` entry per conflicted file: path + "resolve git merge conflict markers; prefer $BRANCH version for deleted/refactored code."
-       - Spawn `coder` via Agent(subagent_type='coder'):
+       - Spawn `coder` via Agent(subagent_type='super-agent'):
          ```
          coder
          mode: fix-ai
@@ -113,7 +117,7 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 5. If any failures:
    - If `PREMERGE_CYCLE >= 3` → stop: "Pre-merge validation failed after 3 fix attempts. Fix manually and re-run `/feature-merge $FEATURE`."
    - Read errors from `/tmp/premerge_static.txt` and `/tmp/premerge_tests.txt` (whichever exist). Write them to `/tmp/premerge_fix/$FEATURE/validation/issues.md` as `[open]` entries (one entry per distinct logical error; group related lines belonging to the same failure into one entry).
-   - Spawn `coder` via Agent(subagent_type='coder') with prompt:
+   - Spawn `coder` via Agent(subagent_type='super-agent') with prompt:
      ```
      coder
      mode: fix-ai

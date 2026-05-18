@@ -20,8 +20,9 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 # Conventions
 
-- `SPEC_DIR` = `temp/$ARGUMENTS`
+- `SPEC_DIR` = `$REPO_ROOT/temp/$ARGUMENTS` — absolute path (REPO_ROOT derived in Phase 0 step 5). Always pass the absolute path to subagents — relative paths resolve against the subagent's CWD which may be the worktree, causing read/write mismatches.
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
+- **Subagent spawning** — any agent whose workflow contains `Task(...)` invocations (e.g. `coder`, `test-writer`, `committer`, `global-validator`) must be spawned via `Agent(subagent_type='super-agent', prompt='<agent-name>\n<args>')`. Direct `Agent(subagent_type='<agent-name>')` does not pass declared frontmatter tools (including Task) into the subagent context.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
 - `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
@@ -41,7 +42,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
 4. `git show-ref --quiet refs/heads/feat/$ARGUMENTS` → if exit code 0, stop: "Branch feat/$ARGUMENTS already exists. Delete it first or choose a different feature name."
-5. `REPO_ROOT = git rev-parse --show-toplevel`
+5. `REPO_ROOT = git rev-parse --show-toplevel`; then `SPEC_DIR = $REPO_ROOT/temp/$ARGUMENTS` (absolute, supersedes the relative form for the rest of the workflow).
 
 ## Phase 1: Planning
 
@@ -88,7 +89,7 @@ Read `SPEC_DIR/implementation-plan.md`. For each `### Step N: <title>`, extract 
 For each step in order:
 
 1. `[Step {N}/{total}: {title}]`
-2. Spawn `coder` via Agent(subagent_type='coder') with prompt:
+2. Spawn `coder` via Agent(subagent_type='super-agent') with prompt:
 
        coder
        mode: implement
@@ -108,8 +109,9 @@ Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
 
 If `SPEC_DIR/test-cases.md` absent → `[Tests: skipped — run /feature-tech first]`, go to Phase 4.
 
-Spawn `test-writer` via Task with prompt:
+Spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
 
+    test-writer
     feature: $ARGUMENTS
     spec_dir: SPEC_DIR
     worktree_dir: WORKTREE_DIR
@@ -123,7 +125,7 @@ Initialize `ai_iter = 0`, `test_iter = 0` before starting.
 
 `git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 
-Spawn `global-validator` via Agent(subagent_type='global-validator') with prompt:
+Spawn `global-validator` via Agent(subagent_type='super-agent') with prompt:
 
     global-validator
     feature: $ARGUMENTS
@@ -148,14 +150,14 @@ Check global-validator status:
         issues_file: validation/issues.md
         aggregated_file: validation/aggregated.md
 
-    Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Agent(subagent_type='coder') like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
+    Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Agent(subagent_type='super-agent') like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
     If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
 
 ## Phase 5: Finalize
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
 2. Set `MARK_READY = true`. If `unresolved_steps` contains any entry starting with "Test:" → set `MARK_READY = false`.
-3. Spawn `committer` via Agent(subagent_type='committer'):
+3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
    worktree_dir: WORKTREE_DIR
    spec_dir: SPEC_DIR
@@ -171,9 +173,9 @@ Check global-validator status:
    - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
 4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
 5. Folder status:
-   - `rm -f $REPO_ROOT/SPEC_DIR/NEXT--* 2>/dev/null || true`
-   - `mv $REPO_ROOT/SPEC_DIR $REPO_ROOT/SPEC_DIR-done`
-   - `mkdir -p $REPO_ROOT/temp/done && mv $REPO_ROOT/SPEC_DIR-done $REPO_ROOT/temp/done/`
+   - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
+   - `mv SPEC_DIR SPEC_DIR-done`
+   - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
    - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 4 → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
 6. Output report
 

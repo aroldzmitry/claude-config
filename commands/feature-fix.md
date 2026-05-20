@@ -99,6 +99,8 @@ ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: wr
 
 `git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 
+If `CHANGED_FILES` is empty and `USE_PARENT_WORKTREE = true`: fallback to a branch-health check. Compute `BRANCH_FILES` from `git -C WORKTREE_DIR diff --name-only $(git -C WORKTREE_DIR merge-base HEAD master)...HEAD` (apply the same filtering rules above, absolutize as `WORKTREE_DIR/{relative_path}`). Use `BRANCH_FILES` as `CHANGED_FILES`. Log `[Validation: branch health check — N files]`.
+
 Spawn `global-validator` via Agent(subagent_type='super-agent') with prompt:
 
     global-validator
@@ -152,11 +154,11 @@ Check global-validator status:
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
-   `mkdir -p WARNINGS_DIR`. Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug.
+   `mkdir -p WARNINGS_DIR`. Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
-   - `mkdir -p temp/done && mv SPEC_DIR-done temp/done/`
+   - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
    - If `WARNINGS_DIR/` was created in step 4 → `touch WARNINGS_DIR/NEXT--feature-fix`
 6. Output report
 

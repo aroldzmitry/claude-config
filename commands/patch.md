@@ -33,8 +33,8 @@ Quick fixer. Read project coding docs, locate the relevant code, apply the minim
      b. PASS → exit loop.
      c. FAIL in the code under change → apply a minimal targeted fix addressing the observed gap, repeat from (a).
      d. FAIL in the verification setup itself (URL wrong, page failed to load, scenario unbuildable) → exit loop and note the reason; do not patch code blindly.
-   - **Cleanup:** close the browser context. After max iterations without PASS → record the remaining mismatch for the report.
-5. **Report** — list changed files with a one-line summary per file. If verification ran, append a `Verification:` block: ✓/✗ + what was checked + iterations used + screenshot path. If max iterations reached without PASS, list the remaining mismatch. If skipped due to platform/MCP gap or unresolvable URL, note the reason.
+   - **Cleanup:** call `mcp__playwright__browser_close` to close the browser. Delete screenshot files saved during verification using Bash `rm`. Delete `.playwright-mcp/` directory from the project root if present (`rm -rf .playwright-mcp/`). After max iterations without PASS → record the remaining mismatch for the report.
+5. **Report** — list changed files with a one-line summary per file. If verification ran, append a `Verification:` block: ✓/✗ + what was checked + iterations used. If max iterations reached without PASS, list the remaining mismatch. If skipped due to platform/MCP gap or unresolvable URL, note the reason.
 
 # Start
 

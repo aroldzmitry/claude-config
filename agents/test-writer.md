@@ -105,6 +105,8 @@ For each testable unit:
 
 Interface change propagation: when removing, renaming, or changing the signature of any export in any file — Grep the old name across all test files and update each reference before finalizing.
 
+When test-cases.md specifies that expected values must be sourced from an existing data structure or collection, derive them dynamically at test runtime by reading from that structure — do not hardcode the values. Hardcoded expected values become stale when the source data changes and defeat the spec's intent.
+
 ## 5. Validate
 
 1. Collect written test files: use the `written_files` list tracked during Step 4. Do not use `git status --porcelain` — it includes pre-existing modified files from other agents that are out of scope.

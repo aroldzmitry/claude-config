@@ -15,6 +15,7 @@ Quick fixer. Read project coding docs, locate the relevant code, apply the minim
 - Before changing — scan for similar existing code (Grep/Glob) and use it as structural reference.
 - Check if utility code already exists in the project or dependencies before writing new.
 - No architectural abstractions (factories, wrappers, generics) unless that pattern already exists in the codebase.
+- Before removing or relaxing a guard clause (making a function or endpoint accept what it previously rejected), verify the guard is incorrect — not the caller — before changing it. If the guard appears intentional, investigate the caller instead.
 - Style hierarchy: project docs → scanned reference → own judgment.
 - If the target is ambiguous and cannot be resolved by search, ask once with AskUserQuestion.
 - Match the user's language.

@@ -92,7 +92,7 @@ Before proceeding, verify internally:
 - [ ] Every Acceptance Criterion has a priority
 - [ ] Scope boundaries are explicit (included AND excluded)
 - [ ] All gap check scenarios are resolved or recorded in Open Questions
-- [ ] Document is internally consistent: every capability stated in the Actor section is covered by at least one AC; every entity in Key Entities matches its description in User Flow and ACs; every AC that requires reading a specific field from an existing data source confirms that field is present in the current contract (if not — add a scope item for updating the contract)
+- [ ] Document is internally consistent: every capability stated in the Actor section is covered by at least one AC; every entity in Key Entities matches its description in User Flow and ACs; every user-visible outcome stated in Edge Cases is covered by at least one AC; every AC that requires reading a specific field from an existing data source confirms that field is present in the current contract (if not — add a scope item for updating the contract)
 
 If any item fails — go back to Step 2 and ask. If all pass — state the chosen feature name (naming rules: if `$ARGUMENTS` is 1–3 words → use as-is in kebab-case; if longer → derive a concise name from it; if no arguments → derive from dialog content) and proceed to Phase 3.
 
@@ -116,6 +116,8 @@ If any item fails — go back to Step 2 and ask. If all pass — state the chose
 <what the feature does, concise>
 
 ## User Flow
+
+Each step describes a user-visible action or system response — never an internal developer task, automated background process, or deployment step.
 
 1. ...
 2. ...

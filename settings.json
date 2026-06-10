@@ -52,6 +52,7 @@
     "ask": [],
     "defaultMode": "bypassPermissions"
   },
+  "model": "claude-fable-5[1m]",
   "enabledMcpjsonServers": [
     "trello",
     "playwright"
@@ -73,9 +74,8 @@
     "type": "command",
     "command": "input=$(cat); used=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); model=$(echo \"$input\" | jq -r '.model.display_name // empty'); out=\"\"; [ -n \"$used\" ] && out=\"$(printf '%.0f' \"$used\")% used\"; [ -n \"$model\" ] && out=\"$out | $model\"; echo \"${out# | }\""
   },
-  "model": "claude-opus-4-7",
-  "effortLevel": "medium",
-  "autoUpdatesChannel": "stable",
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark-ansi"

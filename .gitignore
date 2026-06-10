@@ -35,3 +35,4 @@ stats-cache.json
 /memory/
 /sessions/
 /.last-cleanup
+/.last-update-result.json

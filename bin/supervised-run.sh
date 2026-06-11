@@ -59,7 +59,7 @@ while true; do
     line="${line%$'\r'}"
     while [[ "$line" == *$'\x08'* ]]; do line="${line//?$'\x08'/}"; done
     TAIL_BUF+=("$line")
-    (( ${#TAIL_BUF[@]} > 20 )) && TAIL_BUF=("${TAIL_BUF[@]:1}")
+    (( ${#TAIL_BUF[@]} > 200 )) && TAIL_BUF=("${TAIL_BUF[@]:1}")
     LAST_ACTIVITY=$(date +%s)
 
     if [[ -n "$DONE_PATTERN" ]] && [[ "$line" == *"$DONE_PATTERN"* ]]; then
@@ -74,7 +74,7 @@ while true; do
         line="${line%$'\r'}"
         while [[ "$line" == *$'\x08'* ]]; do line="${line//?$'\x08'/}"; done
         TAIL_BUF+=("$line")
-        (( ${#TAIL_BUF[@]} > 20 )) && TAIL_BUF=("${TAIL_BUF[@]:1}")
+        (( ${#TAIL_BUF[@]} > 200 )) && TAIL_BUF=("${TAIL_BUF[@]:1}")
       done
       break
     fi

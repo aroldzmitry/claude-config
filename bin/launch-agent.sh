@@ -47,6 +47,8 @@ case "$MODE" in
         python3 -c "
 import sys, json
 raw = open('$SESSION_DIR/output.txt').read().strip()
+agent_messages = []   # final assistant messages (codex)
+any_texts = []        # any item text — fallback
 for line in raw.splitlines():
     line = line.strip()
     if not line:
@@ -68,10 +70,20 @@ for line in raw.splitlines():
                     parts = [c.get('text', '') for c in content if isinstance(c, dict)]
                     text = ''.join(parts)
             if text:
-                print(text)
-                sys.exit(0)
+                kind = item.get('type') or item.get('item_type') or ''
+                if 'message' in kind:
+                    agent_messages.append(text)
+                any_texts.append(text)
     except (json.JSONDecodeError, KeyError, AttributeError):
         pass
+# codex emits one item.completed per item (reasoning, tool call, message) —
+# the agent's answer is the LAST assistant message, not the first item
+if agent_messages:
+    print(agent_messages[-1])
+    sys.exit(0)
+if any_texts:
+    print(any_texts[-1])
+    sys.exit(0)
 # Fallback: return raw output
 print(raw)
 " > "$SESSION_DIR/response.txt" 2>/dev/null || \
@@ -94,7 +106,12 @@ print(raw)
     fi
 
     if [[ -f "$SESSION_DIR/.done" ]]; then
-      # Done — output response and cleanup
+      # Done — surface non-zero exit codes, then output response and cleanup
+      EXIT_CODE=$(cat "$SESSION_DIR/.done" 2>/dev/null || echo "")
+      if [[ -n "$EXIT_CODE" && "$EXIT_CODE" != "0" ]]; then
+        echo "ERROR: agent exited with code $EXIT_CODE"
+        tail -n 20 "$SESSION_DIR/error.txt" 2>/dev/null || true
+      fi
       cat "$SESSION_DIR/response.txt" 2>/dev/null || cat "$SESSION_DIR/output.txt" 2>/dev/null || true
       rm -rf "$SESSION_DIR"
     elif PID=$(cat "$SESSION_DIR/.pid" 2>/dev/null) && [[ -n "$PID" ]] && ! kill -0 "$PID" 2>/dev/null; then

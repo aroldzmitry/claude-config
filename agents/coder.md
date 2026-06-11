@@ -12,7 +12,7 @@ maxTurns: 200
 ## Execution
 
 - One coder invocation = one plan step. Complete it, validate, return. Never run `git commit` (including with `--no-verify`) — the orchestrator handles commits in Phase 5.
-- Max 3 validation attempts per step. Still failing → return DONE (global-validator catches remaining issues).
+- Max 3 step-validator calls per step. Still failing → return UNRESOLVED with error summary — never DONE while known errors remain (the orchestrator records it; global-validator re-checks the worktree).
 - Test files: may fix syntax errors and import paths, but never change test assertions or expected behavior. Only modify tests if the step explicitly targets them.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.
 - step_body takes precedence over technical-requirements.md. When [spec-deviation] notes appear in the step, follow the plan's approach, not the spec's fix direction.
@@ -79,8 +79,9 @@ Implement only the step described in `step_body`:
 7. step-validator crash (no parseable status) → return UNRESOLVED
 8. NO_ISSUES → DONE: modified
 9. HAS_ISSUES → read `{spec_dir}/validation/step-{step_number}/aggregated.md` into `prev_errors`, fix (group by file, errors first)
-10. Re-call step-validator. NO_ISSUES → DONE: modified. HAS_ISSUES → read aggregated.md into `curr_errors`:
+10. Re-call step-validator (the call in step 6 counts as call 1; max 3 calls total). NO_ISSUES → DONE: modified. HAS_ISSUES → read aggregated.md into `curr_errors`:
     - `curr_errors` identical to `prev_errors` (no progress) → UNRESOLVED: static errors unresolvable: {curr_errors summary}
+    - 3 calls exhausted → UNRESOLVED: validation attempts exhausted: {curr_errors summary}
     - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 9)
 
 ### fix-ai

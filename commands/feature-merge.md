@@ -2,7 +2,7 @@
 description: "Update branch with default branch, pre-merge validate, merge PR, cleanup worktree and branch."
 model: sonnet
 argument-hint: "[feature-name]: feature name (e.g. BUG-foo). Omit to pick from open PRs."
-allowed-tools: "Bash, Read, Task"
+allowed-tools: "Bash, Read, Task, AskUserQuestion"
 disable-model-invocation: true
 ---
 
@@ -80,11 +80,12 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
    - Else:
      `git fetch origin && git checkout $BRANCH && git merge origin/$DEFAULT_BRANCH --no-edit`
    - If merge has conflicts:
+     - **CONFLICT_REVIEW gate** (used below — runs before any conflict-resolution commit is pushed): show a compact summary — each conflicted file with one line on how it was resolved and which side's changes were dropped (for modify/delete: "kept deletion from $BRANCH — $DEFAULT_BRANCH modifications to {file} are discarded"). Ask via AskUserQuestion: "Push this conflict resolution?" with options "Push (Recommended)" / "Abort". On abort: `git -C $VALIDATE_ROOT merge --abort 2>/dev/null || git -C $VALIDATE_ROOT reset --merge`, then stop: "Merge aborted — resolve conflicts manually in $VALIDATE_ROOT, then re-run `/feature-merge $FEATURE`." Conflict resolution silently discards someone's changes — a human confirms before it reaches the remote.
      - Resolve modify/delete conflicts (deleted in `$BRANCH`, modified in `$DEFAULT_BRANCH`):
        `MD_FILES = git -C $VALIDATE_ROOT status --short | grep "^DU " | awk '{print $2}'`
        For each file in `MD_FILES`: `git -C $VALIDATE_ROOT rm {file}`
      - If no remaining conflicts (`git -C $VALIDATE_ROOT diff --name-only --diff-filter=U` is empty):
-       - `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: resolve merge conflicts with $DEFAULT_BRANCH" && git push origin $BRANCH`
+       - Run CONFLICT_REVIEW gate, then `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: resolve merge conflicts with $DEFAULT_BRANCH" && git push origin $BRANCH`
        - Proceed to step 2.
      - Set `CONFLICT_CYCLE = 0`.
      - While `CONFLICT_CYCLE < 2`:
@@ -100,7 +101,7 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
          report_file: issues.md
          ```
        - If no conflict markers remain (`git -C $VALIDATE_ROOT grep -rl "^<<<<<<" -- . 2>/dev/null | grep -v ".git"` returns empty):
-         - `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: resolve merge conflicts with $DEFAULT_BRANCH" && git push origin $BRANCH`
+         - Run CONFLICT_REVIEW gate (summarize each file from `git -C $VALIDATE_ROOT diff origin/$DEFAULT_BRANCH -- {file}`), then `git -C $VALIDATE_ROOT add -A && git -C $VALIDATE_ROOT commit -m "fix: resolve merge conflicts with $DEFAULT_BRANCH" && git push origin $BRANCH`
          - Break loop; proceed to step 2.
        - Increment `CONFLICT_CYCLE`.
      - Stop: "Branch $BRANCH has unresolved conflicts after 2 attempts. Resolve manually and re-run `/feature-merge $FEATURE`."
@@ -139,8 +140,8 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 - If `PR.state = open`:
   - If `PR.isDraft = true`:
     - Check if `$REPO_ROOT/temp/$FEATURE-warnings/NEXT--feature-fix` exists.
-    - If yes → stop: "Tests are failing. Run `/feature-fix $FEATURE-warnings` first, then re-run `/feature-merge $FEATURE`."
-    - Otherwise → stop: "PR is still draft — feature-fix or feature-implement did not complete. Finish the feature or close the PR manually."
+    - If yes → stop: "Unresolved issues remain from the implementing run. Run `/feature-fix $FEATURE-warnings` first, then re-run `/feature-merge $FEATURE`."
+    - Otherwise → stop: "PR is still draft — the implementing run did not complete, or completed with pending `Decision needed:` items (check its report). Finish the feature or answer the pending decisions, then re-run; or close the PR manually."
   - Run: `gh pr merge $PR.url --merge`
   - If fails → stop: "PR merge failed: {error}. Resolve the issue and re-run `/feature-merge $FEATURE`."
   - Verify: `gh pr view $PR.url --json state` → must be `merged`.
@@ -179,6 +180,9 @@ Spawn `post-merge-validator` via Task with prompt: `repo_root: $REPO_ROOT`
 - If returns `HAS_ISSUES: {folder_name}` → set `POST_MERGE_FIX = {folder_name}`.
 
 ## Phase 5: Report
+
+Before the report, record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
+`- [YYYY-MM-DD] /feature-merge <feature-or-all>: merged={PR count} spawns={total subagent spawns this run} premerge_cycles={sum of PREMERGE_CYCLE} conflicts={true|false}`
 
 If `MERGE_ALL = true`:
 ```

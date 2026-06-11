@@ -26,6 +26,7 @@ You are a business analyst conducting a structured interview to define feature r
 ## Phase 0: Load Project Context
 
 Before asking questions, silently:
+0. Read `~/.claude/docs/ASK_POLICY.md` — decision-classification protocol (ask vs decide) for the whole dialog
 1. Check if the project has `docs/` directory
 2. Read `docs/ARCHITECTURE*.md` if they exist — to understand existing structure, features, and terminology. For each entity or data contract the feature changes: (a) locate and read its existing schema/contract definition (search contract packages, schema files, model directories); (b) trace its consumers (forms, API endpoints, UI components, downstream systems) and note any that may also need updating as candidate scope items for Phase 1.
 3. If the feature introduces or modifies a UI selection component (picker, combobox, selector, dropdown): locate the closest analogous component already in the product; note its behavior for edge cases likely to surface in Phase 1 (how already-used items are handled, empty state, search scope). When asking about the same behavior in Phase 1, offer "match the existing [ComponentName] pattern" as a named option.
@@ -177,14 +178,16 @@ Validate all generated BRD files before presenting to the user.
 
 Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation directory by taking the BRD's parent directory and appending `validation/brd/` — e.g. for a BRD at `<root>/temp/<feature-name>/business-requirements.md` the validation dir is `<root>/temp/<feature-name>/validation/brd/`. For cross-repo features each BRD lives under its own project root, so each gets its own validation dir. Create each via `Bash: mkdir -p <validation-dir>`.
 
-**Validation loop (max 2 iterations):**
+**Fast path for small features:** compute `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges` from the BRD (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If `steps_estimate ≤ 8` and the feature is single-repo → set `FAST_PATH = true`: Claude validators only (no Codex Tasks), expected file count 3, max 1 iteration. Log `[Validation: fast path — estimate {N} ≤ 8]`.
+
+**Validation loop (max 2 iterations; 1 when `FAST_PATH`):**
 
 1. For each BRD, launch validators in parallel:
    - **Claude Tasks** — pass `feature`, `brd_path`, `output_file` to each:
      - `validator-brd-purity` → `output_file: <validation-dir>/purity.md`
      - `validator-brd-completeness` → `output_file: <validation-dir>/completeness.md`
      - `validator-brd-consistency` → `output_file: <validation-dir>/consistency.md`
-   - **Codex Tasks** — spawn `codex` agent for each `V` in [brd-purity, brd-completeness, brd-consistency] (short names for `{V-short}`: purity, completeness, consistency):
+   - **Codex Tasks** (skip when `FAST_PATH`) — spawn `codex` agent for each `V` in [brd-purity, brd-completeness, brd-consistency] (short names for `{V-short}`: purity, completeness, consistency):
 
          validator-{V}
          feature: <name>
@@ -195,7 +198,7 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
 
 2. For cross-repo features (more than one BRD generated): spawn one additional generic Claude Task (no dedicated validator agent) that reads all BRD files and writes cross-document consistency findings to one chosen primary validation directory's `cross-doc.md`. Prompt the task: compare BRDs section by section; flag any concept that one BRD treats differently than another, any cross-doc reference that doesn't resolve, and any obligation that lives in one BRD but should be in another. Output format: `[error|warning] <doc> § <section> — <description>`.
 
-3. Verify all expected output files exist (Glob each validation directory). Expected count per validation directory: 6 files (`purity.md`, `completeness.md`, `consistency.md`, and the three `-codex.md` counterparts). For the cross-repo primary validation directory (the one chosen for `cross-doc.md` in step 2): expect 7 files. For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
+3. Verify all expected output files exist (Glob each validation directory). Expected count per validation directory: 6 files (`purity.md`, `completeness.md`, `consistency.md`, and the three `-codex.md` counterparts); 3 files when `FAST_PATH` (Claude reports only). For the cross-repo primary validation directory (the one chosen for `cross-doc.md` in step 2): expect 7 files. On an iteration-2 subset re-run (step 8) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
 
 4. For each validation directory, spawn `aggregator-brd`:
 
@@ -212,9 +215,13 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
 
 7. Apply silent fixes (Edit on BRD files). Show user a compact summary: header `Auto-fixed: N items` followed by one line per fix stating what was changed and why. If user-input findings exist → ask one at a time (one question per message). After each answer, update the affected BRD.
 
-8. Increment `brd_iter`. If `brd_iter < 2` → re-run from step 1.
+8. Increment `brd_iter`. Determine what runs next:
+   - `FAST_PATH` → single iteration: go to step 9.
+   - All findings this iteration were `[warning]`-severity and none required user input → fixes applied, exit loop to Phase 5 (no re-validation round for warning-only fixes).
+   - `brd_iter < 2` → re-run from step 1, launching only the validators (both engines) whose axes produced findings fixed this iteration (e.g. purity findings only → relaunch only the purity pair). Clean axes are not relaunched — the aggregator evaluates the new subset reports (raw reports from prior iterations were already consumed and deleted by the previous aggregator pass).
+   - Otherwise → step 9.
 
-9. If `brd_iter >= 2` and still `HAS_ISSUES` → record remaining unresolved findings in the `Open Questions` section of the affected BRD(s), proceed to Phase 5.
+9. If still `HAS_ISSUES` after the final iteration → record remaining unresolved findings in the `Open Questions` section of the affected BRD(s), proceed to Phase 5.
 
 ## Phase 5: Present and Finalize
 
@@ -225,6 +232,8 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
    - If API-only or no UI/design changes → suggest `/feature-tech <feature-name>`
    - If `new-tasks` is non-empty: include each in Related Features as `**Name** — (new, no spec yet) [description]`; after the next-step suggestion, note: "New feature(s) identified this session: [list]. Run `/feature <name>` for each when ready."
 4. Create status marker: if UI or design system changes → `touch temp/<feature-name>/NEXT--feature-ui`. Otherwise → `touch temp/<feature-name>/NEXT--feature-tech`.
+5. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
+   `- [YYYY-MM-DD] /feature <feature-name>: questions={user questions asked across all phases} spawns={subagent spawns: validators + codex + aggregators} val_iters={brd_iter} autofixed={total auto-fixed findings} deferred={findings recorded to Open Questions} fast_path={true|false}`
 
 # Start
 

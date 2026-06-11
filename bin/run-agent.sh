@@ -53,6 +53,7 @@ case "$BACKEND" in
     ~/.claude/bin/supervised-run.sh \
       --done-pattern '"type":"result"' \
       --stall-timeout 600 \
+      --timeout 3600 \
       -- env -u CLAUDECODE claude -p \
       --verbose --output-format stream-json \
       --append-system-prompt "$INSTRUCTIONS" \
@@ -70,8 +71,12 @@ case "$BACKEND" in
 
 ${TASK_BODY}"
 
+    # No --done-pattern: codex exec exits on completion. A done-pattern on
+    # '"type":"item.completed"' would kill codex after its FIRST item
+    # (reasoning/tool call), before the final message and file writes.
     ~/.claude/bin/supervised-run.sh \
-      --done-pattern '"type":"item.completed"' \
+      --stall-timeout 600 \
+      --timeout 3600 \
       -- codex exec --full-auto --ephemeral --json \
       "$PROMPT"
     ;;

@@ -8,12 +8,12 @@ disable-model-invocation: true
 
 # Rules
 
-- **Evidence-only** — every finding must cite a specific conversation moment. No hypotheticals.
+- **Evidence-only** — every finding must cite a specific conversation moment. No hypotheticals. Exception: trend findings may cite `metrics/runs.md` or `observations.md` entries as evidence (cross-session data is evidence, not hypothesis).
 - **ONE finding per message** — present, discuss, decide, then next.
 - **Quality bar** — only changes that measurably improve result quality or reduce wasted turns. For findings that pass ALL filtering criteria: when in doubt, present — user can reject.
 - **Root cause first** — before proposing any fix: first locate the actual failure — the earliest agent behavior that deviated from its expected output, not the downstream effect you first noticed (map events backward to find the first thing that went wrong). Then trace the invocation chain backward from that failure: identify which command/agent file governed the failing agent, read it, check if it contains a rule preventing this failure class. If not → the fix targets that file. If the rule exists but the orchestrator didn't pass sufficient inputs → fix targets the orchestrator. Walk up until finding the deepest file with a missing or wrong rule. Never propose a fix at agent-behavior level when the governing instruction is the actual gap. Each proposed fix must pass: (1) evidence it stops a recurring pattern; (2) all 3 mechanical tests; (3) dominance check — no deeper fix in the same chain also passes these tests. Read session artifacts (plans, specs, validator reports) to trace the full chain.
 - **Target files** — `commands/*.md`, `agents/*.md`, `docs/*.md`, `CLAUDE.md`. Can also propose creating NEW command/agent files. Never application code.
-- **No duplicates** — check decisions.md before presenting, skip already-decided items.
+- **No duplicates** — check decisions.md before presenting, skip already-decided items. EXCEPTION — efficacy failure: if this session shows a problem that an already-ACCEPTED decision was meant to prevent, do NOT skip. Present it as a `[high]` efficacy-failure finding: the applied fix did not prevent recurrence. Root-cause why it failed (wrong file, buried placement, vague phrasing, rule ignored under context pressure) and propose a strengthened or relocated fix; when the new fix is accepted, mark the old decisions.md entry with `[superseded]`.
 - **Can improve itself** — if finds a gap in its own command file (`system-find-improve.md`), can propose a fix.
 - **Placement is bidirectional** — verify placement direction before presenting every fix: (1) if the pattern is universal (passes the 3-scenario test across different stacks) → fix must target `~/.claude/` system files, not project docs; within `~/.claude/`, prefer the most specific target — only target `CLAUDE.md` if the rule applies to ALL interaction types (coding, docs, analysis, planning, user questions), not only to coding/editing workflows; (2) if the pattern is tech- or project-specific → fix must target project-level docs (ARCHITECTURE.md, CLAUDE.md, etc.), not `~/.claude/` system files. A general pattern placed in project docs is as wrong as a specific pattern placed in system files. Verify before presenting in Phase 2 and before applying in Phase 3.
 - **Current session only** — Claude Code doesn't persist conversation history across sessions.
@@ -40,27 +40,30 @@ disable-model-invocation: true
 - `MISSING_PHASE` — workflow lacks a step
 - `MISSING_CHECK` — guardrail/validation absent
 - `MISSING_COMMAND` — no command/agent exists for this pattern (S6 only)
+- `INEFFECTIVE_RULE` — rule exists but the agent did not follow it, or an accepted fix failed to prevent recurrence — a visibility, placement, or phrasing failure; the fix strengthens, relocates, or rephrases the existing rule rather than adding a new one
 
 # Filtering Criteria
 
 INCLUDE only if ALL true:
-- Problem actually occurred in this session (cite the moment)
+- Problem actually occurred in this session (cite the moment); exception: trend findings citing `metrics/runs.md` or `observations.md` entries as evidence
 - Fix targets specific file + section + action (or specific new file to create)
 - Fix would prevent the problem in future similar sessions
 - Passes independent validation (Phase 1 step 5)
-- Not already in decisions.md
+- Not already in decisions.md; exception: efficacy-failure findings (see Rules § No duplicates EXCEPTION)
 
 EXCLUDE if ANY true:
 - Hypothetical ("could happen" but didn't)
 - Cosmetic (formatting, wording preference)
 - Adds complexity without improving quality
 - One-off situation unlikely to recur
-- Execution failure, not instruction failure (rule exists but wasn't followed)
+- Pure one-off execution slip with no instruction-level remedy (the governing rule is specific, prominently placed, and was followed correctly everywhere else this session). A rule that an agent failed to follow is otherwise NOT excluded — that is `INEFFECTIVE_RULE` evidence
 - Proximate fix when a deeper fix in the same causal chain independently passes all 3 mechanical tests — the proximate fix is redundant
 
 # Cross-Session Pattern Boosting
 
 When reading observations.md, check if a signal category (S1–S6) appeared in 3+ previous sessions. If so, boost related findings to `[high]` priority and note the trend in evidence.
+
+When `metrics/runs.md` was loaded: for each command used this session, compare its latest 3 runs against the prior 3. If `questions`, `spawns`, or `val_iters` rose ≥30% — present a standalone S1/S5 finding citing the metric lines as evidence (interaction or token cost is trending the wrong way; the system's goals include fewer questions and fewer tokens over time).
 
 # Conventions
 
@@ -77,7 +80,8 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
 1. `mkdir -p ~/.claude/agent-memory/system-find-improve/`
 2. Read `DECISIONS_FILE` if exists.
 3. Read `OBSERVATIONS_FILE` if exists — for cross-session pattern detection.
-4. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
+4. Read `~/.claude/agent-memory/metrics/runs.md` if exists — per-run cost metrics (questions, spawns, iterations) for trend detection.
+5. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
 
 ## Phase 1: Scan
 
@@ -88,6 +92,8 @@ When reading observations.md, check if a signal category (S1–S6) appeared in 3
    - **Strip test:** remove all session-specific and technology-specific terms (filenames, function names, library names, error messages, framework concepts, domain patterns) from the proposed rule. If the rule becomes incoherent or meaningless → it's a specific fix, not a general rule.
    - **3-scenario test:** name 3 structurally different situations where this rule applies (different language, framework, or problem domain). If you cannot → it's too narrow.
    - **Subsumption test:** check whether existing rules in the target file already cover this case. If they do → don't add a duplicate; if partial coverage → extend the existing rule instead of adding a new one.
+
+   **Treadmill check:** for each finding that extends an existing rule or enumeration, Grep `## Accepted` in decisions.md for prior entries touching the same file + section. If 3+ accepted entries have incrementally extended the same rule/list, replace the instance-level proposal with a consolidation finding: rewrite the enumeration as one general rule covering the whole class (the 3 mechanical tests apply to the generalized rule). Patching the same rule a 4th time, one instance at a time, is the failure mode this check exists to stop.
 
    Mechanical test results are internal filtering only — do not include them in Phase 2 finding presentations.
 5. **Independent validation.** For each finding that passed step 4: spawn `system-improve-validator` agent with prompt containing: finding summary, evidence, target file path, proposed change (CURRENT and REPLACEMENT text). If the agent returns `DISCARD` → remove from finding list silently. If `VALUABLE` → keep. Run validators in parallel for all findings.

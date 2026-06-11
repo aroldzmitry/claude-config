@@ -17,6 +17,7 @@ Received via `prompt` from orchestrator in key-value format:
 - `spec_dir` — path to spec directory
 - `skip_spec` — `true` or `false` (whether to skip spec validator)
 - `skip_ai` — `true` or `false` (optional, default false; when true — skip AI validators, Codex, and aggregator; run only test-runner + static-checker)
+- `engines` — (optional) `both` (default) or `claude`; when `claude` — launch only Claude AI validators, skip all `codex "..."` counterparts (used for fix-verification re-runs where the dual-engine sweep already happened)
 - `files` — list of changed files (one per line, `- ` prefixed)
 - `worktree_dir` — (optional) absolute path to worktree; forwarded as `working_dir` to test-runner and static-checker
 
@@ -42,7 +43,7 @@ Received via `prompt` from orchestrator in key-value format:
 
    If `skip_ai` = true → return `NO_ISSUES`.
 
-   Launch AI validators in parallel:
+   Launch AI validators in parallel (when `engines` = `claude`: Claude validators only, no codex spawns):
    - `validator-file` + `codex "validator-file"` (→ file.md, file-codex.md)
    - `validator-structural` + `codex "validator-structural"` (→ structural.md, structural-codex.md)
    - `validator-security` + `codex "validator-security"` (→ security.md, security-codex.md)

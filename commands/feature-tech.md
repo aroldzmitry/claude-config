@@ -23,7 +23,7 @@ You are a software architect conducting a structured interview to define technic
   - *Suboptimal* (project pattern exists but better option available) → **propose improvement, ask**.
   Skip questions entirely if the answer won't affect implementation. Present silently-decided items as brief statements between questions, not as questions.
 - **AskUserQuestion:** use for choices with options (architecture approach, library, pattern). Regular text for open-ended questions. Never mix. When an option affects multiple clients or systems, name how each is affected in the description — do not assume the user infers cross-system behavior.
-- **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If the answer is clearly implied by an existing BRD principle (e.g., "Admin has full control" implies no restriction), apply it and document in Business Clarifications without asking. If the resolution requires updating external documents (business-requirements.md, architecture docs) — inform the user which documents are affected before proceeding. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
+- **Business Clarifications:** when a technical discussion reveals a business gap (undefined behavior, missing requirement), do NOT send the user back to `/feature`. If an existing BRD statement explicitly covers the case, apply it and document in Business Clarifications citing that statement. If the answer is merely *implied* by a BRD principle (requires interpreting it, e.g. "Admin has full control" → no restriction), apply it but state the interpretation briefly in your next message — a visible veto window; if multiple plausible interpretations exist → ask. If the resolution requires updating external documents (business-requirements.md, architecture docs) — inform the user which documents are affected before proceeding. Otherwise discuss with user, get their decision, record in Business Clarifications section of `technical-requirements.md`.
 - **Verify before claiming:** when a question or edge case depends on external system behavior (backend API, library, service) — research it first (explore code, WebSearch documentation). Do not ask the user to confirm facts you can verify yourself. When a design decision requires knowing the current behavior of an existing system, include that behavior in plain text in the option descriptions or the immediately preceding sentence — do not make the user ask for it separately. Code previews show the proposed change, not the current state; the current state must be stated explicitly. If research results conflict with codebase evidence — surface the discrepancy: present both, explain which is concretely better and why, ask the user. Do not auto-select either side.
 
 # Workflow
@@ -31,6 +31,7 @@ You are a software architect conducting a structured interview to define technic
 ## Phase 0: Load Context
 
 Before asking questions, silently:
+0. Read `~/.claude/docs/ASK_POLICY.md` — decision-classification protocol (ask vs decide) for the whole dialog
 1. Determine feature name from `$ARGUMENTS`
 2. Use the Read tool directly on `temp/<feature-name>/business-requirements.md` — do NOT use Glob to check existence first. Read returns an error if the file doesn't exist; treat that as not found and skip. Also use the Read tool directly on `temp/<feature-name>/ui-requirements.md` — do NOT use Glob; treat a Read error as not found and skip. Use both files as context for API contracts and component architecture. If `business-requirements.md` has a "Related Features" section — also read `technical-requirements.md` from each referenced feature's `temp/<related-feature>/` folder (if exists), as these contain architectural decisions and API contracts that may answer interview questions. If `business-requirements.md` contains `Source references:` entries with file paths inside the project, read those files as additional design context — they may answer technical questions that would otherwise require user input. When a source reference file and the BRD conflict on exact names or values, treat the source file as authoritative and apply its values silently as a business clarification — BRD descriptions of names are summaries, not precise specifications.
 3. Read `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md` if they exist
@@ -213,14 +214,16 @@ Wait for test-planner to complete (foreground — not background) before launchi
 
 Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
-**Validation loop (max 2 iterations):**
+**Fast path for small features:** if `business-requirements.md` exists, compute `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges` from it (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If `steps_estimate ≤ 8` → set `FAST_PATH = true`: Claude validators only (no Codex Tasks), expected file count 3, max 1 iteration. Log `[Validation: fast path — estimate {N} ≤ 8]`. No BRD → no fast path.
 
-1. Launch 6 validators in parallel (same response):
+**Validation loop (max 2 iterations; 1 when `FAST_PATH`):**
+
+1. Launch 6 validators in parallel (same response; 3 when `FAST_PATH` — Claude only):
    - **Claude Tasks** — each with `feature: <name>, spec_dir: temp/<name>, output_file: <path>`:
      - `validator-spec-contracts` → `output_file: temp/<name>/validation/spec/contracts.md`
      - `validator-spec-testability` → `output_file: temp/<name>/validation/spec/testability.md`
      - `validator-spec-consistency` → `output_file: temp/<name>/validation/spec/consistency.md`
-   - **Codex Tasks** — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency] (short names for `{V-short}`: contracts, testability, consistency):
+   - **Codex Tasks** (skip when `FAST_PATH`) — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency] (short names for `{V-short}`: contracts, testability, consistency):
      ```
      validator-{V}
      feature: <name>
@@ -230,7 +233,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
      CRITICAL: You MUST write output to the EXACT file path above using the Write tool before returning — do NOT use any other filename.
      ```
 
-2. Verify all 6 output files exist (Glob `validation/spec/` dir). For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
+2. Verify all expected output files exist (Glob `validation/spec/` dir): 6 files, or 3 when `FAST_PATH`; on an iteration-2 subset re-run (step 7) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
 
 3. Spawn `aggregator-spec`:
 
@@ -246,18 +249,24 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
 6. Apply all silent fixes. Then show user a compact numbered list of what was fixed automatically (`Auto-fixed: N items` header, one line per fix stating what was changed and why). If user-input findings exist → ask about them one at a time (one question per message). After each answer — update documents.
 
-7. Increment `spec_iter`. If `spec_iter < 2` → re-run from step 1 (Launch validators).
+7. Increment `spec_iter`. Determine what runs next:
+   - `FAST_PATH` → single iteration: go to step 8.
+   - All findings this iteration were `[warning]`-severity and none required user input → fixes applied, exit loop to **Step 5: Present** (no re-validation round for warning-only fixes).
+   - `spec_iter < 2` → re-run from step 1, launching only the validators (both engines) whose axes produced findings fixed this iteration (e.g. contracts findings only → relaunch only the contracts pair). Clean axes are not relaunched — the aggregator evaluates the new subset reports (raw reports from prior iterations were already consumed and deleted by the previous aggregator pass).
+   - Otherwise → step 8.
 
-8. If `spec_iter >= 2` and still `HAS_ISSUES` → record remaining genuinely unresolved findings in Open Questions section of `technical-requirements.md`, proceed to **Step 5: Present**.
+8. If still `HAS_ISSUES` after the final iteration → record remaining genuinely unresolved findings in Open Questions section of `technical-requirements.md`, proceed to **Step 5: Present**.
 
 ### Step 5: Present
 
 1. Show available documents (both if test-cases.md was generated; only `technical-requirements.md` if test-planner returned ERROR) + one-line validation summary (N items auto-fixed, if any)
 2. If user requests changes → apply, show updated
 3. If prerequisite tasks were recorded in Business Clarifications → for each: create `temp/<prerequisite-name>/business-requirements.md` with a brief description (problem, required change, consumer, acceptance criteria); then suggest `/feature-tech <prerequisite-name>` to be done first
-4. **Split check:** calculate the feature size estimate from `business-requirements.md` (same formula as `feature-split`). If estimate > 20: note the estimate and ask whether to split for implementation. If user wants to split → spawn `feature-split` via Task with prompt: `feature_name: <feature_name>`. Show the split summary from agent output. Ask user via AskUserQuestion: "Accept". If user requests adjustments (Other/custom text) → apply edits to generated files directly, then re-confirm. On accept: suggest `/feature-implement <sub-1>`, `/feature-implement <sub-2>`, etc. in order. Skip step 5.
+4. **Split check:** calculate the feature size estimate from `business-requirements.md`: `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges` (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If estimate > 20: note the estimate and ask whether to split for implementation. If user wants to split → spawn `feature-split` via Task with prompt: `feature_name: <feature_name>`. Show the split summary from agent output. Ask user via AskUserQuestion with options: "Accept" / "Reject split". If user requests adjustments (Other/custom text) → apply edits to generated files directly, then re-confirm. On reject: restore the parent (`mv temp/done/<feature_name>-split-source temp/<feature_name>`), delete each generated `temp/<sub-name>/` folder and `temp/<FEATURE_NAME_UPPER>_PLAN.md`, then proceed to step 5 as if no split happened. On accept: suggest `/feature-implement <sub-1>`, `/feature-implement <sub-2>`, etc. in order. Skip step 5.
 5. If no split (or estimate ≤ 20): suggest next step: `/feature-implement <feature-name>`
 6. Update status marker: if split → skip (feature-split was called from feature-tech so TECH_MODE applies — it sets `NEXT--feature-implement` on each sub-feature folder). Otherwise: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-implement`
+7. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
+   `- [YYYY-MM-DD] /feature-tech <feature-name>: questions={user questions asked across all phases} spawns={subagent spawns: test-planner + validators + codex + aggregators + feature-split} val_iters={spec_iter} autofixed={total auto-fixed findings} deferred={findings recorded to Open Questions} fast_path={true|false}`
 
 # Start
 

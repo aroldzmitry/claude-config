@@ -34,7 +34,7 @@ Received via `prompt` from orchestrator:
    a. Create `temp/<sub-name>/business-requirements.md` using the BRD Document Format below.
    b. If `TECH_MODE`: create `temp/<sub-name>/technical-requirements.md` — extract from the parent tech spec only the sections relevant to this sub-feature's scope (Data Model, API/Interfaces, Error Handling, Tech Edge Cases filtered to entries belonging to this sub); include Solution Approach, Business Clarifications, and Key Decisions sections in full (shared context). Touch `temp/<sub-name>/NEXT--feature-implement`.
    c. If not `TECH_MODE`: if sub-feature has UI (pages, forms, tables) → `touch temp/<sub-name>/NEXT--feature-ui`; otherwise → `touch temp/<sub-name>/NEXT--feature-tech`
-9. Delete parent: `rm temp/<feature_name>/business-requirements.md`. If `TECH_MODE`: also `rm temp/<feature_name>/technical-requirements.md` and `rm -f temp/<feature_name>/test-cases.md`. Then `rm -rf temp/<feature_name>/` (removes any remaining subdirectories such as `validation/`).
+9. Archive parent — never delete (the orchestrator restores it if the user rejects the split): `rm -f temp/<feature_name>/NEXT--*`, then `mkdir -p temp/done && mv temp/<feature_name> temp/done/<feature_name>-split-source`.
 10. Write execution plan: create `temp/<FEATURE_NAME_UPPER>_PLAN.md` (hyphens → underscores, uppercased) containing: a title line, the dependency/execution-order table from the Output section, and a Status column initialized to ⏳ for all rows.
 
 # Document Format

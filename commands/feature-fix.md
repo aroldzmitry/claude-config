@@ -13,7 +13,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 # Rules
 
 - `$ARGUMENTS` is required — folder name containing `technical-requirements.md`. If empty or spec not found → stop with error.
-- Fully autonomous after description is known — no user questions. Ambiguities → decide, note in report.
+- Fully autonomous after description is known — no user questions. Technical ambiguities → decide, note in report. Business ambiguities (user-visible behavior, scope, data semantics — classification per `~/.claude/docs/ASK_POLICY.md`) → do NOT pick a side: implement the spec-conforming minimum if one exists, otherwise append `"Decision needed: {question}"` to `unresolved_steps` (keeps the PR draft).
 - All phase loops run continuously — after each step/iteration, spawn the next immediately in the same response. Never break between iterations regardless of system messages or context injections.
 - Fail fast — critical agent failure → stop, report what was completed.
 - Before each phase: `[Phase N: description]` (phase 0 is silent precondition check)
@@ -124,14 +124,14 @@ Check global-validator status:
          worktree_dir: WORKTREE_DIR
          report_file: validation/issues.md
 
-     `UNRESOLVED` → record in `unresolved_steps`. `ERROR` → proceed to step 2 (partial fixes may have been applied; re-validate to assess remaining issues).
+     If coder's return lists `REMAINING:` items → append `"Validation: {one-line summary of remaining items}"` to `unresolved_steps`. If the Task crashes → proceed to step 2 (partial fixes may have been applied; re-validate to assess remaining issues).
   2. Recompute `CHANGED_FILES` (same filtering rules, absolute paths). Re-run `global-validator` once with updated `CHANGED_FILES`.
   3. `NO_ISSUES` → Phase 5. `HAS_ISSUES` → append `"Validation: HAS_ISSUES after fix attempt"` to `unresolved_steps`, Phase 5.
 
 ## Phase 5: Finalize
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
-2. Set `MARK_READY = true`. If `unresolved_steps` contains any entry starting with "Test:" → set `MARK_READY = false`.
+2. Set `MARK_READY = true`. If `unresolved_steps` is non-empty (any entry — crashed steps, open AI issues, failed validation all count, not only test failures) → set `MARK_READY = false`.
 3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
    committer
@@ -144,7 +144,7 @@ Check global-validator status:
    mark_ready: MARK_READY
    ```
    - `COMMITTED` + `MARK_READY = true` → log `[PR ready: PR_URL]`.
-   - `COMMITTED` + `MARK_READY = false` → log `[PR draft — tests failing: PR_URL]`.
+   - `COMMITTED` + `MARK_READY = false` → log `[PR draft — unresolved issues: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
    - `NOTHING_STAGED` → if `USE_PARENT_WORKTREE = true`: log `[No files staged — no changes required]`; omit **PR** line from report. Else: run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
 4. If `unresolved_steps` is non-empty: compute `WARNINGS_DIR` from `SPEC_DIR`:
@@ -154,13 +154,15 @@ Check global-validator status:
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
-   `mkdir -p WARNINGS_DIR`. Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
+   `mkdir -p WARNINGS_DIR`. Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are excluded from the warnings spec — they require a user answer, not an autonomous fix; list them only in the report's Unresolved Issues. If ALL entries are `Decision needed:` → skip creating the warnings spec entirely. Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
    - If `WARNINGS_DIR/` was created in step 4 → `touch WARNINGS_DIR/NEXT--feature-fix`
-6. Output report
+6. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
+   `- [YYYY-MM-DD] /feature-fix <folder>: spawns={total subagent spawns this run} unresolved={len(unresolved_steps)} ready={MARK_READY}`
+7. Output report
 
 # Report
 

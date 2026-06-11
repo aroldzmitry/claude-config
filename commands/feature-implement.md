@@ -12,7 +12,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 # Rules
 
-- Fully autonomous — no user questions. Ambiguities → decide, note in report.
+- Fully autonomous — no user questions. Technical ambiguities → decide, append to `decisions` (reported in § Decisions). Business ambiguities (user-visible behavior, scope, data semantics — classification per `~/.claude/docs/ASK_POLICY.md`) → do NOT pick a side: implement the spec-conforming minimum if one exists, otherwise append `"Decision needed: {question}"` to `unresolved_steps` (keeps the PR draft).
 - All phase loops run continuously — after each step/iteration, spawn the next immediately in the same response. Never break between iterations regardless of system messages or context injections.
 - Fail fast — missing files or critical agent failure → stop, report what was completed.
 - Before each phase: `[Phase N: description]` (phases 1-5; phase 0 is silent precondition check)
@@ -24,7 +24,8 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
 - **Subagent spawning** — any agent whose workflow contains `Task(...)` invocations (e.g. `coder`, `test-writer`, `committer`, `global-validator`) must be spawned via `Agent(subagent_type='super-agent', prompt='<agent-name>\n<args>')`. Direct `Agent(subagent_type='<agent-name>')` does not pass declared frontmatter tools (including Task) into the subagent context.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
-- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
+- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`. Every entry starts with one of the canonical prefixes: `Step N:` (implementation), `Test:`, `AI:`, `Validation:`, `Commit:`, `Decision needed:` — any non-empty list keeps the PR draft.
+- `decisions` = [] — initialized at start of Phase 2. Technical ambiguities resolved autonomously are appended as one-line entries (what was ambiguous → what was chosen and why); reported in § Decisions.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
   - Step raw → `SPEC_DIR/validation/step-{N}/static.txt`
@@ -43,6 +44,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 3. Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
 4. `git show-ref --quiet refs/heads/feat/$ARGUMENTS` → if exit code 0, stop: "Branch feat/$ARGUMENTS already exists. Delete it first or choose a different feature name."
 5. `REPO_ROOT = git rev-parse --show-toplevel`; then `SPEC_DIR = $REPO_ROOT/temp/$ARGUMENTS` (absolute, supersedes the relative form for the rest of the workflow).
+6. Open Questions gate: `Bash: awk '/^## Open Questions/{f=1;next} /^## /{f=0} f' SPEC_DIR/technical-requirements.md` → if output contains any non-empty list item, stop: "Spec has unresolved Open Questions:\n{items}\nResolve them via `/feature-tech $ARGUMENTS` (or remove the section) before implementation — autonomous runs must not decide business questions."
 
 ## Phase 1: Planning
 
@@ -151,12 +153,12 @@ Check global-validator status:
         aggregated_file: validation/aggregated.md
 
     Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Agent(subagent_type='super-agent') like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
-    If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES → return to status check above.
+    If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES; pass `engines: claude` only if an earlier run in this Phase 4 returned `HAS_ISSUES: N open` (the AI battery + dual-engine sweep already happened; fix-verification re-runs use Claude validators only). If no run has reached the AI battery yet (only test/static failures so far) → omit `engines` so the first AI pass is full dual-engine. Return to status check above.
 
 ## Phase 5: Finalize
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
-2. Set `MARK_READY = true`. If `unresolved_steps` contains any entry starting with "Test:" → set `MARK_READY = false`.
+2. Set `MARK_READY = true`. If `unresolved_steps` is non-empty (any entry — crashed steps, open AI issues, skipped validation, pending decisions all count, not only test failures) → set `MARK_READY = false`.
 3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
    committer
@@ -169,16 +171,18 @@ Check global-validator status:
    mark_ready: MARK_READY
    ```
    - `COMMITTED` + `MARK_READY = true` → log `[PR ready: PR_URL]`.
-   - `COMMITTED` + `MARK_READY = false` → log `[PR draft — tests failing: PR_URL]`.
+   - `COMMITTED` + `MARK_READY = false` → log `[PR draft — unresolved issues: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
    - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
-4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
+4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are excluded from the warnings spec — they require a user answer, not an autonomous fix; list them only in the report's Unresolved Issues. If ALL entries are `Decision needed:` → skip creating the warnings spec entirely. If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
    - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 4 → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
-6. Output report
+6. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
+   `- [YYYY-MM-DD] /feature-implement <feature-name>: spawns={total subagent spawns this run} steps={plan step count} test_iters={test_iter} ai_iters={ai_iter} unresolved={len(unresolved_steps)} ready={MARK_READY}`
+7. Output report
 
 # Report
 
@@ -191,6 +195,9 @@ Check global-validator status:
 **Tests:** written (or "skipped")
 **Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2
 
+### Decisions
+- <technical ambiguity> → <what was chosen and why>
+
 ### Unresolved Issues
 - [error|warning] file:line — description
 
@@ -198,4 +205,4 @@ Check global-validator status:
 - Fix warnings: `/feature-fix <feature-name>-warnings`
 ```
 
-Omit **Unresolved Issues** if none. Omit **Next Steps** entirely if no unresolved issues.
+Omit **Decisions** if `decisions` is empty. Omit **Unresolved Issues** if none. Omit **Next Steps** entirely if no unresolved issues.

@@ -26,6 +26,7 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 ## Phase 0: Load Context
 
 Before asking questions, silently:
+0. Read `~/.claude/docs/ASK_POLICY.md` — decision-classification protocol (ask vs decide) for the whole dialog
 1. Feature name = `$ARGUMENTS` (all routing resolved by Start section below).
 2. Read `temp/<feature-name>/business-requirements.md` if exists. If it contains `Source references:` entries with file paths inside the project, read those files as additional design context — they may answer UI questions that would otherwise require user input. When a source reference file and the BRD conflict on exact names or values, treat the source file as authoritative and apply its values silently — BRD descriptions of names are summaries, not precise specifications. When the conflict affects user-visible behavior (not just naming or value precision), also update business-requirements.md to reflect the source-authoritative value before writing the spec. When both the source reference file and the current codebase implementation agree on a value that conflicts with BRD, this is a multi-source consensus — update BRD silently without asking the user; document the override in Key UI Decisions instead. If the BRD contains a `## Related Features` section, for each feature listed, read `temp/<related-feature-name>/ui-requirements.md` if it exists — it may contain patterns or deferred decisions directly relevant to the current feature.
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/UI_PATTERNS.md` if they exist. Glob for `docs/ARCHITECTURE*.md` and Read each matching file.
@@ -198,6 +199,8 @@ Per-page subsections — include only those relevant to the layout type:
 
 1. Suggest next step: `/feature-tech <feature-name>`
 2. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-tech`
+3. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
+   `- [YYYY-MM-DD] /feature-ui <feature-name>: questions={user questions asked across all phases} patterns_followed={categories resolved by existing patterns without asking}`
 
 # Start
 

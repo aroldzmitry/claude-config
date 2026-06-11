@@ -39,6 +39,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 1. `$ARGUMENTS` is required. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /bug first to create a spec."`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
 3. Parent feature check: derive `PARENT_FEATURE` by stripping trailing `-warnings` or `-warnings{N}` (N = integer) from `$ARGUMENTS`. If a match is found and `git show-ref --quiet refs/heads/feat/{PARENT_FEATURE}` exits 0, check that `{REPO_ROOT}/.worktrees/{PARENT_FEATURE}` exists as a directory. If yes: set `WORKTREE_DIR = {REPO_ROOT}/.worktrees/{PARENT_FEATURE}`, `BRANCH = feat/{PARENT_FEATURE}`, `PR_URL = $(gh pr list --head feat/{PARENT_FEATURE} --json url -q '.[0].url')`, `USE_PARENT_WORKTREE = true`. Log `[Using parent worktree: WORKTREE_DIR]`. Otherwise: `USE_PARENT_WORKTREE = false`.
+4. Open Questions gate: `Bash: awk '/^## Open Questions/{f=1;next} /^## /{f=0} f' SPEC_DIR/technical-requirements.md` → if output contains any non-empty list item, stop: "Spec has unresolved Open Questions:\n{items}\nAnswer them via `/feature-tech {$ARGUMENTS}` first — autonomous runs must not decide business questions."
 
 ## Phase 1: Planning
 
@@ -154,12 +155,12 @@ Check global-validator status:
 
    Set `WARNINGS_NAME` = last path component of WARNINGS_DIR (basename only).
 
-   `mkdir -p WARNINGS_DIR`. Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are excluded from the warnings spec — they require a user answer, not an autonomous fix; list them only in the report's Unresolved Issues. If ALL entries are `Decision needed:` → skip creating the warnings spec entirely. Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
+   `mkdir -p WARNINGS_DIR`. Create `WARNINGS_DIR/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are NOT turned into Fix sections — write them verbatim into a `## Open Questions` section of the same warnings spec (they require a user answer, not an autonomous fix) and list them in the report's Unresolved Issues. The user answers them via `/feature-tech {WARNINGS_NAME}`, then `/feature-fix {WARNINGS_NAME}` applies the result on the existing feature branch. Read `SPEC_DIR/validation/issues.md` (if exists), filter `[open]` lines, include as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
-   - If `WARNINGS_DIR/` was created in step 4 → `touch WARNINGS_DIR/NEXT--feature-fix`
+   - If `WARNINGS_DIR/` was created in step 4: if its spec contains `## Open Questions` → `touch WARNINGS_DIR/NEXT--feature-tech`, else → `touch WARNINGS_DIR/NEXT--feature-fix`
 6. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
    `- [YYYY-MM-DD] /feature-fix <folder>: spawns={total subagent spawns this run} unresolved={len(unresolved_steps)} ready={MARK_READY}`
 7. Output report
@@ -178,7 +179,8 @@ Check global-validator status:
 - [error|warning] file:line — description
 
 ### Next Steps
-- Fix warnings: `/feature-fix {WARNINGS_NAME}`
+- Decisions pending: answer via `/feature-tech {WARNINGS_NAME}`, then `/feature-fix {WARNINGS_NAME}`  ← only when the warnings spec has Open Questions
+- Fix warnings: `/feature-fix {WARNINGS_NAME}`  ← only when it has none
 ```
 
 Omit **Unresolved Issues** if none. Omit **Next Steps** entirely if no unresolved issues.

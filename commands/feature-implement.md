@@ -174,12 +174,12 @@ Check global-validator status:
    - `COMMITTED` + `MARK_READY = false` → log `[PR draft — unresolved issues: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
    - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
-4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are excluded from the warnings spec — they require a user answer, not an autonomous fix; list them only in the report's Unresolved Issues. If ALL entries are `Decision needed:` → skip creating the warnings spec entirely. If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
+4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are NOT turned into Fix sections — write them verbatim into a `## Open Questions` section of the same warnings spec (they require a user answer, not an autonomous fix) and list them in the report's Unresolved Issues. The user answers them via `/feature-tech $ARGUMENTS-warnings`, then `/feature-fix $ARGUMENTS-warnings` applies the result on the existing feature branch. If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
-   - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 4 → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
+   - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 4: if its spec contains `## Open Questions` → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-tech`, else → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
 6. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
    `- [YYYY-MM-DD] /feature-implement <feature-name>: spawns={total subagent spawns this run} steps={plan step count} test_iters={test_iter} ai_iters={ai_iter} unresolved={len(unresolved_steps)} ready={MARK_READY}`
 7. Output report
@@ -202,7 +202,8 @@ Check global-validator status:
 - [error|warning] file:line — description
 
 ### Next Steps
-- Fix warnings: `/feature-fix <feature-name>-warnings`
+- Decisions pending: answer via `/feature-tech <feature-name>-warnings`, then `/feature-fix <feature-name>-warnings`  ← only when the warnings spec has Open Questions
+- Fix warnings: `/feature-fix <feature-name>-warnings`  ← only when it has none
 ```
 
 Omit **Decisions** if `decisions` is empty. Omit **Unresolved Issues** if none. Omit **Next Steps** entirely if no unresolved issues.

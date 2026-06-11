@@ -139,9 +139,9 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 - If `PR.state = closed` → stop: "PR was closed without merging. Reopen it or clean up manually: `git push origin --delete feat/$FEATURE && git branch -D feat/$FEATURE`"
 - If `PR.state = open`:
   - If `PR.isDraft = true`:
-    - Check if `$REPO_ROOT/temp/$FEATURE-warnings/NEXT--feature-fix` exists.
-    - If yes → stop: "Unresolved issues remain from the implementing run. Run `/feature-fix $FEATURE-warnings` first, then re-run `/feature-merge $FEATURE`."
-    - Otherwise → stop: "PR is still draft — the implementing run did not complete, or completed with pending `Decision needed:` items (check its report). Finish the feature or answer the pending decisions, then re-run; or close the PR manually."
+    - If `$REPO_ROOT/temp/$FEATURE-warnings/NEXT--feature-tech` exists → stop: "Pending decisions from the implementing run. Answer them via `/feature-tech $FEATURE-warnings`, then `/feature-fix $FEATURE-warnings`, then re-run `/feature-merge $FEATURE`."
+    - If `$REPO_ROOT/temp/$FEATURE-warnings/NEXT--feature-fix` exists → stop: "Unresolved issues remain from the implementing run. Run `/feature-fix $FEATURE-warnings` first, then re-run `/feature-merge $FEATURE`."
+    - Otherwise → stop: "PR is still draft — the implementing run did not complete. Finish the feature or close the PR manually."
   - Run: `gh pr merge $PR.url --merge`
   - If fails → stop: "PR merge failed: {error}. Resolve the issue and re-run `/feature-merge $FEATURE`."
   - Verify: `gh pr view $PR.url --json state` → must be `merged`.

@@ -72,7 +72,7 @@ Process one file at a time.
 
 ## Phase 2: Per-Document Interview
 
-Process in order: ARCHITECTURE → CODE_RULES → CONVENTIONS → DESIGN_SYSTEM → WORKFLOW → submodule docs.
+Process in order: ARCHITECTURE → CODE_RULES → CONVENTIONS → DESIGN_SYSTEM → WORKFLOW → TESTING → submodule docs.
 
 ### Progress tracking
 

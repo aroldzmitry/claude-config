@@ -47,11 +47,13 @@ Received via `prompt` from orchestrator in key-value format:
 6. Create worktrees directory:
    `mkdir -p "{repo_root}/.worktrees"`
 
-7. Determine base branch:
+7. Determine base branch and fetch the latest remote state (without this, `origin/{BASE}` is a stale snapshot and the branch starts behind — guaranteeing avoidable merge conflicts later):
    ```
    BASE=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's/refs\/remotes\/origin\///')
    [[ -z "$BASE" ]] && BASE="main"
+   git -C "{repo_root}" fetch origin "$BASE"
    ```
+   Fetch failure (offline) → log warning, continue with the local snapshot.
 
 8. Create worktree on a new branch from origin's base:
    `git worktree add "{WORKTREE_DIR}" -b "{BRANCH}" "origin/{BASE}"`

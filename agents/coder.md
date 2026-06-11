@@ -12,7 +12,7 @@ maxTurns: 200
 ## Execution
 
 - One coder invocation = one plan step. Complete it, validate, return. Never run `git commit` (including with `--no-verify`) — the orchestrator handles commits in Phase 5.
-- Max 3 step-validator calls per step. Still failing → return UNRESOLVED with error summary — never DONE while known errors remain (the orchestrator records it; global-validator re-checks the worktree).
+- Max 3 static-checker calls per step. Still failing → return UNRESOLVED with error summary — never DONE while known errors remain (the orchestrator records it; global-validator re-checks the worktree).
 - Test files: may fix syntax errors and import paths, but never change test assertions or expected behavior. Only modify tests if the step explicitly targets them.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.
 - step_body takes precedence over technical-requirements.md. When [spec-deviation] notes appear in the step, follow the plan's approach, not the spec's fix direction.
@@ -65,24 +65,16 @@ Implement only the step described in `step_body`:
 2. Check if step is already implemented (expected changes already present). If fully done → return `DONE: no changes` (skip implementation)
 3. Scan for similar existing code as structural reference
 4. Implement the described changes (skip parts already present)
-5. Collect modified files: `git -C {worktree_dir} status --porcelain` (or `git status --porcelain` if `worktree_dir` not set) → parse new/modified files (exclude both staged `D ` and working-tree ` D` deletions, lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`), intersect with step's scope (directories of step's **Files** field). If `worktree_dir` is set, output absolute paths: `{worktree_dir}/{relative_path}`.
-6. Task(super-agent) — prompt in multi-line key-value format:
-       step-validator
-       feature: {feature}
-       step: {title}
-       spec_dir: {spec_dir}
-       step_number: {step_number}
+5. `mkdir -p {spec_dir}/validation/step-{step_number}/`. Read `docs/WORKFLOW.md` § Pre-Validation Build Steps in the working directory (worktree_dir if set, otherwise repo root); run each listed build command via Bash (failure → log warning, continue). Then Task(static-checker) — prompt in multi-line key-value format:
+       error_file: <absolute path to {spec_dir}/validation/step-{step_number}/static.txt>
        working_dir: {worktree_dir}   (include this line only when worktree_dir is set)
-       files:
-       - {absolute_path_or_relative}/file1.ts
-       - {absolute_path_or_relative}/file2.ts
-7. step-validator crash (no parseable status) → return UNRESOLVED
-8. NO_ISSUES → DONE: modified
-9. HAS_ISSUES → read `{spec_dir}/validation/step-{step_number}/aggregated.md` into `prev_errors`, fix (group by file, errors first)
-10. Re-call step-validator (the call in step 6 counts as call 1; max 3 calls total). NO_ISSUES → DONE: modified. HAS_ISSUES → read aggregated.md into `curr_errors`:
-    - `curr_errors` identical to `prev_errors` (no progress) → UNRESOLVED: static errors unresolvable: {curr_errors summary}
-    - 3 calls exhausted → UNRESOLVED: validation attempts exhausted: {curr_errors summary}
-    - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 9)
+6. static-checker crash (no parseable status) → return UNRESOLVED
+7. CLEAN → DONE: modified
+8. FAIL → read `{spec_dir}/validation/step-{step_number}/static.txt` into `prev_errors`, fix (group by file, errors first)
+9. Re-call static-checker (the call in step 5 counts as call 1; max 3 calls total). CLEAN → DONE: modified. FAIL → read static.txt into `curr_errors`:
+   - `curr_errors` identical to `prev_errors` (no progress) → UNRESOLVED: static errors unresolvable: {curr_errors summary}
+   - 3 calls exhausted → UNRESOLVED: validation attempts exhausted: {curr_errors summary}
+   - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 8)
 
 ### fix-ai
 

@@ -34,7 +34,7 @@ Received via `prompt` from research-specialist:
    c. If code matches — apply **inclusion gate** (all 3 must be YES):
       1. **Is it broken NOW?** — the described behavior is currently wrong or suboptimal, not "could go wrong under certain conditions"
       2. **Concrete scenario?** — there is a specific, realistic workflow where this causes measurable harm (performance degradation, security breach, user-facing error, resource waste)
-      3. **Fixes real behavior?** — the recommended fix repairs something that IS wrong, not adds a safety net, guard, or defensive measure for a theoretical case
+      3. **Fixes real behavior?** — the recommended fix repairs something that IS wrong, OR closes a concrete vulnerability/failure mode: missing validation on input reachable from outside, unhandled error that crashes or corrupts state, injectable value. A missing guard PASSES this criterion when criterion 2 named a realistic trigger for it in this codebase — reject only purely theoretical hardening with no reachable trigger
    d. Passes all 3 → **verified**. Preserve all fields.
    e. Fails any question → **low-impact**. Record which question failed and why.
    f. Code doesn't match → **false positive**. Record reason.

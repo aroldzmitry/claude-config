@@ -69,6 +69,7 @@ When `metrics/runs.md` was loaded: for each command used this session, compare i
 
 - `DECISIONS_FILE` = `~/.claude/agent-memory/system-find-improve/decisions.md`
 - `OBSERVATIONS_FILE` = `~/.claude/agent-memory/system-find-improve/observations.md`
+- `DEFERRED_FILE` = `~/.claude/agent-memory/system-find-improve/deferred.md`
 - Date format: `YYYY-MM-DD`.
 - Item order: high → medium → low.
 - Decision tag: `[retro]`.
@@ -78,7 +79,7 @@ When `metrics/runs.md` was loaded: for each command used this session, compare i
 ## Phase 0: Load
 
 1. `mkdir -p ~/.claude/agent-memory/system-find-improve/`
-2. Read `DECISIONS_FILE` if exists.
+2. Read `DECISIONS_FILE` and `DEFERRED_FILE` if they exist.
 3. Read `OBSERVATIONS_FILE` if exists — for cross-session pattern detection.
 4. Read `~/.claude/agent-memory/metrics/runs.md` if exists — per-run cost metrics (questions, spawns, iterations) for trend detection.
 5. If `$ARGUMENTS` is unrecognized scope → "Recognized scopes: `all`, `commands`, `agents`, `docs`, `claude-md`. Defaulting to `all`."
@@ -104,9 +105,10 @@ When `metrics/runs.md` was loaded: for each command used this session, compare i
    - `docs` → only `docs/*.md` targets
    - `claude-md` → only `CLAUDE.md` targets
    - `all` or empty → no filter
-8. Sort: high → medium → low.
-9. If 0 findings → "No actionable improvements found — system performed well in this session." Record observation per Phase 4 format (findings: 0) → stop.
-10. Show overview: finding count by priority + target files list.
+8. Merge deferred findings: for each `DEFERRED_FILE` entry passing the scope filter — verify its root cause still exists in the current target file content. Gone → delete the entry. Present → add to the finding list marked `[deferred from YYYY-MM-DD]` (skips steps 4–5 — validated when first found).
+9. Sort: high → medium → low.
+10. If 0 findings → "No actionable improvements found — system performed well in this session." Record observation per Phase 4 format (findings: 0) → stop.
+11. Show overview: finding count by priority + target files list.
 
 ## Phase 2: Discussion
 
@@ -125,7 +127,7 @@ For each finding, one per message:
    1. Accept — will apply after all items reviewed
    2. Modify — discuss an alternative approach
    3. Reject — won't be suggested again
-   4. Skip — defer, no record
+   4. Skip — defer; recorded in the deferred queue, re-presented next run
 
 3. "Reject" → follow up: ask for a brief reason (one message). If the stated reason contradicts the mechanical tests already run (e.g., user says "too rare" but 3-scenario test passed with 3 distinct domains), present the counter-evidence in one message and ask once more. Accept the second rejection unconditionally. While recording the reason — also scan for signals of an alternative problem or a differently-framed root cause. If found → present it as a new finding immediately after closing this item: "You seem to be pointing at [X]. Should we discuss that?"
 4. "Modify" → discuss user's alternative. Once agreed → record as accepted with modified action. For new file proposals: discuss structure, scope, and conventions with user until agreed. If user decides against → re-ask (Accept / Reject / Skip).
@@ -157,7 +159,7 @@ After each decision: `[{current}/{total} | next: {target-file} — {finding-summ
        changed_files: <newline-separated paths from CHANGED_MD>
 
    - `CLEAN` → Phase 4.
-   - `ISSUES` and `val_cycle < 3` → for each reported issue: if the issue concerns a cross-reference to a project file in a `~/.claude/` system file and the reference already has an existence guard (`if exists`, `if they exist`) — check whether the referenced file exists in at least one other project by running Glob on 2–3 other project roots (check ~/.claude/projects/ for known paths); if found in any, skip that finding. Fix remaining issues using Edit, increment `val_cycle`, re-run step 8.
+   - `ISSUES` and `val_cycle < 3` → for each reported issue: if the issue concerns a cross-reference to a project file in a `~/.claude/` system file and the reference already has an existence guard (`if exists`, `if they exist`) — check whether the referenced file exists in at least one other project by running Glob on 2–3 other project roots (check ~/.claude/projects/ for known paths); if found in any, skip that finding. Fix remaining issues using Edit — but only by modifying text added or changed in steps 4–5 this session; an issue whose fix requires touching content outside the accepted diff → do not fix here, route it to step 9 (pre-existing issues batch). Increment `val_cycle`, re-run step 8.
    - `ISSUES` and `val_cycle >= 3` → report remaining issues to user, Phase 4.
 9. Pre-existing issues: if validator reported any issues in files NOT in `CHANGED_MD` — collect them. Only escalate issues where the instruction would cause an agent to fail or make a wrong decision; skip wording improvements where intent is clear from context. Present qualifying issues as a batch: "Validator also found N issue(s) in untouched files:" + list each (file — description). Ask user: fix these too? If yes → apply with Edit, add fixed files to `CHANGED_MD`, do one validator pass on newly changed files only. If no → note for awareness, continue to Phase 4.
 10. If `CHANGED_MD` not empty: commit applied changes:
@@ -179,7 +181,16 @@ For new files: `- [YYYY-MM-DD] [retro] NEW {target}: created — {description}`
 Use the Edit tool to insert each rejected item at the end of the `## Rejected` section (append after the last existing entry).
 `- [YYYY-MM-DD] [retro] {target}: {action description} — reason: "{user's reason}"`
 
-Skipped items: not recorded (can be suggested again next run).
+### Deferred
+
+For each item the user chose Skip: append the full finding to `DEFERRED_FILE` (create with `# Deferred Findings` header if missing):
+`- [YYYY-MM-DD] [{priority}] {target}: {finding summary} | root cause: {type} | fix: {proposed change, one line}`
+
+Deferred items re-presented this session: decided (Accept/Reject) → delete their entry from `DEFERRED_FILE`; skipped again → refresh the existing entry (delete + re-append with today's date) — never duplicate. Cap 20 entries — when exceeded, drop oldest.
+
+### Compaction
+
+After recording: if `DECISIONS_FILE` exceeds 400 lines → compact the `## Accepted` section: truncate entries older than 60 days to one line (`- [date] [retro] {target}: {first clause of the action}`) — enough for duplicate detection; full history lives in git. Never truncate `## Rejected` entries — rejection reasons must survive verbatim.
 
 ### Observations
 
@@ -201,7 +212,7 @@ Final report: "Applied N changes, recorded N decisions (N accepted, N rejected).
 
 # Edge Cases
 
-- Very short session (0-1 user messages) → Phase 1 scan finds 0 signals → handled by Phase 1 step 9.
+- Very short session (0-1 user messages) → Phase 1 scan finds 0 signals → handled by Phase 1 step 10.
 - No commands used in session → still works, analyze general interaction quality. Common findings: things that should be commands (S6), missing conventions in CLAUDE.md.
 - Mid-session run → analyze what happened so far, note "partial" in observation.
 - No temp/ directories → skip artifact cross-referencing, proceed with conversation-only analysis.

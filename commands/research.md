@@ -108,7 +108,7 @@ specialists:
 
 6. Filter out (case-insensitive patterns):
    - Tests: `*.test.*`, `*.spec.*`, `__tests__/`, `test/`, `tests/`, `*_test.go`, `*_test.py`
-   - Config: `*.config.*`, `*.json` (except package.json), `*.yaml`, `*.yml`, `*.toml`, `*.ini`, `.env*`, `.*rc`
+   - Config: `*.config.*`, `*.json` (except package.json), `*.yaml`, `*.yml`, `*.toml`, `*.ini`, `.env*`, `.*rc` — **topic-aware exception:** when TOPIC concerns security, configuration, dependencies, or deployment, keep the Config category (these files are exactly where hardcoded secrets, insecure defaults, and misconfigurations live); `.env*` stays excluded always (reading them is hook-forbidden)
    - Assets: `*.png`, `*.jpg`, `*.svg`, `*.gif`, `*.ico`, `*.woff*`, `*.ttf`, `*.eot`, `*.mp4`, `*.webm`
    - Generated: `*.lock`, `*.min.*`, `dist/`, `build/`, `node_modules/`, `.next/`, `__pycache__/`, `*.pyc`
    - Docs: `*.md`, `LICENSE*`, `CHANGELOG*`

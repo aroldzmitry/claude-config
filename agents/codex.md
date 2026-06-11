@@ -26,17 +26,18 @@ Prompt from orchestrator:
    - If output starts with `ERROR:` → return it verbatim. Stop.
    - Otherwise output is a directory path — save it as SESSION_DIR.
 
-3. Poll loop — repeat until done:
+3. Wait loop — repeat until done:
 
-       Bash: ~/.claude/bin/launch-agent.sh poll "{SESSION_DIR}"
+       Bash: ~/.claude/bin/launch-agent.sh wait "{SESSION_DIR}"
 
-   - If output is exactly `WAITING` → wait 5 seconds (`Bash: sleep 5`), then poll again.
+   The call blocks up to ~110 seconds inside one Bash invocation (its internal deadline is below the Bash tool's 120s default timeout — it always returns; never pass a custom Bash timeout below 120s).
+   - If output is exactly `WAITING` → call wait again.
    - Any other output → the agent's response. Return it verbatim. Stop.
 
 4. If the final response is empty → return `NO_OUTPUT`.
 
 # Rules
 
-- Never modify the agent's output. Return exactly what poll prints.
+- Never modify the agent's output. Return exactly what `wait` prints.
 - Never call `codex` or `run-agent.sh` directly. Only use `launch-agent.sh`.
 - Do not add extra text, commentary, or formatting to the response.

@@ -26,8 +26,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 - **Subagent spawning** — any agent whose workflow contains `Task(...)` invocations (e.g. `coder`, `test-writer`, `committer`, `global-validator`) must be spawned via `Agent(subagent_type='super-agent', prompt='<agent-name>\n<args>')`. Direct `Agent(subagent_type='<agent-name>')` does not pass declared frontmatter tools (including Task) into the subagent context.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
-  - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
-  - Step raw → `SPEC_DIR/validation/step-{N}/static.txt`
+  - Step validation → `SPEC_DIR/validation/step-{N}/static.txt`
   - Validator reports → `SPEC_DIR/validation/{name}.md` (flat, overwritten each iteration)
   - Open/fixed issue tracking → `SPEC_DIR/validation/issues.md`
   - False positives → `SPEC_DIR/validation/false-positives.md`
@@ -107,8 +106,7 @@ Spawn `global-validator` via Agent(subagent_type='super-agent') with prompt:
     global-validator
     feature: _fix
     spec_dir: SPEC_DIR
-    skip_ai: true
-    skip_spec: true
+    skip_spec: false
     worktree_dir: WORKTREE_DIR
     files:
     - {CHANGED_FILES, each on own line with "- " prefix}
@@ -126,7 +124,7 @@ Check global-validator status:
          report_file: validation/issues.md
 
      If coder's return lists `REMAINING:` items → append `"Validation: {one-line summary of remaining items}"` to `unresolved_steps`. If the Task crashes → proceed to step 2 (partial fixes may have been applied; re-validate to assess remaining issues).
-  2. Recompute `CHANGED_FILES` (same filtering rules, absolute paths). Re-run `global-validator` once with updated `CHANGED_FILES`.
+  2. Recompute `CHANGED_FILES` (same filtering rules, absolute paths). Re-run `global-validator` once with updated `CHANGED_FILES`; pass `engines: claude` only if the first run returned `HAS_ISSUES: N open` (the AI battery + dual-engine sweep already happened). If the first run failed at the test/static gate (the AI battery never ran) → omit `engines` so the first AI pass is full dual-engine.
   3. `NO_ISSUES` → Phase 5. `HAS_ISSUES` → append `"Validation: HAS_ISSUES after fix attempt"` to `unresolved_steps`, Phase 5.
 
 ## Phase 5: Finalize

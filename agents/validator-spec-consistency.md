@@ -42,6 +42,7 @@ Read in parallel (skip missing):
 - `{spec_dir}/technical-requirements.md` — **required**. If missing → write `[error] technical-requirements.md — file not found` to output_file, return `HAS_ISSUES`.
 - `{spec_dir}/test-cases.md` — optional
 - `{spec_dir}/business-requirements.md` — optional
+- `{spec_dir}/ui-requirements.md` — optional
 
 ## 2. Validate
 
@@ -66,6 +67,11 @@ Read all sections. Flag any pair of statements that:
 If business-requirements.md loaded: for each Business Clarification in technical-requirements.md:
 - Does it contradict or override a requirement in business-requirements.md without a corresponding Business Clarifications entry that (1) names the BRD requirement being overridden and (2) provides a rationale for the override? → `[error]`
 - If a Business Clarifications entry names the BRD requirement and gives a rationale → do NOT flag; the override is intentional and documented.
+
+### Spec vs UI requirements
+If ui-requirements.md loaded: for each component or page the spec references, compare against its ui-requirements definition — behavioral trigger conditions (what shows/activates it, what skips it), named states (loading, empty, error, post-interaction), field visibility and constraints.
+- Spec contradicts ui-requirements on any of these → `[error]`
+- Spec covers a component's behavior but omits a state that ui-requirements defines for it → `[warning]`
 
 ### Orphaned test cases
 If test-cases.md loaded: for each test case, check that the scenario it describes is traceable to at least one requirement, edge case, or acceptance criterion.

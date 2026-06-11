@@ -1,7 +1,7 @@
 ---
 description: "System audit: 7 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
 model: sonnet
-argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'settings', or filename substring (e.g. 'feature', 'planner')"
+argument-hint: "[scope?]: empty = incremental since last audit; 'all' = full corpus; 'commands', 'agents', 'docs', 'settings', or filename substring (e.g. 'feature', 'planner')"
 allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
 ---
@@ -29,11 +29,12 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 ## Phase 0: Load
 
 1. `mkdir -p ~/.claude/agent-memory/system-audit/reports/`
-2. `find ~/.claude/agent-memory/system-audit/reports/ -name "*.md" -delete`
+2. If `{REPORTS_DIR}/fix-plan.md` exists (left by a previous partially-applied run) → ask via AskUserQuestion: **Apply pending fix-plan** (run Phase 4 on it now; on success delete the consumed fix-plan.md, then continue with a fresh audit) / **Discard** (delete it). Then delete numbered reports only: `find ~/.claude/agent-memory/system-audit/reports/ -name "0*.md" -delete` — never blanket-delete `*.md` (it would wipe a retained fix-plan).
 3. Build ALL_FILES via `git -C ~/.claude ls-files --cached` — only tracked files. This excludes internal Claude Code directories (cache/, debug/, plugins/, agent-memory/).
 4. SCOPE from `$ARGUMENTS`:
-   - Predefined scopes: `commands`, `agents`, `docs`, `settings`, `all` (default).
+   - Predefined scopes: `commands`, `agents`, `docs`, `settings`, `all`. Empty `$ARGUMENTS` → incremental (step 5) when a last-audit marker exists, otherwise full corpus.
    - Unrecognized → treat as filename substring filter: filter ALL_FILES to paths containing `$ARGUMENTS` as a substring (case-insensitive). Log: "Scoped to N files matching '$ARGUMENTS'.". Set SCOPE = `all`. If 0 files match → warn "No files match '$ARGUMENTS' — defaulting to all." and keep ALL_FILES unchanged.
+5. Incremental scope (only when `$ARGUMENTS` is empty): read `~/.claude/agent-memory/system-audit/last-audit-commit` if it exists. If it holds a valid commit → `CHANGED = git -C ~/.claude diff --name-only {hash}..HEAD` intersected with ALL_FILES. CHANGED empty → report "No system files changed since last audit ({short-hash}). Run `/system-audit all` for a full pass." and stop. Otherwise: ALL_FILES = CHANGED, set `INCREMENTAL = true`, log `[Incremental audit: N files changed since {short-hash}; '/system-audit all' forces full]`. Explicit `all` always audits the full corpus.
 
 ## Phase 1: Validate
 
@@ -64,6 +65,8 @@ Severity calibration (apply to all findings):
 Only report things that ARE broken — not things that COULD break.
 Do NOT report: cosmetic differences, defensive coding suggestions (missing limits, bounds, guards, error handling for unlikely paths), security hardening, theoretical edge cases, intentional design choices (self-contained agents, convenience copies), improvements or best practices.
 ```
+
+If `INCREMENTAL = true`, append to each prompt: `Incremental mode: 'files' lists only recently changed files — but cross-reference checks must still Grep the whole ~/.claude corpus for references to and from these files.`
 
 Report progress as each finishes.
 
@@ -146,6 +149,8 @@ Append to OBSERVATIONS_FILE (create if missing):
 Size limit: 20 entries max.
 
 If audit-applier completed successfully → delete reports: `rm -f {REPORTS_DIR}/*.md`. If audit-applier failed or partially applied → keep `fix-plan.md`, delete only report files (`01-*.md` through `09-*.md`).
+
+Stamp the audit point for incremental mode: `git -C ~/.claude rev-parse HEAD > ~/.claude/agent-memory/system-audit/last-audit-commit`
 
 Final: "Audit complete. Fixed N, rejected N, skipped N."
 

@@ -24,7 +24,7 @@ Spec compliance validator. Cross-references implementation against specification
 - Requirement from spec not implemented in any changed file
 - Acceptance criterion not satisfied by implementation
 - Implementation contradicts a spec requirement (does the opposite or a different thing)
-- Test case from `test-cases.md` has no corresponding test (only when test files exist in changed files). Exception: skip test cases covering structural properties guaranteed by the data model — absence of removed fields from serialized output, silent-ignore of unknown keys in deserialization.
+- Test case from `test-cases.md` has no corresponding test (only when test files exist in changed files). Exception: skip test cases whose primary concern falls under an exclusion category in `~/.claude/docs/TESTING_STRATEGY.md` (§ Default Exclusions, § Explicit Exclusions Principle).
 
 **warning** — scope creep:
 - New user-facing behavior not traceable to any requirement (new API endpoints, UI elements, features, business logic paths)
@@ -44,6 +44,7 @@ Received via `prompt` from orchestrator:
 # Workflow
 
 1. Read spec files from `spec_dir`:
+   - `~/.claude/docs/TESTING_STRATEGY.md` (for the test-coverage exception; skip if missing)
    - `technical-requirements.md` (required — if missing, return single error: `[error] technical-requirements.md — not found in spec_dir`)
    - `business-requirements.md` (optional, skip silently)
    - `ui-requirements.md` (optional, skip silently — UI spec: pages, layouts, states, actions, navigation)

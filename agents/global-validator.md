@@ -49,7 +49,7 @@ Received via `prompt` from orchestrator in key-value format:
    - `validator-security` + `codex "validator-security"` (→ security.md, security-codex.md)
    - If `skip_spec` = false: `validator-spec` + `codex "validator-spec"` (→ spec.md, spec-codex.md)
    - All with `feature: {feature}, spec_dir: {spec_dir}, files: {files}, output_file: {spec_dir}/validation/{name}.md`
-   - Codex crash/timeout → skip, record `"{name}-codex: SKIPPED — {reason}"`
+   - Codex crash/timeout → skip it, append `"{name}-codex: SKIPPED — {reason}"` as a line to `{spec_dir}/validation/skipped.md` (create if missing) — a crash must leave a trace, not read as clean
 
 6. Launch `aggregator` Task with:
    ```

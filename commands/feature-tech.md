@@ -132,7 +132,7 @@ If any item fails — go back to Step 2. If all pass — proceed directly to Pha
 
 ### Step 2: Write technical-requirements.md
 
-If `temp/<feature-name>/technical-requirements.md` already exists → ask user: "Previous tech spec found. Overwrite / Edit existing?" If edit — read and use as starting point for generation.
+If `temp/<feature-name>/technical-requirements.md` already exists → apply the decision made at Start (Edit existing → use it as the generation baseline; Redo → overwrite); do not re-ask. If no Start decision exists (feature name was derived during the dialog, not from `$ARGUMENTS`) → ask now: "Previous tech spec found. Overwrite / Edit existing?"
 
 Create `temp/<feature-name>/technical-requirements.md` using the template below. Include only sections that were discussed; omit sections whose CONDITIONAL condition (see below) is not met.
 
@@ -210,7 +210,7 @@ Spawn `test-planner` via Task with prompt:
     feature: <feature-name>
     spec_dir: temp/<feature-name>
 
-Wait for test-planner to complete (foreground — not background) before launching Step 4 validators. `validator-spec-testability` requires `test-cases.md` to exist; launching it before test-planner finishes produces a false "file not found" error. test-planner returns ERROR → show error to user, skip Step 4, proceed to Step 5 (show only `technical-requirements.md`).
+Wait for test-planner to complete (foreground — not background) before launching Step 4 validators. `validator-spec-testability` requires `test-cases.md` to exist; launching it before test-planner finishes produces a false "file not found" error. test-planner returns ERROR → show error to user, set `NO_TEST_CASES = true`, proceed to Step 4 with the testability pair excluded (contracts and consistency validation must still run — a failed test-planner must not ship an unvalidated spec); Step 5 shows only `technical-requirements.md`.
 
 ### Step 4: Dual-LLM Spec Validation
 
@@ -219,6 +219,8 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 **Fast path for small features:** if `business-requirements.md` exists, compute `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges` from it (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If `steps_estimate ≤ 8` → set `FAST_PATH = true`: Claude validators only (no Codex Tasks), expected file count 3, max 1 iteration. Log `[Validation: fast path — estimate {N} ≤ 8]`. No BRD → no fast path.
 
 **Validation loop (max 2 iterations; 1 when `FAST_PATH`):**
+
+When `NO_TEST_CASES = true`: exclude `spec-testability` from both engine lists below and reduce the expected file count accordingly (4, or 2 when `FAST_PATH`).
 
 1. Launch 6 validators in parallel (same response; 3 when `FAST_PATH` — Claude only):
    - **Claude Tasks** — each with `feature: <name>, spec_dir: temp/<name>, output_file: <path>`:
@@ -241,7 +243,7 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
        feature: <name>
        spec_dir: temp/<name>
-       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility. Treat validator findings about missing concrete inputs/outputs in existing test cases as false positives — specifying I/O detail is the test-writer's responsibility. Do NOT treat findings about entirely missing test cases (scenarios with no coverage at all) as false positives. References to production code artifacts (schemas, types, function names, component names, file paths — whether already present in the codebase or new feature code prescribed by the spec) are location context, not prescriptive implementation details — treat as non-findings. When § Business Clarifications documents a decision that overrides a BRD requirement, consistency findings about that specific BRD-vs-spec contradiction are false positives. When § Business Clarifications explicitly excludes a BRD requirement as already implemented, test coverage and consistency findings for that excluded scope are false positives. When the spec explicitly states that an existing endpoint's contract is unchanged, treat findings about missing response schema, missing error codes, or missing request body for that endpoint as false positives — the existing implementation is the authoritative contract.
+       context: test cases describe scenarios only; concrete inputs and expected values are the test-writer agent's responsibility (validators are calibrated accordingly). Do NOT treat findings about entirely missing test cases (scenarios with no coverage at all) as false positives. References to production code artifacts (schemas, types, function names, component names, file paths — whether already present in the codebase or new feature code prescribed by the spec) are location context, not prescriptive implementation details — treat as non-findings. When § Business Clarifications documents a decision that overrides a BRD requirement, consistency findings about that specific BRD-vs-spec contradiction are false positives. When § Business Clarifications explicitly excludes a BRD requirement as already implemented, test coverage and consistency findings for that excluded scope are false positives. When the spec explicitly states that an existing endpoint's contract is unchanged, treat findings about missing response schema, missing error codes, or missing request body for that endpoint as false positives — the existing implementation is the authoritative contract.
 
 4. `NO_ISSUES` → proceed to **Step 5: Present**.
 
@@ -271,5 +273,10 @@ Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
    `- [YYYY-MM-DD] /feature-tech <feature-name>: questions={user questions asked across all phases} spawns={subagent spawns: test-planner + validators + codex + aggregators + feature-split} val_iters={spec_iter} autofixed={total auto-fixed findings} deferred={findings recorded to Open Questions} fast_path={true|false}`
 
 # Start
+
+If `temp/$ARGUMENTS/technical-requirements.md` exists (attempt Read; try kebab-case normalization) — ask via AskUserQuestion BEFORE any interview (a full re-interview the user didn't want is the most expensive mistake this command can make):
+- **Edit existing** — load it as baseline; run Phase 0 silently; Phase 1 covers only Open Questions (see Open Questions first), gaps, and changes the user names
+- **Redo from scratch** — ignore existing content, full Phase 1
+- **Skip to implementation** — spec is done: run `rm -f temp/$ARGUMENTS/NEXT--* 2>/dev/null || true`, then if the folder name ends with `-warnings`/`-warnings{N}` → suggest `/feature-fix $ARGUMENTS`, `touch temp/$ARGUMENTS/NEXT--feature-fix`; otherwise suggest `/feature-implement $ARGUMENTS`, `touch temp/$ARGUMENTS/NEXT--feature-implement`. Stop.
 
 If `$ARGUMENTS` is provided but no matching folder — treat as feature description, ask the first technical question directly. Do not repeat or rephrase the argument back to the user.

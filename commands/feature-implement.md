@@ -27,8 +27,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`. Every entry starts with one of the canonical prefixes: `Step N:` (implementation), `Test:`, `AI:`, `Validation:`, `Commit:`, `Decision needed:` — any non-empty list keeps the PR draft.
 - `decisions` = [] — initialized at start of Phase 2. Technical ambiguities resolved autonomously are appended as one-line entries (what was ambiguous → what was chosen and why); reported in § Decisions.
 - Heavy data stored in files, not in orchestrator variables:
-  - Step validation → `SPEC_DIR/validation/step-{N}/aggregated.md`
-  - Step raw → `SPEC_DIR/validation/step-{N}/static.txt`
+  - Step validation → `SPEC_DIR/validation/step-{N}/static.txt`
   - Plan validation findings → `SPEC_DIR/validation/plan/{source}.md`
   - Validator reports → `SPEC_DIR/validation/{name}.md` (flat, overwritten each iteration)
   - Aggregated findings → `SPEC_DIR/validation/aggregated.md`
@@ -74,7 +73,7 @@ Wait for both results:
      output_file: SPEC_DIR/validation/plan/codex.md
      ```
 
-3. Collect each validator status: direct return `NO_ISSUES`/`HAS_ISSUES` if available; otherwise read its `output_file` (non-empty = `HAS_ISSUES`, empty/missing = `NO_ISSUES`). Both clean → log `[Plan validation: clean]`, go to Phase 2.
+3. Collect each validator status: direct return `NO_ISSUES`/`HAS_ISSUES` if available; otherwise read its `output_file` (non-empty = `HAS_ISSUES`, empty = `NO_ISSUES`). Output file MISSING and no parseable return (crash) → re-spawn that validator once; still missing → log `[Plan validation: {name} skipped — no output]` and treat as `NO_ISSUES` from that engine only (a crash must be logged, never silently read as clean). Both clean → log `[Plan validation: clean]`, go to Phase 2.
 
 4. Otherwise → re-spawn `planner` with prompt:
 
@@ -173,7 +172,7 @@ Check global-validator status:
    - `COMMITTED` + `MARK_READY = true` → log `[PR ready: PR_URL]`.
    - `COMMITTED` + `MARK_READY = false` → log `[PR draft — unresolved issues: PR_URL]`.
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
-   - `NOTHING_STAGED` → run `gh pr close PR_URL --delete-branch 2>/dev/null || true`; log `[No files staged — PR closed, branch deleted]`; omit **PR** line from report.
+   - `NOTHING_STAGED` → full cleanup so a re-run starts clean: `gh pr close PR_URL --delete-branch 2>/dev/null || true`, then `git -C REPO_ROOT worktree remove WORKTREE_DIR --force 2>/dev/null || true`, then `git -C REPO_ROOT branch -D BRANCH 2>/dev/null || true`; log `[No files staged — PR closed, branch and worktree deleted]`; omit **PR** line from report.
 4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are NOT turned into Fix sections — write them verbatim into a `## Open Questions` section of the same warnings spec (they require a user answer, not an autonomous fix) and list them in the report's Unresolved Issues. The user answers them via `/feature-tech $ARGUMENTS-warnings`, then `/feature-fix $ARGUMENTS-warnings` applies the result on the existing feature branch. If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
 5. Folder status:
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
@@ -194,6 +193,7 @@ Check global-validator status:
 **Files changed:** N
 **Tests:** written (or "skipped")
 **Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2
+**Skipped validators:** {lines from SPEC_DIR/validation/skipped.md}  ← omit line if file absent
 
 ### Decisions
 - <technical ambiguity> → <what was chosen and why>

@@ -38,7 +38,7 @@ Use after generating or editing any document. Initialize `cycle = 0`, max 10 cyc
 2. **Linter-enforced rules** — Brief list of non-obvious linter rules that affect how code is written
 3. **Error Handling** — Error propagation pattern, where to catch, error types
 4. **State Management** — Where state lives, patterns used (only if applicable)
-5. **Testing** — What to test, how, file organization
+5. **Testing** — test-code style and file organization only; what-to-test policy lives in TESTING.md (link, don't restate)
 
 ### CONVENTIONS.md
 
@@ -62,6 +62,15 @@ Use after generating or editing any document. Initialize `cycle = 0`, max 10 cyc
 3. **Testing** — Test commands per level (unit, integration, e2e); special setup required for e2e (simulators, devices, config files, credentials). Only if project has tests.
 4. **Pre-commit / CI** — What runs automatically
 5. **Environment** — Table: variable | description (only if non-trivial)
+
+### TESTING.md
+
+Only if the project has tests. Holds testing POLICY — commands live in WORKFLOW.md § Testing, test-code style in CODE_RULES.md § Testing (link, don't restate). Takes precedence over `~/.claude/docs/TESTING_STRATEGY.md` defaults.
+
+1. **Levels** — which test levels the project uses (unit/widget/integration/e2e) and what belongs to each
+2. **Exclusions** — project-specific categories intentionally not tested (extends the system defaults in `~/.claude/docs/TESTING_STRATEGY.md` § Default Exclusions; list only additions/overrides)
+3. **Mock strategy** — what is mocked vs real, where shared fixtures/factories live
+4. **Level assignment** — table: code layer | test level (only if non-obvious)
 
 ### ARCHITECTURE_\<module\>.md
 

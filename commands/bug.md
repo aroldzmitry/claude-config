@@ -30,7 +30,9 @@ Silently:
 
 ## Phase 1: Gather Symptoms
 
-Go through these categories in order. Skip categories already covered by `$ARGUMENTS` or prior answers.
+**Investigate before asking:** if `$ARGUMENTS` contains a concrete lead — an error message, stack trace, HTTP status, file path, or a specific feature/screen name — run Phase 2 steps 2–3 (locate entry point, trace the call chain) silently FIRST, then ask only the category questions the investigation could not answer (often only "What was expected?"). Never ask the user what code can tell you: which endpoint handles the action, what the current behavior is, which component renders the element. Vague or empty `$ARGUMENTS` → standard category interview below.
+
+Go through these categories in order. Skip categories already covered by `$ARGUMENTS`, prior answers, or investigation findings.
 
 ### Categories
 
@@ -47,7 +49,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
 
 1. Summarize gathered info to user: "Investigating: <1-2 sentence summary>"
 
-2. **Locate entry point.** Use Grep/Glob to find the file where the user action is handled (button handler, API endpoint, event listener). If entry point is unclear from symptoms, spawn `Explore` agent (thoroughness: quick) to locate it — Explore only finds files, does not analyze root cause.
+2. **Locate entry point** (skip steps 2–3 if already performed during Phase 1's investigate-before-asking — reuse those findings). Use Grep/Glob to find the file where the user action is handled (button handler, API endpoint, event listener). If entry point is unclear from symptoms, spawn `Explore` agent (thoroughness: quick) to locate it — Explore only finds files, does not analyze root cause.
 
 3. **Trace the call chain.** Read the entry point file. Follow the execution path step by step:
    - Read each file in the chain: handler → provider/controller → service/repository → datasource/external call

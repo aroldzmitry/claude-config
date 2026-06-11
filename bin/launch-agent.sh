@@ -2,12 +2,15 @@
 set -euo pipefail
 
 # Async agent launcher.
-# Two modes:
+# Three modes:
 #   launch [--backend claude|codex] <agent-name> [task-body]  → prints SESSION_DIR, agent runs in background
 #   poll <session-dir>               → prints WAITING, or agent response + cleanup
+#   wait <session-dir> [--max SEC]   → blocks up to SEC (default 110), then behaves like poll.
+#                                      Cannot hang: bounded loop of 2s sleeps + file checks only;
+#                                      the Bash tool's own timeout (120s) is the outer backstop.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-MODE="${1:?usage: launch-agent.sh launch|poll <args>}"
+MODE="${1:?usage: launch-agent.sh launch|poll|wait <args>}"
 shift
 
 case "$MODE" in
@@ -97,6 +100,29 @@ print(raw)
     echo "$SESSION_DIR"
     ;;
 
+  wait)
+    SESSION_DIR="${1:?session dir required}"
+    shift
+    MAX_WAIT=110
+    [[ "${1:-}" == "--max" ]] && MAX_WAIT="${2:?--max requires a value}"
+
+    DEADLINE=$(( $(date +%s) + MAX_WAIT ))
+    while [[ ! -f "$SESSION_DIR/.done" ]]; do
+      # Session gone or process died → fall through to poll for the error path
+      [[ ! -d "$SESSION_DIR" ]] && break
+      if PID=$(cat "$SESSION_DIR/.pid" 2>/dev/null) && [[ -n "$PID" ]] && ! kill -0 "$PID" 2>/dev/null; then
+        break
+      fi
+      if (( $(date +%s) >= DEADLINE )); then
+        echo "WAITING"
+        exit 0
+      fi
+      sleep 2
+    done
+    # Done, died, or gone — delegate to poll logic below
+    exec "$0" poll "$SESSION_DIR"
+    ;;
+
   poll)
     SESSION_DIR="${1:?session dir required}"
 
@@ -125,7 +151,7 @@ print(raw)
     ;;
 
   *)
-    echo "ERROR: unknown mode $MODE (use launch or poll)" >&2
+    echo "ERROR: unknown mode $MODE (use launch, poll, or wait)" >&2
     exit 1
     ;;
 esac

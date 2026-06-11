@@ -49,7 +49,7 @@ Go through these categories in order.
 3. **User Flow** — Step by step from the user's perspective
 4. **Scope** — What's explicitly NOT included? If scope discussion reveals functionality that is (a) out of scope AND (b) not covered by any existing `temp/` spec, track it in a `new-tasks` list (name + one-line description).
 5. **Edge Cases** — For data creation features: establish validation philosophy (strict/lenient). Group cases by pattern, present each group as a batch. Only ask individually for cases where the expected behavior depends on a policy choice not yet stated. After all groups, ask if user wants to add any. For features with event-driven triggers (user action → system performs writes/actions that could re-trigger the same flow): explicitly include as an edge case whether system-generated actions re-trigger the flow; propose "only direct user actions trigger" as the default. For features with discard/rollback/undo: enumerate all state components that could have been modified by the time discard occurs (files, sessions, caches, related data), and verify each component's restoration is explicitly described.
-6. **Acceptance Criteria** — Draft all criteria (`[must]`/`[should]`/`[could]`). Skip criteria already covered by edge cases. Present as a list for review. After review, ask if user wants to add any.
+6. **Acceptance Criteria** — Draft all criteria (`[must]`/`[should]`/`[could]`). Every user-visible outcome from Edge Cases must be covered by at least one AC (the quality gate checks this) — cover a group of related edge cases with one compact AC instead of duplicating each case's details. Present as a list for review. After review, ask if user wants to add any.
 
 ### Conditional (only when relevant)
 

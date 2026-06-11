@@ -18,10 +18,10 @@ Test writer. Reads specs and implementation plan, writes test files that verify 
 - Follow existing test patterns in the project — file placement, naming, imports, assertion style.
 - One test file per logical module/component. No monolithic test files.
 - Test descriptions reference the spec requirement they verify (e.g., "should show validation errors on empty submission [must]").
-- No mocks for code that doesn't exist yet — import from planned source paths directly. Mock only external dependencies (network, DB, filesystem) — if `docs/TESTING*.md` was loaded, its mock strategy supersedes this default.
+- Import from the actual source files in the worktree — the implementation exists by this phase (tests are written after implementation). Before asserting against an export, read its source to confirm the name and signature: the plan may have deviated (`[spec-deviation]`) — actual code is the source of truth for imports and APIs, the spec remains the source of truth for expected behavior. Mock only external dependencies (network, DB, filesystem) — if `docs/TESTING*.md` was loaded, its mock strategy supersedes this default.
 - No implementation code. Only test files and shared test fixtures — do not create application source files.
 - When creating stubs or overrides for async dependencies: if the test does not verify async behavior (loading states, delays, error propagation), use the immediate-completion form rather than a truly-async implementation (a function body that suspends).
-- Produce lint-clean code. All rules from `docs/CODE_RULES*.md` apply to test files equally — test code is not exempt. Resolve lint errors and type errors that do not stem from missing implementations before returning DONE. Exception: missing imports from unimplemented source files are unavoidable in TDD and do not require resolution.
+- Produce lint-clean code. All rules from `docs/CODE_RULES*.md` apply to test files equally — test code is not exempt. Resolve lint errors and type errors before returning DONE. All imports must resolve — the implementation exists; an unresolvable import means a wrong path or symbol and must be fixed, not ignored.
 - Never run `git commit` — the orchestrator handles commits in Phase 5.
 
 # Input
@@ -97,7 +97,7 @@ For each testable unit:
 3. Write test cases:
    - Group by feature/behavior using describe/context blocks (or language equivalent)
    - Each test maps to a spec requirement — include priority tag and reference in description
-   - Import from planned source paths (files don't exist yet — expected)
+   - Import from actual source paths (implementation exists — verify exported names by reading the source file)
    - Assert expected behavior per spec
 4. Include edge cases from spec
 5. For any test that asserts a function/method was NOT called, verify the relevant mock or spy is cleared before that test runs — either in the setup hook (`beforeEach`, `setUp`, etc.) or at the start of the test body.
@@ -110,21 +110,14 @@ When test-cases.md specifies that expected values must be sourced from an existi
 ## 5. Validate
 
 1. Collect written test files: use the `written_files` list tracked during Step 4. Do not use `git status --porcelain` — it includes pre-existing modified files from other agents that are out of scope.
-2. Task(super-agent) — prompt in multi-line key-value format:
-       step-validator
-       feature: {feature}
-       step: test-writer
-       spec_dir: {spec_dir}
-       step_number: 0
+2. `mkdir -p {spec_dir}/validation/step-0/`. Read `docs/WORKFLOW.md` § Pre-Validation Build Steps in the working directory (worktree_dir if set, otherwise repo root); run each listed build command via Bash (failure → log warning, continue). Then Task(static-checker) — prompt in multi-line key-value format:
+       error_file: <absolute path to {spec_dir}/validation/step-0/static.txt>
        working_dir: {worktree_dir}   (include this line only when worktree_dir is set)
-       files:
-       - {absolute_path_or_relative}/test1.ts
-       - {absolute_path_or_relative}/test2.ts
-3. step-validator crash (no parseable status) → read `docs/WORKFLOW.md` to find the project's lint/analyze command; run it via Bash scoped to written files; fix any errors found; then return DONE.
-4. NO_ISSUES → DONE.
-5. HAS_ISSUES → read `{spec_dir}/validation/step-0/aggregated.md` into `prev_errors`, fix (group by file, errors first).
-6. Re-call step-validator. NO_ISSUES → DONE. HAS_ISSUES → read aggregated.md into `curr_errors`:
-   - `curr_errors` identical to `prev_errors` (no progress) → DONE (unresolved static issues passed to global-validator)
+3. static-checker crash (no parseable status) → read `docs/WORKFLOW.md` to find the project's lint/analyze command; run it via Bash scoped to written files; fix any errors found; then return DONE.
+4. CLEAN → DONE.
+5. FAIL → read `{spec_dir}/validation/step-0/static.txt` into `prev_errors`, fix (group by file, errors first).
+6. Re-call static-checker (the call in step 2 counts as call 1; max 3 calls total). CLEAN → DONE. FAIL → read static.txt into `curr_errors`:
+   - `curr_errors` identical to `prev_errors` (no progress), or 3 calls exhausted → DONE (unresolved static issues passed to global-validator)
    - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 5)
 
 # Output

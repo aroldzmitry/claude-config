@@ -35,7 +35,7 @@ Single-target tuner. Mines real execution logs of one agent or command, coordina
 
 ## Phase 0: Resolve & Load
 
-1. `mkdir -p {BUNDLES} {RUN_REPORTS}`. If `{REPORTS_DIR}/fix-plan.md` exists (previous partially-applied run) → ask via AskUserQuestion: **Apply pending fix-plan** (run Phase 6 on it now; on success delete it, then continue fresh) / **Discard** (delete it). Then clear stale artifacts: `find {REPORTS_DIR} -name "0*.md" -delete; rm -rf {BUNDLES} {RUN_REPORTS}; mkdir -p {BUNDLES} {RUN_REPORTS}`.
+1. `mkdir -p {BUNDLES} {RUN_REPORTS}`. If `{REPORTS_DIR}/fix-plan.md` exists (previous partially-applied run) → ask via AskUserQuestion: **Apply pending fix-plan** (run Phase 6 on it now; on success delete it, then continue fresh) / **Discard** (delete it). Then clear stale artifacts: `find {REPORTS_DIR} -name "0*.md" -delete; find {BUNDLES} {RUN_REPORTS} -mindepth 1 -delete 2>/dev/null; mkdir -p {BUNDLES} {RUN_REPORTS}`.
 2. Parse `$ARGUMENTS`: token 1 = NAME (strip leading `/` and trailing `.md`); remaining tokens: positive integer → RUNS = min(value, 20); `all` → RUNS = 20; `solo` → SOLO = true; no integer → RUNS = 10.
 3. Resolve NAME:
    - `~/.claude/agents/{NAME}.md` exists → KIND = agent; `~/.claude/commands/{NAME}.md` exists → KIND = command; both exist → AskUserQuestion which one.
@@ -149,7 +149,9 @@ Skip this phase if STATIC_ONLY.
 
 ## Phase 5: Review
 
-For each verified finding (critical → medium → low):
+Classify each verified finding per `~/.claude/docs/ASK_POLICY.md`: **Technical** — exactly one viable fix and no change to user-visible behavior (broken reference, contract field mismatch, dead text); **Business** — removes or weakens a rule, changes what the system asks or produces, or has 2+ viable approaches. When unsure → Business.
+
+Technical findings → step 3 directly, no question, recommendation = agreed change. Then for each Business finding (critical → medium → low):
 
 1. Present: severity, ID, type, runs cited, target file, evidence quotes, recommendation. Show the Rule-Coverage / Chain-Contract matrix row when relevant. Read source files on-demand.
 2. AskUserQuestion: **Fix** / **Reject** / **Skip**.
@@ -165,14 +167,14 @@ For each verified finding (critical → medium → low):
    `- [YYYY-MM-DD] [tune] {ID} {files}: {description} — reason: "{reason}"`
 5. Skip → nothing recorded.
 
-Progress: `[3/N | next: B-02 — description]`. After all: fix-plan.md exists → Phase 6, else → Phase 7.
+Progress: `[3/N | next: B-02 — description]`. After all: show a digest of auto-accepted Technical fixes (`{ID} — {target} — {one-line action}`) — silently applied ≠ invisible; user may demote any line to the Business loop before proceeding. Then: fix-plan.md exists → Phase 6, else → Phase 7.
 
 ## Phase 6: Apply & Chain Check
 
 1. Spawn `audit-applier` (`subagent_type: general-purpose`, `model: sonnet`): `fix_plan: {REPORTS_DIR}/fix-plan.md`.
 2. Parse CHANGED_FILES → CHANGED_MD (.md only). Not empty → spawn `validator-doc-system` with `changed_files: {CHANGED_MD}`. CLEAN → continue; ISSUES → show user, append agreed corrections as new `## Fix` blocks to fix-plan.md, re-run audit-applier, re-validate (max 2 extra cycles).
 3. **Chain check**: if >1 TARGET_SET file changed, or any applied fix was CONTRACT_DRIFT → spawn `audit-consistency` (`model: sonnet`) with `files: {TARGET_SET + NEIGHBORHOOD}`, `scope: all`, `output: {REPORTS_DIR}/10-chain-check.md`, prompt appendix: `Verify parent↔child contracts still align after recent edits — spawn prompts vs # Input sections, # Output specs vs what parents parse. Report only misalignments.` Findings → show user, AskUserQuestion: **Fix chain issues** / **Skip**. Fix → append as `## Fix` blocks to a new fix-plan.md, re-run step 1 (once); Skip → continue to step 4.
-4. `git -C ~/.claude add {changed files} && git commit -m "tune: {target} — {N} change(s)"`.
+4. `git -C ~/.claude add {CHANGED_FILES} && git commit -m "tune: {target} — {N} change(s)"`.
 
 ## Phase 7: Record & Cleanup
 
@@ -184,7 +186,7 @@ Append to OBSERVATIONS_FILE (create if missing, 20 entries max):
 - fixed: N (files: {list}), rejected: N, skipped: N
 - notes: {one-line key pattern}
 ```
-Apply succeeded → `rm -rf {BUNDLES} {RUN_REPORTS}; rm -f {REPORTS_DIR}/*.md`. Apply failed/partial → keep `fix-plan.md`, delete the rest.
+Apply succeeded → `find {BUNDLES} {RUN_REPORTS} -mindepth 1 -delete 2>/dev/null; rm -f {REPORTS_DIR}/*.md`. Apply failed/partial → keep `fix-plan.md`, delete the rest.
 
 Final: "Tuned {target}: fixed N, rejected N, skipped N."
 

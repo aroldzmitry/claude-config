@@ -99,7 +99,9 @@ Show overview: N verified (critical/medium/low), N low-impact, N false positives
 
 ## Phase 3: Review
 
-For each verified issue (critical → medium → low):
+Classify each verified issue per `~/.claude/docs/ASK_POLICY.md`: **Technical** — exactly one viable fix and no change to user-visible behavior (broken reference, contract field mismatch, dead text); **Business** — removes or weakens a rule, changes what the system asks or produces, or has 2+ viable approaches. When unsure → Business.
+
+Technical issues → step 3 directly, no question, recommendation = agreed action. Then for each Business issue (critical → medium → low):
 
 1. Present: severity, ID, description, files, evidence, sources, recommendation.
    Read source files on-demand if user needs more context.
@@ -121,7 +123,7 @@ For each verified issue (critical → medium → low):
 
 Progress: `[3/N | next: M-02 — description]`
 
-After all: if fix-plan.md exists → Phase 4. Otherwise → Phase 5.
+After all: show a digest of auto-accepted Technical fixes (`{ID} — {target} — {one-line action}`) — silently applied ≠ invisible; user may demote any line to the Business loop before proceeding. Then: if fix-plan.md exists → Phase 4. Otherwise → Phase 5.
 
 ## Phase 4: Apply
 
@@ -137,7 +139,8 @@ After all: if fix-plan.md exists → Phase 4. Otherwise → Phase 5.
    ```
    changed_files: {CHANGED_MD}
    ```
-5. CLEAN → success. ISSUES → show to user.
+5. CLEAN → continue. ISSUES → classify each per the Phase 3 rule (Technical → append to `fix-plan.md` as a `## Fix` block without asking, show user one line `{target} — {action}`; Business → show, AskUserQuestion **Fix** / **Skip**), re-run audit-applier, re-validate (max 2 extra cycles); issues still open after that → report them, continue.
+6. `git -C ~/.claude add {CHANGED_FILES} && git commit -m "audit: {N} change(s)"`.
 
 ## Phase 5: Record
 

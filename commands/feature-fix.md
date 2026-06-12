@@ -42,7 +42,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 1: Planning
 
-- If `USE_PARENT_WORKTREE = true`: launch `planner` only (task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR`). WORKTREE_DIR, BRANCH, PR_URL already set in Phase 0.
+- If `USE_PARENT_WORKTREE = true`: launch `planner` only (task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR, worktree_dir: WORKTREE_DIR` — the feature's code exists only on the parent branch in the worktree; without `worktree_dir` the planner would plan against pre-feature repo-root state). WORKTREE_DIR, BRANCH, PR_URL already set in Phase 0.
 - Else: launch in parallel (same response):
   - Task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR`
   - Task: `setup-worktree` with prompt: `feature: $ARGUMENTS, repo_root: REPO_ROOT, spec_dir: SPEC_DIR`
@@ -99,7 +99,7 @@ ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: wr
 
 `git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 
-If `CHANGED_FILES` is empty and `USE_PARENT_WORKTREE = true`: fallback to a branch-health check. Compute `BRANCH_FILES` from `git -C WORKTREE_DIR diff --name-only $(git -C WORKTREE_DIR merge-base HEAD master)...HEAD` (apply the same filtering rules above, absolutize as `WORKTREE_DIR/{relative_path}`). Use `BRANCH_FILES` as `CHANGED_FILES`. Log `[Validation: branch health check — N files]`.
+If `CHANGED_FILES` is empty and `USE_PARENT_WORKTREE = true`: fallback to a branch-health check. Derive the default branch: `BASE=$(git -C WORKTREE_DIR symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||'); [ -z "$BASE" ] && BASE=main`. Compute `BRANCH_FILES` from `git -C WORKTREE_DIR diff --name-only $(git -C WORKTREE_DIR merge-base HEAD origin/$BASE)...HEAD` (apply the same filtering rules above, absolutize as `WORKTREE_DIR/{relative_path}`). Use `BRANCH_FILES` as `CHANGED_FILES`. Log `[Validation: branch health check — N files]`.
 
 Spawn `global-validator` via Agent(subagent_type='super-agent') with prompt:
 

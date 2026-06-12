@@ -191,10 +191,11 @@ After all chunks complete, report: `Investigation complete: {total_chunks} chunk
 6. Show overview: `Found {N} verified issues: {C} critical, {M} medium, {L} low.`
 7. Build `CITED_FILES` = unique file paths from all deduplicated findings (strip `:line` suffix, deduplicate).
 
-8. Second-opinion validation — spawn codex agent:
+8. Second-opinion validation — spawn `codex` agent with prompt (first word must be the inner agent name — the codex wrapper parses it):
 
    ```
-   codex research-verifier
+   research-verifier
+   findings:
    <all deduplicated findings in markdown format>
 
    chunk_files:

@@ -37,21 +37,28 @@ kill_tree() {
   kill -9 "$pid" 2>/dev/null || true
 }
 
-# All state in memory — no temp files
 declare -a TAIL_BUF=()
 DONE_LINE=""
 KILL_REASON=""
 START_EPOCH=$(date +%s)
 LAST_ACTIVITY=$START_EPOCH
 
+# Exit status travels via a temp file: `wait` on a process-substitution PID
+# returns 127 under bash 3.2 (macOS default), so it cannot be used here.
+EXIT_FILE=$(mktemp /tmp/supervised_exit.XXXXXX)
+
 # Anonymous pipe via process substitution (no FIFO file)
 # script -q /dev/null creates a PTY so child processes use line buffering
 # (without PTY, Node.js fully buffers stdout in pipes, causing stall timeouts)
-exec 3< <(exec script -q /dev/null "$@" 2>&1)
+# stdin from /dev/null: supervised commands are batch-mode; with an inherited
+# socket stdin macOS script(1) fails (tcgetattr) or misreports the exit status.
+# set +e: the procsub inherits this script's `set -e`, which would abort the
+# subshell on a non-zero command exit BEFORE the exit file gets written.
+exec 3< <(set +e; script -q /dev/null "$@" </dev/null 2>&1; echo "$?" > "$EXIT_FILE")
 CMD_PID=$!
 
 # Cleanup children on external kill (e.g., Bash tool timeout)
-trap 'kill_tree "$CMD_PID" 2>/dev/null; exit 143' TERM INT
+trap 'kill_tree "$CMD_PID" 2>/dev/null; rm -f "$EXIT_FILE"; exit 143' TERM INT
 
 while true; do
   if IFS= read -t "$CHECK_INTERVAL" -r line <&3; then
@@ -103,7 +110,13 @@ while true; do
 done
 
 exec 3<&-
-wait "$CMD_PID" 2>/dev/null && EXIT_CODE=$? || EXIT_CODE=$?
+# Give the procsub a moment to flush the exit file on fast exits
+[[ -s "$EXIT_FILE" ]] || sleep 0.2
+EXIT_CODE=$(cat "$EXIT_FILE" 2>/dev/null)
+rm -f "$EXIT_FILE"
+# Empty file (process killed before writing it) → killed/done paths below
+# decide the exit; otherwise assume clean.
+EXIT_CODE="${EXIT_CODE:-0}"
 
 # Output contract: result or error, nothing else
 if [[ -n "$KILL_REASON" ]]; then

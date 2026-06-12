@@ -34,7 +34,7 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 4. SCOPE from `$ARGUMENTS`:
    - Predefined scopes: `commands`, `agents`, `docs`, `settings`, `all`. Empty `$ARGUMENTS` → incremental (step 5) when a last-audit marker exists, otherwise full corpus.
    - Unrecognized → treat as filename substring filter: filter ALL_FILES to paths containing `$ARGUMENTS` as a substring (case-insensitive). Log: "Scoped to N files matching '$ARGUMENTS'.". Set SCOPE = `all`. If 0 files match → warn "No files match '$ARGUMENTS' — defaulting to all." and keep ALL_FILES unchanged.
-5. Incremental scope (only when `$ARGUMENTS` is empty): read `~/.claude/agent-memory/system-audit/last-audit-commit` if it exists. If it holds a valid commit → `CHANGED = git -C ~/.claude diff --name-only {hash}..HEAD` intersected with ALL_FILES. CHANGED empty → report "No system files changed since last audit ({short-hash}). Run `/system-audit all` for a full pass." and stop. Otherwise: ALL_FILES = CHANGED, set `INCREMENTAL = true`, log `[Incremental audit: N files changed since {short-hash}; '/system-audit all' forces full]`. Explicit `all` always audits the full corpus.
+5. Incremental scope (only when `$ARGUMENTS` is empty): read `~/.claude/agent-memory/system-audit/last-audit-commit` if it exists. If it holds a valid commit → `CHANGED = git -C ~/.claude diff --name-only {hash}` (commit-to-worktree — includes uncommitted edits) intersected with ALL_FILES. CHANGED empty → report "No system files changed since last audit ({short-hash}). Run `/system-audit all` for a full pass." and stop. Otherwise: ALL_FILES = CHANGED, set `INCREMENTAL = true`, log `[Incremental audit: N files changed since {short-hash}; '/system-audit all' forces full]`. Explicit `all` always audits the full corpus.
 
 ## Phase 1: Validate
 
@@ -150,7 +150,7 @@ Size limit: 20 entries max.
 
 If audit-applier completed successfully → delete reports: `rm -f {REPORTS_DIR}/*.md`. If audit-applier failed or partially applied → keep `fix-plan.md`, delete only report files (`01-*.md` through `09-*.md`).
 
-Stamp the audit point for incremental mode: `git -C ~/.claude rev-parse HEAD > ~/.claude/agent-memory/system-audit/last-audit-commit`
+Stamp the audit point for incremental mode — only when the run covered the full candidate set: SCOPE = `all` with no substring filter, or an `INCREMENTAL` run. Scoped runs (`commands`/`agents`/`docs`/`settings`/substring filter) audit a subset and must NOT move the marker: `git -C ~/.claude rev-parse HEAD > ~/.claude/agent-memory/system-audit/last-audit-commit`
 
 Final: "Audit complete. Fixed N, rejected N, skipped N."
 

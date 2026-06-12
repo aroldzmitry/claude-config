@@ -1,7 +1,7 @@
 ---
 name: feature-split
 description: "Non-interactive feature decomposition agent. Reads business-requirements.md (and technical-requirements.md if present), calculates size estimate, determines split boundaries, generates sub-feature files and NEXT markers."
-tools: Read, Glob, Write, Bash
+tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 permissionMode: acceptEdits
 ---

@@ -136,6 +136,9 @@ print(raw)
       EXIT_CODE=$(cat "$SESSION_DIR/.done" 2>/dev/null || echo "")
       if [[ -n "$EXIT_CODE" && "$EXIT_CODE" != "0" ]]; then
         echo "ERROR: agent exited with code $EXIT_CODE"
+        # The SUPERVISED-RUN reason header is the FIRST stderr line — surface it
+        # even when 200 buffered tail lines push it out of tail's window
+        grep -m 2 '^SUPERVISED-RUN:' "$SESSION_DIR/error.txt" 2>/dev/null || true
         tail -n 20 "$SESSION_DIR/error.txt" 2>/dev/null || true
       fi
       cat "$SESSION_DIR/response.txt" 2>/dev/null || cat "$SESSION_DIR/output.txt" 2>/dev/null || true

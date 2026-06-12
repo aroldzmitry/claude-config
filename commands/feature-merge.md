@@ -139,8 +139,9 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 - If `PR.state = closed` → stop: "PR was closed without merging. Reopen it or clean up manually: `git push origin --delete feat/$FEATURE && git branch -D feat/$FEATURE`"
 - If `PR.state = open`:
   - If `PR.isDraft = true`:
-    - If `$REPO_ROOT/temp/$FEATURE-warnings/NEXT--feature-tech` exists → stop: "Pending decisions from the implementing run. Answer them via `/feature-tech $FEATURE-warnings`, then `/feature-fix $FEATURE-warnings`, then re-run `/feature-merge $FEATURE`."
-    - If `$REPO_ROOT/temp/$FEATURE-warnings/NEXT--feature-fix` exists → stop: "Unresolved issues remain from the implementing run. Run `/feature-fix $FEATURE-warnings` first, then re-run `/feature-merge $FEATURE`."
+    - Find the active warnings folder: Glob `$REPO_ROOT/temp/$FEATURE-warnings*/NEXT--*` (fix chains escalate the name: `-warnings` → `-warnings1` → `-warnings2`; consumed folders move to `temp/done/`). If several folders match, take the highest-numbered. Set `WFOLDER` = that folder's basename.
+    - If `{WFOLDER}/NEXT--feature-tech` exists → stop: "Pending decisions from the implementing run. Answer them via `/feature-tech {WFOLDER}`, then `/feature-fix {WFOLDER}`, then re-run `/feature-merge $FEATURE`."
+    - If `{WFOLDER}/NEXT--feature-fix` exists → stop: "Unresolved issues remain from the implementing run. Run `/feature-fix {WFOLDER}` first, then re-run `/feature-merge $FEATURE`."
     - Otherwise → stop: "PR is still draft — the implementing run did not complete. Finish the feature or close the PR manually."
   - Run: `gh pr merge $PR.url --merge`
   - If fails → stop: "PR merge failed: {error}. Resolve the issue and re-run `/feature-merge $FEATURE`."

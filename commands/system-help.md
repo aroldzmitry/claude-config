@@ -41,7 +41,7 @@ Output this reference (translated to user's language):
 /docs-sync [doc-name?]        → sync docs/ with code changes
 /research <topic>              → deep project research: chunks → specialist agents → verify → TR (topic: performance/security/error-handling/code-quality)
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
-/system-audit [scope?]        → deep system audit: 7 validators → review → fix (scope: all/commands/agents/docs/settings or filename substring)
+/system-audit [scope?]        → deep system audit: 7 validators → review → fix (no scope: incremental since last audit; all/commands/agents/docs/settings or filename substring)
 /system-help [command?]       → this help
 
 ### Command reference
@@ -75,6 +75,8 @@ Output this reference (translated to user's language):
 
 **Bug (unknown cause):** `/bug 409 on user creation` → `/feature-fix BUG-409-create-user` → `/feature-merge BUG-409-create-user`
 
+**Draft PR with pending decisions (implement hit a business question):** answer via `/feature-tech <name>-warnings` → `/feature-fix <name>-warnings` → `/feature-merge <name>`
+
 **Quick fix (known cause):** `/bug fix the login button` → `/feature-fix BUG-fix-login-button` → `/feature-merge BUG-fix-login-button`
 
 **Tiny one-file fix (no planning):** `/patch fix the login button color`
@@ -90,7 +92,9 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: runs in a git worktree (`.worktrees/<name>/`) on a `feat/<name>` branch, produces a draft PR; use `/feature-merge` to merge
+- Implementation is fully autonomous: runs in a git worktree (`.worktrees/<name>/`) on a `feat/<name>` branch, produces a PR (ready when clean; draft while issues or business decisions remain — see the pending-decisions scenario); use `/feature-merge` to merge
+- Autonomous commands never decide business questions (`~/.claude/docs/ASK_POLICY.md`); specs with unresolved Open Questions are rejected at the implement/fix gate
+- Every run appends cost metrics (questions, agent spawns, iterations) to `agent-memory/metrics/runs.md`; `/system-find-improve` reads them for trend detection
 - Validators run in parallel, never see each other's work
 - `docs/` files are loaded by agents automatically — keep them current with `/docs-sync`
 

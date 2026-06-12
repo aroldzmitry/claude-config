@@ -140,7 +140,7 @@ Check global-validator status:
 - `NO_ISSUES` → Phase 5.
 - Response contains `"hit your limit"`, `"rate limit"`, or `"AUTH_ERROR"` → log `[Validation: skipped — rate limit or auth error]`, append `"Validation: skipped due to rate limit or auth error"` to `unresolved_steps`, Phase 5.
 - Response contains `"aggregator failed"` → append `"Validation: aggregator failed"` to `unresolved_steps`, Phase 5.
-- Response is a general crash (contains `"encountered an error"` or `"crashed"`, does not match the above patterns) → retry global-validator once with the same inputs. If second attempt also fails → append `"Validation: validator crashed"` to `unresolved_steps`, Phase 5.
+- Response is a general crash (contains `"encountered an error"` or `"crashed"`, or starts with `"ERROR:"` — the launcher's failed-exit prefix; does not match the above patterns) → retry global-validator once with the same inputs. If second attempt also fails → append `"Validation: validator crashed"` to `unresolved_steps`, Phase 5.
 - `HAS_ISSUES` → categorize by global-validator return string: contains `(test)` or `(static)` → **test** (`test_iter`, limit 5); else (`N open`) → **AI** (`ai_iter`, limit 2). Read `SPEC_DIR/validation/issues.md` for the issue list. Test failures are deterministic and must pass before commit — fix them without incrementing `ai_iter`.
   - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.
   - Counter < limit → spawn `planner` with prompt:
@@ -156,7 +156,7 @@ Check global-validator status:
 
 ## Phase 5: Finalize
 
-1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
+1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars). Read `SPEC_DIR/validation/skipped.md` if it exists → `SKIPPED_LINES` (must be read now — step 5 moves the folder before the report is printed).
 2. Set `MARK_READY = true`. If `unresolved_steps` is non-empty (any entry — crashed steps, open AI issues, skipped validation, pending decisions all count, not only test failures) → set `MARK_READY = false`.
 3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
@@ -174,7 +174,7 @@ Check global-validator status:
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
    - `NOTHING_STAGED` → full cleanup so a re-run starts clean: `gh pr close PR_URL --delete-branch 2>/dev/null || true`, then `git -C REPO_ROOT worktree remove WORKTREE_DIR --force 2>/dev/null || true`, then `git -C REPO_ROOT branch -D BRANCH 2>/dev/null || true`; log `[No files staged — PR closed, branch and worktree deleted]`; omit **PR** line from report.
 4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are NOT turned into Fix sections — write them verbatim into a `## Open Questions` section of the same warnings spec (they require a user answer, not an autonomous fix) and list them in the report's Unresolved Issues. The user answers them via `/feature-tech $ARGUMENTS-warnings`, then `/feature-fix $ARGUMENTS-warnings` applies the result on the existing feature branch. If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
-5. Folder status:
+5. Folder status (skip this step entirely if committer returned `NOTHING_STAGED` — leave SPEC_DIR and its markers in place so a re-run finds the spec):
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
    - `mv SPEC_DIR SPEC_DIR-done`
    - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
@@ -193,7 +193,7 @@ Check global-validator status:
 **Files changed:** N
 **Tests:** written (or "skipped")
 **Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2
-**Skipped validators:** {lines from SPEC_DIR/validation/skipped.md}  ← omit line if file absent
+**Skipped validators:** {SKIPPED_LINES}  ← omit line if empty
 
 ### Decisions
 - <technical ambiguity> → <what was chosen and why>

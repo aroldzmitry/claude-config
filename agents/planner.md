@@ -32,7 +32,7 @@ Received via prompt from orchestrator:
 - `revision_dir` — (optional) path to directory with plan validation findings (e.g., `temp/<feature>/validation/plan/`)
 - `issues_file` — (optional) path relative to `spec_dir` to an issues file; triggers Fix-Plan Mode
 - `aggregated_file` — (optional) path relative to `spec_dir` to the latest aggregated validation output; when provided in Fix-Plan Mode, used to filter stale issues from `issues_file`
-- `worktree_dir` — (optional) absolute path to the git worktree where implementation files live; when provided in Fix-Plan Mode, source file paths from issues are resolved under this directory rather than the repo root
+- `worktree_dir` — (optional) absolute path to the git worktree where implementation files live. In Fix-Plan Mode: source file paths from issues are resolved under this directory rather than the repo root. In normal mode: all codebase scanning (Step 2 Globs/Greps/Reads) resolves under `{worktree_dir}` — the feature's code exists only there; plan **Files** paths stay repo-relative (the coder prefixes them with the worktree)
 
 # Workflow
 
@@ -46,6 +46,8 @@ If `issues_file` is provided → go to **Fix-Plan Mode** below (takes precedence
 If `docs/` is missing or empty — proceed without it, rely on code scanning.
 
 ## 2. Scan Codebase
+
+When `worktree_dir` is provided: perform every Glob/Grep/Read below under `{worktree_dir}` (the repo root holds pre-feature state); keep plan **Files** paths repo-relative.
 
 Based on specs, identify affected parts of the codebase:
 - Glob relevant directories and files first — never guess file paths

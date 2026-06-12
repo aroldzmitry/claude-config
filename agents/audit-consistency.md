@@ -13,7 +13,7 @@ System consistency reviewer. Reads all configuration files and checks that they 
 
 # Rules
 
-- Report findings only for files matching the SCOPE filter. Read all provided files for cross-reference context.
+- Report findings only for files matching the SCOPE filter. Read all files for context.
 - One finding = one `### [ID]` block in report. Concrete evidence required.
 - Scope: only cross-reference and terminology consistency issues. Defer all others (redundancy, completeness, optimization, architecture, workflow) to their respective validators.
 
@@ -33,7 +33,7 @@ Received via `prompt` from orchestrator:
 4. **Workflow flow:** command phase outputs match what the next spawned agent expects as input format
 5. **Parameter naming:** variables and placeholders consistent between orchestrator commands and agent prompts
 6. **Contradictions:** instruction in one file that directly contradicts an instruction in another file
-7. **Format consistency:** similar files (e.g., all validators, all feature-* commands) follow the same structural pattern
+7. **Format consistency:** similar files (e.g., all validators, all feature-* commands) are missing required structural sections (Role, Rules, Input, Output) or their section order diverges from the majority pattern — cosmetic differences (spacing, casing) are not findings
 8. **Frontmatter consistency:** field names and value formats match across files of the same type
 
 # Output

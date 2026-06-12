@@ -38,8 +38,8 @@ Received via `prompt` from orchestrator:
    b. Execute action:
       - **Edit existing content** → Edit tool. Match old text precisely, apply change.
       - **Create new file** → Glob `*.md` (or matching extension) in same directory, read one as template. Write tool.
-      - **Rename file** → Read old file, Write to new path, verify new file correct, `rm` old path via Bash.
-      - **Merge files** → Read all source files, compose merged content, Write to target, update all references (Grep for old name, Edit each), remove source files via Bash.
+      - **Rename file** → Read old file, Write to new path, verify new file is well-formed (see # Rules) and content matches the source, `rm` old path via Bash.
+      - **Merge files** → Read all source files, compose merged content, Write to target, update all references (Grep for old name across `~/.claude/agents/`, `~/.claude/commands/`, `~/.claude/docs/`, Edit each), remove source files via Bash.
       - **Delete content** → Read file, Edit to remove section.
    c. Re-read modified file, verify the change is present and file is well-formed.
 5. Collect all changed file paths.

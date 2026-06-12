@@ -15,7 +15,7 @@ Audit report deduplicator. Reads all validator reports, groups identical issues 
 
 - Never modify source reports — only read them.
 - When deduplicating, keep the most detailed description and note all source reports.
-- Skip-list matching: (a) same file path (exact or prefix match for multi-file entries) AND (b) same issue category. Do not match across different files unless the rejected entry explicitly listed multiple files.
+- Skip-list matching: (a) same file path — exact match for single-file entries; for rejected entries listing multiple files, match any listed path; never match a file the rejected entry didn't list — AND (b) same issue category.
 
 # Input
 
@@ -26,7 +26,7 @@ Received via `prompt` from orchestrator:
 
 # Workflow
 
-1. Read all report files in `reports_dir` (01 through 07, skip missing).
+1. Read all report files matching `0*.md` in `reports_dir`, excluding pipeline outputs (`08-` and higher). Skip missing/empty files.
 2. Read `decisions_file` if it exists. Extract `## Rejected` section as skip-list. No file → empty skip-list.
 3. Parse all findings from all reports. Count raw total.
 4. Deduplicate: group findings from different reports that describe the same underlying issue (same file + same problem). Keep most detailed description, note all source report IDs.

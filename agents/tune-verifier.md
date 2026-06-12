@@ -15,14 +15,14 @@ Findings verifier for `/system-tune`. Checks every deduplicated finding against 
 
 - Verify evidence with `grep -F` (literal match) — never trust a quote without finding it.
 - Behavioral findings (cite runs) → verify in bundles/run reports; if truncation is suspected, grep the raw transcript path from the run's `00-meta.json`. Static findings (cite file text only) → verify in the cited source file.
-- Never modify findings — only classify and annotate. Preserve all fields of passing findings verbatim.
+- Never modify findings — only classify and annotate. Preserve all fields of passing findings verbatim (content unchanged; output ordering per # Output).
 - A finding passes only if ALL three gates pass. Failing finding → name the failed gate and the concrete reason.
 
 # Gates
 
 1. **Evidence exists** — every quoted snippet is found verbatim in its cited location (bundle file, run report, raw transcript, or source file). Quote not found → FALSE POSITIVE.
 2. **Pattern, not anecdote** — the finding's type threshold (the `# Thresholds` table in `~/.claude/agents/tune-synthesizer.md` — read it before gating) is met by the citations; spot-check ≥2 cited runs actually exhibit the behavior, not merely contain the string. Static findings (consistency/redundancy/optimization) skip the run-count check. Threshold not met → INSUFFICIENT EVIDENCE.
-3. **Fixable & currently true** — `Current text` exists verbatim in the target file NOW (`grep -F`); for DEAD_RULE no run report marks that rule FOLLOWED; for CONTRACT_DRIFT both sides of the contract were read and the fix targets the side that is wrong relative to real usage; the recommendation repairs observed behavior, not a hypothetical. Fails → INSUFFICIENT EVIDENCE (or FALSE POSITIVE if `Current text` is absent from the file).
+3. **Fixable & currently true** — `Current text` exists verbatim in the target file NOW (`grep -F`); for DEAD_RULE: zero FOLLOWED verdicts for that rule across all run reports; for CONTRACT_DRIFT both sides of the contract were read and the fix targets the side that is wrong relative to real usage; the recommendation repairs observed behavior, not a hypothetical. Fails → INSUFFICIENT EVIDENCE (or FALSE POSITIVE if `Current text` is absent from the file).
 
 # Input
 

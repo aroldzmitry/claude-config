@@ -15,7 +15,7 @@ Single-target tuner. Mines real execution logs of one agent or command, coordina
 - Match user's language. AskUserQuestion for structured decisions, plain text for open-ended discussion.
 - Never Read a raw `.jsonl` — extraction uses grep/jq/sed slices only.
 - Targeted edits only: every fix action is REPLACE/DELETE/ADD of a specific span with explicit CURRENT/REPLACEMENT — never a file or section rewrite.
-- Spawn models strictly per the Phase tables: extraction/static/dedup/apply = `sonnet`; synthesis/verification = `fable` (if rejected by the harness → `opus`).
+- Spawn models strictly per the Phase tables: extraction/static/dedup/apply = `sonnet`; synthesis/verification = `fable`; if the spawn fails with a model-availability error → retry once with `opus`.
 - Every agent spawn uses `subagent_type: general-purpose`; prompt = `Read instructions at ~/.claude/agents/{agent}.md. Follow all rules, checks, output format.` + the Input fields listed at the spawn site. This applies to ALL phases (2–6).
 - Shell variables holding raw jsonl records break on `echo` (control characters) — always pipe via temp file: `grep -m1 ... > $BUNDLE/.record.json`, then `jq ... $BUNDLE/.record.json`.
 
@@ -23,6 +23,7 @@ Single-target tuner. Mines real execution logs of one agent or command, coordina
 
 - `P` = `~/.claude/projects`
 - `MEMORY` = `~/.claude/agent-memory/system-tune`
+- `TARGET` = resolved path of the tuning subject: `~/.claude/agents/{NAME}.md` or `~/.claude/commands/{NAME}.md`
 - `REPORTS_DIR` = `{MEMORY}/reports/`
 - `BUNDLES` = `{REPORTS_DIR}/runs/`
 - `RUN_REPORTS` = `{REPORTS_DIR}/run-reports/`
@@ -93,7 +94,7 @@ Write `{REPORTS_DIR}/runs-manifest.md`: one row per run (`bundle | channel | ts 
 
 ## Phase 2: Analyze
 
-Spawn in parallel (`subagent_type: general-purpose`; prompt = `Read instructions at ~/.claude/{agent_file}. Follow all rules, checks, output format.` + Input block):
+Spawn in parallel (per the spawn rule in # Rules, + Input block):
 
 | Agent instructions | model | Input files | Output |
 |---|---|---|---|
@@ -125,7 +126,7 @@ Append this appendix to the three static validators' prompts (replaces system-au
 Severity: CRITICAL = wrong output/broken contract in real use; MEDIUM = recurring friction, contract drift, misleading instruction; LOW = bloat, dead text, token waste.
 Report only findings involving {TARGET_SET paths}; optimization and bloat-removal findings ARE in scope but must cite concrete text. Do NOT report: theoretical edge cases, defensive hardening, style preferences without token or clarity impact.
 ```
-A failed analyzer → skip it, continue. Wait for all before Phase 3.
+Wait for all analyzers before Phase 3.
 
 ## Phase 3: Synthesize
 
@@ -143,7 +144,7 @@ Skip this phase if STATIC_ONLY.
 
 ## Phase 4: Aggregate & Verify
 
-1. Spawn `audit-deduplicator` (`subagent_type: general-purpose`, `model: sonnet`): `reports_dir: {REPORTS_DIR}`, `decisions_file: {DECISIONS_FILE}` (reads 01–04, skips missing 05–07).
+1. Spawn `audit-deduplicator` (`subagent_type: general-purpose`, `model: sonnet`): `reports_dir: {REPORTS_DIR}`, `decisions_file: {DECISIONS_FILE}`.
 2. Spawn `tune-verifier` (`subagent_type: general-purpose`, `model: fable`): `findings_file: {DEDUP_FILE}`, `reports_dir: {REPORTS_DIR}`, `target_set: {TARGET_SET}`, `output_file: {VERIFIED_FILE}`.
 3. Read `{VERIFIED_FILE}` and the `## Statistics` section of `{DEDUP_FILE}` (source of the filtered-by-skip-list count). 0 verified → "Chain {target} clean over N runs." → Phase 7. Else show overview: N verified (C/M/L), N FP, N insufficient, N filtered by skip-list.
 
@@ -172,8 +173,8 @@ Progress: `[3/N | next: B-02 — description]`. After all: show a digest of auto
 ## Phase 6: Apply & Chain Check
 
 1. Spawn `audit-applier` (`subagent_type: general-purpose`, `model: sonnet`): `fix_plan: {REPORTS_DIR}/fix-plan.md`.
-2. Parse CHANGED_FILES → CHANGED_MD (.md only). Not empty → spawn `validator-doc-system` with `changed_files: {CHANGED_MD}`. CLEAN → continue; ISSUES → show user, append agreed corrections as new `## Fix` blocks to fix-plan.md, re-run audit-applier, re-validate (max 2 extra cycles).
-3. **Chain check**: if >1 TARGET_SET file changed, or any applied fix was CONTRACT_DRIFT → spawn `audit-consistency` (`model: sonnet`) with `files: {TARGET_SET + NEIGHBORHOOD}`, `scope: all`, `output: {REPORTS_DIR}/10-chain-check.md`, prompt appendix: `Verify parent↔child contracts still align after recent edits — spawn prompts vs # Input sections, # Output specs vs what parents parse. Report only misalignments.` Findings → show user, AskUserQuestion: **Fix chain issues** / **Skip**. Fix → append as `## Fix` blocks to a new fix-plan.md, re-run step 1 (once); Skip → continue to step 4.
+2. Parse CHANGED_FILES → CHANGED_MD (.md only). Not empty → spawn `validator-doc-system` per the spawn rule in # Rules, Input: `changed_files: {CHANGED_MD}`. CLEAN → continue; ISSUES → show user, append agreed corrections as new `## Fix` blocks to fix-plan.md, re-run audit-applier, re-validate (max 2 extra cycles).
+3. **Chain check**: if >1 TARGET_SET file changed, or any applied fix was CONTRACT_DRIFT → spawn `audit-consistency` (`model: sonnet`) with `files: {CHANGED_FILES + every TARGET_SET/NEIGHBORHOOD file that references or is referenced by a CHANGED_FILE — grep -l both directions}`, `scope: all`, `output: {REPORTS_DIR}/10-chain-check.md`, prompt appendix: `Verify parent↔child contracts still align after recent edits — spawn prompts vs # Input sections, # Output specs vs what parents parse. Report only misalignments.` Findings → show user, AskUserQuestion: **Fix chain issues** / **Skip**. Fix → append as `## Fix` blocks to a new fix-plan.md, re-run step 1 (once); Skip → continue to step 4.
 4. `git -C ~/.claude add {CHANGED_FILES} && git commit -m "tune: {target} — {N} change(s)"`.
 
 ## Phase 7: Record & Cleanup
@@ -197,7 +198,7 @@ Final: "Tuned {target}: fixed N, rejected N, skipped N."
 - All findings filtered by skip-list → "All known issues reviewed. Clear skip-list?"
 - DECISIONS_FILE >100 entries → warn, suggest cleanup.
 - Analyzer fails → skip it; tune-run-analyzer batch fails → continue with remaining run reports (<3 reports → pattern thresholds unreachable: warn, present only CRITICAL singles).
-- audit-applier fails mid-apply → report partial progress, keep fix-plan.md.
+- audit-applier fails mid-apply → report partial progress; fix-plan retention per Phase 7.
 - User interrupts Phase 5 → rejects saved, fix-plan partial → pending-fix-plan path next run.
 - Self-target → edits apply next invocation; current session's transcript excluded from discovery.
 

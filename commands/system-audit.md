@@ -94,7 +94,7 @@ Input:
   output_file: {VERIFIED_FILE}
 ```
 
-Read `{VERIFIED_FILE}`. If 0 verified → "System audit clean." → Phase 5.
+Read `{VERIFIED_FILE}` and the `## Statistics` section of `{DEDUP_FILE}` (source of the filtered-by-skip-list count). If 0 verified → "System audit clean." → Phase 5.
 Show overview: N verified (critical/medium/low), N low-impact, N false positives, N filtered.
 
 ## Phase 3: Review
@@ -112,7 +112,7 @@ Technical issues → step 3 directly, no question, recommendation = agreed actio
    ```
    ## Fix {ID}: {title}
    - **Target:** {file path}
-   - **Action:** {agreed action}
+   - **Action:** {REPLACE/DELETE/ADD with explicit CURRENT and REPLACEMENT text}
    - **Context:** {discussion summary}
    ```
 
@@ -135,9 +135,11 @@ After all: show a digest of auto-accepted Technical fixes (`{ID} — {target} �
      fix_plan: {REPORTS_DIR}/fix-plan.md
    ```
 3. Parse CHANGED_FILES. Filter to .md only → CHANGED_MD.
-4. If CHANGED_MD not empty → spawn `validator-doc-system` with prompt:
+4. If CHANGED_MD not empty → spawn `validator-doc-system` (`subagent_type: general-purpose`, `model: sonnet`) with prompt:
    ```
-   changed_files: {CHANGED_MD}
+   Read instructions at ~/.claude/agents/validator-doc-system.md. Follow all rules, checks, output format.
+   Input:
+     changed_files: {CHANGED_MD}
    ```
 5. CLEAN → continue. ISSUES → classify each per the Phase 3 rule (Technical → append to `fix-plan.md` as a `## Fix` block without asking, show user one line `{target} — {action}`; Business → show, AskUserQuestion **Fix** / **Skip**), re-run audit-applier, re-validate (max 2 extra cycles); issues still open after that → report them, continue.
 6. `git -C ~/.claude add {CHANGED_FILES} && git commit -m "audit: {N} change(s)"`.

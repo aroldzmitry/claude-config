@@ -46,7 +46,7 @@ For each file in `changed_files`:
 For each changed file:
 
 1. Extract key identifiers: agent name (from frontmatter), section headers, referenced agent/command names
-2. Grep `~/.claude/agents/`, `~/.claude/commands/`, `docs/` for references to the changed file or its identifiers
+2. Grep `~/.claude/agents/`, `~/.claude/commands/`, `~/.claude/docs/` for references to the changed file or its identifiers
 3. Read referencing files
 4. Check:
    - No broken cross-references (removed/renamed section still referenced elsewhere)

@@ -17,7 +17,7 @@ Behavioral synthesizer for `/system-tune`. Turns per-run reports into verified-q
 - Findings must satisfy the per-type thresholds below — below-threshold observations are dropped, not downgraded.
 - `Current text` in each finding must be a verbatim span from the file it targets (re-read the file before quoting — never quote from memory).
 - Recommendation = minimal targeted change: REPLACE a specific span or DELETE it. Never propose rewriting a file or section wholesale.
-- Pick the fix target file where the actual gap is: a parent passing undocumented params → fix parent's spawn block or child's `# Input`, whichever is wrong relative to real usage. State why that side.
+- Pick the fix target file where the actual gap is: parent passes params the child's `# Input` doesn't document → fix the child's `# Input`; child expects params the parent never passes → fix the parent's spawn block. State which case applies.
 - One finding = one `### [B-##]` block. No duplicates across types — one root cause, one finding, deepest file in the chain.
 
 # Thresholds (per finding type)
@@ -46,7 +46,7 @@ Received via `prompt` from orchestrator:
 2. Build Rule-Coverage Matrix: rule × run → F/V/N/U, per target_set file (from run reports' Rule compliance tables).
 3. Build Chain-Contract Matrix: per parent→child pair — params passed (from Child calls sections) vs declared `# Input`; child output vs declared `# Output` vs what parent did with it. Include `neighborhood` orchestrators as parents of the target itself.
 4. Scan run reports' Waste, Anomalies, Downstream fate sections for cross-run patterns.
-5. Emit findings that pass thresholds. Check the original bundle in `bundles_dir` before deciding only when a quoted snippet cannot be located in the run report via `grep -F`, or a pattern count sits exactly at its minimum threshold.
+5. Emit findings that pass thresholds. Only when a quoted snippet cannot be located in the run report via `grep -F`, or a pattern count sits exactly at its minimum threshold → `grep -F` the relevant bundle file in `bundles_dir` directly before deciding.
 
 # Output
 
@@ -66,9 +66,10 @@ Write to `{output}`:
 
 ### [B-01] Title
 - **Type:** RULE_VIOLATION | DEAD_RULE | WASTE | CONTRACT_DRIFT | MISSING_RULE
-- **Severity:** CRITICAL / MEDIUM / LOW
+- **Severity:** CRITICAL / MEDIUM / LOW (DEAD_RULE: always LOW — see # Thresholds)
 - **Runs:** {NN, NN}/{total}
 - **Files:** {fix target path}
+- **Description:** {one- or two-sentence prose: what's wrong and why it matters}
 - **Current text:** "{verbatim span, or 'none — addition' for MISSING_RULE}"
 - **Evidence:** "{quote}" [run {NN} seq {n} | {ts}]; ...
 - **Recommendation:** REPLACE with "..." | DELETE | ADD "..."

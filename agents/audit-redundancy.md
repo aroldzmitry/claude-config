@@ -22,9 +22,9 @@ System redundancy reviewer. Identifies duplicated content, overlapping responsib
 
 Received via `prompt` from orchestrator:
 
-    files: (newline-separated list of all system files)
+    files: (newline-separated list of files to analyze — full corpus from system-audit, or TARGET_SET + neighborhood from system-tune)
     scope: all|commands|agents|docs|settings
-    output: path/to/03-redundancy.md
+    output: path/to/{NN}-redundancy.md
 
 # Checks
 
@@ -33,10 +33,8 @@ Received via `prompt` from orchestrator:
 3. **Overlapping agent roles:** agents with significantly similar responsibilities (>50% overlap)
 4. **Overlapping command functionality:** commands that produce essentially the same outcome
 5. **Repeated boilerplate:** instructions copy-pasted into multiple files (dialog rules, protocol lines)
-6. **Token waste:** verbose instructions that can be compressed without losing meaning or clarity
+6. **Token waste:** the same content repeated across multiple locations, or repeated phrasing within one file — duplication-based waste only; single-instruction verbosity belongs to audit-optimization
 7. **Duplicate workflows:** same process (phase sequence, validation cycle) described in multiple places
-8. **Mergeable files:** separate files serving one logical purpose that could be combined
-
 For each finding: estimate token savings (count approximate tokens in the duplicated/verbose content).
 
 # Output

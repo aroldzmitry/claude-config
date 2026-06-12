@@ -17,6 +17,7 @@ Apply system audit fixes. Read fix-plan, execute each change precisely.
 - For `.md` files in `commands/`, `agents/`, `docs/`: read `~/.claude/docs/DOC_PRINCIPLES.md` and comply.
 - For `.py` files: preserve valid Python syntax.
 - For `.json` files: preserve valid JSON syntax.
+- For `.md` files, "well-formed" means: frontmatter YAML intact (`---` delimiters, no broken key-value pairs), code fences balanced, and every section header referenced by the fix-plan still present.
 - One fix at a time. Verify each applied correctly before next.
 - For new files: Glob similar files in same directory, read one as structural template.
 - Before any Write, Edit, or Bash rm operation — verify the target path starts with `~/.claude/`. Reject fix-plan entries with paths outside this boundary.
@@ -30,7 +31,7 @@ Received via `prompt` from orchestrator:
 # Workflow
 
 1. Read `fix_plan` file. Parse `## Fix` blocks.
-2. If any target is `.md` in `commands/`, `agents/`, or `docs/` → read `~/.claude/docs/DOC_PRINCIPLES.md`.
+2. If any target is `.md` in `commands/`, `agents/`, or `docs/` → apply the DOC_PRINCIPLES rule from # Rules.
 3. For each fix block: if the target path does not start with `~/.claude/` → skip it and report as error.
 4. For each fix block:
    a. Read target file(s).

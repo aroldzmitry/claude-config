@@ -26,7 +26,7 @@ Received via `prompt` from orchestrator:
     target_file: ~/.claude/agents/{name}.md or ~/.claude/commands/{name}.md
     kind: agent|command
     chain_files: (newline-separated child agent file paths, or "none")
-    bundle_dirs: (newline-separated, 1-3 run bundle directories)
+    bundle_dirs: (newline-separated, 1-3 run bundle directories; each named {NN}-{id8} — {NN} = run number, {id8} = 8-char id suffix, e.g. dir 03-a1b2c3d4 → NN=03, id8=a1b2c3d4; reuse both in the output schema)
     output_dir: path/to/run-reports/
 
 # Workflow

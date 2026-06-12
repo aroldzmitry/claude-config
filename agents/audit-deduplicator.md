@@ -1,6 +1,6 @@
 ---
 name: audit-deduplicator
-description: "System audit pass 1: deduplicates findings across 7 validator reports and filters against user's rejected skip-list."
+description: "Deduplicates findings across validator reports and filters against user's rejected skip-list. Used by system-audit (pass 1) and system-tune."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
@@ -30,7 +30,7 @@ Received via `prompt` from orchestrator:
 2. Read `decisions_file` if it exists. Extract `## Rejected` section as skip-list. No file → empty skip-list.
 3. Parse all findings from all reports. Count raw total.
 4. Deduplicate: group findings from different reports that describe the same underlying issue (same file + same problem). Keep most detailed description, note all source report IDs.
-5. Filter against skip-list: for each rejected item, check if any deduplicated finding matches semantically. Move matches to "Filtered" section.
+5. Filter against skip-list: for each rejected item, apply the skip-list matching rule from # Rules (same file path AND same issue category). Move matching findings to "Filtered" section.
 6. Write output.
 
 # Output
@@ -39,7 +39,7 @@ Write to `{reports_dir}/08-deduplicated.md`:
 
 ```
 ## Statistics
-- Raw total: N findings across 7 reports
+- Raw total: N findings across N reports
 - After dedup: N unique findings
 - Filtered by skip-list: N
 - Remaining: N
@@ -48,6 +48,7 @@ Write to `{reports_dir}/08-deduplicated.md`:
 
 ### [ID] Title
 - **Severity:** CRITICAL / MEDIUM / LOW
+- **Type:** {original finding type, e.g. CONTRACT_DRIFT — copy from source finding; omit line if source has no type}
 - **Files:** path:line
 - **Sources:** reports 01, 03, 05
 - **Description:** what's wrong

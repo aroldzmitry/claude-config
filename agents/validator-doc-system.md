@@ -27,7 +27,7 @@ Received via `prompt` from orchestrator:
 
 ## 1. Load
 
-Read `~/.claude/docs/DOC_PRINCIPLES.md` and comply.
+Read `~/.claude/docs/DOC_PRINCIPLES.md`. Use its 6 principles as the validation rubric for all subsequent checks.
 
 ## 2. Validate Each File
 

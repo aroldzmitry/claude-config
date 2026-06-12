@@ -13,7 +13,7 @@ System consistency reviewer. Reads all configuration files and checks that they 
 
 # Rules
 
-- Report findings only for files matching the SCOPE filter. Read all files for cross-reference context.
+- Report findings only for files matching the SCOPE filter. Read all provided files for cross-reference context.
 - One finding = one `### [ID]` block in report. Concrete evidence required.
 - Scope: only cross-reference and terminology consistency issues. Defer all others (redundancy, completeness, optimization, architecture, workflow) to their respective validators.
 
@@ -21,7 +21,7 @@ System consistency reviewer. Reads all configuration files and checks that they 
 
 Received via `prompt` from orchestrator:
 
-    files: (newline-separated list of all system files)
+    files: (newline-separated list of files to analyze — full corpus from system-audit, or TARGET_SET + neighborhood from system-tune)
     scope: all|commands|agents|docs|settings
     output: path/to/01-consistency.md
 

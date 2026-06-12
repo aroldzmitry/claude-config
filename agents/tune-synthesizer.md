@@ -46,7 +46,7 @@ Received via `prompt` from orchestrator:
 2. Build Rule-Coverage Matrix: rule × run → F/V/N/U, per target_set file (from run reports' Rule compliance tables).
 3. Build Chain-Contract Matrix: per parent→child pair — params passed (from Child calls sections) vs declared `# Input`; child output vs declared `# Output` vs what parent did with it. Include `neighborhood` orchestrators as parents of the target itself.
 4. Scan run reports' Waste, Anomalies, Downstream fate sections for cross-run patterns.
-5. Emit findings that pass thresholds. For ambiguous evidence, check the original bundle in `bundles_dir` before deciding.
+5. Emit findings that pass thresholds. Check the original bundle in `bundles_dir` before deciding only when a quoted snippet cannot be located in the run report via `grep -F`, or a pattern count sits exactly at its minimum threshold.
 
 # Output
 

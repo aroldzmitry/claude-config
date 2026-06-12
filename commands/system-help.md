@@ -42,6 +42,7 @@ Output this reference (translated to user's language):
 /research <topic>              → deep project research: chunks → specialist agents → verify → TR (topic: performance/security/error-handling/code-quality)
 /system-find-improve [scope?]  → session analysis: find system improvements from conversation
 /system-audit [scope?]        → deep system audit: 7 validators → review → fix (no scope: incremental since last audit; all/commands/agents/docs/settings or filename substring)
+/system-tune <name> [runs?] [solo?] → log-driven tuning of one agent/command + its child chain (default 10 recent runs; 'all' = up to 20; solo = no chain)
 /system-help [command?]       → this help
 
 ### Command reference
@@ -60,6 +61,7 @@ Output this reference (translated to user's language):
 | `/research` | `temp/RESEARCH-<topic>/technical-requirements.md` | — |
 | `/system-find-improve` | Updated system files + `agent-memory/system-find-improve/observations.md` | Any conversation |
 | `/system-audit` | Fixed system files + `agent-memory/system-audit/observations.md` | — |
+| `/system-tune` | Improved chain files + `agent-memory/system-tune/observations.md` | Execution history in `~/.claude/projects/` |
 | `/docs-sync` | Updated `docs/*.md` | Existing `docs/` |
 | `/system-help` | Printed help text | — |
 
@@ -86,6 +88,8 @@ Output this reference (translated to user's language):
 **After any session:** `/system-find-improve`
 
 **System self-audit:** `/system-audit`
+
+**Agent/command underperforms:** `/system-tune <name>`
 
 **Docs outdated:** `/docs-sync`
 

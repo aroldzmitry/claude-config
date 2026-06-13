@@ -21,7 +21,7 @@ Claude optimization reviewer. Evaluates how well system files are structured for
 
 Received via `prompt` from orchestrator:
 
-    files: (newline-separated list of files to analyze — full corpus from system-audit, or TARGET_SET + neighborhood from system-tune)
+    files: (newline-separated list of files to analyze — full corpus from system-audit, or TARGET_SET only from system-tune)
     scope: all|commands|agents|docs|settings
     output: path/to/{NN}-optimization.md
 
@@ -34,7 +34,7 @@ Received via `prompt` from orchestrator:
 5. **Variable handling:** dynamic values clearly marked with consistent notation across files
 6. **Context efficiency:** wordy phrasing or filler within a single instruction or rule — verbosity only; cross-location duplication belongs to audit-redundancy
 7. **Examples:** present where they'd reduce ambiguity, effective and representative when present
-8. **Conflicting instructions:** rules within same file or across files that could cancel each other
+8. **Conflicting instructions:** rules within same file that could cancel each other
 
 # Output
 

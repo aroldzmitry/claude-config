@@ -42,7 +42,7 @@ Single-target tuner. Mines real execution logs of one agent or command, coordina
    - `~/.claude/agents/{NAME}.md` exists → KIND = agent; `~/.claude/commands/{NAME}.md` exists → KIND = command; both exist → AskUserQuestion which one.
    - Neither → case-insensitive substring search over `ls ~/.claude/agents ~/.claude/commands`: 1 hit → AskUserQuestion "Found '{hit}' — tune this?" **Yes** / **No** (No → stop); 2–4 hits → AskUserQuestion; >4 → list them, stop; 0 hits → if NAME is a built-in agent type (Explore, Plan, general-purpose, claude, etc.) → "built-in agent — no local .md to tune" → stop; else → "not found" + list available names → stop.
    - NAME = `system-tune` → allowed; note edits take effect on the next invocation.
-4. **Build TARGET_SET** (skip if SOLO → TARGET_SET = {TARGET}): collect child agents of TARGET — every `~/.claude/agents/{x}.md` whose name appears in TARGET's text as a spawn reference (`subagent_type: {x}`, `agents/{x}.md`, or the name as first word of a wrapper prompt). Recurse into each child file (visited-set guards cycles). Built-in types among children (Explore, Plan, …) are noted but have no file. Show the chain before proceeding: `{target} → {child}, {child}; {child} → …`. If TARGET_SET > 8 files → warn about cost, offer `solo` via AskUserQuestion.
+4. **Build TARGET_SET** (skip if SOLO → TARGET_SET = {TARGET}): collect child agents of TARGET — every `~/.claude/agents/{x}.md` whose name appears in TARGET's text as a spawn reference (`subagent_type: {x}`, `agents/{x}.md`, or the name as first word of a wrapper prompt). Recurse into each child file (visited-set guards cycles). Built-in types among children (Explore, Plan, …) are noted but have no file. Show the chain before proceeding: `{target} → {child}, {child}; {child} → …`. If TARGET_SET > 8 files → state the file count and expected extra cost in one line and proceed full-chain (rerun with `solo` to skip the chain).
 5. NEIGHBORHOOD = files outside TARGET_SET referencing any TARGET_SET name: `grep -l` over `~/.claude/commands/*.md ~/.claude/agents/*.md`.
 
 ## Phase 1: Discover & Extract (bash only, no agents)
@@ -150,7 +150,7 @@ Skip this phase if STATIC_ONLY.
 
 ## Phase 5: Review
 
-Classify each verified finding per `~/.claude/docs/ASK_POLICY.md`: **Technical** — exactly one viable fix and no change to user-visible behavior (broken reference, contract field mismatch, dead text); **Business** — removes or weakens a rule, changes what the system asks or produces, or has 2+ viable approaches. When unsure → Business.
+Classify each verified finding per `~/.claude/docs/ASK_POLICY.md`: **Business** — removes or weakens a rule/guardrail, or the options cannot be ranked without the user's priorities; **Technical** — everything else, including findings with alternatives where one is dominant (you would recommend it without hesitation) — auto-accept the recommendation; the post-loop digest is the user's override channel. No clear recommendation → Business.
 
 Technical findings → step 3 directly, no question, recommendation = agreed change. Then for each Business finding (critical → medium → low):
 
@@ -173,7 +173,7 @@ Progress: `[3/N | next: B-02 — description]`. After all: show a digest of auto
 ## Phase 6: Apply & Chain Check
 
 1. Spawn `audit-applier` (`subagent_type: general-purpose`, `model: sonnet`): `fix_plan: {REPORTS_DIR}/fix-plan.md`.
-2. Parse CHANGED_FILES → CHANGED_MD (.md only). Not empty → spawn `validator-doc-system` per the spawn rule in # Rules, Input: `changed_files: {CHANGED_MD}`. CLEAN → continue; ISSUES → show user, append agreed corrections as new `## Fix` blocks to fix-plan.md, re-run audit-applier, re-validate (max 2 extra cycles).
+2. Parse CHANGED_FILES → CHANGED_MD (.md only). Not empty → spawn `validator-doc-system` (`model: sonnet`) per the spawn rule in # Rules, Input: `changed_files: {CHANGED_MD}`. CLEAN → continue; ISSUES → show user, append agreed corrections as new `## Fix` blocks to fix-plan.md, re-run audit-applier, re-validate (max 2 extra cycles).
 3. **Chain check**: if >1 TARGET_SET file changed, or any applied fix was CONTRACT_DRIFT → spawn `audit-consistency` (`model: sonnet`) with `files: {CHANGED_FILES + every TARGET_SET/NEIGHBORHOOD file that references or is referenced by a CHANGED_FILE — grep -l both directions}`, `scope: all`, `output: {REPORTS_DIR}/10-chain-check.md`, prompt appendix: `Verify parent↔child contracts still align after recent edits — spawn prompts vs # Input sections, # Output specs vs what parents parse. Report only misalignments.` Findings → show user, AskUserQuestion: **Fix chain issues** / **Skip**. Fix → append as `## Fix` blocks to a new fix-plan.md, re-run step 1 (once); Skip → continue to step 4.
 4. `git -C ~/.claude add {CHANGED_FILES} && git commit -m "tune: {target} — {N} change(s)"`.
 

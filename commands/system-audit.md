@@ -99,7 +99,7 @@ Show overview: N verified (critical/medium/low), N low-impact, N false positives
 
 ## Phase 3: Review
 
-Classify each verified issue per `~/.claude/docs/ASK_POLICY.md`: **Technical** — exactly one viable fix and no change to user-visible behavior (broken reference, contract field mismatch, dead text); **Business** — removes or weakens a rule, changes what the system asks or produces, or has 2+ viable approaches. When unsure → Business.
+Classify each verified issue per `~/.claude/docs/ASK_POLICY.md`: **Business** — removes or weakens a rule/guardrail, or the options cannot be ranked without the user's priorities; **Technical** — everything else, including issues with alternatives where one is dominant (you would recommend it without hesitation) — auto-accept the recommendation; the post-loop digest is the user's override channel. No clear recommendation → Business.
 
 Technical issues → step 3 directly, no question, recommendation = agreed action. Then for each Business issue (critical → medium → low):
 

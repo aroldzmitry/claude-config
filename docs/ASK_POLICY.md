@@ -14,6 +14,7 @@ Shared decision-classification protocol for all commands and agents. Interview c
 - Could two reasonable stakeholders plausibly choose differently, with different user-visible outcomes? → Business.
 - Answer verifiable from code, docs, or standards? → verify via tools first; never ask the user what a tool call can answer (investigate-before-ask).
 - Established project pattern or only one viable option? → Technical, regardless of how important it looks.
+- Multiple viable approaches alone ≠ Business. Business only when ranking them requires the user's priorities; if one option is dominant (you would recommend it without hesitation) → Technical: decide it, record visibly.
 - A Business decision explicitly stated in BRD/spec is already decided — apply it; do not re-ask.
 
 ## Boundary rules

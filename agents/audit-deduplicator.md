@@ -27,7 +27,7 @@ Received via `prompt` from orchestrator:
 # Workflow
 
 1. Read all report files matching `0*.md` in `reports_dir`, excluding pipeline outputs (`08-` and higher). Skip missing/empty files.
-2. Read `decisions_file` if it exists. Extract `## Rejected` section as skip-list. No file → empty skip-list.
+2. Read `decisions_file` if it exists. Extract `## Rejected` and `## Skipped` sections (either may be absent) as one skip-list. No file → empty skip-list.
 3. Parse all findings from all reports. Count raw total.
 4. Deduplicate: group findings from different reports that describe the same underlying issue (same file + same problem). Keep most detailed description, note all source report IDs.
 5. Filter against skip-list: for each rejected item, apply the skip-list matching rule from # Rules (same file path AND same issue category). Move matching findings to "Filtered" section.
@@ -58,7 +58,7 @@ Write to `{reports_dir}/08-deduplicated.md`:
 ## Filtered by Skip-List
 
 ### [ID] Title
-- **Matched rejected item:** "[date] description"
+- **Matched skip-list item:** "[date] description" (rejected|skipped)
 - **Reason:** why this matches
 ```
 

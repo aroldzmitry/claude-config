@@ -40,7 +40,7 @@ Single-target tuner. Mines real execution logs of one agent or command, coordina
 2. Parse `$ARGUMENTS`: token 1 = NAME (strip leading `/` and trailing `.md`); remaining tokens: positive integer → RUNS = min(value, 20); `all` → RUNS = 20; `solo` → SOLO = true; no integer → RUNS = 10.
 3. Resolve NAME:
    - `~/.claude/agents/{NAME}.md` exists → KIND = agent; `~/.claude/commands/{NAME}.md` exists → KIND = command; both exist → AskUserQuestion which one.
-   - Neither → case-insensitive substring search over `ls ~/.claude/agents ~/.claude/commands`: 1 hit → AskUserQuestion "Found '{hit}' — tune this?" **Yes** / **No** (No → stop); 2–4 hits → AskUserQuestion; >4 → list them, stop; 0 hits → if NAME is a built-in agent type (Explore, Plan, general-purpose, claude, etc.) → "built-in agent — no local .md to tune" → stop; else → "not found" + list available names → stop.
+   - Neither → case-insensitive substring search over `ls ~/.claude/agents ~/.claude/commands`: 1 hit → AskUserQuestion "Found '{hit}' — tune this?" **Yes** / **No** (No → stop); 2–4 hits → AskUserQuestion "Multiple matches found. Which did you mean?" with each hit as a labeled option + **None of these** (→ stop); >4 → list them, stop; 0 hits → if NAME is a built-in agent type (Explore, Plan, general-purpose, claude, etc.) → "built-in agent — no local .md to tune" → stop; else → "not found" + list available names → stop.
    - NAME = `system-tune` → allowed; note edits take effect on the next invocation.
 4. **Build TARGET_SET** (skip if SOLO → TARGET_SET = {TARGET}): collect child agents of TARGET — every `~/.claude/agents/{x}.md` whose name appears in TARGET's text as a spawn reference (`subagent_type: {x}`, `agents/{x}.md`, or the name as first word of a wrapper prompt). Recurse into each child file (visited-set guards cycles). Built-in types among children (Explore, Plan, …) are noted but have no file. Show the chain before proceeding: `{target} → {child}, {child}; {child} → …`. If TARGET_SET > 8 files → state the file count and expected extra cost in one line and proceed full-chain (rerun with `solo` to skip the chain).
 5. NEIGHBORHOOD = files outside TARGET_SET referencing any TARGET_SET name: `grep -l` over `~/.claude/commands/*.md ~/.claude/agents/*.md`.
@@ -128,8 +128,14 @@ Input:
 Append this appendix to the three static validators' prompts (replaces system-audit's severity block; not used for tune-run-analyzer):
 ```
 Severity: CRITICAL = wrong output/broken contract in real use; MEDIUM = recurring friction, contract drift, misleading instruction; LOW = bloat, dead text, token waste.
-Report only findings involving {TARGET_SET paths}; optimization and bloat-removal findings ARE in scope but must cite concrete text. Do NOT report: theoretical edge cases, defensive hardening, style preferences without token or clarity impact.
-A clean report is a success — if the files already meet the bar, return zero findings rather than stylistic rewrites. Every finding must name its concrete cost: quantified token waste (quote the span AND the shorter equivalent), a contradiction (quote both sides), or an ambiguity with two stated divergent readings. "Could be clearer/tighter" without measurable cost is not a finding.
+Report only findings involving {TARGET_SET paths}. A clean report is a success: if the files already meet the bar, return zero findings.
+CONVERGENCE RULE — this is the bar that makes repeated runs on the same file stop finding things. A finding is valid ONLY if its fix REMOVES a distinct identifiable unit or repairs an objective defect:
+  - a duplicated block/rule stated in two places (quote both locations),
+  - a dead reference — a phase/variable/file/agent/section that no longer exists,
+  - a direct contradiction (quote both sides),
+  - a vague term whose two divergent readings you can both state explicitly,
+  - a whole sentence or clause that adds no constraint not already stated elsewhere.
+A rewrite that PRESERVES an instruction while only making it shorter or "clearer" is NOT a finding — even if it saves tokens. That supply of rephrasings is infinite and never converges; it is exactly the "improvement for improvement's sake" this command must not produce. Do not propose rephrasings, reorderings, or stylistic polish of text that must stay. If the only remaining candidates are meaning-preserving rewrites, the file is done — return zero.
 ```
 Wait for all analyzers before Phase 3.
 
@@ -159,7 +165,7 @@ Classify each verified finding per `~/.claude/docs/ASK_POLICY.md`: **Business** 
 
 Technical findings → step 3 directly, no question, recommendation = agreed change. Then for each Business finding (critical → medium → low):
 
-1. Present: severity, ID, type, runs cited, target file, evidence quotes, recommendation. Show the Rule-Coverage / Chain-Contract matrix row when relevant. Read source files on-demand.
+1. Present: severity, ID, type, runs cited, target file, evidence quotes, recommendation. Show the Rule-Coverage / Chain-Contract matrix row when matrices exist (non-STATIC_ONLY) and the finding appears in a matrix row. Read source files on-demand.
 2. AskUserQuestion: **Fix** / **Reject** / **Skip**.
 3. Fix → agree on the exact change; read the target section first to verify the action fits existing structure. Append to `{REPORTS_DIR}/fix-plan.md`:
    ```

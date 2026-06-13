@@ -67,7 +67,7 @@ One session = one run sample. Take RUNS newest by mtime. The current session's o
 
 ### Freshness gate (both kinds)
 
-`LAST_EDIT = git -C ~/.claude log -1 --format=%ct -- {TARGET_SET paths}` (0 if never committed). A discovered run whose transcript mtime ≤ LAST_EDIT is STALE — it executed an older version of the instructions; analyzing it re-litigates text that already changed. Exclude STALE runs from bundling. If fresh runs < 3 and STALE > 0 → AskUserQuestion: **Static-only** (set STATIC_ONLY) / **Include stale** (bundle them; warn once that RULE_VIOLATION/DEAD_RULE findings may target already-fixed behavior) / **Stop** ("collect fresh runs, then re-tune").
+LAST_EDIT = newest file mtime across TARGET_SET (`stat -f %m {paths} | sort -n | tail -1`). A discovered run whose transcript mtime ≤ LAST_EDIT is STALE — it executed an older version of the instructions; analyzing it re-litigates text that already changed. Exclude STALE runs from bundling. If fresh runs < 3 and STALE > 0 → AskUserQuestion: **Static-only** (set STATIC_ONLY) / **Include stale** (bundle them; warn once that RULE_VIOLATION/DEAD_RULE findings may target already-fixed behavior) / **Stop** ("collect fresh runs, then re-tune").
 
 ### Bundle per run → `{BUNDLES}/{NN}-{id8}/`
 
@@ -94,7 +94,7 @@ For KIND = command (session S): `00` = `{ts, cwd, branch, lines}`; `01` = `<comm
 
 Per run, for each child invocation: real child name = `subagent_type`, unless `subagent_type` is `super-agent`/`codex` → first word of `.input.prompt`. For children in TARGET_SET, write light bundle `{run}/children/{child}-{id8}/`: `00-meta.json` + `01-input-prompt.txt` + `02-final-output.txt` from the joined tool_use/tool_result pair. Full bundle (via the child's own transcript, `agentId` → `subagents/agent-{agentId}.jsonl`) only when its `status` ≠ completed or downstream shows correction/respawn — max 3 full child bundles per run.
 
-Write `{REPORTS_DIR}/runs-manifest.md`: one row per run (`bundle | channel | ts | status | tokens | children: n`) + discovery totals per channel + stale-excluded count. 0 runs found → AskUserQuestion: **Static-only** (set STATIC_ONLY, Phase 2 without behavioral row, skip Phase 3) / **Stop**. Fewer than RUNS → proceed, note the count.
+Write `{REPORTS_DIR}/runs-manifest.md`: one row per run (`bundle | channel | ts | status | tokens | children: n`) + discovery totals per channel + stale-excluded count. 0 runs to bundle and the freshness gate didn't already ask → AskUserQuestion: **Static-only** (set STATIC_ONLY, Phase 2 without behavioral row, skip Phase 3) / **Stop**. Fewer than RUNS → proceed, note the count.
 
 ## Phase 2: Analyze
 
@@ -199,7 +199,7 @@ Final: "Tuned {target}: fixed N, rejected N, skipped N."
 
 # Edge Cases
 
-- 0 runs → static-only or stop (Phase 1 choice).
+- 0 runs → static-only or stop; fresh < 3 with stale present → freshness-gate choice (both Phase 1).
 - Built-in agent as TARGET → stop (Phase 0). Built-in/external types among children → analyzed only via their invocations from the parent (prompt contract + downstream fate), no file findings.
 - All findings filtered by skip-list → "All known issues reviewed. Clear skip-list?"
 - DECISIONS_FILE >100 entries → warn, suggest cleanup.

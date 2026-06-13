@@ -1,6 +1,6 @@
 ---
 name: audit-deduplicator
-description: "Deduplicates findings across validator reports and filters against user's rejected skip-list. Used by system-audit (pass 1) and system-tune."
+description: "Deduplicates findings across validator reports and filters against user's rejected/skipped skip-list. Used by system-audit (pass 1) and system-tune."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits
@@ -15,7 +15,7 @@ Audit report deduplicator. Reads all validator reports, groups identical issues 
 
 - Never modify source reports — only read them.
 - When deduplicating, keep the most detailed description and note all source reports.
-- Skip-list matching: (a) same file path — exact match for single-file entries; for rejected entries listing multiple files, match any listed path; never match a file the rejected entry didn't list — AND (b) same issue category.
+- Skip-list matching: (a) same file path — exact match for single-file entries; for skip-list entries listing multiple files, match any listed path; never match a file the entry didn't list — AND (b) same underlying issue: the finding criticizes the same rule, text span, or contract as the entry's description — paraphrase still matches; same severity or same Type alone does NOT.
 
 # Input
 
@@ -30,7 +30,7 @@ Received via `prompt` from orchestrator:
 2. Read `decisions_file` if it exists. Extract `## Rejected` and `## Skipped` sections (either may be absent) as one skip-list. No file → empty skip-list.
 3. Parse all findings from all reports. Count raw total.
 4. Deduplicate: group findings from different reports that describe the same underlying issue (same file + same problem). Keep most detailed description, note all source report IDs.
-5. Filter against skip-list: for each rejected item, apply the skip-list matching rule from # Rules (same file path AND same issue category). Move matching findings to "Filtered" section.
+5. Filter against skip-list: for each skip-list item, apply the matching rule from # Rules (same file path AND same underlying issue). Move matching findings to "Filtered" section.
 6. Write output.
 
 # Output

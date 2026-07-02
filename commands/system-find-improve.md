@@ -1,6 +1,5 @@
 ---
 description: "Session analysis: reviews conversation to find improvements for commands, agents, and instructions. Can propose modifications and new system files."
-model: sonnet
 argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'claude-md'"
 allowed-tools: "Task, Agent, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true

@@ -28,6 +28,9 @@ Single-target tuner. Mines real execution logs of one agent or command, coordina
 - `BUNDLES` = `{REPORTS_DIR}/runs/`
 - `RUN_REPORTS` = `{REPORTS_DIR}/run-reports/`
 - `DECISIONS_FILE` = `{MEMORY}/decisions.md`
+- `PURPOSE_FILE` = `{MEMORY}/purpose.md`
+- `FIXES_FILE` = `{MEMORY}/fixes.md` (ledger of applied fixes awaiting outcome confirmation)
+- `STATE_FILE` = `{MEMORY}/state.md` (per-target `last_analyzed` watermark)
 - `OBSERVATIONS_FILE` = `{MEMORY}/observations.md`
 - `DEDUP_FILE` = `{REPORTS_DIR}/08-deduplicated.md`
 - `VERIFIED_FILE` = `{REPORTS_DIR}/09-verified.md`
@@ -68,6 +71,10 @@ One session = one run sample. Take RUNS newest by mtime. The current session's o
 ### Freshness gate (both kinds)
 
 LAST_EDIT = newest file mtime across TARGET_SET (`stat -f %m {paths} | sort -n | tail -1`). A discovered run whose transcript mtime ≤ LAST_EDIT is STALE — it executed an older version of the instructions; analyzing it re-litigates text that already changed. Exclude STALE runs from bundling. If fresh runs < 3 and STALE > 0 → AskUserQuestion: **Static-only** (set STATIC_ONLY) / **Include stale** (bundle them; warn once that RULE_VIOLATION/DEAD_RULE findings may target already-fixed behavior) / **Stop** ("collect fresh runs, then re-tune").
+
+### Early exit — nothing new since last tune
+
+After the freshness gate: read the `- {NAME}: last_analyzed={epoch}` line from {STATE_FILE} (skip this check if absent). If LAST_EDIT ≤ last_analyzed AND the newest fresh run's transcript mtime ≤ last_analyzed → the full pipeline would re-analyze exactly what the previous tune already saw. AskUserQuestion: **Stop** (Recommended — "no new runs and no edits since last tune; use the target, then re-tune") / **Re-analyze anyway** (proceed).
 
 ### Bundle per run → `{BUNDLES}/{NN}-{id8}/`
 
@@ -133,9 +140,11 @@ CONVERGENCE RULE — this is the bar that makes repeated runs on the same file s
   - a duplicated block/rule stated in two places (quote both locations),
   - a dead reference — a phase/variable/file/agent/section that no longer exists,
   - a direct contradiction (quote both sides),
+  - a purpose-coherence gap — the target's stated purpose (`description` or `# Role`) contradicted by what its workflow actually specifies (quote both sides: the claim and the diverging step),
   - a vague term whose two divergent readings you can both state explicitly,
   - a whole sentence or clause that adds no constraint not already stated elsewhere.
 A rewrite that PRESERVES an instruction while only making it shorter or "clearer" is NOT a finding — even if it saves tokens. That supply of rephrasings is infinite and never converges; it is exactly the "improvement for improvement's sake" this command must not produce. Do not propose rephrasings, reorderings, or stylistic polish of text that must stay. If the only remaining candidates are meaning-preserving rewrites, the file is done — return zero.
+Every finding must include an `- **Impact:**` line — the concrete benefit: which wrong behavior the defect causes (or can cause, with the divergent readings named), or how much dead/duplicated text is removed. "Cleaner", "clearer", "more consistent style" is not an impact. ADD recommendations must state their ongoing cost (the added text is loaded on every future run) and why the benefit outweighs it.
 ```
 Wait for all analyzers before Phase 3.
 
@@ -149,23 +158,36 @@ Input:
   run_reports_dir: {RUN_REPORTS}
   bundles_dir: {BUNDLES}
   neighborhood: {NEIGHBORHOOD or "none"}
+  pending_fixes: {lines matching " {NAME} " from {FIXES_FILE}, or "none"}
   output: {REPORTS_DIR}/04-behavior.md
 ```
-Skip this phase if STATIC_ONLY.
+If STATIC_ONLY: still spawn, but pass `run_reports_dir: none` and `bundles_dir: none` — the synthesizer runs in static mode (purpose & boundaries assessment + BOUNDARY_* findings only, no behavioral findings).
 
 ## Phase 4: Aggregate & Verify
 
 1. Spawn `audit-deduplicator` (`subagent_type: general-purpose`, `model: sonnet`): `reports_dir: {REPORTS_DIR}`, `decisions_file: {DECISIONS_FILE}`.
 2. Spawn `tune-verifier` (`subagent_type: general-purpose`, `model: fable`): `findings_file: {DEDUP_FILE}`, `reports_dir: {REPORTS_DIR}`, `target_set: {TARGET_SET}`, `output_file: {VERIFIED_FILE}`.
-3. Read `{VERIFIED_FILE}` and the `## Statistics` section of `{DEDUP_FILE}` (source of the filtered-by-skip-list count). 0 verified → "Chain {target} clean over N runs." → Phase 7. Else show overview: N verified (C/M/L), N FP, N insufficient, N filtered by skip-list.
+3. Read `{VERIFIED_FILE}` and the `## Statistics` section of `{DEDUP_FILE}` (source of the filtered-by-skip-list count). 0 verified → "Chain {target} clean over N runs." → Phase 5 (purpose checkpoint + fix outcomes only, skip the finding loop) → Phase 7. Else show overview: N verified (C/M/L), N FP, N insufficient, N marginal, N filtered by skip-list.
 
 ## Phase 5: Review
 
 Classify each verified finding per `~/.claude/docs/ASK_POLICY.md`: **Business** — removes or weakens a rule/guardrail, or the options cannot be ranked without the user's priorities; **Technical** — everything else, including findings with alternatives where one is dominant (you would recommend it without hesitation) — auto-accept the recommendation; the post-loop digest is the user's override channel. No clear recommendation → Business.
 
+**Purpose checkpoint (fires at most once, before the finding loop).** Read `04-behavior.md` → `## Purpose & boundaries`. FINGERPRINT = `md5 -q` of a temp file holding the target's frontmatter `description` value + `# Role` section text. Route by verdicts:
+- All three verdicts clean → relay the `declared` and `system role` lines to the user in one short message (no question) and go to the loop.
+- Any non-clean verdict, and {PURPOSE_FILE} has a `confirmed {NAME} {FINGERPRINT}` entry with no run-quoted friction newer than that entry's date → one line "purpose confirmed {date}; re-raised only on text change or new friction" → loop.
+- Otherwise present in one message: declared purpose, revealed purpose, the target's role in the system (each caller and what it expects — from the Chain-Contract Matrix when runs exist, and NEIGHBORHOOD), and every non-clean verdict with its quotes. Discuss in plain text until the disagreement is concrete, then AskUserQuestion: **Purpose is right** (append `- [YYYY-MM-DD] confirmed {NAME} {FINGERPRINT}` to {PURPOSE_FILE}, create with `## Confirmed` header if missing; proceed) / **Correct it** (agree the exact `description`/`# Role` wording — keep discussing until it reads unambiguously to both sides; append a `## Fix` block to `{REPORTS_DIR}/fix-plan.md` per the format below; no confirmation record — the corrected text re-assesses under its own fingerprint next run) / **Defer** (record nothing, proceed).
+
+This checkpoint is the only place the command questions the goal itself; BOUNDARY_* findings (responsibility overlaps/gaps with neighbors) go through the normal finding loop and are always Business — redistributing responsibility is the user's call.
+
+**Fix outcomes (after the purpose checkpoint, before the finding loop).** Read `04-behavior.md` → `## Fix outcomes`; skip if "none pending" or "not checkable". Show one line per fix, then update {FIXES_FILE}:
+- CONFIRMED → delete the entry (the fix proved out; observations keeps the history).
+- NOT_CONFIRMED → increment the entry's `checks:` counter; at `checks: 2` delete the entry and note it as unverifiable in the Phase 7 observations line.
+- REGRESSED → AskUserQuestion per fix: **Revert** (reconstruct the original span from `git -C ~/.claude show {commit from the entry}`, append a reverse `## Fix` block to `{REPORTS_DIR}/fix-plan.md`, delete the entry) / **Keep** (delete the entry — current state accepted despite the regression).
+
 Technical findings → step 3 directly, no question, recommendation = agreed change. Then for each Business finding (critical → medium → low):
 
-1. Present: severity, ID, type, runs cited, target file, evidence quotes, recommendation. Show the Rule-Coverage / Chain-Contract matrix row when matrices exist (non-STATIC_ONLY) and the finding appears in a matrix row. Read source files on-demand.
+1. Present: severity, ID, type, runs cited, target file, evidence quotes, impact, recommendation. Show the Rule-Coverage / Chain-Contract matrix row when matrices exist (non-STATIC_ONLY) and the finding appears in a matrix row. Read source files on-demand.
 2. AskUserQuestion: **Fix** / **Reject** / **Skip**.
 3. Fix → agree on the exact change; read the target section first to verify the action fits existing structure. Append to `{REPORTS_DIR}/fix-plan.md`:
    ```
@@ -180,14 +202,16 @@ Technical findings → step 3 directly, no question, recommendation = agreed cha
 5. Skip → initialize `## Skipped` header in DECISIONS_FILE if missing, append:
    `- [YYYY-MM-DD] [tune] {ID} {files}: {description}`. Skipped findings are filtered by the deduplicator on future runs (same as rejected); clearing the section resurfaces them.
 
-Progress: `[3/N | next: B-02 — description]`. After all: show a digest of auto-accepted Technical fixes (`{ID} — {target} — {one-line action}`) — silently applied ≠ invisible; user may demote any line to the Business loop before proceeding. Then: fix-plan.md exists → Phase 6, else → Phase 7.
+Progress: `[3/N | next: B-02 — description]`. After all: show a digest of auto-accepted Technical fixes (`{ID} — {target} — {one-line action} — {impact}`) — silently applied ≠ invisible; user may demote any line to the Business loop before proceeding. Then: fix-plan.md exists → Phase 6, else → Phase 7.
 
 ## Phase 6: Apply & Chain Check
 
 1. Spawn `audit-applier` (`subagent_type: general-purpose`, `model: sonnet`): `fix_plan: {REPORTS_DIR}/fix-plan.md`.
 2. Parse CHANGED_FILES → CHANGED_MD (.md only). Not empty → spawn `validator-doc-system` (`model: sonnet`) per the spawn rule in # Rules, Input: `changed_files: {CHANGED_MD}`. CLEAN → continue; ISSUES → for each issue: if it falls outside the applied fix spans, or a Phase 2 analyzer already examined and cleared that content → note it in one line and do not ask. Otherwise classify per the Phase 5 rule: Technical → append a `## Fix` block to fix-plan.md without asking and show the user one line `{target} — {action}`; Business → show, AskUserQuestion **Fix** / **Skip**. Re-run audit-applier on any new `## Fix` blocks and re-validate (max 2 extra cycles).
 3. **Chain check**: if >1 TARGET_SET file changed, or any applied fix was CONTRACT_DRIFT → spawn `audit-consistency` (`model: sonnet`) with `files: {CHANGED_FILES + every TARGET_SET/NEIGHBORHOOD file that references or is referenced by a CHANGED_FILE — grep -l both directions}`, `scope: all`, `output: {REPORTS_DIR}/10-chain-check.md`, prompt appendix: `Verify parent↔child contracts still align after recent edits — spawn prompts vs # Input sections, # Output specs vs what parents parse. Report only misalignments.` Findings → show user, AskUserQuestion: **Fix chain issues** / **Skip**. Fix → append as `## Fix` blocks to a new fix-plan.md, re-run step 1 (once); Skip → continue to step 4.
-4. `git -C ~/.claude add {CHANGED_FILES} && git commit -m "tune: {target} — {N} change(s)"`.
+4. `git -C ~/.claude add {CHANGED_FILES} && git commit -m "tune: {target} — {N} change(s)"`. Then for each applied fix whose finding cited runs (behavioral — its effect is only observable at runtime), append to {FIXES_FILE} (create with `## Pending` header if missing):
+   `- [YYYY-MM-DD] {NAME} {ID} {type} {file}: {one-line action} — expect: {impact one-liner} — commit {short hash} — checks: 0`
+   Static-evidence fixes (deleted duplicate, dead reference) get no entry — their effect is verified at apply time.
 
 ## Phase 7: Record & Cleanup
 
@@ -197,8 +221,10 @@ Append to OBSERVATIONS_FILE (create if missing, 20 entries max):
 - runs: N analyzed (window {oldest}..{newest}), child runs: N, channels: A:N B1:N B2:N
 - findings: raw N → dedup N → verified N (C:N M:N L:N), FP: N, filtered: N
 - fixed: N (files: {list}), rejected: N, skipped: N
+- fix outcomes: confirmed N, unverifiable N, regressed N (kept/reverted) — omit line if none checked
 - notes: {one-line key pattern}
 ```
+Update {STATE_FILE} (create if missing): replace the `- {NAME}:` line (or append) with `- {NAME}: last_analyzed={newest bundled transcript mtime, epoch} [{YYYY-MM-DD}]`. Skip if STATIC_ONLY (no runs analyzed — the watermark must not advance).
 Apply succeeded → `find {BUNDLES} {RUN_REPORTS} -mindepth 1 -delete 2>/dev/null; rm -f {REPORTS_DIR}/*.md`. Apply failed/partial → keep `fix-plan.md`, delete the rest.
 
 Final: "Tuned {target}: fixed N, rejected N, skipped N."

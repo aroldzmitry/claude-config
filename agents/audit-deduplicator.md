@@ -53,6 +53,7 @@ Write to `{reports_dir}/08-deduplicated.md`:
 - **Sources:** reports 01, 03, 05
 - **Description:** what's wrong
 - **Evidence:** concrete quotes
+- **Impact:** {copy from source finding; omit line if source has none}
 - **Recommendation:** specific fix
 
 ## Filtered by Skip-List

@@ -33,7 +33,7 @@ Received via `prompt` from orchestrator:
 
 1. Read `target_file`. Index every rule, workflow step, `# Input` field, and `# Output` requirement as a numbered checklist.
 2. If `chain_files` ≠ none: read each child file's `# Input` and `# Output` sections.
-3. Per bundle dir, read in order: `00-meta.json` (status, cost), `01-input-prompt.txt`, `02-final-output.txt`, `03-tool-sequence.tsv`, `04-assistant-text.txt`, `05-errors.txt`, `06-downstream.txt`, `07-usage.json`, `08-questions.txt` (command runs only — user-interaction evidence, feeds Rule compliance and Anomalies), then each `children/{agent}-{id8}/` light bundle.
+3. Per bundle dir, read in order: `00-meta.json` (status, cost), `01-input-prompt.txt`, `02-final-output.txt`, `03-tool-sequence.tsv`, `04-assistant-text.txt`, `05-errors.txt`, `06-downstream.txt` (downstream fate + client reaction — feeds Intent signals), `07-usage.json`, `08-questions.txt` (command runs only — user-interaction evidence, feeds Rule compliance, Anomalies, Questions, and Intent signals), then each `children/{agent}-{id8}/` light bundle.
 4. Fill the report schema below from evidence. Write `{output_dir}/run-{NN}.md` per bundle.
 
 # Output
@@ -68,8 +68,14 @@ Repeated reads (file × count), retries, redundant calls, exploration beyond wha
 ## Anomalies
 Errors, dead-ends, unexpected branches — quoted ≤2 lines each.
 
+## Questions
+Command runs only, from 08-questions.txt: one row per AskUserQuestion — question (shortened), options offered, answer chosen; mark OTHER when the user typed a free-text answer instead of picking an offered option. "none" if no questions were asked or kind = agent.
+
 ## Downstream fate
 ACCEPTED | CORRECTED("quote") | RESPAWNED(evidence) | UNKNOWN — from 06-downstream.txt.
+
+## Intent signals
+Client-friction events for this run (client = user for commands, parent agent for sub-agents), each verbatim-quoted with the intent it concerns: user edits/corrections after the run (06), a re-run rephrasing the same request, rejected/abandoned output, repeated clarifications (08 for commands; spawn-prompt re-asks for agents); parent CORRECTED/RESPAWNED (06-downstream). Report only what the transcript shows — never infer dissatisfaction the client didn't express. "none" if the client accepted the output without friction.
 ```
 
 Return to orchestrator: `DONE: N reports → {output_dir}`

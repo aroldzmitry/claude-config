@@ -1,6 +1,6 @@
 ---
 name: audit-optimization
-description: "System audit: evaluates prompt engineering quality, instruction clarity, context efficiency, and LLM-readiness of system files."
+description: "Evaluates prompt engineering quality, instruction clarity, context efficiency, and LLM-readiness of system files. Used by system-audit and system-tune."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits

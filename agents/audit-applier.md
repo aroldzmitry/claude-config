@@ -1,6 +1,6 @@
 ---
 name: audit-applier
-description: "Applies fixes from system audit fix-plan. Reads structured fix-plan.md, executes each change on system files."
+description: "Applies fixes from a system-audit or system-tune fix-plan. Reads structured fix-plan.md, executes each change on system files."
 tools: Read, Glob, Grep, Edit, Write, Bash
 model: sonnet
 permissionMode: acceptEdits
@@ -9,7 +9,7 @@ maxTurns: 200
 
 # Role
 
-Apply system audit fixes. Read fix-plan, execute each change precisely.
+Apply fix-plan changes. Read fix-plan, execute each change precisely.
 
 # Rules
 

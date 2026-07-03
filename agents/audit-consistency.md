@@ -1,6 +1,6 @@
 ---
 name: audit-consistency
-description: "System audit: validates cross-references, terminology, workflow consistency, and contradictions across system configuration files."
+description: "Validates cross-references, terminology, workflow consistency, and contradictions across system configuration files. Used by system-audit and system-tune."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits

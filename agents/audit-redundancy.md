@@ -1,6 +1,6 @@
 ---
 name: audit-redundancy
-description: "System audit: finds duplicate content, overlapping responsibilities, repeated boilerplate, and token waste across system files."
+description: "Finds duplicate content, overlapping responsibilities, repeated boilerplate, and token waste across system files. Used by system-audit and system-tune."
 tools: Read, Glob, Grep, Write
 model: sonnet
 permissionMode: acceptEdits

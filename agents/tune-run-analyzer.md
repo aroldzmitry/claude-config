@@ -33,7 +33,7 @@ Received via `prompt` from orchestrator:
 
 1. Read `target_file`. Index every rule, workflow step, `# Input` field, and `# Output` requirement as a numbered checklist.
 2. If `chain_files` ≠ none: read each child file's `# Input` and `# Output` sections.
-3. Per bundle dir, read in order: `00-meta.json` (status, cost), `01-input-prompt.txt`, `02-final-output.txt`, `03-tool-sequence.tsv`, `04-assistant-text.txt`, `05-errors.txt`, `06-downstream.txt` (downstream fate + client reaction — feeds Intent signals), `07-usage.json`, `08-questions.txt` (command runs only — user-interaction evidence, feeds Rule compliance, Anomalies, Questions, and Intent signals), then each `children/{agent}-{id8}/` light bundle.
+3. Per bundle dir, read in order: `00-meta.json` (status, cost; command bundles have no status/duration — a top-level session carries none; judge the run's fate from 04/06/08), `01-input-prompt.txt`, `02-final-output.txt`, `03-tool-sequence.tsv`, `04-assistant-text.txt`, `05-errors.txt`, `06-downstream.txt` (downstream fate + client reaction — feeds Intent signals), `07-usage.json`, `08-questions.txt` (command runs only — user-interaction evidence, feeds Rule compliance, Anomalies, Questions, and Intent signals), then each `children/{agent}-{id8}/` light bundle.
 4. Fill the report schema below from evidence. Write `{output_dir}/run-{NN}.md` per bundle.
 
 # Output

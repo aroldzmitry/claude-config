@@ -90,7 +90,7 @@ Write to `{output}`:
 - **Runs:** {NN, NN}/{total}
 - **Files:** {fix target path}
 - **Description:** {one- or two-sentence prose: what's wrong and why it matters}
-- **Current text:** "{verbatim span, or 'none — addition' for MISSING_RULE}"
+- **Current text:** "{verbatim span, or 'none — addition' for addition types: MISSING_RULE/GOAL_GAP/BOUNDARY_GAP}"
 - **Evidence:** "{quote}" [run {NN} seq {n} | {ts}]; ...
 - **Impact:** {concrete expected effect grounded in the evidence; for ADD — benefit vs stated ongoing cost}
 - **Recommendation:** REPLACE with "..." | DELETE | ADD "..."

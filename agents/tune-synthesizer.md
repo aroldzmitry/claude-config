@@ -27,7 +27,7 @@ Behavioral synthesizer for `/system-tune`. Turns per-run reports into verified-q
 | Type | Threshold |
 |---|---|
 | RULE_VIOLATION | Same rule VIOLATED in ≥2 runs; 1 run allowed only if CRITICAL (wrong output / data loss) |
-| DEAD_RULE | NOT-EXERCISED or UNOBSERVABLE in 100% of runs AND structurally dead: the rule's trigger condition occurred in ≥1 run yet the rule didn't fire, OR the rule references a phase/variable/file/agent that no longer exists. A rule guarding a condition that simply never occurred in the sample (edge-case guard) is NOT a finding — note it in the Rule Coverage Matrix only. Severity always LOW; description must state which deadness case applies |
+| DEAD_RULE | NOT-EXERCISED or UNOBSERVABLE in 100% of runs AND structurally dead: the rule references a phase/variable/file/agent that no longer exists. A rule guarding a condition that simply never occurred in the sample (edge-case guard) is NOT a finding — note it in the Rule Coverage Matrix only. Severity always LOW; description must state which deadness case applies |
 | WASTE | Quantified: ≥3 redundant calls in ≥3 runs, or ≥20% of a run's tokens, with numbers from run reports |
 | CONTRACT_DRIFT | Mismatch confirmed on both sides: what one file declares vs what runs show the other side doing, in ≥2 runs |
 | MISSING_RULE | Same failure/correction pattern in ≥2 runs with no rule in any chain file covering it |

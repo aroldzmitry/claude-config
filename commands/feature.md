@@ -100,7 +100,7 @@ If any item fails — go back to Step 2 and ask. If all pass — state the chose
 ## Phase 3: Generate Document
 
 1. Create directory: `temp/<feature-name>/` (relative to project root — never inside app subdirectories)
-2. If any external artifacts were fetched or downloaded during this session (design bundles, spec archives, exported files), copy them to `temp/design-source/` now. Never reference paths outside the project repo (e.g., `/tmp/`, system cache dirs) in BRD files. If artifacts were copied (or specific in-repo files served as the design source), append a `Source references:` list of those in-repo paths at the end of the BRD — `/feature-ui` and `/feature-tech` read these files and treat them as authoritative over BRD summaries.
+2. If any external artifacts were fetched or downloaded during this session (design bundles, spec archives, exported files), copy them to `temp/design-source/` now. Never reference paths outside the project repo (e.g., `/tmp/`, system cache dirs) in BRD files. If artifacts were copied (or specific in-repo design/spec documents served as the design source), append a `Source references:` list of those in-repo paths at the end of the BRD — design/spec materials only (design bundles, mockups, spec documents), never source-code files — `/feature-ui` and `/feature-tech` read these files and treat them as authoritative over BRD summaries.
 3. Write `temp/<feature-name>/business-requirements.md` using the format below. If the feature involves work in an external project (backend, separate service), create a separate `temp/` folder for it — same document format, same CONDITIONAL section rules.
 
 ### Document Format
@@ -166,7 +166,7 @@ Each step describes a user-visible action or system response — never an intern
 
 ## Source references
 
-- <in-repo path to a design-source file>
+- <in-repo path to a design/spec source document — never a source-code file>
 ```
 
 **CONDITIONAL sections** (include only when section's condition below is met):
@@ -175,7 +175,7 @@ Each step describes a user-visible action or system response — never an intern
 - **Key Decisions** — only if non-obvious choices were made that need to be remembered
 - **Related Features** — only if connections with existing functionality were identified
 - **Open Questions** — only if there are genuinely unresolved questions after verification
-- **Source references** — only if external artifacts were copied to `temp/design-source/` or specific in-repo files served as the design source (per Phase 3 step 2)
+- **Source references** — only if external artifacts were copied to `temp/design-source/` or specific in-repo design/spec documents served as the design source (per Phase 3 step 2); never source-code files
 
 ## Phase 4: BRD Validation Loop
 
@@ -210,7 +210,7 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
        feature: <name>
        validation_dir: <validation-dir>
        brd_paths: <newline-separated list of all BRD paths in this feature>
-       context: This is a business requirements document. Treat any reference to specific code identifiers, API paths, library names, regex syntax, or DB constructs as a real `[error]` (purity leak) — NOT as anchor or location context; exception: in-repo paths listed under `## Source references` are expected and authoritative, not purity leaks. ACs that bundle related properties of one business behavior are acceptable; do not flag as compound. Open Questions about technical implementation choices belong to `/feature-tech` — flag OQs only if they are user-answerable policy decisions still unresolved. Findings about test cases, test strategy, or test coverage do not apply at the BRD stage.
+       context: This is a business requirements document. Treat any reference to specific code identifiers, API paths, library names, regex syntax, or DB constructs as a real `[error]` (purity leak) — NOT as anchor or location context; exception: in-repo design/spec document paths listed under `## Source references` are expected and authoritative, not purity leaks — but source-code file paths are a real `[error]` even there. ACs that bundle related properties of one business behavior are acceptable; do not flag as compound. Open Questions about technical implementation choices belong to `/feature-tech` — flag OQs only if they are user-answerable policy decisions still unresolved. Findings about test cases, test strategy, or test coverage do not apply at the BRD stage.
 
 5. Collect all aggregator statuses. If every aggregator returns `NO_ISSUES` → exit loop, proceed to Phase 5.
 

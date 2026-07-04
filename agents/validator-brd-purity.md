@@ -37,6 +37,7 @@ background: true
 - Public standards references by name without code syntax (ISO 639-1, ISO 4217) — but a regex describing the standard is still `[error]`
 - High-level data flow phrasing ("the mobile app sends the chosen language when fetching the catalog")
 - Names of related features or future considerations in `## Related Features` or `## Open Questions`
+- In-repo file paths listed in `## Source references` — this section exists specifically to reference design-source files
 
 # Input
 

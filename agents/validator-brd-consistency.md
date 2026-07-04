@@ -25,7 +25,6 @@ background: true
 **warning** — drift / minor mismatch:
 - Terminology variation for the same concept (e.g. "language code" vs "lang" vs "locale" used interchangeably without a single canonical form)
 - Scope `Included` item never returned to in ACs
-- Actor capability mentioned only in Description, never in User Flow or AC
 
 # Input
 

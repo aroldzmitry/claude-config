@@ -19,7 +19,7 @@ background: true
 - Data model field present in API request/response but not defined in Data Model section (or vice versa)
 - Error code or status used in one endpoint but defined differently (or not at all) in another
 - Two sections describe the same behavior but contradict each other
-- Business clarification in technical-requirements.md contradicts a requirement in business-requirements.md
+- Business clarification in technical-requirements.md contradicts a requirement or an Edge Case's expected behavior in business-requirements.md
 
 **warning** — inconsistency risk:
 - Field name used differently across sections (e.g., `userId` in one place, `user_id` in another)
@@ -65,8 +65,8 @@ Read all sections. Flag any pair of statements that:
 
 ### Business clarifications vs requirements
 If business-requirements.md loaded: for each Business Clarification in technical-requirements.md:
-- Does it contradict or override a requirement in business-requirements.md without a corresponding Business Clarifications entry that (1) names the BRD requirement being overridden and (2) provides a rationale for the override? → `[error]`
-- If a Business Clarifications entry names the BRD requirement and gives a rationale → do NOT flag; the override is intentional and documented.
+- Does it contradict or override a requirement or an Edge Case's expected behavior in business-requirements.md without a corresponding Business Clarifications entry that (1) names the BRD requirement or edge case being overridden and (2) provides a rationale for the override? → `[error]`
+- If a Business Clarifications entry names the BRD requirement or edge case and gives a rationale → do NOT flag; the override is intentional and documented.
 
 ### Spec vs UI requirements
 If ui-requirements.md loaded: for each component or page the spec references, compare against its ui-requirements definition — behavioral trigger conditions (what shows/activates it, what skips it), named states (loading, empty, error, post-interaction), field visibility and constraints.

@@ -33,7 +33,7 @@ Reads validator report files from `{spec_dir}/validation/spec/`:
 - `testability-codex.md` — Testability Validator output (Codex, optional)
 - `consistency-codex.md` — Consistency Validator output (Codex, optional)
 
-Missing `-codex.md` files are skipped silently. Files containing `NO_ISSUES` have no findings.
+Missing report files (any of the six) are skipped silently — iteration-2 subset re-runs relaunch only dirty axes, so Claude files may be absent too. Files containing `NO_ISSUES` have no findings.
 
 # Workflow
 

@@ -100,7 +100,7 @@ Coverage requirements:
 - Every error scenario from technical-requirements has a test case
 - Every user flow from ui/business requirements has an e2e test case (if e2e available)
 
-Final self-check before writing the file: review the exclusion list one item at a time; for each excluded item, verify no test case in the draft asserts that behavior. Remove any contradicting test case (or remove the exclusion if it was added by mistake). No contradictions allowed.
+Final self-check before writing the file: for each excluded item in the Test Strategy, scan every draft test case and record a verdict — `<exclusion> → clear` or `<exclusion> → conflicts with <test case>`; an assertion of the excluded behavior through any mechanism (widget presence/absence, direct call, snapshot) is a conflict. If a prohibition-AC coverage requirement conflicts with an exclusion, resolve it explicitly: keep the exclusion and cover the AC at a different level, or remove the exclusion — never ship both. Remove any contradicting test case before writing. No contradictions allowed.
 
 # Output
 

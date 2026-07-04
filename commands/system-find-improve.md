@@ -1,7 +1,7 @@
 ---
 description: "Session analysis: reviews conversation to find improvements for commands, agents, and instructions. Can propose modifications and new system files."
 argument-hint: "[scope?]: 'all' (default), 'commands', 'agents', 'docs', 'claude-md'"
-allowed-tools: "Task, Agent, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
+allowed-tools: "Task, Agent, Read, Glob, Grep, Edit, Write, Bash"
 disable-model-invocation: true
 ---
 
@@ -193,7 +193,7 @@ After recording: if `DECISIONS_FILE` exceeds 400 lines → compact the `## Accep
 
 ### Observations
 
-Edit `OBSERVATIONS_FILE` to append a new entry (create with Write if missing):
+Edit `OBSERVATIONS_FILE` to append a new entry (create with Write if missing) — anchor the Edit on entry text already read in Phase 0; do not re-read the file:
 
 ```
 ## YYYY-MM-DD — {session context}
@@ -207,7 +207,7 @@ Edit `OBSERVATIONS_FILE` to append a new entry (create with Write if missing):
 
 On each append: count entries. If > 30, remove oldest until 30 remain, then append new entry.
 
-Final report: "Applied N changes, recorded N decisions (N accepted, N rejected). Observation logged."
+Final report — exact string, keep the parenthetical even when all counts are 0: "Applied N changes, recorded N decisions (N accepted, N rejected). Observation logged."
 
 # Edge Cases
 

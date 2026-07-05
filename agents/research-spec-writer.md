@@ -98,4 +98,4 @@ Received via `prompt` from orchestrator:
 - **No business-requirements.md** — business logic does not change.
 - **No test-cases.md** — existing tests should continue to pass after implementation.
 
-- If the total scope exceeds ~20 implementation steps, note this in Solution Approach: "This specification is large and may benefit from feature-split during implementation planning."
+- If the total scope exceeds ~20 implementation steps, note this in Solution Approach: "This specification is large; consider implementing it in independent stages during implementation planning." (Do not suggest feature-split — it requires a business-requirements.md, which research output does not include.)

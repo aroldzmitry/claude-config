@@ -31,7 +31,7 @@ Received via `prompt` from orchestrator:
    - Functional areas (API → UI, admin → user-facing)
 7. Assign names: if parts have ordering dependency → `<feature>-1-<aspect>`, `<feature>-2-<aspect>`; if independent → no numbering.
 8. For each sub-feature:
-   a. Create `temp/<sub-name>/business-requirements.md` using the BRD Document Format below.
+   a. Create `temp/<sub-name>/business-requirements.md` using the BRD Document Format below. If the parent BRD contains a `Source references` section, carry its entries forward into the sub-BRD (filtered to those relevant to this sub-feature's scope; keep all when relevance is unclear).
    b. If `TECH_MODE`: create `temp/<sub-name>/technical-requirements.md` — extract from the parent tech spec only the sections relevant to this sub-feature's scope (Data Model, API/Interfaces, Error Handling, Tech Edge Cases filtered to entries belonging to this sub); include Solution Approach, Business Clarifications, and Key Decisions sections in full (shared context). Touch `temp/<sub-name>/NEXT--feature-implement`.
    c. If not `TECH_MODE`: if sub-feature has UI (pages, forms, tables) → `touch temp/<sub-name>/NEXT--feature-ui`; otherwise → `touch temp/<sub-name>/NEXT--feature-tech`
 9. Self-check every generated sub-document (machine-generated docs get no interactive review — this is their only quality gate). Re-read each sub-BRD (and sub-spec if `TECH_MODE`) and verify:
@@ -86,6 +86,7 @@ Each sub-feature BRD must use this format. All sections must be self-sufficient 
 - **Actor** — only if multiple user roles apply to this sub-feature
 - **Key Decisions** — only if non-obvious choices were made
 - **Related Features** — only if real dependency exists (shared entity, API consumed by another part)
+- **Source references** — only if the parent BRD has one; carried forward per step 8a (downstream `/feature-ui` and `/feature-tech` read these paths as authoritative design context)
 - **Open Questions** — only if genuinely unresolved questions remain
 
 # Output

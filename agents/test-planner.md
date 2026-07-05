@@ -30,7 +30,7 @@ Received via prompt:
 
 Read in parallel:
 - `~/.claude/docs/TESTING_STRATEGY.md`
-- `docs/TESTING*.md` — project test rules, mock strategy, exclusions (skip if missing)
+- `docs/TESTING*.md` — project test rules, mock strategy, exclusions (skip if missing; prefix with `worktree_dir` when provided)
 - `{spec_dir}/technical-requirements.md` — **required**
 - `{spec_dir}/business-requirements.md` — skip if missing
 - `{spec_dir}/ui-requirements.md` — skip if missing

@@ -123,3 +123,7 @@ When test-cases.md specifies that expected values must be sourced from an existi
 # Output
 
     DONE: {N} test files created
+
+or
+
+    ERROR: {reason}

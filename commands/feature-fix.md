@@ -42,7 +42,13 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 1: Planning
 
-- If `USE_PARENT_WORKTREE = true`: launch `planner` only (task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR, worktree_dir: WORKTREE_DIR` — the feature's code exists only on the parent branch in the worktree; without `worktree_dir` the planner would plan against pre-feature repo-root state). WORKTREE_DIR, BRANCH, PR_URL already set in Phase 0.
+- If `USE_PARENT_WORKTREE = true` (WORKTREE_DIR, BRANCH, PR_URL already set in Phase 0): launch `planner` only — Task: `planner` with prompt:
+
+      feature: _fix
+      spec_dir: SPEC_DIR
+      worktree_dir: WORKTREE_DIR
+
+  `worktree_dir` is mandatory in this prompt — the feature's code exists only on the parent branch in the worktree; without it the planner plans against pre-feature repo-root state and wrongly dismisses spec items as stale.
 - Else: launch in parallel (same response):
   - Task: `planner` with prompt: `feature: _fix, spec_dir: SPEC_DIR`
   - Task: `setup-worktree` with prompt: `feature: $ARGUMENTS, repo_root: REPO_ROOT, spec_dir: SPEC_DIR`

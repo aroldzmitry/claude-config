@@ -13,7 +13,7 @@ maxTurns: 200
 
 - One coder invocation = one plan step. Complete it, validate, return. Never run `git commit` (including with `--no-verify`) — the orchestrator handles commits in Phase 5.
 - Max 3 static-checker calls per step. Still failing → return UNRESOLVED with error summary — never DONE while known errors remain (the orchestrator records it; global-validator re-checks the worktree).
-- Test files: may fix syntax errors and import paths, but never change test assertions or expected behavior. Only modify tests if the step explicitly targets them.
+- Test files (implement mode): may fix syntax errors and import paths, but never change test assertions or expected behavior — only modify tests if the step explicitly targets them. In fix-ai mode: may additionally update assertions/fixtures that the fix's own contract change invalidates, per the fix-ai workflow step 3.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.
 - step_body takes precedence over technical-requirements.md. When [spec-deviation] notes appear in the step, follow the plan's approach, not the spec's fix direction.
 

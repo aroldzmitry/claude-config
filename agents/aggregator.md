@@ -27,7 +27,7 @@ Received via `prompt` from orchestrator in key-value format:
 Reads validator report files from `{spec_dir}/validation/`:
 - `file.md` — File Validator output (Claude)
 - `structural.md` — Structural Validator output (Claude)
-- `spec.md` — Spec Validator output (Claude, optional — only from feature-implement pipeline)
+- `spec.md` — Spec Validator output (Claude, optional — present when the caller passed skip_spec: false)
 - `security.md` — Security Validator output (Claude)
 - `file-codex.md` — File Validator output (Codex, optional)
 - `structural-codex.md` — Structural Validator output (Codex, optional)

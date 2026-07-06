@@ -40,10 +40,9 @@ On success: go to Step 4.
 
 On failure (max 2 coder fix-ai spawns):
 1. Re-stage formatter output: `git -C {worktree_dir} add -u`
-2. Append to `{spec_dir}/validation/issues.md`:
+2. Append to `{spec_dir}/validation/issues.md` — one `[open]` entry per distinct hook error, error text inline in the same entry (coder's fix-ai mode reads only lines starting with `[open]`; unprefixed continuation lines are dropped):
    ```
-   [open] Commit hook failure:
-   <content of /tmp/committer_err.txt>
+   [open] Commit hook failure: <relevant lines from /tmp/committer_err.txt for this error, newlines collapsed to "; ">
    ```
 3. Spawn `coder` via Task(super-agent): `coder mode: fix-ai\nfeature: {feature}\nspec_dir: {spec_dir}\nworktree_dir: {worktree_dir}\nreport_file: validation/issues.md`
 4. Re-stage (Step 1), retry commit.

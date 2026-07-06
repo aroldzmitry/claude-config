@@ -72,7 +72,7 @@ Skip entirely if `PR.state != open` or `PR.isDraft = true`.
 Set `VALIDATE_ROOT = $WORKTREE_DIR` if it exists, otherwise `VALIDATE_ROOT = $REPO_ROOT`.
 Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 
-**BUILD_SETUP(DIR):** If `<DIR>/docs/WORKFLOW.md` exists, read it. Find the first section whose heading contains "Setup" or "Worktree" (case-insensitive); if no such section exists, skip. Run each shell command in a subshell: `(cd <DIR> && <command>)`. Using a subshell preserves the shell CWD after BUILD_SETUP returns.
+**BUILD_SETUP(DIR):** If `<DIR>/docs/WORKFLOW.md` exists, read it. Find the first section whose heading is "Pre-Validation Build Steps" or "Worktree Setup" (exact heading text, case-insensitive); if neither exists, skip. Run each shell command in a subshell: `(cd <DIR> && <command>)`. Using a subshell preserves the shell CWD after BUILD_SETUP returns.
 
 1. Update branch with latest `$DEFAULT_BRANCH`:
    - If `$WORKTREE_DIR` exists:
@@ -153,8 +153,6 @@ Set `PREMERGE_CYCLE = 0`. Set `NO_OP_CYCLES = 0`.
 [ "$(git -C $REPO_ROOT rev-parse --abbrev-ref HEAD)" != "$DEFAULT_BRANCH" ] && git -C $REPO_ROOT checkout $DEFAULT_BRANCH
 git -C $REPO_ROOT pull origin $DEFAULT_BRANCH --no-rebase
 ```
-
-Run BUILD_SETUP($REPO_ROOT).
 
 ## Phase 4: Cleanup
 

@@ -35,8 +35,8 @@ Received via `prompt` from orchestrator in key-value format:
 
 **Always present:**
 - `mode` — `implement` | `fix-ai`
-- `feature` — feature name (folder in `temp/`) or `_fix` for quick-fix runs
-- `spec_dir` — path to `temp/<feature>/`
+- `feature` — feature label: folder in `temp/` for spec runs, `_fix` for quick-fix runs, or an arbitrary label from other callers (e.g. feature-merge premerge fixes)
+- `spec_dir` — absolute path to the directory holding the spec/report files (usually `temp/<feature>/`; may be outside the project, e.g. `/tmp/premerge_fix/...`)
 
 **Optional:**
 - `worktree_dir` — absolute path to worktree; when set, app files are read/written at `{worktree_dir}/{relative_path}`

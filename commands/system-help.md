@@ -55,7 +55,7 @@ Output this reference (translated to user's language):
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
 | `/feature-implement` | Worktree + branch + draft PR (ready to merge) | `technical-requirements.md`, clean git |
 | `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
-| `/feature-fix` | Worktree + branch + draft PR (ready to merge) | — (or `/bug` output folder) |
+| `/feature-fix` | Worktree + branch + draft PR (ready to merge) | `temp/<folder>/technical-requirements.md` (e.g. `/bug` output folder) |
 | `/feature-merge` | Merged PR, validated pre-merge, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
 | `/patch` | Edited files (no commit) | — |
 | `/research` | `temp/RESEARCH-<topic>/technical-requirements.md` | — |

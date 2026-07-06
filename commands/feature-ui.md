@@ -27,11 +27,11 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 
 Before asking questions, silently:
 0. Read `~/.claude/docs/ASK_POLICY.md` — decision-classification protocol (ask vs decide) for the whole dialog
-1. Feature name = `$ARGUMENTS` (all routing resolved by Start section below).
+1. Feature name = `$ARGUMENTS` as normalized at Start (all routing resolved by Start section below).
 2. Read `temp/<feature-name>/business-requirements.md` if exists. If it contains `Source references:` entries with file paths inside the project, read those files as additional design context — they may answer UI questions that would otherwise require user input. When a source reference file and the BRD conflict on exact names or values, treat the source file as authoritative and apply its values silently — BRD descriptions of names are summaries, not precise specifications. When the conflict affects user-visible behavior (not just naming or value precision), also update business-requirements.md to reflect the source-authoritative value before writing the spec. When both the source reference file and the current codebase implementation agree on a value that conflicts with BRD, this is a multi-source consensus — update BRD silently without asking the user; document the override in Key UI Decisions instead. If the BRD contains a `## Related Features` section, for each feature listed, read `temp/<related-feature-name>/ui-requirements.md` if it exists — it may contain patterns or deferred decisions directly relevant to the current feature.
 3. Read `docs/DESIGN_SYSTEM.md`, `docs/UI_PATTERNS.md` if they exist. Glob for `docs/ARCHITECTURE*.md` and Read each matching file.
 4. Explore existing similar pages in the codebase (routes, components, sidebar config). Identify established patterns: table structure, columns, filters, actions, modals/dialogs, states, navigation. These patterns are the baseline for Phase 1.
-5. If the BRD Scope indicates no new pages or UI components (e.g., CSS-only, palette-only, token-only) → skip Figma question and proceed to Phase 1. Otherwise, ask user if they have Figma mockups for this feature (is Figma open with the relevant file?):
+5. Skip the Figma question and proceed to Phase 1 when either: (a) the BRD Scope indicates no new pages or UI components (e.g., CSS-only, palette-only, token-only), or (b) the design context loaded in step 2 fully specifies the visuals of every new page/component (layout, dimensions, colors, typography, states) — use it as the design basis and cite it in Design References. If step-2 design context covers the new UI only partially — ask the Figma question scoped to the uncovered parts (state what is already covered and what is missing); if yes → apply the MCP procedure below to the uncovered screens only; if no Figma — gather only the missing parts in Phase 1. Otherwise, ask user if they have Figma mockups for this feature (is Figma open with the relevant file?):
    - If yes → call `mcp__figma-local__get_metadata` (no nodeId — reads currently open file). If the tool result indicates the output was saved to a file (e.g., contains a file path), use the Agent tool to parse that file and identify relevant screen node IDs. For each relevant screen, call `mcp__figma-local__get_design_context` + `mcp__figma-local__get_screenshot`. Use extracted data as basis for Phase 1 — present what mockups show per category and ask to confirm/adjust, skip categories fully covered. If MCP returns error → inform user, fall back to text-based gathering in Phase 1.
    - If no Figma → proceed with text-based gathering in Phase 1.
 
@@ -182,7 +182,7 @@ Per-page subsections — include only those relevant to the layout type:
 
 ## Design References
 
-- <Figma node IDs and notes on which screens they cover>
+- <design source: Figma node IDs or BRD source-reference files, and which screens they cover>
 
 ## Open Questions
 
@@ -192,7 +192,7 @@ Per-page subsections — include only those relevant to the layout type:
 **CONDITIONAL sections:**
 - **Global Changes** — only if changes apply to shared components or affect all/most pages simultaneously
 - **Component** — only if feature adds a new non-shared widget to an existing page; one section per component
-- **Design References** — only if Figma design data was used (URL or MCP node IDs)
+- **Design References** — only if design data was used: Figma URL / MCP node IDs, or design files loaded via BRD source references
 - **Open Questions** — only if genuinely unresolved questions remain
 
 ### Step 3: Finalize
@@ -203,6 +203,8 @@ Per-page subsections — include only those relevant to the layout type:
    `- [YYYY-MM-DD] /feature-ui <feature-name>: questions={user questions asked across all phases} patterns_followed={categories resolved by existing patterns without asking}`
 
 # Start
+
+If `$ARGUMENTS` is a filesystem path (contains `/`) — treat the path's last non-empty segment as `$ARGUMENTS` from here on.
 
 If `temp/$ARGUMENTS/business-requirements.md` exists (attempt Read):
 1. If `ui-requirements.md` already exists in same folder — ask user via AskUserQuestion:

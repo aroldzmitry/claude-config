@@ -32,7 +32,7 @@ You are a software architect conducting a structured interview to define technic
 
 Before asking questions, silently:
 0. Read `~/.claude/docs/ASK_POLICY.md` — decision-classification protocol (ask vs decide) for the whole dialog
-1. Determine feature name from `$ARGUMENTS`
+1. Determine feature name from `$ARGUMENTS` (path arguments already normalized at Start)
 2. Use the Read tool directly on `temp/<feature-name>/business-requirements.md` — do NOT use Glob to check existence first. Read returns an error if the file doesn't exist; treat that as not found and skip. Also use the Read tool directly on `temp/<feature-name>/ui-requirements.md` — do NOT use Glob; treat a Read error as not found and skip. Use both files as context for API contracts and component architecture. If `business-requirements.md` has a "Related Features" section — also read `technical-requirements.md` from each referenced feature's `temp/<related-feature>/` folder (if exists), as these contain architectural decisions and API contracts that may answer interview questions. If `business-requirements.md` contains `Source references:` entries with file paths inside the project, read those files as additional design context — they may answer technical questions that would otherwise require user input. When a source reference file and the BRD conflict on exact names or values, treat the source file as authoritative and apply its values silently as a business clarification — BRD descriptions of names are summaries, not precise specifications.
 3. Read `docs/ARCHITECTURE*.md`, `docs/CODE_RULES*.md`, `docs/CONVENTIONS.md` if they exist
 4. If feature modifies existing code — explore affected modules, data flow, and contracts to understand current state before asking questions (max 5 tool calls). To verify inline usage counts: grep for the inline pattern, not the extracted symbol (extracted symbols may have 0 usages if replacements haven't happened yet).
@@ -239,7 +239,7 @@ When `NO_TEST_CASES = true`: exclude `spec-testability` from both engine lists b
      CRITICAL: You MUST write output to the EXACT file path above using the Write tool before returning — do NOT use any other filename.
      ```
 
-2. Verify all expected output files exist (Glob `validation/spec/` dir): 6 files, or 3 when `FAST_PATH`; on an iteration-2 subset re-run (step 7) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
+2. Verify all expected output files exist (Glob `validation/spec/` dir): 6 files, or 3 when `FAST_PATH`; on an iteration-2 subset re-run (step 7) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. Exception: if a validator reported that its engine/CLI is unavailable (engine-level ERROR), do not retry it or any other validator on that engine this run — note the engine as unavailable and continue with the remaining engine's reports. If still absent after retry: note the missing filename and continue.
 
 3. Spawn `aggregator-spec`:
 
@@ -275,6 +275,8 @@ When `NO_TEST_CASES = true`: exclude `spec-testability` from both engine lists b
    `- [YYYY-MM-DD] /feature-tech <feature-name>: questions={user questions asked across all phases} spawns={subagent spawns: test-planner + validators + codex + aggregators + feature-split} val_iters={spec_iter} autofixed={total auto-fixed findings} deferred={findings recorded to Open Questions} fast_path={true|false}`
 
 # Start
+
+If `$ARGUMENTS` is a filesystem path (contains `/`) — treat the path's last non-empty segment as `$ARGUMENTS` from here on.
 
 If `temp/$ARGUMENTS/technical-requirements.md` exists (attempt Read; try kebab-case normalization) — ask via AskUserQuestion BEFORE any interview (a full re-interview the user didn't want is the most expensive mistake this command can make):
 - **Edit existing** — load it as baseline; run Phase 0 silently; Phase 1 covers only Open Questions (see Open Questions first), gaps, and changes the user names

@@ -93,7 +93,7 @@ Before proceeding, verify internally:
 - [ ] Every Acceptance Criterion has a priority
 - [ ] Scope boundaries are explicit (included AND excluded)
 - [ ] All gap check scenarios are resolved or recorded in Open Questions
-- [ ] Document is internally consistent: every capability stated in the Actor section is covered by at least one AC; every entity in Key Entities matches its description in User Flow and ACs; every user-visible outcome stated in Edge Cases is covered by at least one AC; every AC that requires reading a specific field from an existing data source confirms that field is present in the current contract (if not — add a scope item for updating the contract)
+- [ ] Document is internally consistent: every capability stated in the Actor section and every user-visible outcome stated in Edge Cases is covered by at least one AC; wherever two sections state the same entity, behavior, or decision, their scope matches — a restatement or summary (including Key Decisions) may compress detail but must not drop, add, or widen conditions or exceptions stated elsewhere; every AC that requires reading a specific field from an existing data source confirms that field is present in the current contract (if not — add a scope item for updating the contract)
 
 If any item fails — go back to Step 2 and ask. If all pass — state the chosen feature name (naming rules: if `$ARGUMENTS` is 1–3 words → use as-is in kebab-case; if longer → derive a concise name from it; if no arguments → derive from dialog content) and proceed to Phase 3.
 
@@ -203,7 +203,7 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
 
 2. For cross-repo features (more than one BRD generated): spawn one additional generic Claude Task (no dedicated validator agent) that reads all BRD files and writes cross-document consistency findings to one chosen primary validation directory's `cross-doc.md`. Prompt the task: compare BRDs section by section; flag any concept that one BRD treats differently than another, any cross-doc reference that doesn't resolve, and any obligation that lives in one BRD but should be in another. Output format: `[error|warning] <doc> § <section> — <description>`.
 
-3. Verify all expected output files exist (Glob each validation directory). Expected count per validation directory: 6 files (`purity.md`, `completeness.md`, `consistency.md`, and the three `-codex.md` counterparts); 3 files when `FAST_PATH` (Claude reports only). For the cross-repo primary validation directory (the one chosen for `cross-doc.md` in step 2): expect 7 files. On an iteration-2 subset re-run (step 8) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. If still absent after retry: note the missing filename and continue.
+3. Verify all expected output files exist (Glob each validation directory). Expected count per validation directory: 6 files (`purity.md`, `completeness.md`, `consistency.md`, and the three `-codex.md` counterparts); 3 files when `FAST_PATH` (Claude reports only). For the cross-repo primary validation directory (the one chosen for `cross-doc.md` in step 2): expect 7 files. On an iteration-2 subset re-run (step 8) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. Exception: if a validator reported that its engine/CLI is unavailable (engine-level ERROR), do not retry it or any other validator on that engine this run — note the engine as unavailable and continue with the remaining engine's reports. If still absent after retry: note the missing filename and continue.
 
 4. For each validation directory, spawn `aggregator-brd`:
 
@@ -243,7 +243,7 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
 # Start
 
 If `$ARGUMENTS` is provided:
-1. Check if `temp/$ARGUMENTS/business-requirements.md` exists (try kebab-case normalization of `$ARGUMENTS`).
+1. If `$ARGUMENTS` is a filesystem path (contains `/`) — treat the path's last non-empty segment as `$ARGUMENTS` from here on. Check if `temp/$ARGUMENTS/business-requirements.md` exists (try kebab-case normalization of `$ARGUMENTS`).
 2. If exists — read it silently, then ask the user via AskUserQuestion:
    - **Edit existing** — run Phase 0 silently, load the document as starting point, go to Phase 1 asking only about gaps or changes
    - **Redo from scratch** — ignore existing document, proceed with full Phase 1

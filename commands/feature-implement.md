@@ -38,7 +38,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 ## Phase 0: Load & Validate
 
-1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`"
+1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`". If `$ARGUMENTS` is a filesystem path (contains `/`) — treat the path's last non-empty segment as `$ARGUMENTS` for the rest of the workflow.
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
 4. `git show-ref --quiet refs/heads/feat/$ARGUMENTS` → if exit code 0, stop: "Branch feat/$ARGUMENTS already exists. Delete it first or choose a different feature name."

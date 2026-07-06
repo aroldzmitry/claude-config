@@ -63,6 +63,7 @@ Extract from loaded specs:
 - API endpoints (HTTP method + path) → integration
 - WebSocket message handlers → integration
 - User flows from business-requirements/ui-requirements → e2e (if available)
+- UI component behaviors named in acceptance criteria or ui-requirements (render outcomes, user-interaction results) → component/widget level, when the project's test rules define one
 - Error scenarios and edge cases → assign to the level that best isolates them
 
 Apply exclusions from `docs/TESTING*.md` first, then system defaults from `~/.claude/docs/TESTING_STRATEGY.md`.
@@ -96,11 +97,11 @@ Omit `## Tests to Update` section if `tests_to_update` is empty.
 
 Coverage requirements:
 - Every `[must]` acceptance criterion from business-requirements maps to at least one test case; for criteria phrased as a prohibition ("never X", "must not Y") — include a test that directly asserts the prohibition (e.g., the forbidden code path is unreachable, the forbidden artifact is untouched after the operation, or a static check that the configured boundary excludes the prohibited target). Positive-behavior tests alone do not cover a prohibition AC.
-- Every API endpoint: happy path + at least one error case
+- Every API endpoint: happy path + a test for every error code documented for that endpoint; when the spec states a blanket contract for an endpoint group (shared auth/permission failure, shared not-found rule, shared validation rule) or the Test Strategy commits to a per-route check, enumerate that case for every endpoint in the group — sibling endpoints must have symmetric coverage
 - Every error scenario from technical-requirements has a test case
 - Every user flow from ui/business requirements has an e2e test case (if e2e available)
 
-Final self-check before writing the file: for each excluded item in the Test Strategy, scan every draft test case and record a verdict — `<exclusion> → clear` or `<exclusion> → conflicts with <test case>`; an assertion of the excluded behavior through any mechanism (widget presence/absence, direct call, snapshot) is a conflict. If a prohibition-AC coverage requirement conflicts with an exclusion, resolve it explicitly: keep the exclusion and cover the AC at a different level, or remove the exclusion — never ship both. Remove any contradicting test case before writing. No contradictions allowed.
+Final self-check before writing the file: for each excluded item in the Test Strategy, scan every draft test case and record a verdict — `<exclusion> → clear` or `<exclusion> → conflicts with <test case>`; an assertion of the excluded behavior through any mechanism (widget presence/absence, direct call, snapshot) is a conflict. If a `[must]`-AC coverage requirement (prohibition or positive) conflicts with an exclusion, resolve it explicitly: keep the exclusion and cover the AC at a different level, or remove the exclusion — never ship both; an exclusion must never leave a `[must]` AC with zero coverage at every level. Remove any contradicting test case before writing. No contradictions allowed.
 
 # Output
 

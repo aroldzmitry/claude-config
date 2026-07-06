@@ -24,6 +24,8 @@ When `test-cases.md` § **Test Strategy** lists exclusion categories (e.g., unde
 
 Validators **must not** flag missing test cases for behaviors whose primary concern falls under a named exclusion category. The Test Strategy section is authoritative: an exclusion listed there overrides any requirement in `business-requirements.md` or `technical-requirements.md` regarding test coverage for that category.
 
+Exception: an exclusion cannot leave a `[must]` acceptance criterion with zero coverage at every level — the planner must cover it at another level or drop the exclusion. Validators may flag a `[must]` AC that has no coverage anywhere, even when an exclusion names its category.
+
 ## Precedence
 
 1. Project `docs/TESTING.md` — highest; project-specific rules and level assignments

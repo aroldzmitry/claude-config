@@ -37,10 +37,12 @@ Missing report files (any of the six) are skipped silently — iteration-2 subse
 
 # Workflow
 
-1. Read all six report files from `{spec_dir}/validation/spec/` (skip missing). Extract findings (skip `NO_ISSUES` files). If `context:` was provided, apply those rules during false-positive classification in step 2.
+1. Read all six report files from `{spec_dir}/validation/spec/` (skip missing). Extract findings (skip `NO_ISSUES` files). Also read `{spec_dir}/validation/spec/false-positives.md` if present — the prior iteration's false-positive log. If `context:` was provided, apply those rules during false-positive classification in step 2.
 
 2. Verify each finding against spec documents:
-   - Read in parallel (skip missing): `{spec_dir}/technical-requirements.md`, `{spec_dir}/test-cases.md`, `{spec_dir}/business-requirements.md`.
+   - Read in parallel (skip missing): `{spec_dir}/technical-requirements.md`, `{spec_dir}/test-cases.md`, `{spec_dir}/business-requirements.md`, `{spec_dir}/ui-requirements.md`, `~/.claude/docs/TESTING_STRATEGY.md`.
+   - Finding matches an already-logged false positive from the prior iteration's log (same document + section + concept) → classify as false positive citing the prior entry, skip re-verification.
+   - For test-coverage findings apply TESTING_STRATEGY.md § Explicit Exclusions Principle including its `[must]`-AC exception yourself — the verdict must not depend on whether the source validator applied it.
    - Finding references a section or requirement → locate it in the spec, confirm the described issue applies.
    - Finding references business-requirements.md content but that file is missing → mark as unverifiable, keep finding (trust validator).
    - Finding doesn't match actual spec content → mark as false positive.

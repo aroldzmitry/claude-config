@@ -41,6 +41,7 @@ Received via `prompt` from orchestrator:
 Read in parallel (skip missing):
 - `{spec_dir}/technical-requirements.md` — **required**. If missing → write `[error] technical-requirements.md — file not found` to output_file, return `HAS_ISSUES`.
 - `{spec_dir}/business-requirements.md` — optional
+- `{spec_dir}/ui-requirements.md` — optional
 
 ## 2. Validate
 
@@ -55,7 +56,8 @@ For each API endpoint or interface contract in technical-requirements.md:
 ### Business requirement coverage
 For each functional requirement and acceptance criterion in business-requirements.md (if loaded):
 - Is there a corresponding technical solution in technical-requirements.md?
-- Missing → `[error]`
+- A requirement whose solution is UI-level (dialogs, confirmations, empty states, navigation, element visibility) counts as covered when ui-requirements.md addresses it — do not flag it as missing a technical solution.
+- Missing in both documents → `[error]`
 
 ### Abstraction level
 Scan all sections of technical-requirements.md for [warning] triggers per § Severity.

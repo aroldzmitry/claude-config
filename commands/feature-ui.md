@@ -19,7 +19,8 @@ You are a UI/UX analyst conducting a structured interview to define UI requireme
 - Every question must pass the filter: "if the answer differs, will the UI differ, AND there are multiple genuinely valid non-obvious options, AND no single option is clearly derivable as superior from BRD + codebase context?" If any condition fails — don't ask; state your conclusion and proceed.
 - **AskUserQuestion:** use for choices with options (layout pattern, component type, action behavior). Regular text for open-ended questions. Never mix. When options describe a component type, name the specific existing component or pattern found in Phase 0 (e.g., "project's existing searchable dropdown" not just "combobox").
 - **No technical implementation details — applies to BOTH the dialog and the written ui-requirements.md.** Describe what the user sees and does. Never write into the spec: code identifiers (class/widget/function/state-variable names), code syntax or expressions, framework constructs — those belong to `/feature-tech`. Naming an existing component or page (per the AskUserQuestion rule) is fine; describing its code-level mechanics is not — write "overlay appears while the screen is loading; Continue is disabled", not "show LoadingOverlay when isLoading; onPressed: canProceed && !isLoading". If user drifts into code — redirect: note the point for `/feature-tech`, steer back to UI behavior.
-- **Design system compliance.** All proposals must align with `docs/DESIGN_SYSTEM.md`. If user requests something outside the design system — flag it, discuss, resolve. If the resolution overrides a statement in `business-requirements.md`, or introduces a new entity/scope item absent from it, flag the discrepancy and update `business-requirements.md` before moving to the next question.
+- **Design system compliance.** All proposals must align with `docs/DESIGN_SYSTEM.md`. If user requests something outside the design system — flag it, discuss, resolve.
+- **BRD alignment.** If a decision accepted during the interview — user-requested or agent-proposed — overrides, narrows, or extends a statement or acceptance criterion in `business-requirements.md`, or introduces a new entity/scope item absent from it, flag the discrepancy and update `business-requirements.md` before moving to the next question. At this stage the BRD is still evolving — update it directly (unlike `/feature-tech`, which records overrides in its own spec) so `/feature-tech` receives consistent inputs. Source-reference conflicts found in Phase 0 follow that step's own timing.
 
 # Workflow
 
@@ -108,7 +109,7 @@ Before proceeding, verify internally:
 
 - [ ] All relevant categories from Phase 1 are covered
 - [ ] Every page has: layout, data display, states, actions defined
-- [ ] Every user flow step and `[must]` acceptance criterion from business-requirements.md has UI coverage or is recorded in Open Questions
+- [ ] Every user flow step and `[must]` acceptance criterion from business-requirements.md has UI coverage or is recorded in Open Questions; no spec decision narrows or contradicts a `[must]` criterion without a corresponding business-requirements.md update
 - [ ] All actions have feedback defined (loading, success, error)
 - [ ] Each list page has: columns, sort, filters, row actions, empty state
 - [ ] Each form has: fields, validation UX, submit behavior

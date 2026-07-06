@@ -101,7 +101,7 @@ Coverage requirements:
 - Every error scenario from technical-requirements has a test case
 - Every user flow from ui/business requirements has an e2e test case (if e2e available)
 
-Final self-check before writing the file: for each excluded item in the Test Strategy, scan every draft test case and record a verdict — `<exclusion> → clear` or `<exclusion> → conflicts with <test case>`; an assertion of the excluded behavior through any mechanism (widget presence/absence, direct call, snapshot) is a conflict. If a `[must]`-AC coverage requirement (prohibition or positive) conflicts with an exclusion, resolve it explicitly: keep the exclusion and cover the AC at a different level, or remove the exclusion — never ship both; an exclusion must never leave a `[must]` AC with zero coverage at every level. Remove any contradicting test case before writing. No contradictions allowed.
+Final self-check before writing the file: for each excluded item in the Test Strategy, scan every draft test case and record a verdict — `<exclusion> → clear` or `<exclusion> → conflicts with <test case>`; an assertion of the excluded behavior through any mechanism (widget presence/absence, direct call, snapshot) is a conflict. If a `[must]`-AC coverage requirement (prohibition or positive) conflicts with an exclusion, resolve it explicitly per the `[must]`-AC exception in `~/.claude/docs/TESTING_STRATEGY.md` § Explicit Exclusions Principle: keep the exclusion and cover the AC at a different level, or remove the exclusion — never ship both. Remove any contradicting test case before writing. No contradictions allowed.
 
 # Output
 

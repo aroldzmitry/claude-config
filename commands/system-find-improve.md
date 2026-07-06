@@ -205,7 +205,7 @@ Edit `OBSERVATIONS_FILE` to append a new entry (create with Write if missing) �
 - notes: {cross-session trend if detected, or notable observation}
 ```
 
-On each append: count entries. If > 30, remove oldest until 30 remain, then append new entry.
+On each append: count entries. If > 30, remove oldest until 30 remain, then append new entry. Entry order in the file is not guaranteed to be chronological (new entries are prepended, not appended in date order) — determine "oldest" by parsing the `YYYY-MM-DD` date in each entry's header, not by file position. Among entries sharing the oldest date, remove the ones nearest the end of the file first.
 
 Final report — exact string, keep the parenthetical even when all counts are 0: "Applied N changes, recorded N decisions (N accepted, N rejected). Observation logged."
 

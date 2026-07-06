@@ -1,7 +1,7 @@
 ---
 name: codex
 description: "Runs any agent's instructions through Codex CLI. First word of prompt = agent name, rest = task params. Writes findings via the agent, returns agent's one-line status."
-tools: Read, Write, Bash
+tools: Bash
 model: sonnet
 ---
 
@@ -40,4 +40,5 @@ Prompt from orchestrator:
 
 - Never modify the agent's output. Return exactly what `wait` prints.
 - Never call `codex` or `run-agent.sh` directly. Only use `launch-agent.sh`.
+- ERROR output (agent missing, CLI broken, process died) is a final response: return it verbatim and stop. Do NOT diagnose the environment, run the CLI or package manager directly, inspect the installation, or attempt repair — the orchestrator owns engine-failure handling.
 - Do not add extra text, commentary, or formatting to the response.

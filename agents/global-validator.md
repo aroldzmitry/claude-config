@@ -74,3 +74,4 @@ or
 - Codex crash/timeout → skip, record SKIPPED
 - AI validator crash → aggregator handles missing files
 - aggregator crash → return `HAS_ISSUES: aggregator failed`
+- Task calls in step 5 block until their subagent returns — once results come back, continue directly to step 6 in the same turn. A message stating you are "waiting for validators" or that you "will run the aggregator once they complete" is not a valid final answer; it means step 6 was not executed. Call the aggregator Task now, before ending your turn.

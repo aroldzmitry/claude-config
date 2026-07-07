@@ -50,6 +50,7 @@ case "$MODE" in
         python3 -c "
 import sys, json
 raw = open('$SESSION_DIR/output.txt').read().strip()
+results = []          # claude result events — one per turn end; answer = LAST
 agent_messages = []   # final assistant messages (codex)
 any_texts = []        # any item text — fallback
 for line in raw.splitlines():
@@ -58,10 +59,12 @@ for line in raw.splitlines():
         continue
     try:
         d = json.loads(line)
-        # claude backend: {\"type\":\"result\",\"result\":\"...\"}
+        # claude backend: {\"type\":\"result\",\"result\":\"...\"} — emitted at
+        # EVERY turn end (intermediate turns wait on background children);
+        # the agent's answer is the LAST result event, never the first
         if d.get('type') == 'result':
-            print(d.get('result', ''))
-            sys.exit(0)
+            results.append(d.get('result', ''))
+            continue
         # codex backend: {\"type\":\"item.completed\",\"item\":{...}}
         if d.get('type') == 'item.completed':
             item = d.get('item', {})
@@ -79,6 +82,9 @@ for line in raw.splitlines():
                 any_texts.append(text)
     except (json.JSONDecodeError, KeyError, AttributeError):
         pass
+if results:
+    print(results[-1])
+    sys.exit(0)
 # codex emits one item.completed per item (reasoning, tool call, message) —
 # the agent's answer is the LAST assistant message, not the first item
 if agent_messages:

@@ -50,9 +50,15 @@ case "$BACKEND" in
     TOOLS=$(echo "$FRONTMATTER" | awk -F': *' '/^tools:/{gsub(/"/, "", $2); print $2}')
     TOOLS="${TOOLS:-Read,Glob,Grep,Write,Edit,Bash}"
 
+    # No --done-pattern: with background Task subagents, claude -p emits a
+    # "type":"result" line at EVERY turn end — including intermediate turns
+    # that ended while a spawned child is still running — and exits only after
+    # the real final result. Matching the first result line killed the process
+    # mid-run, truncating the response to "I'll wait for the notification".
+    # Natural process exit is the completion signal.
+    # No --stall-timeout: the stream is legitimately silent while a background
+    # child runs (validators: 10-25 min); --timeout is the backstop.
     ~/.claude/bin/supervised-run.sh \
-      --done-pattern '"type":"result"' \
-      --stall-timeout 600 \
       --timeout 3600 \
       -- env -u CLAUDECODE claude -p \
       --verbose --output-format stream-json \

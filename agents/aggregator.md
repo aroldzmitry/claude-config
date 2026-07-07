@@ -23,8 +23,11 @@ Received via `prompt` from orchestrator in key-value format:
 
     feature: auth-flow
     spec_dir: temp/auth-flow/
+    reports_dir: temp/auth-flow/validation/runs/1751830000/
 
-Reads validator report files from `{spec_dir}/validation/`:
+`reports_dir` is optional — the directory holding this run's raw validator reports; when absent, default to `{spec_dir}/validation/`.
+
+Reads validator report files from `{reports_dir}`:
 - `file.md` — File Validator output (Claude)
 - `structural.md` — Structural Validator output (Claude)
 - `spec.md` — Spec Validator output (Claude, optional — present when the caller passed skip_spec: false)
@@ -38,10 +41,10 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 
 # Workflow
 
-1. Read validator report files from `{spec_dir}/validation/` (file.md, structural.md, spec.md, security.md, file-codex.md, structural-codex.md, spec-codex.md, security-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
+1. Read validator report files from `{reports_dir}` (file.md, structural.md, spec.md, security.md, file-codex.md, structural-codex.md, spec-codex.md, security-codex.md — skip missing). Extract findings (skip `NO_ISSUES` files).
 
 2. Load existing false positive context (skip missing files):
-   - Read `{spec_dir}/validation/false-positives.md`. When a new finding matches a previous false positive (same file, same issue pattern), re-read the file at that path:line. If the line content is identical → carry forward to false-positives.md (do not include in aggregated.md). If different → treat as a new finding and proceed to step 4 verification (do not carry forward to false-positives.md). After processing all current findings, copy previous FP entries not re-raised by any validator in this run.
+   - Read `{spec_dir}/validation/false-positives.md`. When a new finding matches a previous false positive (same file, same issue pattern): if the FP entry has a `path:line`, re-read the file at that location — line content identical → carry forward to false-positives.md (do not include in aggregated.md); different → treat as a new finding and proceed to step 4 verification (do not carry forward). If the FP entry has a file but no line → re-read the file; described issue pattern unchanged → carry forward, otherwise treat as new. If the FP entry has no file reference → carry forward as-is (nothing to re-verify). After processing all current findings, copy previous FP entries not re-raised by any validator in this run.
 
 3. Read `{spec_dir}/implementation-plan.md` if it exists. Extract two things:
    - **Excluded issues** (`## Excluded Issues` section): if a finding matches (same concept, same or nearby code location) → classify as FP immediately, reason `"excluded from plan: {rationale}"`.
@@ -76,11 +79,11 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
 8. Update `{spec_dir}/validation/issues.md` (create if missing):
    - Read existing issues.md (if exists)
    - For each verified finding from step 6 (format: `[error|warning] file:line — description`): if issues.md does NOT contain `[open] {finding}` → append `[open] {finding}`. A `[fixed]` entry with the same text is NOT a match — still append `[open]`.
-   - For each pre-existing `[open]` line in issues.md with a `file:line` reference that does NOT appear in the current run's verified findings from step 6: read that file and line. If the issue described is no longer present at that location → replace `[open]` with `[fixed]`.
+   - For each pre-existing `[open]` line in issues.md with a file reference (with or without a line number) that does NOT appear in the current run's verified findings from step 6: read that file (and line, if present). If the issue described is no longer present → replace `[open]` with `[fixed]`.
    - Do not modify existing `[fixed]` lines.
 
-9. Delete raw validator files from `{spec_dir}/validation/`:
-   `rm -f {spec_dir}/validation/file.md {spec_dir}/validation/structural.md {spec_dir}/validation/spec.md {spec_dir}/validation/security.md {spec_dir}/validation/file-codex.md {spec_dir}/validation/structural-codex.md {spec_dir}/validation/spec-codex.md {spec_dir}/validation/security-codex.md`
+9. Delete raw validator files from `{reports_dir}`:
+   `rm -f {reports_dir}/file.md {reports_dir}/structural.md {reports_dir}/spec.md {reports_dir}/security.md {reports_dir}/file-codex.md {reports_dir}/structural-codex.md {reports_dir}/spec-codex.md {reports_dir}/security-codex.md`
 
 # Output
 

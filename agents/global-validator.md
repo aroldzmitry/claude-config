@@ -23,7 +23,7 @@ Received via `prompt` from orchestrator in key-value format:
 
 # Workflow
 
-1. `mkdir -p {spec_dir}/validation/` && `rm -f {spec_dir}/validation/aggregated.md`
+1. `mkdir -p {spec_dir}/validation/` && `rm -f {spec_dir}/validation/aggregated.md`. Generate `RUN_ID` = current unix timestamp (`date +%s`) and `mkdir -p {spec_dir}/validation/runs/{RUN_ID}/` — all AI-validator reports of this run are written there; directories of other runs are ignored.
 
 2. Read `docs/WORKFLOW.md` § Pre-Validation Build Steps in the working directory (worktree_dir if set, otherwise repo root). For each listed build command, run it via Bash. Log stdout/stderr to `{spec_dir}/validation/build-prereqs.txt`. Build failure → log warning, continue.
 
@@ -33,13 +33,13 @@ Received via `prompt` from orchestrator in key-value format:
 
 4. FAIL (including crash without parseable status) → collect errors from tests.txt, write to `{spec_dir}/validation/aggregated.md` in format `[error] file:line — description` (or `[error] category — description` without file reference). Update `{spec_dir}/validation/issues.md`: for each error, if issues.md does not already contain `[open] {line}` → append `[open] {line}` (create if missing; a `[fixed]` entry with same text is NOT a match). Return `HAS_ISSUES: N errors (test)`.
 
-5. Tests clean → read `{spec_dir}/validation/issues.md` (if exists). For each `[open]` item that does not contain a `file:line` reference (no `:\d+` immediately before ` —`) → mark it `[fixed]`. These were written by step 4 in a prior run and are now resolved since tests passed. Any that are still actual issues will be re-added as `[open]` by the aggregator.
+5. Tests clean → read `{spec_dir}/validation/issues.md` (if exists). For each `[open]` item whose text before the ` — ` separator contains no file path (no `/` and no `:\d+` — a bare category label, the shape step 4 writes for errors without a file reference) → mark it `[fixed]`; these were written by step 4 in a prior run and are resolved now that tests pass. Items that reference a file — with or without a line number — are left for the aggregator to re-verify. Any that are still actual issues will be re-added as `[open]` by the aggregator.
 
    Launch `static-checker` Task with:
    - `error_file: <absolute path to {spec_dir}/validation/static.txt>`
    - If `worktree_dir` is set: `working_dir: {worktree_dir}`
 
-   FAIL → collect errors from static.txt, update issues.md (same `[open]` append logic as step 4). Return `HAS_ISSUES: N errors (static)`.
+   FAIL → collect errors from static.txt, write them to `{spec_dir}/validation/aggregated.md` (same format as step 4), update issues.md (same `[open]` append logic as step 4). Return `HAS_ISSUES: N errors (static)`.
 
    If `skip_ai` = true → return `NO_ISSUES`.
 
@@ -48,13 +48,15 @@ Received via `prompt` from orchestrator in key-value format:
    - `validator-structural` + `codex "validator-structural"` (→ structural.md, structural-codex.md)
    - `validator-security` + `codex "validator-security"` (→ security.md, security-codex.md)
    - If `skip_spec` = false: `validator-spec` + `codex "validator-spec"` (→ spec.md, spec-codex.md)
-   - All with `feature: {feature}, spec_dir: {spec_dir}, files: {files}, output_file: {spec_dir}/validation/{name}.md`
+   - All with `feature: {feature}, spec_dir: {spec_dir}, files: {files}, output_file: {spec_dir}/validation/runs/{RUN_ID}/{name}.md`
+   - Before (re)launching any AI validator, check `{spec_dir}/validation/runs/{RUN_ID}/`: a validator whose report file already exists is done — do not relaunch it; wait only for the missing ones.
    - Codex crash/timeout → skip it, append `"{name}-codex: SKIPPED — {reason}"` as a line to `{spec_dir}/validation/skipped.md` (create if missing) — a crash must leave a trace, not read as clean
 
 6. Launch `aggregator` Task with:
    ```
    feature: {feature}
    spec_dir: {spec_dir}
+   reports_dir: {spec_dir}/validation/runs/{RUN_ID}/
    ```
 7. Return aggregator's status.
 
@@ -68,10 +70,12 @@ or
     HAS_ISSUES: N errors (static)     — from step 5
     HAS_ISSUES: N open                — from step 6 (aggregator)
 
+Your final response MUST be exactly one of the forms above or a documented error string. A status update ("validators launched", "waiting for validators", partial progress) is never a valid final response — the orchestrator cannot parse it and the validation cycle stalls.
+
 # Error Handling
 
 - test-runner crash → treat as FAIL
 - Codex crash/timeout → skip, record SKIPPED
 - AI validator crash → aggregator handles missing files
 - aggregator crash → return `HAS_ISSUES: aggregator failed`
-- Task calls in step 5 block until their subagent returns — once results come back, continue directly to step 6 in the same turn. A message stating you are "waiting for validators" or that you "will run the aggregator once they complete" is not a valid final answer; it means step 6 was not executed. Call the aggregator Task now, before ending your turn.
+- Validator spawns may block until done (Task tool) or run in the background (launcher sessions polled via `wait`), depending on execution environment. In either mode: never end your run while any launched validator or the aggregator lacks a terminal result — keep polling every pending session until it returns, then run the aggregator (step 6), then return its status. A "waiting for validators" message means step 6 was not executed.

@@ -30,12 +30,12 @@ Output this reference (translated to user's language):
 /feature [name]               → business requirements dialog
 /feature-ui [name]            → UI/UX requirements dialog (optional, for features with UI)
 /feature-tech [name]          → technical spec
-/feature-implement [name]     → autonomous: plan → code → [test] → validate → stage
+/feature-implement [name] [--worktree] → autonomous: plan → code → [test] → validate → commit (current branch; --worktree = isolated worktree + draft PR)
 
 ### Additional commands
 
 /bug [description]            → interactive bug diagnosis: gather symptoms → investigate code → produce fix requirements
-/feature-fix <folder>         → autonomous: plan → code → [test] → validate → PR (accepts /bug output folder)
+/feature-fix <folder> [--worktree] → autonomous: plan → code → [test] → validate → commit (current branch; --worktree = isolated worktree + draft PR; auto-reuses parent worktree for -warnings specs)
 /feature-merge [name]         → update branch + pre-merge validate + merge PR + cleanup worktree and branch
 /patch [description]          → quick code fix without planning overhead (no spec needed)
 /docs-sync [doc-name?]        → sync docs/ with code changes
@@ -53,9 +53,9 @@ Output this reference (translated to user's language):
 | `/feature` | `temp/<name>/business-requirements.md` | — |
 | `/feature-ui` | `temp/<name>/ui-requirements.md` | Optional: `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
-| `/feature-implement` | Worktree + branch + draft PR (ready to merge) | `technical-requirements.md`, clean git |
+| `/feature-implement` | Commit on current branch (default); `--worktree` → worktree + branch + draft PR | `technical-requirements.md`, clean git |
 | `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
-| `/feature-fix` | Worktree + branch + draft PR (ready to merge) | `temp/<folder>/technical-requirements.md` (e.g. `/bug` output folder) |
+| `/feature-fix` | Commit on current branch (default); `--worktree` → worktree + branch + draft PR | `temp/<folder>/technical-requirements.md` (e.g. `/bug` output folder) |
 | `/feature-merge` | Merged PR, validated pre-merge, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
 | `/patch` | Edited files (no commit) | — |
 | `/research` | `temp/RESEARCH-<topic>/technical-requirements.md` | — |
@@ -75,11 +75,11 @@ Output this reference (translated to user's language):
 
 **Large feature:** `/feature` → `/feature-ui` (if UI) → `/feature-tech` (offers to split large features) → `/feature-implement` (per part)
 
-**Bug (unknown cause):** `/bug 409 on user creation` → `/feature-fix BUG-409-create-user` → `/feature-merge BUG-409-create-user`
+**Bug (unknown cause):** `/bug 409 on user creation` → `/feature-fix BUG-409-create-user --worktree` → `/feature-merge BUG-409-create-user`
 
 **Draft PR with pending decisions (implement hit a business question):** answer via `/feature-tech <name>-warnings` → `/feature-fix <name>-warnings` → `/feature-merge <name>`
 
-**Quick fix (known cause):** `/bug fix the login button` → `/feature-fix BUG-fix-login-button` → `/feature-merge BUG-fix-login-button`
+**Quick fix (known cause):** `/bug fix the login button` → `/feature-fix BUG-fix-login-button --worktree` → `/feature-merge BUG-fix-login-button`
 
 **Tiny one-file fix (no planning):** `/patch fix the login button color`
 
@@ -96,7 +96,7 @@ Output this reference (translated to user's language):
 ### How it works
 
 - Each feature lives in `temp/<name>/` (gitignored)
-- Implementation is fully autonomous: runs in a git worktree (`.worktrees/<name>/`) on a `feat/<name>` branch, produces a PR (ready when clean; draft while issues or business decisions remain — see the pending-decisions scenario); use `/feature-merge` to merge
+- Implementation is fully autonomous. By default it works in the current branch and commits there (pushing only if the branch has an upstream) — no PR. Pass `--worktree` to isolate the run in a git worktree (`.worktrees/<name>/`) on a `feat/<name>` branch and produce a PR (ready when clean; draft while issues or business decisions remain — see the pending-decisions scenario); use `/feature-merge` to merge. `/feature-merge` applies only to `--worktree`/PR runs
 - Autonomous commands never decide business questions (`~/.claude/docs/ASK_POLICY.md`); specs with unresolved Open Questions are rejected at the implement/fix gate
 - Every run appends cost metrics (questions, agent spawns, iterations) to `agent-memory/metrics/runs.md`; `/system-find-improve` reads them for trend detection
 - Validators run in parallel, never see each other's work

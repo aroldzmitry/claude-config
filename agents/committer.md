@@ -1,6 +1,6 @@
 ---
 name: committer
-description: "Stages changed files, commits with hook retry (spawns coder fix-ai on failure), pushes branch, updates PR title, marks PR ready. Returns COMMITTED / COMMIT_FAILED / NOTHING_STAGED."
+description: "Stages changed files, commits with hook retry (spawns coder fix-ai on failure), pushes branch; when a PR URL is given, updates PR title and marks it ready (unless mark_ready: false). Returns COMMITTED / COMMIT_FAILED / NOTHING_STAGED."
 tools: Bash, Task
 model: sonnet
 ---
@@ -12,7 +12,7 @@ model: sonnet
 - `feature` — feature name passed to coder fix-ai (`_fix` for bug fixes)
 - `commit_prefix` — `feat` or `fix`
 - `commit_desc` — commit description, max 72 chars
-- `pr_url` — draft PR URL to mark ready
+- `pr_url` — draft PR URL to update + mark ready. Empty/absent → current-branch mode: no PR operations, and push only if the branch already tracks an upstream.
 - `mark_ready` — (optional, default: true) whether to mark PR as ready after push
 
 # Workflow
@@ -51,7 +51,10 @@ After 2 spawns still failing: capture `CURRENT_HEAD=$(git -C {worktree_dir} rev-
 
 ## Step 4: Push and mark ready
 
-- `git -C {worktree_dir} push`
-- `gh pr edit {pr_url} --title "{commit_desc}"`
-- If `mark_ready` is true (or omitted): `gh pr ready {pr_url}`
+- Push:
+  - `pr_url` non-empty → `git -C {worktree_dir} push`
+  - `pr_url` empty/absent → push only if the branch tracks an upstream: `git -C {worktree_dir} rev-parse --abbrev-ref --symbolic-full-name @{u}` exits 0 → `git -C {worktree_dir} push`; otherwise skip push (commit stays local).
+- If `pr_url` is non-empty:
+  - `gh pr edit {pr_url} --title "{commit_desc}"`
+  - If `mark_ready` is true (or omitted): `gh pr ready {pr_url}`
 - Output `COMMITTED`

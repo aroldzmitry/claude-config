@@ -1,7 +1,7 @@
 ---
-description: "Autonomous implementation orchestrator. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → validators + Codex → fix loop), commits and pushes to ready PR."
+description: "Autonomous implementation orchestrator. Works in the current branch by default; pass --worktree for an isolated worktree + branch + draft PR. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → validators + Codex → fix loop), commits (and pushes when an upstream exists)."
 model: sonnet
-argument-hint: "<feature-name>: folder name in temp/"
+argument-hint: "<feature-name> [--worktree]: folder in temp/; --worktree isolates in .worktrees/ + draft PR"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
 disable-model-invocation: true
 ---
@@ -20,6 +20,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 # Conventions
 
+- `WORKTREE_MODE` — parsed in Phase 0 step 1. Default `false` (work in the current branch: `WORKTREE_DIR = REPO_ROOT`, no new branch, no PR). `true` when `$ARGUMENTS` contains the `--worktree` token → isolated worktree + `feat/{feature}` branch + draft PR.
 - `SPEC_DIR` = `$REPO_ROOT/temp/$ARGUMENTS` — absolute path (REPO_ROOT derived in Phase 0 step 5). Always pass the absolute path to subagents — relative paths resolve against the subagent's CWD which may be the worktree, causing read/write mismatches.
 - Every agent prompt includes: feature name (`$ARGUMENTS`), spec dir path.
 - **Subagent spawning** — any agent whose workflow contains `Task(...)` invocations (e.g. `coder`, `test-writer`, `committer`, `global-validator`) must be spawned via `Agent(subagent_type='super-agent', prompt='<agent-name>\n<args>')`. Direct `Agent(subagent_type='<agent-name>')` does not pass declared frontmatter tools (including Task) into the subagent context.
@@ -39,24 +40,28 @@ Implementation orchestrator. Delegates to agents — never writes application co
 
 ## Phase 0: Load & Validate
 
-1. `$ARGUMENTS` empty → stop: "Usage: `/feature-implement <feature-name>`". If `$ARGUMENTS` is a filesystem path (contains `/`) — treat the path's last non-empty segment as `$ARGUMENTS` for the rest of the workflow.
+1. Parse flags: if `$ARGUMENTS` contains the whitespace-delimited token `--worktree`, set `WORKTREE_MODE = true` and remove that token; otherwise `WORKTREE_MODE = false`. The remaining text is the feature name. Empty after flag removal → stop: "Usage: `/feature-implement <feature-name> [--worktree]`". If `$ARGUMENTS` is a filesystem path (contains `/`) — treat the path's last non-empty segment as `$ARGUMENTS` for the rest of the workflow.
 2. `git status --porcelain` → if dirty, stop: "Working tree has uncommitted changes. Commit or stash first."
 3. Glob spec files in `SPEC_DIR`: `technical-requirements.md` (required — stop if missing: "Run `/feature-tech $ARGUMENTS` first."), `business-requirements.md`, `ui-requirements.md`, `test-cases.md` (optional). Do NOT read contents.
-4. `git show-ref --quiet refs/heads/feat/$ARGUMENTS` → if exit code 0, stop: "Branch feat/$ARGUMENTS already exists. Delete it first or choose a different feature name."
-5. `REPO_ROOT = git rev-parse --show-toplevel`; then `SPEC_DIR = $REPO_ROOT/temp/$ARGUMENTS` (absolute, supersedes the relative form for the rest of the workflow).
+4. Worktree mode only (`WORKTREE_MODE = true`): `git show-ref --quiet refs/heads/feat/$ARGUMENTS` → if exit code 0, stop: "Branch feat/$ARGUMENTS already exists. Delete it first or choose a different feature name." Current-branch mode creates no branch — skip this check.
+5. `REPO_ROOT = git rev-parse --show-toplevel`; then `SPEC_DIR = $REPO_ROOT/temp/$ARGUMENTS` (absolute, supersedes the relative form for the rest of the workflow). If `WORKTREE_MODE = false`: set `WORKTREE_DIR = REPO_ROOT`, `PR_URL = ` (empty), `BRANCH = ` current branch (`git rev-parse --abbrev-ref HEAD`) — no worktree/branch/PR is created.
 6. Open Questions gate: `Bash: awk '/^## Open Questions/{f=1;next} /^## /{f=0} f' SPEC_DIR/technical-requirements.md` → if output contains any non-empty list item, stop: "Spec has unresolved Open Questions:\n{items}\nResolve them via `/feature-tech $ARGUMENTS` (or remove the section) before implementation — autonomous runs must not decide business questions."
 
 ## Phase 1: Planning
 
 ### Create Plan
 
-Launch in parallel (same response):
+If `WORKTREE_MODE = true` — launch in parallel (same response):
 - Task: `planner` with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR`
 - Task: `setup-worktree` with prompt: `feature: $ARGUMENTS, repo_root: REPO_ROOT, spec_dir: SPEC_DIR`
 
 Wait for both results:
 - From setup-worktree: parse `BRANCH`, `PR_URL`. If ERROR → stop with its error message.
 - Derive `WORKTREE_DIR = REPO_ROOT/.worktrees/{feature}` — deterministic; derive (do not parse) so the value survives context compression in long sessions.
+
+If `WORKTREE_MODE = false` — launch `planner` only (same response): Task: `planner` with prompt: `feature: $ARGUMENTS, spec_dir: SPEC_DIR`. `WORKTREE_DIR` (= REPO_ROOT), `BRANCH`, and `PR_URL` (empty) were set in Phase 0 step 5.
+
+Then (both modes):
 - Verify `SPEC_DIR/implementation-plan.md` created. If missing → stop: "Planner failed to produce implementation plan. Re-run `/feature-implement`."
 - Extract test decision from planner return value (`TEST: skip — reason` or `TEST: write`).
 
@@ -171,10 +176,12 @@ Check global-validator status:
    pr_url: PR_URL
    mark_ready: MARK_READY
    ```
-   - `COMMITTED` + `MARK_READY = true` → log `[PR ready: PR_URL]`.
-   - `COMMITTED` + `MARK_READY = false` → log `[PR draft — unresolved issues: PR_URL]`.
+   - `COMMITTED` + `WORKTREE_MODE = true` + `MARK_READY = true` → log `[PR ready: PR_URL]`.
+   - `COMMITTED` + `WORKTREE_MODE = true` + `MARK_READY = false` → log `[PR draft — unresolved issues: PR_URL]`.
+   - `COMMITTED` + `WORKTREE_MODE = false` → log `[Committed to current branch BRANCH]` (append ` — unresolved issues remain` if `MARK_READY = false`).
    - `COMMIT_FAILED` → append `"Commit: hook failure unresolved"` to `unresolved_steps`.
-   - `NOTHING_STAGED` → full cleanup so a re-run starts clean: `gh pr close PR_URL --delete-branch 2>/dev/null || true`, then `git -C REPO_ROOT worktree remove WORKTREE_DIR --force 2>/dev/null || true`, then `git -C REPO_ROOT branch -D BRANCH 2>/dev/null || true`; log `[No files staged — PR closed, branch and worktree deleted]`; omit **PR** line from report.
+   - `NOTHING_STAGED` + `WORKTREE_MODE = true` → full cleanup so a re-run starts clean: `gh pr close PR_URL --delete-branch 2>/dev/null || true`, then `git -C REPO_ROOT worktree remove WORKTREE_DIR --force 2>/dev/null || true`, then `git -C REPO_ROOT branch -D BRANCH 2>/dev/null || true`; log `[No files staged — PR closed, branch and worktree deleted]`; omit **PR** line from report.
+   - `NOTHING_STAGED` + `WORKTREE_MODE = false` → log `[No files staged — nothing committed]`; omit **PR** line from report (the current branch is untouched — no cleanup).
 4. If `unresolved_steps` is non-empty: create `temp/$ARGUMENTS-warnings/technical-requirements.md` with each unresolved issue as a numbered section (What / Why / Fix). Entries starting with `Decision needed:` are NOT turned into Fix sections — write them verbatim into a `## Open Questions` section of the same warnings spec (they require a user answer, not an autonomous fix) and list them in the report's Unresolved Issues. The user answers them via `/feature-tech $ARGUMENTS-warnings`, then `/feature-fix $ARGUMENTS-warnings` applies the result on the existing feature branch. If `SPEC_DIR/validation/issues.md` exists, read it, filter `[open]` lines, and include them as context. Issue descriptions must explain the problem and its impact conceptually — avoid specific internal identifiers (Prisma model names, field names, variable names, method names) unless naming the identifier is essential for locating the bug. Each **Fix** section must commit to ONE concrete action — never carry over validator-style alternatives ("Pick one of: ...", "Option A / Option B"). When the underlying finding presented alternatives, select the option that preserves the spec as source of truth (default: change code/tests to match spec, not spec to match code); state the chosen action plainly and document the reasoning inline in the Why section. The downstream consumer must not need to make a source-of-truth judgment.
 5. Folder status (skip this step entirely if committer returned `NOTHING_STAGED` — leave SPEC_DIR and its markers in place so a re-run finds the spec):
    - `rm -f SPEC_DIR/NEXT--* 2>/dev/null || true`
@@ -182,7 +189,7 @@ Check global-validator status:
    - `mkdir -p $REPO_ROOT/temp/done && mv SPEC_DIR-done $REPO_ROOT/temp/done/`
    - If `$REPO_ROOT/temp/$ARGUMENTS-warnings/` was created in step 4: if its spec contains `## Open Questions` → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-tech`, else → `touch $REPO_ROOT/temp/$ARGUMENTS-warnings/NEXT--feature-fix`
 6. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
-   `- [YYYY-MM-DD] /feature-implement <feature-name>: spawns={total subagent spawns this run} steps={plan step count} test_iters={test_iter} ai_iters={ai_iter} unresolved={len(unresolved_steps)} ready={MARK_READY}`
+   `- [YYYY-MM-DD] /feature-implement <feature-name>: mode={worktree|current} spawns={total subagent spawns this run} steps={plan step count} test_iters={test_iter} ai_iters={ai_iter} unresolved={len(unresolved_steps)} ready={MARK_READY}`
 7. Output report
 
 # Report
@@ -191,7 +198,8 @@ Check global-validator status:
 ## Implementation Complete
 
 **Feature:** <feature-name>
-**PR:** PR_URL  ← omit if committer returned NOTHING_STAGED
+**PR:** PR_URL  ← omit in current-branch mode (WORKTREE_MODE = false) or if committer returned NOTHING_STAGED
+**Branch:** BRANCH  ← show only in current-branch mode (WORKTREE_MODE = false)
 **Files changed:** N
 **Tests:** written (or "skipped")
 **Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2

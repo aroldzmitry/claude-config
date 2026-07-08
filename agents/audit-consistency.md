@@ -48,6 +48,7 @@ Write report to `{output}` path. Format:
 - **Files:** path:line
 - **Description:** what's wrong
 - **Evidence:** concrete quotes from files
+- **Impact:** concrete benefit — which wrong behavior the defect causes, or how much dead/duplicated text is removed
 - **Recommendation:** specific fix
 
 ... more findings ...

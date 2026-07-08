@@ -50,6 +50,7 @@ Write report to `{output}` path. Format:
 - **Description:** what's duplicated
 - **Evidence:** quotes from both locations
 - **Token savings:** ~N tokens
+- **Impact:** concrete benefit — which wrong behavior the duplication causes, or how much duplicated text is removed
 - **Recommendation:** how to deduplicate
 
 ## Statistics

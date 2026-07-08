@@ -48,6 +48,7 @@ Write report to `{output}` path. Format:
 - **Files:** path:line
 - **Description:** what reduces LLM effectiveness
 - **Evidence:** quote of problematic instruction
+- **Impact:** concrete benefit — which wrong behavior the instruction causes in real use
 - **Recommendation:** concrete rewrite
 
 ## Statistics

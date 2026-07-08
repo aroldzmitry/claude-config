@@ -79,6 +79,7 @@ Your final response MUST be exactly one of the forms above or a documented error
 # Error Handling
 
 - test-runner crash → treat as FAIL
+- static-checker crash (no parseable status) → treat as FAIL
 - Codex crash/timeout → skip, record SKIPPED
 - AI validator crash → step 6 reconciliation (one relaunch, then `[open] validation incomplete` entry) — the aggregator skips missing report files silently, so it must never receive a partial set
 - aggregator crash → return `HAS_ISSUES: aggregator failed`

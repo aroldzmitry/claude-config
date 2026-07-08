@@ -29,7 +29,7 @@ Received via `prompt` from orchestrator:
    - User flow phases (setup → core action → view/report)
    - Entity/domain areas
    - Functional areas (API → UI, admin → user-facing)
-7. Assign names: if parts have ordering dependency → `<feature>-1-<aspect>`, `<feature>-2-<aspect>`; if independent → no numbering.
+7. Assign names: if parts have ordering dependency → number them in dependency order (`<feature>-1-<aspect>`, `<feature>-2-<aspect>`) so that a part is numbered after every part it depends on — a dependency must never point to a higher-numbered part; if independent → no numbering.
 8. For each sub-feature:
    a. Create `temp/<sub-name>/business-requirements.md` using the BRD Document Format below. If the parent BRD contains a `Source references` section, carry its entries forward into the sub-BRD (filtered to those relevant to this sub-feature's scope; keep all when relevance is unclear).
    b. If `TECH_MODE`: create `temp/<sub-name>/technical-requirements.md` — extract from the parent tech spec only the sections relevant to this sub-feature's scope (Data Model, API/Interfaces, Error Handling, Tech Edge Cases filtered to entries belonging to this sub); include Solution Approach, Business Clarifications, and Key Decisions sections in full (shared context). Touch `temp/<sub-name>/NEXT--feature-implement`.
@@ -38,6 +38,7 @@ Received via `prompt` from orchestrator:
    - **Self-sufficiency** — understandable with zero parent context: no dangling references to parent-only entities, no "as described above"
    - **Conservation** — every parent User Flow step, `[must]` AC, and `[error]` Edge Case lands in exactly one sub-feature: none lost, none duplicated
    - **Scope consistency** — each sub's Excluded section names what the other parts handle; Excluded lists do not contradict each other
+   - **Dependency ordering** — read each sub's "Related Features" section: a part that consumes artifacts another part owns (route surface, response shape, data model, page shell) must be numbered after that part. Dependencies point backward only (to lower-numbered parts), never forward; the graph is acyclic. If violated, re-derive the numbering (step 7) and rename the affected sub-feature directories before proceeding.
    Fix violations directly via Edit before proceeding.
 10. Archive parent — never delete (the orchestrator restores it if the user rejects the split): `rm -f temp/<feature_name>/NEXT--*`, then `mkdir -p temp/done && mv temp/<feature_name> temp/done/<feature_name>-split-source`.
 11. Write execution plan: create `temp/<FEATURE_NAME_UPPER>_PLAN.md` (hyphens → underscores, uppercased) containing: a title line, the dependency/execution-order table from the Output section, and a Status column initialized to ⏳ for all rows.

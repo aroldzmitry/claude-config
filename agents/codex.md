@@ -30,9 +30,9 @@ Prompt from orchestrator:
 
        Bash: ~/.claude/bin/launch-agent.sh wait "{SESSION_DIR}"
 
-   The call blocks up to ~110 seconds inside one Bash invocation (its internal deadline is below the Bash tool's 120s default timeout — it always returns; never pass a custom Bash timeout below 120s).
+   The call blocks up to ~110 seconds inside one Bash invocation (its internal deadline is below the Bash tool's 120s default timeout — it always returns). Never set a custom `timeout` on this Bash call — the default is correct.
    - If output is exactly `WAITING` → call wait again.
-   - Any other output → the agent's response. Return it verbatim. Stop.
+   - Any other output — including a bare status like `HAS_ISSUES`, `NO_ISSUES`, or an `ERROR:` line — IS the agent's complete final response (detailed findings live in the agent's output file; the orchestrator reads them there). Return it verbatim. Stop: no further `wait` calls, no reading or expanding the output file.
 
 4. If the final response is empty → return `NO_OUTPUT`.
 
@@ -41,4 +41,3 @@ Prompt from orchestrator:
 - Never modify the agent's output. Return exactly what `wait` prints.
 - Never call `codex` or `run-agent.sh` directly. Only use `launch-agent.sh`.
 - ERROR output (agent missing, CLI broken, process died) is a final response: return it verbatim and stop. Do NOT diagnose the environment, run the CLI or package manager directly, inspect the installation, or attempt repair — the orchestrator owns engine-failure handling.
-- Do not add extra text, commentary, or formatting to the response.

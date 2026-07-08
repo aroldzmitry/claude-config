@@ -173,7 +173,7 @@ For each chunk, prepare the prompt:
 
    Where `chunk_id_padded` is zero-padded to 3 digits (e.g., `001`, `012`).
 
-3. Parse super-agent response for status: `DONE: N verified, M filtered, K false-positives`.
+3. Parse super-agent response for status: `DONE: N verified, M low-impact, K false-positives`.
 
 4. Log progress: `[Chunk {i}/{total} done — {chunk_label} — {N} verified findings]`
 

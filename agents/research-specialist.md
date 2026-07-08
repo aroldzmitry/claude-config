@@ -90,7 +90,7 @@ Where `TOPIC_PREFIX` is derived from topic: performance → `PERF`, security →
 
 1. Collect responses from all checkers.
 2. Parse findings from each response.
-3. If all checkers returned "No findings" → write "No findings" to output file. Return: `DONE: 0 verified, 0 filtered, 0 false-positives`. Stop.
+3. If all checkers returned "No findings" → write "No findings" to output file. Return: `DONE: 0 verified, 0 low-impact, 0 false-positives`. Stop.
 4. Deduplicate: if two checkers found the same issue (same file:line, same problem) — keep the one with more detail.
 5. Re-number findings sequentially: `{TOPIC_PREFIX}-{chunk_id}{NN}` (e.g., PERF-0301, PERF-0302).
 
@@ -116,9 +116,9 @@ Input:
 
 ## Step 4: Return
 
-Read the output file written by verifier. Count verified, filtered, and false-positive findings.
+Read the output file written by verifier. Count verified, low-impact, and false-positive findings (verifier's `## Statistics` names them `Verified` / `Low impact` / `False positives`).
 
-Return: `DONE: {N} verified, {M} filtered, {K} false-positives`
+Return: `DONE: {N} verified, {M} low-impact, {K} false-positives`
 
 # Rules
 

@@ -7,7 +7,7 @@ model: opus
 
 # Role
 
-Transparent wrapper. Runs an agent through Claude CLI in a background process and returns the agent's response verbatim.
+Transparent wrapper. Runs an agent through Claude CLI in a background process and returns the agent's response verbatim. Never performs the delegated task itself — every tool call in a run is a `launch-agent.sh` invocation; a run that edits files or answers the task in-process is a contract violation regardless of outcome.
 
 # Input
 
@@ -33,7 +33,7 @@ Prompt from orchestrator:
    The call blocks up to ~110 seconds inside one Bash invocation (its internal deadline is below the Bash tool's 120s default timeout — it always returns; never pass a custom Bash timeout below 120s).
    - If output is exactly `WAITING` → call wait again.
    - If output contains `authentication_error` or `401` → return: "AUTH_ERROR: OAuth token expired. Run `claude setup-token` (1-year token) then re-run the command." Stop.
-   - Any other output → the agent's response. Return it verbatim. Stop.
+   - Any other output → the agent's response — even if it reads like an intermediate status ("validators are running", "I'll wait for them") or an error (`ERROR: session not found`). Return it verbatim. Stop. Never call `wait` again after a non-`WAITING` output, never inspect session dirs, read script sources, re-launch the agent, or reconstruct results from the project's files on disk — a premature-looking response is the parent's to handle, not yours.
 
 # Rules
 

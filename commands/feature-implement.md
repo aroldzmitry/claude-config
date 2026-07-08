@@ -124,7 +124,7 @@ Spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
     worktree_dir: WORKTREE_DIR
 
 If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to Phase 4 (tests skipped).
-Any other return value → treat as success. If the result reports implementation defects found while writing tests (bugs in product code), append each to `SPEC_DIR/validation/issues.md` (create if missing) as `[open] [error] file:line — description` (omit `:line` if unknown) — the first fix-plan then starts from the already-diagnosed defects instead of rediscovering them. Then proceed immediately to Phase 4 in the same response.
+Any other return value → treat as success. Proceed immediately to Phase 4 in the same response.
 
 ## Phase 4: Validation Cycle
 
@@ -146,7 +146,7 @@ Check global-validator status:
 - `NO_ISSUES` → Phase 5.
 - Response contains `"hit your limit"`, `"rate limit"`, or `"AUTH_ERROR"` → log `[Validation: skipped — rate limit or auth error]`, append `"Validation: skipped due to rate limit or auth error"` to `unresolved_steps`, Phase 5.
 - Response contains `"aggregator failed"` → append `"Validation: aggregator failed"` to `unresolved_steps`, Phase 5.
-- Response is a non-terminal status (reports launching/running/waiting on validators, without a `NO_ISSUES` or `HAS_ISSUES` verdict) → the validator ended prematurely. Resume that same agent via SendMessage: instruct it to finish the remaining workflow steps (poll pending validators, run the aggregator) and return the terminal status. Max 2 resumes per global-validator run; still non-terminal → treat as a general crash (next branch).
+- Response is a non-terminal status (reports launching/running/waiting on validators, without a `NO_ISSUES` or `HAS_ISSUES` verdict) → the validator ended prematurely. Resume that same agent via SendMessage: instruct it to re-run its Workflow from step 2 — launch the same agent again with the original prompt via `launch-agent.sh` and relay the new terminal status verbatim (its contract permits nothing else). Max 2 resumes per global-validator run; still non-terminal → treat as a general crash (next branch).
 - Response is a general crash (contains `"encountered an error"` or `"crashed"`, or starts with `"ERROR:"` — the launcher's failed-exit prefix; does not match the above patterns) → retry global-validator once with the same inputs. If second attempt also fails → append `"Validation: validator crashed"` to `unresolved_steps`, Phase 5.
 - `HAS_ISSUES` → categorize by global-validator return string: contains `(test)` or `(static)` → **test** (`test_iter`, limit 5); else (`N open`) → **AI** (`ai_iter`, limit 2). Read `SPEC_DIR/validation/issues.md` for the issue list. Test failures are deterministic and must pass before commit — fix them without incrementing `ai_iter`.
   - Counter >= limit → append "{Test|AI}: HAS_ISSUES after {counter} fix cycles" to unresolved_steps, Phase 5.

@@ -36,7 +36,6 @@ case "$MODE" in
     fi
 
     SESSION_DIR=$(mktemp -d /tmp/claude_agent.XXXXXX)
-    echo "$BACKEND" > "$SESSION_DIR/.backend"
 
     # Background: run agent, extract response, write .done marker
     (

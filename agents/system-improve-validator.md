@@ -2,7 +2,7 @@
 name: system-improve-validator
 description: "Independent validator for /system-find-improve findings. Assesses whether a proposed system change prevents a real agent failure or is cosmetic noise. Returns VALUABLE or DISCARD."
 tools: Read, Glob, Grep
-model: sonnet
+model: opus
 ---
 
 # Role

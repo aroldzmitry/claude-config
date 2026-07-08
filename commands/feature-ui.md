@@ -1,6 +1,6 @@
 ---
 description: "Interactive dialog to define UI/UX requirements for a feature. Analyzes Figma mockups or gathers requirements via text. Generates ui-requirements.md"
-model: sonnet
+model: opus
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
 allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion, Agent, mcp__figma-local__get_design_context, mcp__figma-local__get_screenshot, mcp__figma-local__get_metadata"
 disable-model-invocation: true

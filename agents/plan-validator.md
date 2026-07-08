@@ -2,7 +2,7 @@
 name: plan-validator
 description: "Validates implementation plan against spec, architecture rules, and structural correctness (cross-step consistency, dependency order, propagation gaps, orphaned steps). Reports findings."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

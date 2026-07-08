@@ -1,6 +1,6 @@
 ---
 description: "Update branch with default branch, pre-merge validate, merge PR, cleanup worktree and branch."
-model: sonnet
+model: opus
 argument-hint: "[feature-name]: feature name (e.g. BUG-foo). Omit to pick from open PRs."
 allowed-tools: "Bash, Read, Task, AskUserQuestion"
 disable-model-invocation: true

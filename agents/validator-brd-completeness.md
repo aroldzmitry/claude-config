@@ -2,7 +2,7 @@
 name: validator-brd-completeness
 description: "BRD completeness validator: every actor capability has an AC, every AC has priority and concrete expected outcome, scope explicit, edge cases concrete, no vague language."
 tools: Read, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 background: true
 ---

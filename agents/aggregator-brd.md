@@ -2,7 +2,7 @@
 name: aggregator-brd
 description: "Collects BRD validator reports (Claude + Codex), verifies findings against BRD content, filters false positives, deduplicates, produces unified report."
 tools: Read, Glob, Write, Bash
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

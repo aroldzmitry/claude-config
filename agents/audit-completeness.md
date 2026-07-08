@@ -2,7 +2,7 @@
 name: audit-completeness
 description: "System audit: validates coverage gaps, missing error handling, unused agents, incomplete instructions, and undocumented features."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

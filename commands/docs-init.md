@@ -1,6 +1,6 @@
 ---
 description: "Project onboarding: explores codebase, creates docs/ with architecture, code rules, conventions, and other project documentation through interactive dialog"
-model: sonnet
+model: opus
 disable-model-invocation: true
 allowed-tools: "Task, Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion"
 ---

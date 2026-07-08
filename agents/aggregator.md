@@ -2,7 +2,7 @@
 name: aggregator
 description: "Collects validator reports (Claude + Codex), verifies findings against code, filters false positives, deduplicates, produces unified report."
 tools: Read, Glob, Grep, Write, Edit, Bash
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

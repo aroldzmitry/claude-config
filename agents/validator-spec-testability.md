@@ -2,7 +2,7 @@
 name: validator-spec-testability
 description: "Spec testability validator: test cases state an expected behavior, all acceptance criteria and edge cases covered, strategy consistent with cases."
 tools: Read, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 background: true
 ---

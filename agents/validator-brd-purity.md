@@ -2,7 +2,7 @@
 name: validator-brd-purity
 description: "BRD purity validator: flags technical leaks in a business requirements document — code identifiers, API paths, library names, framework constructs, regex/syntax should never appear in a BRD."
 tools: Read, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 background: true
 ---

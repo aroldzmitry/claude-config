@@ -1,6 +1,6 @@
 ---
 description: "Quick fix orchestrator. Works in the current branch by default; pass --worktree for an isolated worktree + branch + draft PR (or auto-reuses a parent feature's worktree for -warnings specs). Coordinates agents (planner → coder → [test-planner → test-writer] → global-validator → fix attempt → commit)."
-model: sonnet
+model: opus
 argument-hint: "<folder> [--worktree]: spec folder name; --worktree isolates in .worktrees/ + draft PR"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
 disable-model-invocation: true

@@ -2,7 +2,7 @@
 name: research-verifier
 description: "Verifies research findings for one chunk against actual source code. Inclusion-based — only passes findings that prove a real, actionable problem exists NOW."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

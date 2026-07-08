@@ -2,7 +2,7 @@
 name: audit-generality
 description: "System audit: checks that system files contain only universal, project-agnostic patterns — no hardcoded paths, tech-specific assumptions, or project-level details."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

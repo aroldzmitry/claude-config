@@ -1,6 +1,6 @@
 ---
 description: "Deep project research by topic. Splits project into chunks, spawns specialized checker agents per chunk via super-agent, verifies findings, validates via Codex second opinion, generates technical-requirements.md for /feature-implement."
-model: sonnet
+model: opus
 argument-hint: "<topic>: performance | security | error-handling | code-quality"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, AskUserQuestion"
 disable-model-invocation: true

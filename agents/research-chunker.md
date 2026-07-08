@@ -2,7 +2,7 @@
 name: research-chunker
 description: "Analyzes project structure and splits source files into logical chunks for sequential analysis. Chunk count is dynamic — based on project size and file sizes."
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

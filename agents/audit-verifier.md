@@ -2,7 +2,7 @@
 name: audit-verifier
 description: "System audit pass 2: verifies each deduplicated finding against actual source files. Inclusion-based — only passes findings that prove something IS broken."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

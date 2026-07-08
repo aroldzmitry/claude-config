@@ -2,7 +2,7 @@
 name: audit-redundancy
 description: "Finds duplicate content, overlapping responsibilities, repeated boilerplate, and token waste across system files. Used by system-audit and system-tune."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

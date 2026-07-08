@@ -2,7 +2,7 @@
 name: audit-deduplicator
 description: "Deduplicates findings across validator reports and filters against user's rejected/skipped skip-list. Used by system-audit (pass 1) and system-tune."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

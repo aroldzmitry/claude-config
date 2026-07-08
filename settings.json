@@ -52,6 +52,7 @@
     "ask": [],
     "defaultMode": "bypassPermissions"
   },
+  "model": "claude-fable-5[1m]",
   "enabledMcpjsonServers": [
     "trello",
     "playwright"
@@ -77,6 +78,5 @@
   "autoUpdatesChannel": "latest",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
-  "theme": "dark-ansi",
-  "model": "claude-fable-5[1m]"
+  "theme": "dark-ansi"
 }

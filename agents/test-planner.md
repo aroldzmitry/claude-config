@@ -2,7 +2,7 @@
 name: test-planner
 description: "Reads spec docs and project testing rules, generates comprehensive test-cases.md with test strategy, coverage scope, and explicit exclusions."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: bypassPermissions
 maxTurns: 50
 ---

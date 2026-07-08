@@ -1,6 +1,6 @@
 ---
 description: "Autonomous implementation orchestrator. Works in the current branch by default; pass --worktree for an isolated worktree + branch + draft PR. Reads specs from temp/, coordinates agents (planner → plan-validator + Codex → planner revision → coder → [test-writer] → validators + Codex → fix loop), commits (and pushes when an upstream exists)."
-model: sonnet
+model: opus
 argument-hint: "<feature-name> [--worktree]: folder in temp/; --worktree isolates in .worktrees/ + draft PR"
 allowed-tools: "Task, Read, Glob, Grep, Bash, Write, Edit"
 disable-model-invocation: true

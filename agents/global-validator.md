@@ -2,7 +2,7 @@
 name: global-validator
 description: "Post-implementation validation dispatcher. Runs test-runner (gate), then AI validators + Codex, aggregates findings."
 tools: Task, Read, Write, Glob, Grep, Bash
-model: sonnet
+model: opus
 maxTurns: 200
 ---
 
@@ -52,7 +52,11 @@ Received via `prompt` from orchestrator in key-value format:
    - Before (re)launching any AI validator, check `{spec_dir}/validation/runs/{RUN_ID}/`: a validator whose report file already exists is done — do not relaunch it; wait only for the missing ones.
    - Codex crash/timeout → skip it, append `"{name}-codex: SKIPPED — {reason}"` as a line to `{spec_dir}/validation/skipped.md` (create if missing) — a crash must leave a trace, not read as clean
 
-6. Launch `aggregator` Task with:
+6. Reconcile the expected report set against `{spec_dir}/validation/runs/{RUN_ID}/` — one report per validator launched in step 5, per engine. Run the aggregator only when every expected report is present or its validator has terminally failed after the retry below. Never aggregate a partial set: a verdict from fewer reports than launched misreports — especially after a resume, when the in-memory pending list is lost; the report files are the source of truth. For each validator that terminated without writing its report, relaunch it once; still no report after the retry →
+   - Claude validator, or Codex validator while another Codex report of this run exists (engine healthy) → append `[open] validation incomplete — {name} produced no report` to `{spec_dir}/validation/issues.md`, so the missing findings surface as an issue instead of counting as clean
+   - every Codex validator of the run failed (engine-level failure) → skipped.md path per step 5, proceed with Claude reports only
+
+   Then launch `aggregator` Task with:
    ```
    feature: {feature}
    spec_dir: {spec_dir}
@@ -76,6 +80,6 @@ Your final response MUST be exactly one of the forms above or a documented error
 
 - test-runner crash → treat as FAIL
 - Codex crash/timeout → skip, record SKIPPED
-- AI validator crash → aggregator handles missing files
+- AI validator crash → step 6 reconciliation (one relaunch, then `[open] validation incomplete` entry) — the aggregator skips missing report files silently, so it must never receive a partial set
 - aggregator crash → return `HAS_ISSUES: aggregator failed`
 - Validator spawns may block until done (Task tool) or run in the background (launcher sessions polled via `wait`), depending on execution environment. In either mode: never end your run while any launched validator or the aggregator lacks a terminal result — keep polling every pending session until it returns, then run the aggregator (step 6), then return its status. A "waiting for validators" message means step 6 was not executed.

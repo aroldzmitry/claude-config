@@ -2,7 +2,7 @@
 name: audit-architecture
 description: "System audit: evaluates directory structure, naming conventions, modularity, scalability, and file organization."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

@@ -2,7 +2,7 @@
 name: validator-spec-consistency
 description: "Spec consistency validator: data model matches API contracts, no contradictions between sections, no orphaned test cases."
 tools: Read, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 background: true
 ---

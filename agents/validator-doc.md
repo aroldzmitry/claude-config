@@ -2,7 +2,7 @@
 name: validator-doc
 description: "Validates project documentation for optimal Claude Code agent consumption. Reports violations and comprehension test — never modifies the document."
 tools: Read
-model: sonnet
+model: opus
 permissionMode: plan
 ---
 

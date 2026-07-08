@@ -2,7 +2,7 @@
 name: validator-brd-consistency
 description: "BRD consistency validator: cross-section contradictions within one BRD, terminology drift, Open Questions already answered, Edge Case vs AC alignment, Key Decision conflicts."
 tools: Read, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 background: true
 ---

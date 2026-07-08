@@ -1,6 +1,6 @@
 ---
 description: "Quick patch for small code changes. Reads project coding docs and applies the fix directly."
-model: sonnet
+model: opus
 argument-hint: "[description]: what to fix"
 allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, AskUserQuestion, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_wait_for, mcp__playwright__browser_evaluate, mcp__playwright__browser_press_key, mcp__playwright__browser_console_messages, mcp__playwright__browser_close"
 ---

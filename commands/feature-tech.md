@@ -1,6 +1,6 @@
 ---
 description: "Interactive dialog to define technical specification for a feature. Asks targeted questions, verifies completeness, generates technical-requirements.md and test-cases.md, then runs dual-LLM spec validation (6 validators, up to 2 iterations) with auto-fix before presenting"
-model: sonnet
+model: opus
 argument-hint: "[feature-name?]: optional feature name (must match temp/ folder name if exists)"
 allowed-tools: "Read, Grep, Glob, Write, Edit, AskUserQuestion, Task, Bash, WebSearch, WebFetch"
 disable-model-invocation: true

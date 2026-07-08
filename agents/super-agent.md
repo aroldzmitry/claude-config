@@ -2,7 +2,7 @@
 name: super-agent
 description: "Super Agent — runs any agent's instructions through Claude CLI in a separate process. First word of prompt = agent name, rest = task params. Returns the agent's full response verbatim."
 tools: Bash
-model: sonnet
+model: opus
 ---
 
 # Role

@@ -2,7 +2,7 @@
 name: audit-applier
 description: "Applies fixes from a system-audit or system-tune fix-plan. Reads structured fix-plan.md, executes each change on system files."
 tools: Read, Glob, Grep, Edit, Write, Bash
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

@@ -2,7 +2,7 @@
 name: research-specialist
 description: "Per-chunk research orchestrator. Spawns N checker agents (one per specialization) in parallel, aggregates findings, then spawns verifier to filter false positives. Runs via super-agent (separate CLI process) to enable sub-agent spawning."
 tools: Read, Glob, Grep, Write, Agent
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

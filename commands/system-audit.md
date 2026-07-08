@@ -1,6 +1,6 @@
 ---
 description: "System audit: 7 parallel validators → two-pass aggregation → interactive review → audit-applier. Persists rejected decisions as skip-list for future runs."
-model: sonnet
+model: opus
 argument-hint: "[scope?]: empty = incremental since last audit; 'all' = full corpus; 'commands', 'agents', 'docs', 'settings', or filename substring (e.g. 'feature', 'planner')"
 allowed-tools: "Task, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion"
 disable-model-invocation: true
@@ -38,7 +38,7 @@ System auditor. Coordinates validators, aggregation, review, and fixes. Never wr
 
 ## Phase 1: Validate
 
-Spawn 7 agents (`subagent_type: general-purpose`, `model: sonnet`) in parallel:
+Spawn 7 agents (`subagent_type: general-purpose`, `model: opus`) in parallel:
 
 | Agent instructions | Output file |
 |---|---|
@@ -76,7 +76,7 @@ Wait for all 7 validators to complete before proceeding to Phase 2.
 
 ### Pass 1: Deduplicate
 
-Spawn `audit-deduplicator` (`subagent_type: general-purpose`, `model: sonnet`):
+Spawn `audit-deduplicator` (`subagent_type: general-purpose`, `model: opus`):
 ```
 Read instructions at ~/.claude/agents/audit-deduplicator.md.
 Input:
@@ -86,7 +86,7 @@ Input:
 
 ### Pass 2: Verify
 
-Spawn `audit-verifier` (`subagent_type: general-purpose`, `model: sonnet`):
+Spawn `audit-verifier` (`subagent_type: general-purpose`, `model: opus`):
 ```
 Read instructions at ~/.claude/agents/audit-verifier.md.
 Input:
@@ -128,14 +128,14 @@ After all: show a digest of auto-accepted Technical fixes (`{ID} — {target} �
 ## Phase 4: Apply
 
 1. No fix-plan.md → Phase 5.
-2. Spawn `audit-applier` (`subagent_type: general-purpose`, `model: sonnet`):
+2. Spawn `audit-applier` (`subagent_type: general-purpose`, `model: opus`):
    ```
    Read instructions at ~/.claude/agents/audit-applier.md.
    Input:
      fix_plan: {REPORTS_DIR}/fix-plan.md
    ```
 3. Parse CHANGED_FILES. Filter to .md only → CHANGED_MD.
-4. If CHANGED_MD not empty → spawn `validator-doc-system` (`subagent_type: general-purpose`, `model: sonnet`) with prompt:
+4. If CHANGED_MD not empty → spawn `validator-doc-system` (`subagent_type: general-purpose`, `model: opus`) with prompt:
    ```
    Read instructions at ~/.claude/agents/validator-doc-system.md. Follow all rules, checks, output format.
    Input:

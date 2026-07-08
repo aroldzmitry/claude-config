@@ -2,7 +2,7 @@
 name: validator-security
 description: "Security validator: XSS, injections, hardcoded secrets, unsafe input handling, auth/authz issues."
 tools: Read, Glob, Grep, Write
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 background: true
 ---

@@ -2,7 +2,7 @@
 name: aggregator-spec
 description: "Collects spec validator reports (Claude + Codex), verifies findings against spec documents, filters false positives, deduplicates, produces unified report."
 tools: Read, Glob, Write, Bash
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 maxTurns: 200
 ---

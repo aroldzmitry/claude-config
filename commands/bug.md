@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # Role
 
-Bug analyst. Goal: create `technical-requirements.md` with root cause, context, and fix direction for `/feature-fix`. Never implements fixes.
+Bug analyst. Goal: create `technical-requirements.md` with root cause, context, and fix direction for `/feature-fix`. Never implements fixes — even when $ARGUMENTS explicitly asks to fix or verify: state that the fix is applied via /feature-fix after the spec is written, then complete Phases 3–4 as normal. No code, DB, or config mutations ever.
 
 # Rules
 
@@ -30,7 +30,7 @@ Silently:
 
 ## Phase 1: Gather Symptoms
 
-**Investigate before asking:** if `$ARGUMENTS` contains a concrete lead — an error message, stack trace, HTTP status, file path, or a specific feature/screen name — run Phase 2 steps 2–3 (locate entry point, trace the call chain) silently FIRST, then ask only the category questions the investigation could not answer (often only "What was expected?"). Never ask the user what code can tell you: which endpoint handles the action, what the current behavior is, which component renders the element. Vague or empty `$ARGUMENTS` → standard category interview below.
+**Investigate before asking:** if `$ARGUMENTS` contains a concrete lead — an error message, stack trace, HTTP status, file path, or a specific feature/screen name — run Phase 0 reads, then Phase 2 steps 2–3 (locate entry point, trace the call chain) silently FIRST, then ask only the category questions the investigation could not answer (often only "What was expected?"). Never ask the user what code can tell you: which endpoint handles the action, what the current behavior is, which component renders the element. Vague or empty `$ARGUMENTS` → standard category interview below.
 
 Go through these categories in order. Skip categories already covered by `$ARGUMENTS`, prior answers, or investigation findings.
 
@@ -67,7 +67,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
 
 6. **Verify external library assumptions.** If root cause claims a library API is used incorrectly, fix direction proposes a specific property or method on an external library type, or fix direction depends on an assumption about a library's internal behavior (timing, initialization order, callback sequence): load context7 via ToolSearch, resolve the library with mcp__context7__resolve-library-id, query the specific API with mcp__context7__query-docs. Only state "X is invalid/incorrect" after confirming with actual doc quotes. Fallback: WebSearch + WebFetch if library not found in context7.
 
-7. **Empirical confirmation.** If the probable root cause can be confirmed empirically (DB query error, API call, pure function): write a minimal reproduction script in the project's test directory, run it against the local environment, capture the actual error. Delete the script after.
+7. **Empirical confirmation.** If the probable root cause can be confirmed empirically (DB query error, API call, pure function): confirm it directly: ad-hoc queries via the project's DB client, API calls, or — when a runtime harness is needed — a minimal reproduction script in the project's test directory, deleted after. Never read `.env` for credentials (hook-blocked); take connection parameters from the running local environment or non-secret config files.
 
 ## Phase 3: Present Diagnosis
 
@@ -86,8 +86,8 @@ Present to user in a single message:
 2. If affected files span multiple project roots (different git repos or top-level app directories):
    - Create separate `SPEC_DIR-{suffix}/` per project (suffix = short project identifier, e.g. `mobile`, `api`)
    - Each `technical-requirements.md` contains only that project's relevant Root Cause items, Fix Direction sections, and Affected Files
-   - Each gets its own `NEXT--feature-fix` marker in step 4
-   - Step 5 output lists all created directories
+   - Each gets its own `NEXT--feature-fix` marker in step 5
+   - Step 6 output lists all created directories
 3. Write `SPEC_DIR/technical-requirements.md`:
 
    ```

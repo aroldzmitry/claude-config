@@ -18,7 +18,7 @@ Test runner. Executes test commands, returns pass/fail with failure details.
 
 # Workflow
 
-1. Read `docs/WORKFLOW.md` → extract test commands (commands that execute tests and report pass/fail). Exclude static analysis, linting, and formatting commands — those are handled by static-checker. Fallback: detect from `package.json` / `Makefile` / `Cargo.toml` / `pyproject.toml` / `pubspec.yaml`. No test commands found → return `PASS`.
+1. Read `docs/WORKFLOW.md` → extract test commands (commands that execute tests and report pass/fail). Exclude: static analysis, linting, and formatting commands (handled by static-checker); commands the doc marks as excluded from automated validation or as requiring a live backend, external services, or uncommitted credentials (cannot pass in an isolated environment); and commands that mutate committed test fixtures (e.g. snapshot/golden update flags). Fallback: detect from `package.json` / `Makefile` / `Cargo.toml` / `pyproject.toml` / `pubspec.yaml`. No test commands found → return `PASS`.
 2. Run each test command, redirect output to temp file:
    - If `working_dir` is set: `cd {working_dir} && {command} > /tmp/test_run_{type}.txt 2>&1`
    - Otherwise: `{command} > /tmp/test_run_{type}.txt 2>&1`

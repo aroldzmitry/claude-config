@@ -45,7 +45,7 @@ Go through these categories in order.
 ### Categories
 
 1. **Problem/Context** — What's not working now? Why is this needed?
-2. **Feature Description** — What should happen? High-level
+2. **Feature Description** — What should happen? High-level. For a feature that displays or reads existing entity data reachable from more than one source (e.g. a local/cached copy vs a backend service), confirm the intended source with the user before finalizing scope — do not default to whichever source the current code happens to use; the choice changes dependencies and states (loading/error, remote fetch).
 3. **User Flow** — Step by step from the user's perspective
 4. **Scope** — What's explicitly NOT included? If scope discussion reveals functionality that is (a) out of scope AND (b) not covered by any existing `temp/` spec, track it in a `new-tasks` list (name + one-line description).
 5. **Edge Cases** — For data creation features: establish validation philosophy (strict/lenient). Group cases by pattern, present each group as a batch. Only ask individually for cases where the expected behavior depends on a policy choice not yet stated. After all groups, ask if user wants to add any. For features with event-driven triggers (user action → system performs writes/actions that could re-trigger the same flow): explicitly include as an edge case whether system-generated actions re-trigger the flow; propose "only direct user actions trigger" as the default. For features with discard/rollback/undo: enumerate all state components that could have been modified by the time discard occurs (files, sessions, caches, related data), and verify each component's restoration is explicitly described.

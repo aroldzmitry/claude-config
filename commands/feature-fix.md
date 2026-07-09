@@ -109,6 +109,8 @@ ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: wr
 
 If `CHANGED_FILES` is empty and `USE_PARENT_WORKTREE = true`: fallback to a branch-health check. Derive the default branch: `BASE=$(git -C WORKTREE_DIR symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||'); [ -z "$BASE" ] && BASE=main`. Compute `BRANCH_FILES` from `git -C WORKTREE_DIR diff --name-only $(git -C WORKTREE_DIR merge-base HEAD origin/$BASE)...HEAD` (apply the same filtering rules above, absolutize as `WORKTREE_DIR/{relative_path}`). Use `BRANCH_FILES` as `CHANGED_FILES`. Log `[Validation: branch health check — N files]`.
 
+Initialize `ai_iter = 0`, `test_iter = 0`.
+
 Spawn `global-validator` via Agent(subagent_type='super-agent') with prompt:
 
     global-validator
@@ -125,19 +127,21 @@ Check global-validator status:
 - Response contains `"aggregator failed"` → append `"Validation: aggregator failed"` to `unresolved_steps`, Phase 5.
 - Response is a non-terminal status (reports launching/running/waiting on validators, without a `NO_ISSUES` or `HAS_ISSUES` verdict) → the validator ended prematurely. Resume that same agent via SendMessage: instruct it to re-run its Workflow from step 2 — launch the same agent again with the original prompt via `launch-agent.sh` and relay the new terminal status verbatim (its contract permits nothing else). Max 2 resumes per global-validator run; still non-terminal → treat as a general crash (next branch).
 - Response is a general crash (contains `"encountered an error"` or `"crashed"`, or starts with `"ERROR:"` — the launcher's failed-exit prefix; does not match the above patterns) → retry global-validator once with the same inputs. If second attempt also fails → append `"Validation: validator crashed"` to `unresolved_steps`, Phase 5.
-- `HAS_ISSUES` →
-  1. Spawn `coder` via Agent(subagent_type='super-agent') with prompt:
+- `HAS_ISSUES` → categorize by global-validator return string: contains `(test)` or `(static)` → **test** (counter `test_iter`, limit 5); else (`N open`) → **AI** (counter `ai_iter`, limit 2). Test/static failures are deterministic and must pass before commit — fixing them does not increment `ai_iter`.
+  - Triggering counter >= its limit → append `"{Test|AI}: HAS_ISSUES after {counter} fix cycles"` to `unresolved_steps`, Phase 5.
+  - Triggering counter < its limit →
+    1. Spawn `coder` via Agent(subagent_type='super-agent') with prompt:
 
-         coder
-         mode: fix-ai
-         feature: _fix
-         spec_dir: SPEC_DIR
-         worktree_dir: WORKTREE_DIR
-         report_file: validation/issues.md
+           coder
+           mode: fix-ai
+           feature: _fix
+           spec_dir: SPEC_DIR
+           worktree_dir: WORKTREE_DIR
+           report_file: validation/issues.md
 
-     If coder's return lists `REMAINING:` items → append `"Validation: {one-line summary of remaining items}"` to `unresolved_steps`. If the Task crashes → proceed to step 2 (partial fixes may have been applied; re-validate to assess remaining issues).
-  2. Recompute `CHANGED_FILES` (same filtering rules, absolute paths). Re-run `global-validator` once with updated `CHANGED_FILES`; pass `engines: claude` only if the first run returned `HAS_ISSUES: N open` (the AI battery + dual-engine sweep already happened). If the first run failed at the test/static gate (the AI battery never ran) → omit `engines` so the first AI pass is full dual-engine.
-  3. `NO_ISSUES` → Phase 5. `HAS_ISSUES` → append `"Validation: HAS_ISSUES after fix attempt"` to `unresolved_steps`, Phase 5.
+       If coder's return lists `REMAINING:` items → append `"Validation: {one-line summary of remaining items}"` to `unresolved_steps`. If the Task crashes → proceed to step 2 (partial fixes may have been applied; re-validate to assess remaining issues).
+    2. Increment the triggering counter (test → `test_iter`; AI → `ai_iter`). Recompute `CHANGED_FILES` (same filtering rules, absolute paths). Re-run `global-validator` with updated `CHANGED_FILES`; pass `engines: claude` only if an earlier run in this Phase 4 returned `HAS_ISSUES: N open` (the AI battery + dual-engine sweep already happened); if no run has reached the AI battery yet (only test/static failures so far) → omit `engines` so the first AI pass is full dual-engine.
+    3. Return to the status check above.
 
 ## Phase 5: Finalize
 

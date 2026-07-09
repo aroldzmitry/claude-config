@@ -52,7 +52,7 @@ If no `## Affected Files` section, or no matching test files found → `tests_to
 
 ## 3. Detect E2E Capability
 
-1. Read `{worktree_dir}/docs/WORKFLOW.md` if it exists (prefix with `worktree_dir` when provided) — scan Commands table and Testing section for lines whose command contains "e2e", "integration", "playwright", or "cypress". Found → e2e tests available.
+1. Read `docs/WORKFLOW.md` if it exists (prefix with `worktree_dir` when provided) — scan Commands table and Testing section for lines whose command contains "e2e", "integration", "playwright", or "cypress". Found → e2e tests available.
 2. If `docs/WORKFLOW.md` missing or no e2e commands found: Glob for `e2e/**`, `playwright.config.*`, `cypress.config.*` (under `worktree_dir` when provided). Found → e2e tests available.
 3. Neither found → skip e2e level.
 
@@ -97,7 +97,7 @@ Omit `## Tests to Update` section if `tests_to_update` is empty.
 
 Coverage requirements:
 - Every `[must]` acceptance criterion from business-requirements maps to at least one test case; for criteria phrased as a prohibition ("never X", "must not Y") — include a test that directly asserts the prohibition (e.g., the forbidden code path is unreachable, the forbidden artifact is untouched after the operation, or a static check that the configured boundary excludes the prohibited target). Positive-behavior tests alone do not cover a prohibition AC.
-- Every API endpoint: happy path + a test for every error code documented for that endpoint; when the spec states a blanket contract for an endpoint group (shared auth/permission failure, shared not-found rule, shared validation rule) or the Test Strategy commits to a per-route check, enumerate that case for every endpoint in the group — sibling endpoints must have symmetric coverage
+- Every API endpoint: happy path + a test for every error code documented for that endpoint; when the spec states a blanket contract for an endpoint group (shared auth/permission failure, shared not-found rule, shared validation rule) or the Test Strategy commits to a per-route check, enumerate that case as a separate line for every endpoint in the group — one test-case line names exactly one endpoint; never collapse the group into a single line naming several endpoints (e.g. `edit/block/unblock on X`) or an unqualified `any route` — a downstream reader turns one test-case line into exactly one test. Sibling endpoints must have symmetric, individually-enumerated coverage
 - Every error scenario from technical-requirements has a test case
 - Every user flow from ui/business requirements has an e2e test case (if e2e available)
 

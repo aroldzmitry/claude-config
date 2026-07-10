@@ -132,7 +132,7 @@ If any item fails — go back to Step 2. If still failing after Step 2's 3-round
 
 Create `temp/<feature-name>/ui-requirements.md` using the template below. Include only sections that were discussed and have at least one decision or field to document. After writing, re-read the file against the Phase 2 summary: every decision, scenario behavior, and `[must]`-AC coverage stated in the summary must appear in the document or in Open Questions — add anything missing before Step 3.
 
-If Figma frames were captured in Phase 0, persist their screenshots into `temp/<feature-name>/mockup/` (`mkdir -p` first, one PNG per screen — copy the file the MCP screenshot tool produced, or save the returned image) — the downstream implementer's visual-verify loop uses them as the reference image; cite them in Design References.
+If Figma frames were captured in Phase 0, persist their screenshots into `temp/<feature-name>/mockup/` (`mkdir -p` first, one PNG per new screen): copy the file the MCP screenshot tool produced, or — when the MCP returned inline images without a file path — run `~/.claude/bin/figma-export-node.py <nodeId> temp/<feature-name>/mockup/<screen>.png` per screen. Verify with Glob that `mockup/` contains one PNG per new screen. If export fails (Figma closed, MCP server unreachable) → ask the user to export the frames as PNGs into `temp/<feature-name>/mockup/`; if declined → record the skip in Design References. The downstream implementer's visual-verify loop uses these as the reference image; cite them in Design References.
 
 Per-page subsections — include only those relevant to the layout type:
 - **List pages:** Data (columns, sort), Filters, Actions (row + page-level), States

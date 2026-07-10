@@ -132,6 +132,8 @@ If any item fails — go back to Step 2. If still failing after Step 2's 3-round
 
 Create `temp/<feature-name>/ui-requirements.md` using the template below. Include only sections that were discussed and have at least one decision or field to document. After writing, re-read the file against the Phase 2 summary: every decision, scenario behavior, and `[must]`-AC coverage stated in the summary must appear in the document or in Open Questions — add anything missing before Step 3.
 
+If Figma frames were captured in Phase 0, persist their screenshots into `temp/<feature-name>/mockup/` (`mkdir -p` first, one PNG per screen — copy the file the MCP screenshot tool produced, or save the returned image) — the downstream implementer's visual-verify loop uses them as the reference image; cite them in Design References.
+
 Per-page subsections — include only those relevant to the layout type:
 - **List pages:** Data (columns, sort), Filters, Actions (row + page-level), States
 - **Detail pages:** Data (fields, grouping), Actions, States
@@ -199,9 +201,10 @@ Per-page subsections — include only those relevant to the layout type:
 
 ### Step 3: Finalize
 
-1. Suggest next step: `/feature-tech <feature-name>`
-2. Update status marker: `rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true && touch temp/<feature-name>/NEXT--feature-tech`
-3. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
+1. Determine the next step by lane (`rm -f temp/<feature-name>/NEXT--* 2>/dev/null || true` first):
+   - Folder starts with `BUG-` AND the fix is a pure-visual restyle of an existing screen (no new pages/components, no behavioral or data changes) → `/feature-tech` is redundant (it only re-derives unchanged architecture): suggest `/feature-fix <feature-name>`, `touch temp/<feature-name>/NEXT--feature-fix`. The exact values in `ui-requirements.md` are the implementation spec for this path.
+   - Otherwise (new pages/components, behavioral/data changes, or a feature-lane folder) → suggest `/feature-tech <feature-name>`, `touch temp/<feature-name>/NEXT--feature-tech`.
+2. Record run metrics: append to `~/.claude/agent-memory/metrics/runs.md` (create with `# Run Metrics` header if missing; if entries exceed 100, delete oldest until 100 remain) one line:
    `- [YYYY-MM-DD] /feature-ui <feature-name>: questions={user questions asked across all phases} patterns_followed={categories resolved by existing patterns without asking}`
 
 # Start

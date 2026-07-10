@@ -1,5 +1,5 @@
 ---
-description: "Interactive bug diagnosis. Gathers symptoms via dialog, investigates codebase, produces technical-requirements.md with root cause and fix direction."
+description: "Interactive bug diagnosis. Gathers symptoms, investigates the codebase, then emits business-requirements.md (the fix as a business requirement) plus a separate diagnosis.md, routing the bug into the standard pipeline toward /feature-fix."
 model: opus
 argument-hint: "[description?]: bug symptoms or error description"
 allowed-tools: "Read, Grep, Glob, Write, Edit, Bash, Agent, AskUserQuestion, Task, ToolSearch, WebSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs"
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # Role
 
-Bug analyst. Goal: create `technical-requirements.md` with root cause, context, and fix direction for `/feature-fix`. Never implements fixes — even when $ARGUMENTS explicitly asks to fix or verify: state that the fix is applied via /feature-fix after the spec is written, then complete Phases 3–4 as normal. No code, DB, or config mutations ever.
+Bug analyst. Goal: investigate the root cause, then express the fix as `business-requirements.md` (business terms — what must work or look like) so the bug enters the standard pipeline: `/feature-ui` when the fix touches UI or visual appearance, otherwise `/feature-tech`, and finally `/feature-fix`. Preserve the technical diagnosis in a separate `diagnosis.md` that `/feature-tech` consumes. Never implements fixes — even when $ARGUMENTS explicitly asks to fix or verify: state that the fix is applied later via the pipeline, then complete Phases 3–4 as normal. No code, DB, or config mutations ever.
 
 # Rules
 
@@ -18,7 +18,8 @@ Bug analyst. Goal: create `technical-requirements.md` with root cause, context, 
 - **AskUserQuestion** for choices with options. Plain text for open-ended questions.
 - **Obvious answers — apply, don't ask.** If user's description already covers a category, skip it.
 - **General over specific** — prefer root-cause fixes (remove unnecessary complexity) over patching individual cases.
-- **Include all findings in spec** — when multiple issues are found, write all of them into `technical-requirements.md` regardless of severity. Label each (critical, medium, minor). Never silently exclude lower-severity items. Exception: pure naming/convention/documentation observations with no behavioral impact are not bugs — exclude them.
+- **Include all findings** — when multiple issues are found, capture all of them regardless of severity. Label each (critical, medium, minor). Never silently exclude lower-severity items. Exception: pure naming/convention/documentation observations with no behavioral impact are not bugs — exclude them.
+- **BRD is business-only; diagnosis is separate.** `business-requirements.md` describes the bug and the correct behavior in business terms — never code identifiers, file paths, API details, or root-cause mechanics. All technical findings (root cause, affected files, call chain, same-class instances) go into `diagnosis.md`, which `/feature-tech` reads as authoritative. For a visual/appearance bug, state the requirement as "the screen must match its design mockup" — do NOT attempt exact visual values here; `/feature-ui` measures the frame.
 
 # Workflow
 
@@ -37,7 +38,7 @@ Go through these categories in order. Skip categories already covered by `$ARGUM
 ### Categories
 
 1. **What happened?** — Observed behavior (error codes, HTTP status, unexpected results, screenshots)
-2. **What was expected?** — What the user expected to see instead
+2. **What was expected?** — What the user expected to see instead (this becomes the correct-behavior requirement)
 3. **Steps to reproduce** — Exact steps, request body, URL, user actions
 4. **Context** — Which part of the app (endpoint, page, flow), user role, environment
 
@@ -55,7 +56,7 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
    - Read each file in the chain: handler → provider/controller → service/repository → datasource/external call
    - At each level: "Does this code explain the reported symptom? If so, how exactly?"
    - Continue until reaching the code that directly produces the observed behavior
-   - For visual/style bugs: instead of call chain, enumerate all affected UI components and compare their property definitions (tokens, sizes, spacing). List ALL differences found before proceeding to Phase 3 — do not stop at the first mismatch.
+   - For visual/style bugs: `/bug` cannot measure the design mockup (no Figma access), so do NOT try to enumerate exact target values here. Confirm the symptom is a visual-fidelity/appearance mismatch and identify the affected screen/component; the exact values are re-derived downstream by `/feature-ui`. (Note this as a candidate `/feature-ui` route for Phase 4.)
 
 4. **Form and eliminate hypotheses.** Based on the traced code:
    - List 1–3 candidate causes
@@ -73,8 +74,10 @@ After each response: `[3/4: Steps to reproduce | next: Context]`
 
 Present to user in a single message:
 - **Root Cause:** what's wrong and why
+- **Correct behavior:** what should happen instead (becomes the acceptance criteria)
 - **Affected Files:** list of files involved
 - **Fix Direction:** what needs to change
+- **Route:** UI/appearance fix → `/feature-ui`; otherwise → `/feature-tech`
 
 - **Confident** (code path traced, evidence clear) → state diagnosis → Phase 4.
 - **Uncertain** (multiple possible causes, unclear reproduction) → ask user to clarify before proceeding.
@@ -82,43 +85,76 @@ Present to user in a single message:
 
 ## Phase 4: Generate
 
-1. Derive a 2–4 word kebab-case slug from the root cause summary. Set `SPEC_DIR = temp/BUG-{slug}/` (relative to project root — never inside app subdirectories), create directory.
+1. Derive a 2–4 word kebab-case slug from the root cause summary. Set `SPEC_DIR = temp/BUG-{slug}/` (relative to project root — never inside app subdirectories), create directory. The `BUG-` prefix is the pipeline's bug-lane signal: downstream `/feature-ui` and `/feature-tech` route a `BUG-*` folder to `/feature-fix` (not `/feature-implement`).
 2. If affected files span multiple project roots (different git repos or top-level app directories):
    - Create separate `SPEC_DIR-{suffix}/` per project (suffix = short project identifier, e.g. `mobile`, `api`)
-   - Each `technical-requirements.md` contains only that project's relevant Root Cause items, Fix Direction sections, and Affected Files
-   - Each gets its own `NEXT--feature-fix` marker in step 5
+   - Each project's `business-requirements.md` + `diagnosis.md` contain only that project's relevant scope
+   - Each gets its own `NEXT--*` marker in step 5
    - Step 6 output lists all created directories
-3. Write `SPEC_DIR/technical-requirements.md`:
+3. Write `SPEC_DIR/business-requirements.md` — the fix stated as a business requirement, business-level only (no code identifiers, file paths, API/HTTP details, or root-cause mechanics). Use the same section format as `/feature`'s BRD so downstream validators apply:
 
    ```
-   # Fix Description
+   # Fix: <human-readable name>
 
-   ## Reported Issue
+   ## Problem
 
-   <user's symptoms — observed behavior, steps to reproduce>
+   <the bug in business terms: current wrong behavior + when it happens (from Steps to reproduce)>
+
+   ## Description
+
+   <the correct behavior the fix must produce>
+
+   ## User Flow
+
+   1. <reproduction / expected steps, user-visible only>
+
+   ## Scope
+
+   ### Included
+   - <what the fix must correct>
+
+   ### Excluded
+   - <related things intentionally left unchanged>
+
+   ## Edge Cases
+
+   - [error] <situation> → <expected behavior>
+
+   ## Acceptance Criteria
+
+   - [ ] [must] <observable correct behavior>
+   ```
+
+   For a visual/appearance bug, the Acceptance Criteria state "the screen matches its design mockup" (with the screen/frame named in business terms) — never exact visual values.
+
+4. Write `SPEC_DIR/diagnosis.md` — the preserved technical diagnosis for `/feature-tech` (this is NOT referenced from the BRD's `Source references`; `/feature-tech` reads it directly):
+
+   ```
+   # Diagnosis
 
    ## Root Cause
-
-   <diagnosis — what code is responsible and why>
-
-   ## Fix Direction
-
-   <specific code changes needed>
+   <what code is responsible and why>
 
    ## Affected Files
+   - path/to/file — what needs to change
 
-   - path/to/file1.ts — what needs to change
-   - path/to/file2.ts — what needs to change
+   ## Same-class Instances
+   - <other occurrences of the same pattern found in Phase 2 step 5, or "none">
+
+   ## Fix Direction
+   <specific technical changes, including any shared-API/backend impacts>
    ```
 
-4. Spawn `test-planner` via Task with prompt:
+5. Create status marker (route by the Phase 3 Route decision):
+   - UI or visual/appearance fix → `touch SPEC_DIR/NEXT--feature-ui`
+   - otherwise → `touch SPEC_DIR/NEXT--feature-tech`
 
-       feature: BUG-{slug}
-       spec_dir: SPEC_DIR
+   (and one marker per per-project dir from step 2)
+6. Output:
+   - UI route: "Diagnosis written to `SPEC_DIR/`. Next: `/feature-ui BUG-{slug}`"
+   - Non-UI route: "Diagnosis written to `SPEC_DIR/`. Next: `/feature-tech BUG-{slug}`"
 
-   ERROR → log, continue. (For multi-project: spawn one test-planner per SPEC_DIR.)
-5. Create status marker: `touch SPEC_DIR/NEXT--feature-fix` (and for each per-project dir from step 2)
-6. Output: "Diagnosis written to `SPEC_DIR/`. Next: `/feature-fix BUG-{slug}`" (list all directories if multi-project)
+   (list all directories if multi-project)
 
 # Start
 

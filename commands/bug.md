@@ -91,7 +91,7 @@ Present to user in a single message:
    - Each project's `business-requirements.md` + `diagnosis.md` contain only that project's relevant scope
    - Each gets its own `NEXT--*` marker in step 5
    - Step 6 output lists all created directories
-3. Write `SPEC_DIR/business-requirements.md` — the fix stated as a business requirement, business-level only (no code identifiers, file paths, API/HTTP details, or root-cause mechanics). Use the same section format as `/feature`'s BRD so downstream validators apply:
+3. Write `SPEC_DIR/business-requirements.md` — the fix stated as a business requirement, business-level only (no code identifiers, file paths, API/HTTP details, or root-cause mechanics). Use the same section conventions as `/feature`'s BRD so downstream validators apply (the template below is a subset — add `## Key Entities` or `## Actor` only if the bug genuinely involves them):
 
    ```
    # Fix: <human-readable name>

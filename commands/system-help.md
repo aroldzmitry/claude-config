@@ -54,8 +54,8 @@ Output this reference (translated to user's language):
 | `/feature-ui` | `temp/<name>/ui-requirements.md` | Optional: `business-requirements.md` |
 | `/feature-tech` | `temp/<name>/technical-requirements.md` + `test-cases.md` | Optional: `business-requirements.md`, `ui-requirements.md` |
 | `/feature-implement` | Commit on current branch (default); `--worktree` → worktree + branch + draft PR | `technical-requirements.md`, clean git |
-| `/bug` | `temp/BUG-<slug>/technical-requirements.md` (with diagnosis) | — |
-| `/feature-fix` | Commit on current branch (default); `--worktree` → worktree + branch + draft PR | `temp/<folder>/technical-requirements.md` (e.g. `/bug` output folder) |
+| `/bug` | `temp/BUG-<slug>/business-requirements.md` + `diagnosis.md` | — |
+| `/feature-fix` | Commit on current branch (default); `--worktree` → worktree + branch + draft PR | `temp/<folder>/technical-requirements.md` (from `/feature-tech`; bug lane: `/bug` → `/feature-tech` produces it) |
 | `/feature-merge` | Merged PR, validated pre-merge, deleted branch + worktree | Open PR from `/feature-implement` or `/feature-fix` |
 | `/patch` | Edited files (no commit) | — |
 | `/research` | `temp/RESEARCH-<topic>/technical-requirements.md` | — |
@@ -75,11 +75,13 @@ Output this reference (translated to user's language):
 
 **Large feature:** `/feature` → `/feature-ui` (if UI) → `/feature-tech` (offers to split large features) → `/feature-implement` (per part)
 
-**Bug (unknown cause):** `/bug 409 on user creation` → `/feature-fix BUG-409-create-user --worktree` → `/feature-merge BUG-409-create-user`
+**Bug (unknown cause):** `/bug 409 on user creation` → `/feature-tech BUG-409-create-user` → `/feature-fix BUG-409-create-user --worktree` → `/feature-merge BUG-409-create-user`
 
 **Draft PR with pending decisions (implement hit a business question):** answer via `/feature-tech <name>-warnings` → `/feature-fix <name>-warnings` → `/feature-merge <name>`
 
-**Quick fix (known cause):** `/bug fix the login button` → `/feature-fix BUG-fix-login-button --worktree` → `/feature-merge BUG-fix-login-button`
+**Quick fix (known cause):** `/bug fix the login button` → `/feature-tech BUG-fix-login-button` → `/feature-fix BUG-fix-login-button --worktree` → `/feature-merge BUG-fix-login-button`
+
+**Visual/design bug (screen doesn't match mockup):** `/bug profile screen off from Figma` → `/feature-ui BUG-profile-design` → `/feature-tech BUG-profile-design` → `/feature-fix BUG-profile-design --worktree` → `/feature-merge BUG-profile-design`
 
 **Tiny one-file fix (no planning):** `/patch fix the login button color`
 

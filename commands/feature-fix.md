@@ -36,7 +36,7 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 0: Setup
 
-1. Parse flags: if `$ARGUMENTS` contains the whitespace-delimited token `--worktree`, set `WORKTREE_MODE = true` and remove that token; otherwise `WORKTREE_MODE = false`. The remaining text is the folder name — required (if empty, stop with error). If it is a filesystem path (contains `/`), treat the path's last non-empty segment as `$ARGUMENTS` for the rest of the workflow. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /bug first to create a spec."`
+1. Parse flags: if `$ARGUMENTS` contains the whitespace-delimited token `--worktree`, set `WORKTREE_MODE = true` and remove that token; otherwise `WORKTREE_MODE = false`. The remaining text is the folder name — required (if empty, stop with error). If it is a filesystem path (contains `/`), treat the path's last non-empty segment as `$ARGUMENTS` for the rest of the workflow. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /feature-tech {$ARGUMENTS} first (bug lane: /bug → /feature-ui → /feature-tech produces it)."`
 2. `REPO_ROOT = git rev-parse --show-toplevel`
 3. Parent feature check: derive `PARENT_FEATURE` by stripping trailing `-warnings` or `-warnings{N}` (N = integer) from `$ARGUMENTS`. If a match is found and `git show-ref --quiet refs/heads/feat/{PARENT_FEATURE}` exits 0, check that `{REPO_ROOT}/.worktrees/{PARENT_FEATURE}` exists as a directory. If yes: set `WORKTREE_DIR = {REPO_ROOT}/.worktrees/{PARENT_FEATURE}`, `BRANCH = feat/{PARENT_FEATURE}`, `PR_URL = $(gh pr list --head feat/{PARENT_FEATURE} --json url -q '.[0].url')`, `USE_PARENT_WORKTREE = true`. Log `[Using parent worktree: WORKTREE_DIR]`. Otherwise: `USE_PARENT_WORKTREE = false`; then if `WORKTREE_MODE = false` set `WORKTREE_DIR = REPO_ROOT`, `PR_URL = ` (empty), `BRANCH = ` current branch (`git rev-parse --abbrev-ref HEAD`) — no worktree/branch/PR is created.
 4. Open Questions gate: `Bash: awk '/^## Open Questions/{f=1;next} /^## /{f=0} f' SPEC_DIR/technical-requirements.md` → if output contains any non-empty list item, stop: "Spec has unresolved Open Questions:\n{items}\nAnswer them via `/feature-tech {$ARGUMENTS}` first — autonomous runs must not decide business questions."
@@ -104,6 +104,29 @@ If `SPEC_DIR/test-cases.md` exists → spawn `test-writer` via Agent(subagent_ty
 ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: written]`.
 
 ## Phase 4: Validation
+
+### Visual Fidelity Verification (first)
+
+Run before code validation only if a design mockup was persisted: `Glob SPEC_DIR/mockup/*.png` returns ≥1 file (from `/feature-ui`) AND this fix changed UI. No mockup → `[Visual: no mockup — skipped]`, continue to code validation. Initialize `visual_iter = 0` (limit 2).
+
+1. **Render** the affected screen(s) to image(s) using the project's UI-baseline command from `docs/WORKFLOW.md` (the command that regenerates rendered UI snapshots/goldens — e.g. a golden-update run), scoped to the affected screen when possible. No such command, or it produces no image → `[Visual: no render harness — skipped]`, continue to code validation (never block on a missing harness).
+2. **Compare** — spawn a `general-purpose` agent via the Agent tool with the mockup and rendered PNG paths:
+
+       Read the mockup image(s) at {mockup paths} and the rendered screen image(s) at {rendered paths}. List every VISIBLE discrepancy between the rendered screen and the mockup — spacing/gaps, colors, corner radius, borders, typography size/weight, icon glyph/size, alignment, element presence/position. Compare proportionally; ignore absolute resolution and device-frame scale differences. Output one discrepancy per line (name the element + the difference), or exactly `MATCH` if none are visible.
+
+3. `MATCH`, or `visual_iter >= 2` → log `[Visual: {matched | N deltas after 2 cycles}]`; if deltas remain, append `"Visual: {N} mockup discrepancies remain"` to `unresolved_steps`. Continue to code validation.
+4. Discrepancies and `visual_iter < 2` → write them to `SPEC_DIR/validation/visual-deltas.md` (one `[open]` item per line; first line: `Correct target values are in ui-requirements.md (exact frame values) — adjust the implementation to match, do not change the spec.`), then spawn `coder` via Agent(subagent_type='super-agent'):
+
+       coder
+       mode: fix-ai
+       feature: _fix
+       spec_dir: SPEC_DIR
+       worktree_dir: WORKTREE_DIR
+       report_file: validation/visual-deltas.md
+
+   Increment `visual_iter`, return to step 1.
+
+### Code validation
 
 `git -C WORKTREE_DIR status --porcelain` → parse file paths, exclude deletions (both staged `D ` and working-tree ` D` porcelain prefixes), exclude non-source files (lock files, images, fonts, videos, `.min.*`, `.map`, `.d.ts`, `.generated.*`, `.snap`, `dist/`, `build/`, `vendor/`, `node_modules/`, `temp/`) → absolutize each path as `WORKTREE_DIR/{relative_path}` → `CHANGED_FILES` (newline-separated absolute paths).
 

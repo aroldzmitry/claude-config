@@ -30,7 +30,8 @@ Before asking questions, silently:
 1. Check if the project has `docs/` directory
 2. Read `docs/ARCHITECTURE*.md` if they exist — to understand existing structure, features, and terminology. For each entity or data contract the feature changes: (a) locate and read its existing schema/contract definition (search contract packages, schema files, model directories); (b) trace its consumers (forms, API endpoints, UI components, downstream systems) and note any that may also need updating as candidate scope items for Phase 1.
 3. If the feature introduces or modifies a UI selection component (picker, combobox, selector, dropdown): locate the closest analogous component already in the product; note its behavior for edge cases likely to surface in Phase 1 (how already-used items are handled, empty state, search scope). When asking about the same behavior in Phase 1, offer "match the existing [ComponentName] pattern" as a named option.
-4. If `$ARGUMENTS` mentions platforms or systems outside this repo's scope (mobile app, separate service, different codebase) — note as cross-repo feature; Phase 3 will require separate `temp/` folders per project
+4. If `$ARGUMENTS` contains links to design sources (mockups, frames, prototypes): fetch every linked node and enumerate the complete screen/step inventory of the flow before Phase 1. An attached image is an excerpt, not the inventory — the linked source is authoritative. Every screen or step found in the source must be covered by the interview and appear in the User Flow.
+5. If `$ARGUMENTS` mentions platforms or systems outside this repo's scope (mobile app, separate service, different codebase) — note as cross-repo feature; Phase 3 will require separate `temp/` folders per project
 
 Do NOT mention this step to the user. Just use the knowledge.
 
@@ -192,7 +193,7 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
      - `validator-brd-purity` → `output_file: <validation-dir>/purity.md`
      - `validator-brd-completeness` → `output_file: <validation-dir>/completeness.md`
      - `validator-brd-consistency` → `output_file: <validation-dir>/consistency.md`
-   - **Codex Tasks** (skip when `FAST_PATH`) — spawn `codex` agent for each `V` in [brd-purity, brd-completeness, brd-consistency] (short names for `{V-short}`: purity, completeness, consistency):
+   - **Codex Tasks** (skip when `FAST_PATH`; also skip for any BRD whose validation dir is outside the repo where the command was invoked — the sandboxed engine cannot write there; that BRD gets Claude reports only) — spawn `codex` agent for each `V` in [brd-purity, brd-completeness, brd-consistency] (short names for `{V-short}`: purity, completeness, consistency):
 
          validator-{V}
          feature: <name>
@@ -203,7 +204,7 @@ Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation
 
 2. For cross-repo features (more than one BRD generated): spawn one additional generic Claude Task (no dedicated validator agent) that reads all BRD files and writes cross-document consistency findings to one chosen primary validation directory's `cross-doc.md`. Prompt the task: compare BRDs section by section; flag any concept that one BRD treats differently than another, any cross-doc reference that doesn't resolve, and any obligation that lives in one BRD but should be in another. Output format: `[error|warning] <doc> § <section> — <description>`.
 
-3. Verify all expected output files exist (Glob each validation directory). Expected count per validation directory: 6 files (`purity.md`, `completeness.md`, `consistency.md`, and the three `-codex.md` counterparts); 3 files when `FAST_PATH` (Claude reports only). For the cross-repo primary validation directory (the one chosen for `cross-doc.md` in step 2): expect 7 files. On an iteration-2 subset re-run (step 8) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. Exception: if a validator reported that its engine/CLI is unavailable (engine-level ERROR), do not retry it or any other validator on that engine this run — note the engine as unavailable and continue with the remaining engine's reports. If still absent after retry: note the missing filename and continue.
+3. Verify all expected output files exist (Glob each validation directory). Expected count per validation directory: 6 files (`purity.md`, `completeness.md`, `consistency.md`, and the three `-codex.md` counterparts); 3 files when `FAST_PATH` or for a BRD whose validation dir is outside the invocation repo (Claude reports only — no Codex re-spawn for these). For the cross-repo primary validation directory (the one chosen for `cross-doc.md` in step 2): expect 7 files. On an iteration-2 subset re-run (step 8) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. Exception: if a validator reported that its engine/CLI is unavailable (engine-level ERROR), do not retry it or any other validator on that engine this run — note the engine as unavailable and continue with the remaining engine's reports. If still absent after retry: note the missing filename and continue.
 
 4. For each validation directory, spawn `aggregator-brd`:
 

@@ -104,6 +104,7 @@ If any item fails — go back to Step 2 and ask. If all pass — state the chose
 1. Create directory: `temp/<feature-name>/` (relative to project root — never inside app subdirectories)
 2. If any external artifacts were fetched or downloaded during this session (design bundles, spec archives, exported files), copy them to `temp/design-source/` now. Never reference paths outside the project repo (e.g., `/tmp/`, system cache dirs) in BRD files. If artifacts were copied (or specific in-repo design/spec documents served as the design source), append a `Source references:` list of those in-repo paths at the end of the BRD — design/spec materials only (design bundles, mockups, spec documents), never source-code files — `/feature-ui` and `/feature-tech` read these files and treat them as authoritative over BRD summaries.
 3. Write `temp/<feature-name>/business-requirements.md` using the format below. If the feature involves work in an external project (backend, separate service), create a separate `temp/` folder for it — same document format, same CONDITIONAL section rules.
+4. Self-review: re-read each generated BRD end-to-end and apply the Phase 2 Step 3 internal-consistency checks to the written text (cross-section scope-match, consistent entity/value naming across sections); fix findings before Phase 4. The Quality Gate ran on interview decisions — this pass catches contradictions introduced during document writing.
 
 ### Document Format
 

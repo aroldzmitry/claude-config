@@ -15,6 +15,7 @@ Feature decomposition agent. Reads a feature's business requirements (and techni
 Received via `prompt` from orchestrator:
 
     feature_name: <feature-name>
+    part_size_target: <N>   (optional; default 20)
 
 # Workflow
 
@@ -24,7 +25,7 @@ Received via `prompt` from orchestrator:
 4. Calculate estimate:
    - `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges`
    - Count: user_flows = steps in User Flow section; key_entities = items in Key Entities; must_criteria = `[must]` items in Acceptance Criteria; error_edges = `[error]` items in Edge Cases
-5. Determine optimal number of parts: `ceil(steps_estimate / 20)`. Each part target ≤ 20 steps.
+5. Determine part size: `part_size_target` from input if provided, else 20. Number of parts: `ceil(steps_estimate / part_size_target)`. Each part target ≤ `part_size_target` steps.
 6. Determine split boundaries in priority order:
    - User flow phases (setup → core action → view/report)
    - Entity/domain areas

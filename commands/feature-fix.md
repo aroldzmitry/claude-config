@@ -22,9 +22,10 @@ Fix orchestrator. Delegates to agents — never writes application code.
 # Conventions
 
 - `WORKTREE_MODE` — parsed in Phase 0 step 1. Default `false` (work in the current branch: `WORKTREE_DIR = REPO_ROOT`, no new branch, no PR). `true` when `$ARGUMENTS` contains the `--worktree` token → isolated worktree + `feat/{feature}` branch + draft PR. Overridden by parent-worktree reuse (Phase 0 step 3): when a parent feature's worktree exists it is always reused, regardless of this flag.
-- `SPEC_DIR` — directory containing `technical-requirements.md`, resolved in Phase 0. Stored as an absolute path (prefixed with `REPO_ROOT` if Phase 0 step 1 found a relative one) so subagents resolve it consistently regardless of their CWD.
+- `SPEC_DIR` — directory containing `technical-requirements.md`, resolved in Phase 0. Stored as an absolute path (prefixed with `REPO_ROOT` in Phase 0 step 2 if step 1 found a relative one) so subagents resolve it consistently regardless of their CWD.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
 - **Subagent spawning** — any agent whose workflow contains `Task(...)` invocations (e.g. `coder`, `test-writer`, `committer`, `global-validator`) must be spawned via `Agent(subagent_type='super-agent', prompt='<agent-name>\n<args>')`. Direct `Agent(subagent_type='<agent-name>')` does not pass declared frontmatter tools (including Task) into the subagent context.
+- **Rate-limit crashes** — a spawned agent that dies with a session/rate-limit error naming a reset time is not an agent failure: schedule wakeups until past the reset, then re-spawn the same prompt once. Do not consume the phase's crash-retry budget and do not degrade (skip the phase's output) while waiting is possible; if the re-spawn also dies on a limit, apply the phase's normal crash handling.
 - `unresolved_steps` = [] — initialized at the start of Phase 2 (before first step). When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/static.txt`
@@ -36,8 +37,8 @@ Fix orchestrator. Delegates to agents — never writes application code.
 
 ## Phase 0: Setup
 
-1. Parse flags: if `$ARGUMENTS` contains the whitespace-delimited token `--worktree`, set `WORKTREE_MODE = true` and remove that token; otherwise `WORKTREE_MODE = false`. The remaining text is the folder name — required (if empty, stop with error). If it is a filesystem path (contains `/`), treat the path's last non-empty segment as `$ARGUMENTS` for the rest of the workflow. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /feature-tech {$ARGUMENTS} first (bug lane: /bug → /feature-ui → /feature-tech produces it)."`
-2. `REPO_ROOT = git rev-parse --show-toplevel`
+1. Parse flags: if `$ARGUMENTS` contains the whitespace-delimited token `--worktree`, set `WORKTREE_MODE = true` and remove that token; otherwise `WORKTREE_MODE = false`. The remaining text is the folder name — required (if empty, stop with error). If it is a filesystem path (contains `/`), treat the path's last non-empty segment as `$ARGUMENTS` for the rest of the workflow. Use the Read tool to check `temp/{$ARGUMENTS}/technical-requirements.md`. If not found, use Glob to search for `**/{$ARGUMENTS}/technical-requirements.md`. If found → set the containing directory as SPEC_DIR. If not found anywhere → stop: `"technical-requirements.md not found for '{$ARGUMENTS}'. Run /feature-tech {$ARGUMENTS} first (bug lane: /bug → /feature-tech produces it; /feature-ui first for visual bugs)."`
+2. `REPO_ROOT = git rev-parse --show-toplevel`. If `SPEC_DIR` is relative → `SPEC_DIR = {REPO_ROOT}/{SPEC_DIR}`.
 3. Parent feature check: derive `PARENT_FEATURE` by stripping trailing `-warnings` or `-warnings{N}` (N = integer) from `$ARGUMENTS`. If a match is found and `git show-ref --quiet refs/heads/feat/{PARENT_FEATURE}` exits 0, check that `{REPO_ROOT}/.worktrees/{PARENT_FEATURE}` exists as a directory. If yes: set `WORKTREE_DIR = {REPO_ROOT}/.worktrees/{PARENT_FEATURE}`, `BRANCH = feat/{PARENT_FEATURE}`, `PR_URL = $(gh pr list --head feat/{PARENT_FEATURE} --json url -q '.[0].url')`, `USE_PARENT_WORKTREE = true`. Log `[Using parent worktree: WORKTREE_DIR]`. Otherwise: `USE_PARENT_WORKTREE = false`; then if `WORKTREE_MODE = false` set `WORKTREE_DIR = REPO_ROOT`, `PR_URL = ` (empty), `BRANCH = ` current branch (`git rev-parse --abbrev-ref HEAD`) — no worktree/branch/PR is created.
 4. Open Questions gate: `Bash: awk '/^## Open Questions/{f=1;next} /^## /{f=0} f' SPEC_DIR/technical-requirements.md` → if output contains any non-empty list item, stop: "Spec has unresolved Open Questions:\n{items}\nAnswer them via `/feature-tech {$ARGUMENTS}` first — autonomous runs must not decide business questions."
 
@@ -168,7 +169,7 @@ Check global-validator status:
 
 ## Phase 5: Finalize
 
-1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars).
+1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars). Read `SPEC_DIR/validation/skipped.md` if it exists → `SKIPPED_LINES` (must be read now — step 5 moves the folder before the report is printed).
 2. Set `MARK_READY = true`. If `unresolved_steps` is non-empty (any entry — crashed steps, open AI issues, failed validation all count, not only test failures) → set `MARK_READY = false`.
 3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
@@ -213,6 +214,7 @@ Check global-validator status:
 **Branch:** BRANCH  ← show only in current-branch mode (PR_URL empty)
 **Files changed:** N
 **Validation:** {len(unresolved_steps)} unresolved
+**Skipped validators:** {SKIPPED_LINES}  ← omit line if empty
 
 ### Unresolved Issues
 - [error|warning] file:line — description

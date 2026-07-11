@@ -109,6 +109,7 @@ Step ordering:
 - Shared utilities before consumers — when two or more steps add structurally identical logic (switch tables, mapping blocks, parallel implementations) to different files, add a shared-helper extraction step before them
 - Core logic before integration points
 - Data layer before UI layer
+- Producers before consumers — a step must not reference identifiers, keys, or generated artifacts (codegen outputs, localization entries, constants, schema types) created by a later step; order the producing step first so every step leaves the project's static checks passing when it completes
 
 Test-related steps follow these rules:
 - Fixes to existing tests (wrong assertion, broken mock, wrong callback path) → always include, regardless of skip value — existing tests that would break due to a plan step must be updated in that step

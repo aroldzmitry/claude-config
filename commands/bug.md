@@ -85,7 +85,9 @@ Present to user in a single message:
 
 ## Phase 4: Generate
 
-1. Derive a 2–4 word kebab-case slug from the root cause summary. Set `SPEC_DIR = temp/BUG-{slug}/` (relative to project root — never inside app subdirectories), create directory. The `BUG-` prefix is the pipeline's bug-lane signal: downstream `/feature-ui` and `/feature-tech` route a `BUG-*` folder to `/feature-fix` (not `/feature-implement`).
+1. Derive a 2–4 word kebab-case slug from the root cause summary. Set `SPEC_DIR = temp/BUG-{slug}/` (relative to project root — never inside app subdirectories), create directory. The `BUG-` prefix is the pipeline's bug-lane signal: a `BUG-*` folder flows `/feature-ui` → `/feature-tech` (UI route) or straight to `/feature-tech`, and `/feature-tech` routes it to `/feature-fix` (not `/feature-implement`).
+
+   If Phase 3 produced multiple independent root causes (fixes are disjoint — no shared cause, separately shippable), repeat steps 1 and 3–6 once per root cause: each gets its own slug, `SPEC_DIR`, `business-requirements.md`, `diagnosis.md`, and `NEXT--*` marker routed by its own Phase 3 Route decision; the step 6 output lists all created directories. A single root cause with multiple symptoms stays one `SPEC_DIR`.
 2. If affected files span multiple project roots (different git repos or top-level app directories):
    - Create separate `SPEC_DIR-{suffix}/` per project (suffix = short project identifier, e.g. `mobile`, `api`)
    - Each project's `business-requirements.md` + `diagnosis.md` contain only that project's relevant scope

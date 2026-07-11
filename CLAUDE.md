@@ -13,3 +13,4 @@
 - Show only essential information relevant to the task
 - Start directly with actions or answers
 - Skip acknowledgments unless explicitly requested
+- **Waiting on background work** - When the environment delivers completion notifications: after starting background work whose result the next step needs, do any genuinely independent work, then end the turn — the notification resumes you; do not poll for status or send standalone "still waiting" messages. Without a notification mechanism, poll as the governing instructions direct.

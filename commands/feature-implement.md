@@ -27,7 +27,7 @@ Implementation orchestrator. Delegates to agents — never writes application co
 - **Waiting on background spawns** — after launching an Agent-tool spawn, wait via `ScheduleWakeup` and the resulting `task-notification` event; do not call `TaskOutput` to poll a running spawn's status. It returns the raw subagent transcript (tool payloads, token accounting, reasoning blocks) into context for no benefit — the notification carries the actual result. If a scheduled wakeup fires with no notification yet, just reschedule another wakeup.
 - **Rate-limit crashes** — a spawned agent that dies with a session/rate-limit error naming a reset time is not an agent failure: check the current time first — reset already passed → re-spawn the same prompt immediately; otherwise schedule wakeups to land shortly after the reset, then re-spawn the same prompt once. Do not consume the phase's crash-retry budget and do not degrade (skip the phase's output) while waiting is possible; if the re-spawn also dies on a limit, apply the phase's normal crash handling.
 - CLI validation commands are NOT tracked by the orchestrator — static-checker and test-runner detect them independently from `docs/WORKFLOW.md`.
-- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`. Every entry starts with one of the canonical prefixes: `Step N:` (implementation), `Test:`, `AI:`, `Validation:`, `Commit:`, `Decision needed:` — any non-empty list keeps the PR draft.
+- `unresolved_steps` = [] — initialized at start of Phase 2. When coder returns `UNRESOLVED`, append `"Step N: {title} — {coder error summary}"`. Every entry starts with one of the canonical prefixes: `Step N:` (implementation), `Test:`, `AI:`, `Visual:`, `Validation:`, `Commit:`, `Decision needed:` — any non-empty list keeps the PR draft.
 - `decisions` = [] — initialized at start of Phase 2. Technical ambiguities resolved autonomously are appended as one-line entries (what was ambiguous → what was chosen and why); reported in § Decisions.
 - Heavy data stored in files, not in orchestrator variables:
   - Step validation → `SPEC_DIR/validation/step-{N}/static.txt`
@@ -115,7 +115,14 @@ For each step in order:
 
 Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
 
-If `SPEC_DIR/test-cases.md` absent → `[Tests: skipped — run /feature-tech first]`, go to Phase 4.
+If `SPEC_DIR/test-cases.md` absent → spawn `test-planner` via Agent(subagent_type='super-agent') with prompt:
+
+    test-planner
+    feature: $ARGUMENTS
+    spec_dir: SPEC_DIR
+    worktree_dir: WORKTREE_DIR
+
+ERROR or crash → retry once; second failure → append `"Test: test-cases.md missing and test-planner failed"` to `unresolved_steps`, log `[Tests: skipped — no test-cases.md]`, go to Phase 4.
 
 Spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
 
@@ -181,6 +188,8 @@ Check global-validator status:
         worktree_dir: WORKTREE_DIR
         issues_file: validation/issues.md
         aggregated_file: validation/aggregated.md
+
+    Planner crash, or a return without the terminal `FIX-PLAN: N steps` line → re-spawn once with the same prompt plus note "prior run crashed mid-write — regenerate fix-plan.md from scratch". Second failure → append `"Validation: fix-plan planner crashed"` to `unresolved_steps`, go to Phase 5 (never read a fix-plan.md left by a prior cycle).
 
     Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Agent(subagent_type='super-agent') like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder DONE with an `OUT-OF-SCOPE ERRORS` block → classify per Phase 2 step 4 (coverage set = remaining fix-plan steps). Coder crash → continue to next step.
     If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES; pass `engines: claude` only if an earlier run in this Phase 4 returned `HAS_ISSUES: N open` (the AI battery + dual-engine sweep already happened; fix-verification re-runs use Claude validators only). If no run has reached the AI battery yet (only test/static failures so far) → omit `engines` so the first AI pass is full dual-engine. Return to status check above.

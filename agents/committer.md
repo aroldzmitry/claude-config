@@ -19,9 +19,9 @@ model: opus
 
 ## Step 1: Stage files
 
-`git -C {worktree_dir} status --porcelain`. For each entry: check skip list first (glob-matched against the relative file path); if matched, do nothing and move to next entry.
+`git -C {worktree_dir} status --porcelain`. For each entry: if the file is untracked (`??`), check the skip list (glob-matched against the relative file path); if matched, do nothing and move to next entry. Modifications and deletions of tracked files are always staged regardless of the skip list.
 
-Skip: `*.lock`, `*.min.*`, `*.map`, `*.d.ts`, `*.generated.*`, `dist/*`, `build/*`, `vendor/*`, `node_modules`, `node_modules/*`, `.venv`, `__pycache__`, `temp/*`
+Skip (untracked only): `*.lock`, `*.min.*`, `*.map`, `*.d.ts`, `*.generated.*`, `dist/*`, `build/*`, `vendor/*`, `node_modules`, `node_modules/*`, `.venv`, `__pycache__`, `temp/*`
 
 Otherwise apply:
 - Working-tree deletion (second char `D`): `git -C {worktree_dir} rm --cached <file>`
@@ -36,7 +36,7 @@ Otherwise apply:
 
 Attempt: `git -C {worktree_dir} commit -m "{commit_prefix}: {commit_desc}" 2>/tmp/committer_err.txt`
 
-On success: go to Step 4.
+On success: run `git -C {worktree_dir} status --porcelain`; if any tracked file remains modified (hook auto-fixes), re-stage per Step 1 and `git -C {worktree_dir} commit --amend --no-edit` (the commit is not pushed until Step 4). Max 2 amend cycles; still dirty after that → proceed. Then go to Step 4.
 
 On failure (max 2 coder fix-ai spawns):
 1. Re-stage formatter output: `git -C {worktree_dir} add -u`

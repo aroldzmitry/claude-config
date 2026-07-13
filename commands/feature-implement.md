@@ -113,7 +113,7 @@ For each step in order:
 
 ## Phase 3: Test Writing
 
-Planner skipped tests → `[Tests: skipped — {reason}]`, go to Phase 4.
+Planner skipped tests → set `TESTS_RESULT = "skipped — {reason}"`, log `[Tests: skipped — {reason}]`, go to Phase 4.
 
 If `SPEC_DIR/test-cases.md` absent → spawn `test-planner` via Agent(subagent_type='super-agent') with prompt:
 
@@ -122,7 +122,7 @@ If `SPEC_DIR/test-cases.md` absent → spawn `test-planner` via Agent(subagent_t
     spec_dir: SPEC_DIR
     worktree_dir: WORKTREE_DIR
 
-ERROR or crash → retry once; second failure → append `"Test: test-cases.md missing and test-planner failed"` to `unresolved_steps`, log `[Tests: skipped — no test-cases.md]`, go to Phase 4.
+ERROR or crash → retry once; second failure → append `"Test: test-cases.md missing and test-planner failed"` to `unresolved_steps`, set `TESTS_RESULT = "failed — test-cases.md missing and test-planner failed"`, log `[Tests: skipped — no test-cases.md]`, go to Phase 4.
 
 Spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
 
@@ -131,8 +131,9 @@ Spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
     spec_dir: SPEC_DIR
     worktree_dir: WORKTREE_DIR
 
-If test-writer returns ERROR → log `[Tests: error — {reason}]`, continue to Phase 4 (tests skipped).
-Any other return value → treat as success. Proceed immediately to Phase 4 in the same response.
+Return contains `DONE` → set `TESTS_RESULT = "written ({N} files)"`. If the response lists skipped cases, append them to `TESTS_RESULT`; any skipped case tagged `[must]` → append `"Test: [must] cases skipped by test-writer — {case names}"` to `unresolved_steps`.
+`ERROR`, crash, or a return that is neither `DONE` nor `ERROR` → retry once; second failure → append `"Test: test-writer failed — {reason}"` to `unresolved_steps`, set `TESTS_RESULT = "failed — {reason}"`, log `[Tests: error — {reason}]`.
+Proceed to Phase 4.
 
 ## Phase 4: Validation Cycle
 
@@ -234,7 +235,7 @@ Check global-validator status:
 **PR:** PR_URL  ← omit in current-branch mode (WORKTREE_MODE = false) or if committer returned NOTHING_STAGED
 **Branch:** BRANCH  ← show only in current-branch mode (WORKTREE_MODE = false)
 **Files changed:** N
-**Tests:** written (or "skipped")
+**Tests:** {TESTS_RESULT}
 **Validation:** {len(unresolved_steps)} unresolved, Test {test_iter}/5, AI {ai_iter}/2
 **Skipped validators:** {SKIPPED_LINES}  ← omit line if empty
 

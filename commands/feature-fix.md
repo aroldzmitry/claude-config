@@ -93,7 +93,7 @@ If `SPEC_DIR/test-cases.md` does not exist → spawn `test-planner` via Agent(su
     spec_dir: SPEC_DIR
     worktree_dir: WORKTREE_DIR
 
-ERROR → log `[Tests: test-planner error — {reason}]`, continue.
+ERROR or crash → retry once; second failure → append `"Test: test-cases.md missing and test-planner failed"` to `unresolved_steps`, log `[Tests: test-planner error — {reason}]`, continue.
 
 If `SPEC_DIR/test-cases.md` exists → spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
 
@@ -102,7 +102,7 @@ If `SPEC_DIR/test-cases.md` exists → spawn `test-writer` via Agent(subagent_ty
     spec_dir: SPEC_DIR
     worktree_dir: WORKTREE_DIR
 
-ERROR → log `[Tests: error — {reason}]`, continue. Otherwise log `[Tests: written]`.
+Return contains `DONE` → log `[Tests: written]`; any skipped case tagged `[must]` in the response → append `"Test: [must] cases skipped by test-writer — {case names}"` to `unresolved_steps`. `ERROR`, crash, or a return that is neither `DONE` nor `ERROR` → retry once; second failure → append `"Test: test-writer failed — {reason}"` to `unresolved_steps`, log `[Tests: error — {reason}]`, continue.
 
 ## Phase 4: Validation
 

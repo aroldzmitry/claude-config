@@ -86,7 +86,7 @@ Parse test-cases.md format:
 - `## Test Cases` — each item is `- [ ] [must|should|could] <scenario — expected behavior>`
 - `## Tests to Update` — each item is `- [ ] [priority] \`path:NN\` — currently asserts X; after fix should assert Y`. For each: read the referenced test file, locate the test at the given line, update its assertion to match the expected post-fix behavior.
 
-Write ALL test cases regardless of priority. Map each to a concrete test. This includes test types the project's workflow doc excludes from automated validation gates (visual-regression/golden/snapshot) — gate exclusion does not exempt authoring; after writing such tests, generate their baseline fixtures by running the project's fixture-generating command scoped to the new test files. Skip only test cases whose section test-cases.md marks as manual/CI-only or that require live external services or uncommitted credentials; list every skipped case by name in the final response — never report a skipped case as covered.
+Write ALL test cases regardless of priority. Map each to a concrete test. This includes test types the project's workflow doc excludes from automated validation gates (visual-regression/golden/snapshot) — gate exclusion does not exempt authoring; after writing such tests, generate their baseline fixtures by running the project's fixture-generating command scoped to the new test files. Skip only test cases whose section test-cases.md marks as manual/CI-only or that require live external services or uncommitted credentials; list every skipped case by name with its priority tag (`[must]`/`[should]`/`[could]`) in the final response — never report a skipped case as covered.
 
 After writing all tests, verify coverage: for each item in test-cases.md, confirm a test exists that specifically asserts the described behavior — field presence or absence, computed value, exact error condition, or state transition — not just a test that exercises the same function. Search both newly created files and existing test files referenced in implementation-plan.md steps. If no such test exists anywhere, add it to the most appropriate of those files. If a single test-cases.md item lists multiple fields/scenarios (e.g. 'sorting by A, B, C'), each must have its own test case or parameterized variant.
 
@@ -123,6 +123,7 @@ When test-cases.md specifies that expected values must be sourced from an existi
 # Output
 
     DONE: {N} test files created
+    SKIPPED: [{priority}] {case name} — {reason}   ← one line per skipped case; omit when none
 
 or
 

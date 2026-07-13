@@ -33,16 +33,16 @@ Received via `prompt` from orchestrator:
 7. Assign names: if parts have ordering dependency → number them in dependency order (`<feature>-1-<aspect>`, `<feature>-2-<aspect>`) so that a part is numbered after every part it depends on — a dependency must never point to a higher-numbered part; if independent → no numbering.
 8. For each sub-feature:
    a. Create `temp/<sub-name>/business-requirements.md` using the BRD Document Format below. If the parent BRD contains a `Source references` section, carry its entries forward into the sub-BRD (filtered to those relevant to this sub-feature's scope; keep all when relevance is unclear).
-   b. If `TECH_MODE`: create `temp/<sub-name>/technical-requirements.md` — extract from the parent tech spec only the sections relevant to this sub-feature's scope (Data Model, API/Interfaces, Error Handling, Tech Edge Cases filtered to entries belonging to this sub); include Solution Approach, Business Clarifications, and Key Decisions sections in full (shared context). Apply the same scope-filtered extraction to every other spec artifact present in the parent dir: `test-cases.md` (the test cases whose subject belongs to this sub-feature's scope, plus the Test Strategy section) and `ui-requirements.md` (the pages/components belonging to this sub-feature). Touch `temp/<sub-name>/NEXT--feature-implement`.
+   b. If `TECH_MODE`: create `temp/<sub-name>/technical-requirements.md` — extract from the parent tech spec only the sections relevant to this sub-feature's scope (Data Model, API/Interfaces, Error Handling, Tech Edge Cases filtered to entries belonging to this sub); include Solution Approach, Business Clarifications, and Key Decisions sections in full (shared context). Apply the same scope-filtered extraction to every other spec artifact present in the parent dir: `test-cases.md` (the test cases whose subject belongs to this sub-feature's scope, plus the Test Strategy section; a test case spanning multiple parts goes to the highest-numbered part it depends on — never dropped as out-of-scope) and `ui-requirements.md` (the pages/components belonging to this sub-feature). Touch `temp/<sub-name>/NEXT--feature-implement`.
    c. If not `TECH_MODE`: if sub-feature has UI (pages, forms, tables) → `touch temp/<sub-name>/NEXT--feature-ui`; otherwise → `touch temp/<sub-name>/NEXT--feature-tech`
 9. Self-check every generated sub-document (machine-generated docs get no interactive review — this is their only quality gate). Re-read each sub-BRD (and sub-spec if `TECH_MODE`) and verify:
    - **Self-sufficiency** — understandable with zero parent context: no dangling references to parent-only entities, no "as described above"
    - **Conservation** — every parent User Flow step, `[must]` AC, `[error]` Edge Case, and (when the parent has `test-cases.md`) test case lands in exactly one sub-feature: none lost, none duplicated
    - **Scope consistency** — each sub's Excluded section names what the other parts handle; Excluded lists do not contradict each other
    - **Dependency ordering** — read each sub's "Related Features" section: a part that consumes artifacts another part owns (route surface, response shape, data model, page shell) must be numbered after that part. Dependencies point backward only (to lower-numbered parts), never forward; the graph is acyclic. If violated, re-derive the numbering (step 7) and rename the affected sub-feature directories before proceeding.
-   Fix violations directly via Edit before proceeding.
+   Fix violations directly via Edit before proceeding, then re-verify the fixed items. Include a `Conservation:` line in the Output summary — `OK`, or the list of parent items still unplaced after fixing (it is part of the user's Accept/Reject review; never omit the line).
 10. Archive parent — never delete (the orchestrator restores it if the user rejects the split): `rm -f temp/<feature_name>/NEXT--*`, then `mkdir -p temp/done && mv temp/<feature_name> temp/done/<feature_name>-split-source`.
-11. Write execution plan: create `temp/<FEATURE_NAME_UPPER>_PLAN.md` (hyphens → underscores, uppercased) containing: a title line, the dependency/execution-order table from the Output section, and a Status column initialized to ⏳ for all rows.
+11. Write execution plan: create `temp/<FEATURE_NAME_UPPER>_PLAN.md` (hyphens → underscores, uppercased) containing: a title line, the dependency/execution-order table from the Output section, a Status column initialized to ⏳ for all rows, and the `Conservation:` line.
 
 # Document Format
 
@@ -100,4 +100,6 @@ Summary table (also written to `temp/<FEATURE_NAME_UPPER>_PLAN.md`):
 |---|-------------|----------|------------|--------|
 | 1 | <name>      | ~N steps | —          | ⏳     |
 | 2 | <name>      | ~N steps | <name>     | ⏳     |
+
+Conservation: OK | {list of parent items still unplaced}
 ```

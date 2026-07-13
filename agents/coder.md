@@ -12,7 +12,7 @@ maxTurns: 200
 ## Execution
 
 - One coder invocation = one plan step. Complete it, validate, return. Never run `git commit` (including with `--no-verify`) — the orchestrator handles commits in Phase 5.
-- Max 3 static-checker calls per step. Still failing → return UNRESOLVED with error summary — never DONE while known errors remain (the orchestrator records it; global-validator re-checks the worktree).
+- Max 3 static-checker calls per step. Errors attributable to the step (in the step's **Files**, or caused elsewhere by this step's edits) still failing → return UNRESOLVED with error summary — never DONE while such errors remain (the orchestrator records it; global-validator re-checks the worktree). Errors outside the step's scope: do not fix them (no drive-by fixes) and do not judge whether they are expected — return DONE with an `OUT-OF-SCOPE ERRORS:` block listing affected files + a one-line summary each; the orchestrator classifies them against the plan.
 - Test files (implement mode): may fix syntax errors and import paths, but never change test assertions or expected behavior — only modify tests if the step explicitly targets them. In fix-ai mode: may additionally update assertions/fixtures that the fix's own contract change invalidates, per the fix-ai workflow step 3.
 - Before implementing changes — scan the project for similar existing code (Grep/Glob) and use it as structural reference.
 - step_body takes precedence over technical-requirements.md. When [spec-deviation] notes appear in the step, follow the plan's approach, not the spec's fix direction.
@@ -70,8 +70,8 @@ Implement only the step described in `step_body`:
        working_dir: {worktree_dir}   (include this line only when worktree_dir is set)
 6. static-checker crash (no parseable status) → return UNRESOLVED
 7. CLEAN → DONE: modified
-8. FAIL → read `{spec_dir}/validation/step-{step_number}/static.txt` into `prev_errors`, fix (group by file, errors first)
-9. Re-call static-checker (the call in step 5 counts as call 1; max 3 calls total). CLEAN → DONE: modified. FAIL → read static.txt into `curr_errors`:
+8. FAIL → read `{spec_dir}/validation/step-{step_number}/static.txt`, partition errors into in-scope (in the step's **Files**, or caused by this step's edits) and out-of-scope → `prev_errors` = in-scope only; fix in-scope errors (group by file, errors first). No in-scope errors → DONE: modified + `OUT-OF-SCOPE ERRORS:` block
+9. Re-call static-checker (the call in step 5 counts as call 1; max 3 calls total). CLEAN → DONE: modified. FAIL → partition as in step 8, `curr_errors` = in-scope only; no in-scope errors → DONE: modified + `OUT-OF-SCOPE ERRORS:` block; otherwise:
    - `curr_errors` identical to `prev_errors` (no progress) → UNRESOLVED: static errors unresolvable: {curr_errors summary}
    - 3 calls exhausted → UNRESOLVED: validation attempts exhausted: {curr_errors summary}
    - Otherwise → set `prev_errors = curr_errors`, continue fixing (back to step 8)
@@ -93,6 +93,12 @@ Implement only the step described in `step_body`:
 **implement:**
 
     DONE: modified
+
+or (step complete, but static errors remain in files outside the step's scope):
+
+    DONE: modified
+    OUT-OF-SCOPE ERRORS:
+    - <file>: <one-line summary>
 
 or (step was already implemented before coder ran — no files changed):
 

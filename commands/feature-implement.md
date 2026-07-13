@@ -109,7 +109,7 @@ For each step in order:
        step_body: <full step block text>
 
 3. If Task returns an error (agent crash, not UNRESOLVED) → re-spawn coder once with the same prompt. Second crash → record `"Step N: {title} — agent crashed"` in `unresolved_steps`, continue.
-4. `DONE` → next step. `UNRESOLVED` → record.
+4. `DONE` → next step. `DONE` with an `OUT-OF-SCOPE ERRORS` block → check each reported file/identifier against the remaining steps' **Files** and descriptions in implementation-plan.md: all covered by later steps → log `[Step N: done — expected ripple, covered by later steps]`, next step; any not covered → append `"Step N: {title} — out-of-scope errors not covered by remaining steps: {summary}"` to `unresolved_steps`, next step. `UNRESOLVED` → record.
 
 ## Phase 3: Test Writing
 
@@ -182,7 +182,7 @@ Check global-validator status:
         issues_file: validation/issues.md
         aggregated_file: validation/aggregated.md
 
-    Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Agent(subagent_type='super-agent') like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder crash → continue to next step.
+    Read `SPEC_DIR/validation/fix-plan.md`. Count `### Step N` blocks → `FIX_TOTAL`. For each `### Step N: <title>`, spawn `coder` via Agent(subagent_type='super-agent') like Phase 2 (mode: implement, step_number: N, step_total: FIX_TOTAL, worktree_dir: WORKTREE_DIR, step_body inline). Coder UNRESOLVED → record in `unresolved_steps`. Coder DONE with an `OUT-OF-SCOPE ERRORS` block → classify per Phase 2 step 4 (coverage set = remaining fix-plan steps). Coder crash → continue to next step.
     If fix-plan.md had 0 steps → Phase 5. If triggering type was test (`(test)` or `(static)`) → increment `test_iter`. If triggering type was AI (`open`) → increment `ai_iter`. Recompute CHANGED_FILES (same filtering rules, absolute paths). Re-run global-validator with updated CHANGED_FILES; pass `engines: claude` only if an earlier run in this Phase 4 returned `HAS_ISSUES: N open` (the AI battery + dual-engine sweep already happened; fix-verification re-runs use Claude validators only). If no run has reached the AI battery yet (only test/static failures so far) → omit `engines` so the first AI pass is full dual-engine. Return to status check above.
 
 ## Phase 5: Finalize

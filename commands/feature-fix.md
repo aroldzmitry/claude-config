@@ -78,7 +78,7 @@ For each step in order:
        step_body: <full step block text>
 
 3. If Task returns an error (agent crash, not UNRESOLVED) → re-spawn coder once with the same prompt. Second crash → record `"Step N: {title} — agent crashed"` in `unresolved_steps`, continue.
-4. `DONE` → next step. `UNRESOLVED` → record.
+4. `DONE` → next step. `DONE` with an `OUT-OF-SCOPE ERRORS` block → check each reported file/identifier against the remaining steps' **Files** and descriptions in implementation-plan.md: all covered by later steps → log `[Step N: done — expected ripple, covered by later steps]`, next step; any not covered → append `"Step N: {title} — out-of-scope errors not covered by remaining steps: {summary}"` to `unresolved_steps`, next step. `UNRESOLVED` → record.
 
 ## Phase 3: Test Writing
 

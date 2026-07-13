@@ -132,7 +132,7 @@ Spawn `test-writer` via Agent(subagent_type='super-agent') with prompt:
     worktree_dir: WORKTREE_DIR
 
 Return contains `DONE` → set `TESTS_RESULT = "written ({N} files)"`. If the response lists skipped cases, append them to `TESTS_RESULT`; any skipped case tagged `[must]` → append `"Test: [must] cases skipped by test-writer — {case names}"` to `unresolved_steps`.
-`ERROR`, crash, or a return that is neither `DONE` nor `ERROR` → retry once; second failure → append `"Test: test-writer failed — {reason}"` to `unresolved_steps`, set `TESTS_RESULT = "failed — {reason}"`, log `[Tests: error — {reason}]`.
+`ERROR`, crash, or a return that is neither `DONE` nor `ERROR` → retry once (a retry returning `DONE` re-enters the branch above); second failure → append `"Test: test-writer failed — {reason}"` to `unresolved_steps`, set `TESTS_RESULT = "failed — {reason}"`, log `[Tests: error — {reason}]`.
 Proceed to Phase 4.
 
 ## Phase 4: Validation Cycle

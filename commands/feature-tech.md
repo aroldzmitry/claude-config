@@ -218,7 +218,7 @@ Wait for test-planner to complete (foreground — not background) before launchi
 
 Initialize `spec_iter = 0`. `mkdir -p temp/<feature-name>/validation/spec/`
 
-**Fast path for small features:** if `business-requirements.md` exists, compute `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges` from it (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If `steps_estimate ≤ 8` → set `FAST_PATH = true`: Claude validators only (no Codex Tasks), expected file count 3, max 1 iteration. Log `[Validation: fast path — estimate {N} ≤ 8]`. No BRD → no fast path.
+**Fast path for small features:** if `business-requirements.md` exists, compute `steps_estimate = flow_steps × 3 + key_entities × 2 + must_criteria + error_edges` from it (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If `steps_estimate ≤ 8` → set `FAST_PATH = true`: Claude validators only (no Codex Tasks), expected file count 3, max 1 iteration. Log `[Validation: fast path — estimate {N} ≤ 8]`. No BRD → no fast path.
 
 **Validation loop (max 2 iterations; 1 when `FAST_PATH`):**
 

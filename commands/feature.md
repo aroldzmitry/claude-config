@@ -186,7 +186,7 @@ Validate all generated BRD files before presenting to the user.
 
 Initialize `brd_iter = 0`. For each BRD produced in Phase 3 build its validation directory by taking the BRD's parent directory and appending `validation/brd/` — e.g. for a BRD at `<root>/temp/<feature-name>/business-requirements.md` the validation dir is `<root>/temp/<feature-name>/validation/brd/`. For cross-repo features each BRD lives under its own project root, so each gets its own validation dir. Create each via `Bash: mkdir -p <validation-dir>`.
 
-**Fast path for small features:** compute `steps_estimate = user_flows × 3 + key_entities × 2 + must_criteria + error_edges` from the BRD (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If `steps_estimate ≤ 8` and the feature is single-repo → set `FAST_PATH = true`: Claude validators only (no Codex Tasks), expected file count 3, max 1 iteration. Log `[Validation: fast path — estimate {N} ≤ 8]`.
+**Fast path for small features:** compute `steps_estimate = flow_steps × 3 + key_entities × 2 + must_criteria + error_edges` from the BRD (counts: User Flow steps, Key Entities items, `[must]` ACs, `[error]` Edge Cases; missing section = 0 — same formula as `feature-split`). If `steps_estimate ≤ 8` and the feature is single-repo → set `FAST_PATH = true`: Claude validators only (no Codex Tasks), expected file count 3, max 1 iteration. Log `[Validation: fast path — estimate {N} ≤ 8]`.
 
 **Validation loop (max 2 iterations; 1 when `FAST_PATH`):**
 

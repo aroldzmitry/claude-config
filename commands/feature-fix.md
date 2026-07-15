@@ -78,7 +78,7 @@ For each step in order:
        step_body: <full step block text>
 
 3. If Task returns an error (agent crash, not UNRESOLVED) → re-spawn coder once with the same prompt. Second crash → record `"Step N: {title} — agent crashed"` in `unresolved_steps`, continue.
-4. `DONE` → next step. `DONE` with an `OUT-OF-SCOPE ERRORS` block → check each reported file/identifier against the remaining steps' **Files** and descriptions in implementation-plan.md: all covered by later steps → log `[Step N: done — expected ripple, covered by later steps]`, next step; any not covered → append `"Step N: {title} — out-of-scope errors not covered by remaining steps: {summary}"` to `unresolved_steps`, next step. `UNRESOLVED` → record.
+4. `DONE` → next step. `DONE` with an `OUT-OF-SCOPE ERRORS` block → check each reported file/identifier against the remaining steps' **Files** and descriptions in implementation-plan.md: all covered by later steps → log `[Step N: done — expected ripple, covered by later steps]`, next step; any not covered → append `"Step N: {title} — out-of-scope errors not covered by remaining steps: {summary}"` to `unresolved_steps` AND append each uncovered defect to `SPEC_DIR/validation/issues.md` (create if missing) as `[open] [error] {file} — {description} [source: coder step N]` so the first fix cycle targets it, next step. `UNRESOLVED` → record.
 
 ## Phase 3: Test Writing
 
@@ -170,7 +170,7 @@ Check global-validator status:
 ## Phase 5: Finalize
 
 1. Read `SPEC_DIR/technical-requirements.md`, derive commit description (max 72 chars). Read `SPEC_DIR/validation/skipped.md` if it exists → `SKIPPED_LINES` (must be read now — step 5 moves the folder before the report is printed).
-2. Set `MARK_READY = true`. If `unresolved_steps` is non-empty (any entry — crashed steps, open AI issues, failed validation all count, not only test failures) → set `MARK_READY = false`.
+2. Reconcile `unresolved_steps`: drop (logging `[resolved during later phases: {entry}]`) every out-of-scope-errors entry whose issues.md line is marked `[fixed]`, or whose reported errors are static/compile errors while the last validation run passed the static gate. Then set `MARK_READY = true`. If `unresolved_steps` is non-empty (any entry — crashed steps, open AI issues, failed validation all count, not only test failures) → set `MARK_READY = false`.
 3. Spawn `committer` via Agent(subagent_type='super-agent'):
    ```
    committer

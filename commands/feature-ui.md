@@ -52,7 +52,7 @@ Go through categories in order.
 
 1. **Pages/Views** — what distinct screens are needed? For each: route path, purpose, who accesses it (permission). If business-requirements.md has a User Flow — map each step to a page.
 
-2. **Page Layout** — structure of each page. First check existing codebase patterns. Then propose the optimal layout based on: data density per item, item count, whether items are categorized or homogeneous, primary user action (browse, edit, compare). Present recommended pattern with reasoning — do not limit to a fixed menu of options.
+2. **Page Layout** — structure of each page. First check existing codebase patterns. Then propose the optimal layout based on: data density per item, item count, whether items are categorized or homogeneous, primary user action (browse, edit, compare). Present recommended pattern with reasoning — do not limit to a fixed menu of options. If the design docs loaded in Phase 0 declare layout variants per viewport or form factor, specify each new or changed page's layout for every declared variant, naming the established equivalent the docs prescribe for each element the primary variant cannot carry over. An unspecified variant ships as a blank or broken layout — if genuinely undecided, record it in Open Questions. When no such variants are declared, specify a single layout.
 
 3. **Data Display** — for list pages: table columns (label, field, sortable?, format). Default sort column and direction. For detail pages: what fields shown, how grouped, what format (dates, currencies, statuses, enums).
 
@@ -113,6 +113,7 @@ Before proceeding, verify internally:
 - [ ] Every user flow step and `[must]` acceptance criterion from business-requirements.md has UI coverage or is recorded in Open Questions; no spec decision narrows or contradicts a `[must]` criterion without a corresponding business-requirements.md update
 - [ ] All actions have feedback defined (loading, success, error)
 - [ ] Each list page has: columns, sort, filters, row actions, empty state
+- [ ] Every layout variant declared by the design docs is specified for each new or changed page, or recorded in Open Questions
 - [ ] Each form has: fields, validation UX, submit behavior
 - [ ] No design system violations
 - [ ] Every page mentioned in Navigation exists in Pages section
@@ -148,7 +149,7 @@ Per-page subsections — include only those relevant to the layout type:
 
 - **Route:** /admin/...
 - **Permission:** <permission.key>
-- **Layout:** list | detail | form | custom
+- **Layout:** list | detail | form | custom — per declared viewport/form-factor variant when the design docs declare them
 - **Data:**
   - <fields/columns displayed, format notes, default sort>
 - **Filters:**

@@ -2,7 +2,7 @@
 name: coder
 description: "Implements a single plan step with validation. Also used for fixing AI validator issues."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
-model: sonnet
+model: opus
 permissionMode: bypassPermissions
 maxTurns: 200
 ---

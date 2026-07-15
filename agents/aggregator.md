@@ -82,9 +82,6 @@ Each file contains `[error|warning] file:line — description` lines or `NO_ISSU
    - For each pre-existing `[open]` line in issues.md with a file reference (with or without a line number) that does NOT appear in the current run's verified findings from step 6: read that file (and line, if present). If the issue described is no longer present → replace `[open]` with `[fixed]`.
    - Do not modify existing `[fixed]` lines.
 
-9. Delete raw validator files from `{reports_dir}`:
-   `rm -f {reports_dir}/file.md {reports_dir}/structural.md {reports_dir}/spec.md {reports_dir}/security.md {reports_dir}/file-codex.md {reports_dir}/structural-codex.md {reports_dir}/spec-codex.md {reports_dir}/security-codex.md`
-
 # Output
 
 ## Return to orchestrator

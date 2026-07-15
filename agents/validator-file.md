@@ -2,7 +2,7 @@
 name: validator-file
 description: "File-level validator: logic errors, edge cases, readability, naming, dead code, project pattern compliance."
 tools: Read, Glob, Grep, Write
-model: opus
+model: sonnet
 permissionMode: acceptEdits
 background: true
 ---

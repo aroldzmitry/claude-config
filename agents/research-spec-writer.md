@@ -2,7 +2,7 @@
 name: research-spec-writer
 description: "Creates technical-requirements.md from verified research findings. Output is compatible with /feature-implement pipeline."
 tools: Read, Glob, Grep, Write
-model: opus
+model: sonnet
 permissionMode: acceptEdits
 maxTurns: 200
 ---

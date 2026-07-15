@@ -2,7 +2,7 @@
 name: validator-spec-contracts
 description: "Spec contracts validator: API completeness, no implementation details, no vague language, all business requirements covered."
 tools: Read, Write
-model: opus
+model: sonnet
 permissionMode: acceptEdits
 background: true
 ---

@@ -2,7 +2,7 @@
 name: audit-workflow
 description: "System audit: validates workflow logic correctness — phase sequencing, variable lifecycle, branch completeness, loop termination, and error propagation."
 tools: Read, Glob, Grep, Write
-model: opus
+model: sonnet
 permissionMode: acceptEdits
 maxTurns: 200
 ---

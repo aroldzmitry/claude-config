@@ -2,7 +2,7 @@
 name: committer
 description: "Stages changed files, commits with hook retry (spawns coder fix-ai on failure), pushes branch; when a PR URL is given, updates PR title and marks it ready (unless mark_ready: false). Returns COMMITTED / COMMIT_FAILED / NOTHING_STAGED."
 tools: Bash, Task
-model: opus
+model: haiku
 ---
 
 # Input

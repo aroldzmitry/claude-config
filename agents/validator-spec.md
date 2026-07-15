@@ -2,7 +2,7 @@
 name: validator-spec
 description: "Spec compliance validator: all requirements implemented, nothing extra, test cases covered."
 tools: Read, Glob, Grep, Write
-model: opus
+model: sonnet
 permissionMode: acceptEdits
 background: true
 ---

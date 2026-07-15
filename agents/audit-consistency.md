@@ -2,7 +2,7 @@
 name: audit-consistency
 description: "Validates cross-references, terminology, workflow consistency, and contradictions across system configuration files. Used by system-audit and system-tune."
 tools: Read, Glob, Grep, Write
-model: opus
+model: sonnet
 permissionMode: acceptEdits
 maxTurns: 200
 ---

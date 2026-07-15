@@ -2,7 +2,7 @@
 name: audit-optimization
 description: "Evaluates prompt engineering quality, instruction clarity, context efficiency, and LLM-readiness of system files. Used by system-audit and system-tune."
 tools: Read, Glob, Grep, Write
-model: opus
+model: sonnet
 permissionMode: acceptEdits
 maxTurns: 200
 ---

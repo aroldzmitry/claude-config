@@ -2,7 +2,7 @@
 name: test-writer
 description: "Writes test files based on spec, test-cases.md, and implementation plan."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
-model: opus
+model: sonnet
 permissionMode: bypassPermissions
 maxTurns: 200
 ---

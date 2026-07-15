@@ -2,7 +2,7 @@
 name: codex
 description: "Runs any agent's instructions through Codex CLI. First word of prompt = agent name, rest = task params. Writes findings via the agent, returns agent's one-line status."
 tools: Bash
-model: opus
+model: haiku
 ---
 
 # Role

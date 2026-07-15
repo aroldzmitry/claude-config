@@ -2,7 +2,7 @@
 name: setup-worktree
 description: "Creates branch + worktree + draft PR. Run in parallel with planner during Phase 0/1."
 tools: Bash, Read, Write
-model: opus
+model: haiku
 permissionMode: bypassPermissions
 maxTurns: 50
 ---

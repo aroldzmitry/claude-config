@@ -2,7 +2,7 @@
 name: global-validator
 description: "Post-implementation validation dispatcher. Runs test-runner (gate), then AI validators + Codex, aggregates findings."
 tools: Task, Read, Write, Glob, Grep, Bash
-model: opus
+model: sonnet
 maxTurns: 200
 ---
 

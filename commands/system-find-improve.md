@@ -190,7 +190,9 @@ Deferred items re-presented this session: decided (Accept/Reject) → delete the
 
 ### Compaction
 
-After recording: if `DECISIONS_FILE` exceeds 400 lines or 32 KB → compact the `## Accepted` section: truncate entries older than 60 days to one line (`- [date] [retro] {target}: {first clause of the action}`) — enough for duplicate detection; full history lives in git. Still over the threshold after that → also truncate the oldest remaining `## Accepted` entries to one line until only the newest 30 remain full. Never truncate `## Rejected` entries — rejection reasons must survive verbatim.
+After recording: if `DECISIONS_FILE` exceeds 400 lines or 32 KB → compact the `## Accepted` section: truncate entries older than 60 days to one line (`- [date] [retro] {target}: {first clause of the action}`) — enough for duplicate detection. Still over the threshold after that → report the remaining size to the user and stop; do not truncate further on your own. Never truncate `## Rejected` entries — rejection reasons must survive verbatim.
+
+Truncation is irreversible: this file is untracked (`~/.claude/.gitignore` excludes `/agent-memory/`), so there is no copy to restore from. Before truncating any entry, read it: if it carries standing guidance addressed to future runs, or a root-cause analysis whose evidence is not reconstructible from the one-line form, keep it full and report it as retained.
 
 ### Observations
 

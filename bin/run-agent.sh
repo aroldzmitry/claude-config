@@ -80,10 +80,15 @@ ${TASK_BODY}"
     # No --done-pattern: codex exec exits on completion. A done-pattern on
     # '"type":"item.completed"' would kill codex after its FIRST item
     # (reasoning/tool call), before the final message and file writes.
+    # --cd pins the agent's working root: without it codex inherits this
+    # shell's cwd, and relative paths in the task body (output_file) resolve
+    # somewhere unintended, so reports land outside the dir the caller globs.
+    CODEX_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
     ~/.claude/bin/supervised-run.sh \
       --stall-timeout 600 \
       --timeout 3600 \
       -- codex exec --full-auto --ephemeral --json \
+      --cd "$CODEX_ROOT" \
       "$PROMPT"
     ;;
 

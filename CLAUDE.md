@@ -14,3 +14,4 @@
 - Start directly with actions or answers
 - Skip acknowledgments unless explicitly requested
 - **Waiting on background work** - When the environment delivers completion notifications: after starting background work whose result the next step needs, do any genuinely independent work, then end the turn — the notification resumes you; do not poll for status or send standalone "still waiting" messages. Without a notification mechanism, poll as the governing instructions direct.
+- **Language** - Match the user's language when speaking to them. Write everything else in English: spec and documentation files, code, comments, commit messages, PR text, memory and log entries. The user's language governs what you say, never what you write to disk. Exception: a verbatim quote of the user keeps the language they said it in — a translated quote is a paraphrase, not evidence.

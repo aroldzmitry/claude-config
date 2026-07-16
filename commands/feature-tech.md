@@ -178,7 +178,7 @@ Create `temp/<feature-name>/technical-requirements.md` using the template below.
 
 ## Business Clarifications
 
-- <business gap> → <decision>; overrides BRD § <section> AC: "<AC text>" or Edge Case: "<expected behavior>" (confirmed with user)
+- <business gap> → <decision>; overrides BRD § <section> AC: "<AC text>" or Edge Case: "<expected behavior>"; provenance: `(confirmed with user)` only if the user explicitly answered, otherwise `(interpretation — stated to the user, not objected to)`
 
 ## Key Decisions
 
@@ -229,14 +229,14 @@ When `NO_TEST_CASES = true`: exclude `spec-testability` from both engine lists b
      - `validator-spec-contracts` → `output_file: temp/<name>/validation/spec/contracts.md`
      - `validator-spec-testability` → `output_file: temp/<name>/validation/spec/testability.md`
      - `validator-spec-consistency` → `output_file: temp/<name>/validation/spec/consistency.md`
-   - **Codex Tasks** (skip when `FAST_PATH`) — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency] (short names for `{V-short}`: contracts, testability, consistency):
+   - **Codex Tasks** (skip when `FAST_PATH`) — spawn `codex` for each `V` in [spec-contracts, spec-testability, spec-consistency] (short names for `{V-short}`: contracts, testability, consistency). Pass `spec_dir` and `output_file` as absolute paths, prefixing `temp/<name>` with the absolute repository root — a relative path resolves against the subagent's CWD, which is not guaranteed to be the repository root, and a report written elsewhere is indistinguishable from a missing one in step 2:
      ```
      validator-{V}
      feature: <name>
-     spec_dir: temp/<name>
-     output_file: temp/<name>/validation/spec/{V-short}-codex.md
+     spec_dir: <repo-root>/temp/<name>
+     output_file: <repo-root>/temp/<name>/validation/spec/{V-short}-codex.md
 
-     CRITICAL: You MUST write output to the EXACT file path above using the Write tool before returning — do NOT use any other filename.
+     CRITICAL: You MUST write output to the EXACT absolute file path above using the Write tool before returning — do NOT use any other filename, and do NOT write to a path relative to your working directory.
      ```
 
 2. Verify all expected output files exist (Glob `validation/spec/` dir): 6 files, or 3 when `FAST_PATH`; on an iteration-2 subset re-run (step 7) expect only the relaunched validators' files. For each missing file: re-spawn the corresponding validator once with the same parameters. Exception: if a validator reported that its engine/CLI is unavailable (engine-level ERROR), do not retry it or any other validator on that engine this run — note the engine as unavailable and continue with the remaining engine's reports. If still absent after retry: note the missing filename and continue.

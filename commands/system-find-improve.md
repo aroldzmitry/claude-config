@@ -178,6 +178,8 @@ Use the Edit tool to insert each accepted item immediately before the `## Reject
 
 For new files: `- [YYYY-MM-DD] [retro] NEW {target}: created — {description}`
 
+Keep each entry within 500 characters — target, action, root-cause type, and a one-clause evidence pointer are enough for duplicate detection and supersession tracking; the full narrative belongs in `OBSERVATIONS_FILE`. Exceed 500 only for an entry that meets § Compaction's retention test.
+
 Use the Edit tool to insert each rejected item at the end of the `## Rejected` section (append after the last existing entry).
 `- [YYYY-MM-DD] [retro] {target}: {action description} — reason: "{user's reason}"`
 
